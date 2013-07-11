@@ -1,7 +1,7 @@
 /*
  * numeris is a functional set of script
  */
-//============================================================================//
+/******************************************************************************/
 /**
  * similar to jquery creates an DOM element
  * @author fredtma
@@ -30,13 +30,12 @@ create_element = function (arr, ele, txt)
       else if (key=='type') {the_element.type=arr[key]; skip=true;}
       else if (key=='name') {the_element.name=arr[key]; skip=true;}
       else if (key=='onclick') {the_element.onclick=arr[key]; skip=true;}
-//      else if (key=='style') {the_element.style=arr[key]; skip=true;}
       else attr=key;
       if (!skip) the_element.setAttribute(attr, arr[key]);
-   }//end for each
+   }/*end for each*/
    return the_element;
-}//end function
-//============================================================================//
+}/*end function*/
+/******************************************************************************/
 /**
  * load a script dynamically in the header tag
  * @author fredtma
@@ -54,7 +53,7 @@ function load_async(url, sync){
    head.appendChild(script);
 //   head.parentNode.insertBefore(script, head);
 }
-//============================================================================//
+/******************************************************************************/
 /**
  * similar to PHP issset function, it will test if a variable is empty
  * @author fredtma
@@ -80,7 +79,7 @@ function isset() {
    }
    return true;
 }//end function
-//============================================================================//
+/******************************************************************************/
 /**
  * used to measure script execution time
  *

@@ -1,7 +1,7 @@
 /*
  * ima is now. Ajax library
  */
-//============================================================================//
+/******************************************************************************/
 /**
  * used to send data via ajax get
  *
@@ -44,13 +44,13 @@ get_ajax = function (www, var_set, object, method, format, call_success)
       },
       dataType: format
    });
-}//end function
-//============================================================================//
+}/*end function*/
+/******************************************************************************/
 /**
  * return empty function
  */
 function ajax_success () {};
-//============================================================================//
+/******************************************************************************/
 /**
  * used in conjunction with .ajaxError().
  * note you can use error() on v1.5 and up
@@ -73,11 +73,11 @@ function ajax_success () {};
  */
 function ajax_error (event, response, ajaxSettings, thrownError)
 {
-//   alert(event+'-'+response+'-'+ajaxSettings+'-'+thrownError);
+/*   alert(event+'-'+response+'-'+ajaxSettings+'-'+thrownError);*/
    $(this).append(response.responseText+'<br/><strong>Error:</strong>'+thrownError);
-//   $.each(ajaxSettings,function(k,v){$('#debug_inbox').append(k+'='+v+'<br/>')});
+/*   $.each(ajaxSettings,function(k,v){$('#debug_inbox').append(k+'='+v+'<br/>')});*/
 }
-//============================================================================//
+/******************************************************************************/
 /**
  * used to measure script execution time
  *

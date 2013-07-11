@@ -26,7 +26,7 @@ function create_select (ele, create, the_list, clss, empty)
    {
       edit_element    = { id:ele, name:ele, clss:clss, onclick:''};
       select_field   = create_element(edit_element,'select');
-   }//end if
+   }/*end if*/
    optGrp = select_field.getElementsByTagName('optgroup');
    if (optGrp.length > 0 ) for (var i=optGrp.length-1;i>=0;i--) select_field.removeChild(optGrp[i]);
    if (select_field.length > 0)for (x=select_field.length-1; x>=0; x--) select_field.remove(x);
@@ -37,11 +37,12 @@ function create_select (ele, create, the_list, clss, empty)
       var option     = document.createElement('option');
       option.value   = i;
       option.text    = the_list[i];
-      select_field.add(option,select_field.options[null]);//try {select_field.add(option,select_field.options[null]);} catch(e) { select_field.add(option,null);}
-   }//end for
+      select_field.add(option,select_field.options[null]);
+      /*try {select_field.add(option,select_field.options[null]);} catch(e) { select_field.add(option,null);}*/
+   }/*end for*/
    return select_field;
-}//end function
-//============================================================================//
+}/*end function*/
+/******************************************************************************/
 /**
  * used to measure script execution time
  *
