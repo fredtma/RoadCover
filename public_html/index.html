@@ -17,6 +17,7 @@
     </script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/libs/jquery-1.9.0/jquery.min.js"></script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bootstrap.min.js"></script>
+   <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bibliotheca/lib.muneris.js"></script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bibliotheca/res.lambda.js"></script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/agito/index.js"></script>
    </head>
@@ -34,25 +35,7 @@
             </figure>
          </section>
          <section class="navigator">
-            <nav>
-               <ul class="nav nav-tabs">
-                  <li class="active"><a data-toggle="tab" href="#tab-home"><i class="icon-home"></i> Home</a></li>
-                  <li class="dropdown">
-                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-book"></i> Dealers <b class="caret"></b></a>
-                        <ul class="dropdown-menu"><li><a data-toggle="tab" href="#tab-dealer">First Dealer</a></li><li><a data-toggle="tab" href="#tab-dealer">Second Dealer</a></li><li><a data-toggle="tab" href="#tab-dealer">Third Dealer</a></li><li><a data-toggle="tab" href="#tab-dealer">Fourth Dealer</a></li><li class="divider"></li><li><a data-toggle="tab" href="#tab-dealer">View All Dealers</a></li></ul>
-                  </li>
-                  <li class="dropdown">
-                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-briefcase"></i> Salesman <b class="caret"></b></a>
-                     <ul class="dropdown-menu"><li><a data-toggle="tab" href="#tab-salesman">First Salesman</a></li><li><a data-toggle="tab" href="#tab-salesman">Second Salesman</a></li><li><a data-toggle="tab" href="#tab-salesman">Third Salesman</a></li><li><a data-toggle="tab" href="#tab-salesman">Fourth Salesman</a></li><li class="divider"></li><li><a data-toggle="tab" href="#tab-salesman">View All Salesman</a></li></ul>
-                  </li>
-                  <li><a data-toggle="tab" href="#tab-customer"><i class="icon-user"></i> Customers</a></li>
-                  <li><a  data-toggle="tab" href="#tab-insurance"><i class="icon-folder-open"></i> Insurance</a></li>
-                  <li class="dropdown">
-                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-cog"></i> System <b class="caret"></b></a>
-                     <ul class="dropdown-menu"><li><a data-toggle="tab" href="#system">View Logs</a></li><li><a data-toggle="tab" href="#system">View Clients</a></li><li><a data-toggle="tab" href="#system">Run Import</a></li><li><a data-toggle="tab" href="#system">View Reports</a></li><li><a data-toggle="tab" href="#system">Setup Permission</a></li></ul>
-                  </li>
-               </ul>
-            </nav>
+            <nav id="nav-main"></nav>
             <div class="tab-content">
                <div class="tab-pane active" id="tab-home">
                   <section class="menu-strip">
@@ -86,7 +69,7 @@
                       </div>
                   </section>
                </div>
-               <div class="tab-pane" id="tab-dealer">
+               <div class="tab-pane" id="tab-dealers">
 						<section class="menu-strip">
                      <div class="btn-group">
                         <a class="btn btn-primary" href="#"><i class="icon-book icon-white"></i> All Dealers</a>
@@ -151,7 +134,7 @@
 							</address>
                   </section>
                </div>
-               <div class="tab-pane" id="tab-customer">
+               <div class="tab-pane" id="tab-customers">
                   <section class="menu-strip">
                      <div class="btn-group">
                         <button class="btn btn-primary" title="Display List"><i class="icon-list icon-white"></i></button>
