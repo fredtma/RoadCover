@@ -11,25 +11,26 @@
  * @param string <var>ele</var> the name the element will be
  * @return object
  */
-create_element = function (arr, ele, txt)
+creo=function (arr, ele, txt)
 {
    var key;
-   var skip = false;
    var the_element   = document.createElement(ele);
    if (txt)
    {
       txt = document.createTextNode(txt);
       the_element.appendChild(txt);
    }
-
+   /*
+    * @todo:the @placehoder and @form also not compatible with setAttribute
+    */
    for (key in arr)
    {
+      var skip = false;
       if (key=='clss') {attr='class'; the_element.className = arr[key]; skip=true;}
       else if (key=='forr')attr='for';
       else if (key=='id') {the_element.id=arr[key]; skip=true;}
       else if (key=='type') {the_element.type=arr[key]; skip=true;}
       else if (key=='name') {the_element.name=arr[key]; skip=true;}
-      else if (key=='onclick') {the_element.onclick=arr[key]; skip=true;}
       else attr=key;
       if (!skip) the_element.setAttribute(attr, arr[key]);
    }/*end for each*/
