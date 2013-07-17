@@ -1,5 +1,6 @@
 /*
  * numeris is a functional set of script
+ * @todo: user $.remove() to remove from DOM all generated code. $.removeData() removes $.data() use with $.detach() removes element not the handler. Check $.cache
  */
 /******************************************************************************/
 /**
@@ -11,6 +12,8 @@
  * @param string <var>ele</var> the name the element will be
  * @return object
  */
+var startTime=new Date().getTime();
+var runTime=new Date().getTime();
 creo=function (arr, ele, txt)
 {
    var key;
@@ -80,6 +83,62 @@ function isset() {
    }
    return true;
 }//end function
+/******************************************************************************/
+/**
+ * get the size of an object
+ *
+ * It will verify all the variable sent to the function
+ * @author tomwrong
+ * @category object,size
+ * @see http://stackoverflow.com/questions/1248302/javascript-object-size
+ * @return bytes
+ */
+function objectSize( object ) {
+
+    var objectList = [];
+    var stack = [ object ];
+    var bytes = 0;
+
+    while ( stack.length ) {
+        var value = stack.pop();
+
+        if ( typeof value === 'boolean' ) {
+            bytes += 4;
+        }
+        else if ( typeof value === 'string' ) {
+            bytes += value.length * 2;
+        }
+        else if ( typeof value === 'number' ) {
+            bytes += 8;
+        }
+        else if
+        (
+            typeof value === 'object'
+            && objectList.indexOf( value ) === -1
+        )
+        {
+            objectList.push( value );
+            for( i in value ) {
+                stack.push( value[ i ] );
+            }
+        }
+    }
+    return bytes;
+}
+/******************************************************************************/
+/**
+ * measure two time frame from the begining of the script TimeElapse
+ * for the current script TimeFrame
+ * @author fredtma
+ * @version 0.8
+ * @category performance
+ */
+function timeFrame(startTime,runTime){
+   endTime=new Date().getTime();
+   console.log('TimeFrame:'+endTime-runTime);
+   console.log('TimeElapse:'+endTime-startTime);
+   runTime=endTime;
+}
 /******************************************************************************/
 /**
  * used to measure script execution time

@@ -13,15 +13,20 @@
  * @return object
  * @todo: add a level three menu step
  */
-function SET_DISPLAY()
+function SET_DISPLAY(_title,_subTitle,_pageNumber)
 {
    this.Obj={};
+   d=new Date();
+   $('#mainHead h1').text(_title);
+   $('title').text(_title);
+   $('#mainHead h2').text(_subTitle);
+   $('#mainHead time').html(d.format('fullDate')+' '+d.format('mediumTime'));
+   this.pageNumber=_pageNumber;
    /*
     * the number of menu name will also be the number of container
     * @type array
     */
    var mainMenu = [];
-
    var parentAttr, childAttr;
    /*
     * used to pass variable that will commonly be used everywhere
@@ -46,6 +51,15 @@ function SET_DISPLAY()
             else{_obj.mother(key1,item);};
          });/*endeach*/
       }
+   }
+   /*
+    * this function is used to place the object in the set element
+    * @param <var>_obj</var> the element to be placed
+    * @returns {object}
+    */
+   this.placeObj=function(_obj){
+      if(this.addTo) $(this.addTo).append(_obj);
+      else if(this.Obj.next) $(this.Obj.next).after(_obj);
    }
    /* this function set the navagion object and the values of the Attrs variables
     * @param {type} _menu
@@ -77,7 +91,7 @@ function SET_DISPLAY()
             });
             ul2.appendChild(li2);li.appendChild(ul2);ul.appendChild(li);
       }});
-      $(this.addTo).append(ul);
+      this.placeObj(ul);
    }/*end function*/
    /*
     * created a button group
@@ -91,7 +105,8 @@ function SET_DISPLAY()
          btn=creo({"title":item.title,"id":key,"clss":innerClass},"button");
          i=creo({"clss":item.icon},"i");btn.appendChild(i);div.appendChild(btn);
       }});
-      $(this.addTo).append(div);
+      this.placeObj(div);
+      return div;
    }/*end function*/
    /*
     * create two buttons as one entity with a drop down
@@ -122,9 +137,42 @@ function SET_DISPLAY()
             });
          }
       });
-      $(this.addTo).append(div);
+      this.placeObj(div);
       return div;
    }/*end function*/
+   /*
+    * creates a tree list
+    * @param {object} _obj the object representing the setting for the list
+    * @returns {object}
+    */
+   this.setList=function(_obj){
+      var ul=creo({"clss":_obj.clss},'ul');
+
+      this.setObject({items:_obj.items,"father":function(key,item){
+            li=creo({"id":key},'li');
+            a=creo({"href":item.href},'a');
+            txt=document.createTextNode(item.txt);
+            a.appendChild(txt);li.appendChild(a);ul.appendChild(li);
+         },"mother":function(key,item){
+            li=creo({'id':key,"clss":item.clss1},'li');
+            a=creo({"href":item.href,"clss":item.clss2,"data-toggle":item['data-toggle']},'a');
+            txt=document.createTextNode(item.txt+' ');
+            a.appendChild(txt);if(item.caret){b=creo({"clss":item.caret},'b');a.appendChild(b)}li.appendChild(a);
+            if(item.sub){
+               ul2=creo({"clss":item.sub.clss},"ul");
+               $.each(item.sub.children,function(index,val){
+                  li2=creo({"id":index},"li");a2=creo({"href":val.href},"a");txt=document.createTextNode(val.txt);
+                  if(val.txt=='hr'){li2.className="divider";txt=document.createTextNode('')}
+                  a2.appendChild(txt);li2.appendChild(a2);ul2.appendChild(li2);
+               });
+               li.appendChild(ul2);
+            }
+            ul.appendChild(li);
+         }
+      });
+      this.placeObj(ul);
+      return ul;
+   }
    /*SINGLE ELEMENT************************************************************/
    /*
     * create Button
@@ -134,7 +182,7 @@ function SET_DISPLAY()
    this.btnCreation=function(_ele,_btn,_txt,_icon){
       btn=creo(_btn,_ele,_txt);
       if(_icon){i=creo({"clss":_icon},'i');$(btn).prepend(i)}
-      $(this.addTo).append(btn);
+      this.placeObj(btn);
       return btn;
    }/*end function*/
    /*
@@ -148,7 +196,7 @@ function SET_DISPLAY()
       i=creo({"clss":_obj.label.icon},"i");
       input=creo(_obj.input,"input");
       span.appendChild(i);div.appendChild(span);div.appendChild(input);
-      $(this.addTo).append(div);
+      this.placeObj(div);
       return div;
    }/*end function*/
    /*
@@ -175,7 +223,7 @@ function SET_DISPLAY()
       a=creo({"href":_obj.link,"data-goto":page+1},"a");
       li=creo({},"li");
       a.appendChild(nxt);li.appendChild(a);ul.appendChild(li);div.appendChild(ul);
-      $(this.addTo).append(div);
+      this.placeObj(div);
       return div;
    }/*end function*/
    /*
@@ -195,7 +243,7 @@ function SET_DISPLAY()
          a.appendChild(txt);txt=document.createTextNode(":");
          address.appendChild(abbr);address.appendChild(txt);address.appendChild(a);address.appendChild(space);
       });
-      $(this.addTo).append(address);
+      this.placeObj(address);
       return address;
    }/*end function*/
 

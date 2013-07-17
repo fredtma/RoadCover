@@ -8,7 +8,6 @@
       <link href='http://fonts.googleapis.com/css?family=Vollkorn:400italic,700italic' rel='stylesheet' type='text/css'>
       <link rel="stylesheet" href="css/main.css" />
       <link rel="shortcut icon" href="img/fav.png" />
-    <!--  shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="js/html5shiv/dist/html5shiv.js"></script>
     <![endif]-->
@@ -18,130 +17,27 @@
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/libs/jquery-1.9.0/jquery.min.js"></script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bootstrap.min.js"></script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bibliotheca/lib.muneris.js"></script>
+   <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bibliotheca/lib.tempus.js"></script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bibliotheca/res.lambda.js"></script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/agito/index.js"></script>
    </head>
    <body>
-        <!--[if lt IE 7]>
+        <!--[if lt IE 9]>
             <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
         <![endif]-->
       <header draggable="true" class="container-fluid">
          <section class="logo _box">
-            <span>Road cover</span>
-            <figure>
-                  <img src="img/fav.png" alt="logo" title="logo" />
-                  <br class="clearfix"/>
-                  <figcaption class="explain">The logo</figcaption>
-            </figure>
+            <figure><img src="img/logo.gif" alt="logo" title="logo" /><br class="clearfix"/><figcaption class="explain">Road Cover</figcaption></figure>
          </section>
          <section class="navigator">
             <nav id="nav-main"><!--ingenero--></nav>
             <div class="tab-content">
-               <div class="tab-pane active" id="tab-home">
-                  <section class="menu-strip"><!--ingenero--></section>
-               </div>
-               <div class="tab-pane" id="tab-dealers">
-						<section class="menu-strip"><!--ingenero--></section>
-					</div>
-               <div class="tab-pane" id="tab-salesman">
-                  <section class="menu-strip">
-                     <div class="btn-group">
-                        <a class="btn btn-primary" href="#"><i class="icon-book icon-white"></i> All Salesman</a>
-                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
-                          <ul class="dropdown-menu">
-                           <li><a href="#">Salesman One</a></li>
-                           <li><a href="#">Salesman Two</a></li>
-                           <li><a href="#">Salesman Three</a></li>
-                           <li class="divider"></li>
-                           <li><a href="#">All Dealers</a></li>
-                           <li><a href="#">Current Salesman</a></li>
-                         </ul>
-                     </div>
-                     <div class="btn-group">
-                        <button class="btn btn-primary" title="Display List"><i class="icon-list icon-white"></i></button>
-                        <button class="btn btn-primary" title="Remove List"><i class="icon-align-justify icon-white"></i></button>
-                        <button class="btn btn-primary" title="Return to List"><i class="icon-tasks icon-white"></i></button>
-                      </div>
-                     <form class="form-inline pull-right" method="POST" name="search-Salesman">
-                        <div class="btn-cust input-prepend">
-                          <span class="add-on"><i class="icon-search icon-white"></i></span>
-                          <input class="input-medium" name="s" type="text" placeholder="Search Salesman" />
-                        </div>
-                     </form>
-							<address itemscope itemtype="http://schema.org/LocalBusiness" class="muted add" >
-                        <abbr title="Physicall address">Addr</abbr>:<a href="http://maps.google.com/?q=79+Street,+Suburb,+City,+Code,+Country" itemprop="address">79 Street, Suburb, City, Code, Country</a>
-                        <abbr title="Telephone Number">Tel</abbr>:<a href="tel:+27118089000" itemprop="telephone">(011) 808-9000</a>
-								<abbr title="Fax Number">Fax</abbr>:<a href="tel:+27118087000" itemprop="faxNumber">(011) 808-7000</a>
-								<abbr title="Email address">Email</abbr>:<a href="maito:namesurname@email.com" itemprop="email">namesurname@email.com</a>
-							</address>
-                  </section>
-               </div>
-               <div class="tab-pane" id="tab-customers">
-                  <section class="menu-strip">
-                     <div class="btn-group">
-                        <button class="btn btn-primary" title="Display List"><i class="icon-list icon-white"></i></button>
-                        <button class="btn btn-primary" title="Remove List"><i class="icon-align-justify icon-white"></i></button>
-                        <button class="btn btn-primary" title="Return to List"><i class="icon-tasks icon-white"></i></button>
-                      </div>
-                     <div class="btn-group">
-                        <button class="btn btn-primary" title="Customer's Expense"><i class="icon-tag icon-white"></i></button>
-                        <button class="btn btn-primary" title="Payment Details"><i class="icon-tags icon-white"></i></button>
-                        <button class="btn btn-primary" title="Vehicle Details"><i class="icon-road icon-white"></i></button>
-                        <button class="btn btn-primary" title="Customer's Cover"><i class="icon-download-alt icon-white"></i></button>
-                      </div>
-                     <form class="form-inline pull-right" method="POST" name="search-customer">
-                        <div class="btn-cust input-prepend">
-                          <span class="add-on"><i class="icon-search icon-white"></i></span>
-                          <input class="input-medium" name="s" type="text" placeholder="Search Customer" />
-                        </div>
-                     </form>
-                  </section>
-               </div>
-               <div class="tab-pane" id="tab-insurance">
-                  <section class="menu-strip">
-                  <div class="btn-group">
-                     <button class="btn btn-primary" title="Display List"><i class="icon-list icon-white"></i></button>
-                     <button class="btn btn-primary" title="Remove List"><i class="icon-align-justify icon-white"></i></button>
-                     <button class="btn btn-primary" title="Return to List"><i class="icon-tasks icon-white"></i></button>
-                  </div>
-                     <form class="form-inline pull-right" method="POST" name="search-customer">
-                        <div class="btn-cust input-prepend">
-                          <span class="add-on"><i class="icon-search icon-white"></i></span>
-                          <input class="input-medium" name="s" type="text" placeholder="Search Customer" />
-                        </div>
-                     </form>
-                  </section>
-               </div>
-               <div class="tab-pane" id="system">
-                  <section class="menu-strip">
-                     <div class="btn-group">
-                        <button class="btn btn-primary" title="View Logs"><i class="icon-list-alt icon-white"></i></button>
-                        <button class="btn btn-primary" title="View Clients"><i class="icon-user icon-white"></i></button>
-                        <button class="btn btn-primary" title="View Reports"><i class="icon-book icon-white"></i></button>
-                        <button class="btn btn-primary" title="Run Import"><i class="icon-share-alt icon-white"></i></button>
-                        <button class="btn btn-primary" title="Single Query"><i class="icon-search icon-white"></i></button>
-                        <button class="btn btn-primary" title="Setup Permission"><i class="icon-pencil icon-white"></i></button>
-                      </div>
-                     <div class="btn-group">
-                        <a class="btn btn-primary" href="#"><i class="icon-user icon-white"></i>User</a>
-                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
-                          <ul class="dropdown-menu">
-                           <li><a href="#"><i class="icon-pencil"></i> My profile</a></li>
-                           <li><a href="#"><i class="icon-plus"></i> Create profile</a></li>
-                           <li><a href="#"><i class="i"></i> Admin List</a></li>
-                           <li class="divider"></li>
-                           <li><a href="#"><i class="icon-ban-circle"></i> Logoff</a></li>
-                         </ul>
-                     </div>
-                     <button class="btn btn-primary" title="Help"><i class="icon-question-sign icon-white"></i></button>
-                     <form class="form-inline pull-right" method="POST" name="search-page">
-                        <div class="btn-cust input-prepend">
-                          <span class="add-on"><i class="icon-search icon-white"></i></span>
-                          <input class="input-medium" name="s" type="text" placeholder="Search Page" />
-                        </div>
-                     </form>
-                  </section>
-               </div>
+               <div class="tab-pane active" id="tab-home"><section class="menu-strip"><!--ingenero--></section></div>
+               <div class="tab-pane" id="tab-dealers"><section class="menu-strip"><!--ingenero--></section></div>
+               <div class="tab-pane" id="tab-salesman"><section class="menu-strip"><!--ingenero--></section></div>
+               <div class="tab-pane" id="tab-customers"><section class="menu-strip"><!--ingenero--></section></div>
+               <div class="tab-pane" id="tab-insurance"><section class="menu-strip"><!--ingenero--></section></div>
+               <div class="tab-pane" id="tab-system"><section class="menu-strip"><!--ingenero--></section></div>
             </div>
          </section>
          <br class="clearfix"/>
@@ -149,38 +45,55 @@
 
       <section class="container-fluid">
          <section class="aside _box">
+         <hgroup id="mainHead">
+            <h1><!--ingenero--></h1><h2><!--ingenero--></h2><time datetime="2013-06-29"><!--ingenero--></time>
+         </hgroup>
             <aside id="side-notice">message notification</aside>
             <aside id="side-grid">CRUD Grid</aside>
-         </section>
+         </section><!--left aside-->
          <section id="body" class="body _box">
-            <hgroup>
-               <h1>Road Cover Title</h1>
-               <h2>Sub title</h2>
-            </hgroup>
             <article>
-               <time datetime="2013-06-29">The 29th of November, 2013</time>
-               The article
-            </article>
+               <form class="form-horizontal" id="form-user" oninput="outputRange.value=inputRange.value" >
+                  <fieldset name="fieldset-minimum">
+                     <legend>Profile Page</legend>
+                     <div class="control-group"><label class="control-label" for="inputName">Name</label><div class="controls"><input type="text" id="inputName" autofocus autocomplete="off" placeholder="Name"/></div></div>
+                     <div class="control-group"><label class="control-label" for="inputEmail">Email</label><div class="controls"><input type="email" id="inputEmail" placeholder="Email" required/></div></div>
+                     <div class="control-group"><label class="control-label" for="inputPassword">Password</label><div class="controls"><input type="password" id="inputPassword" placeholder="Password"/></div></div>
+                     <div class="control-group"><label class="control-label" for="inputUrl">Website</label><div class="controls"><input type="Url" id="inputUrl" placeholder="http://www.example.com"/></div></div>
+                     <div class="control-group"><label class="control-label" for="inputDob">dob</label><div class="controls"><input type="date" id="inputDob" placeholder="date of birth"/></div></div>
+                     <div class="control-group"><label class="control-label" for="inputColor">Color</label><div class="controls"><input type="color" id="inputDate" placeholder="Color"/></div></div>
+                     <div class="control-group"><label class="control-label" for="inputAge">Age</label><div class="controls"><input type="number" id="inputTel" placeholder="Age"/></div></div>
+                     <div class="control-group"><label class="control-label" for="inputRange">Range</label><div class="controls"><input type="range" min="0" max="100" id="inputRange" placeholder="Range"/><output name="outputRange" for="inputRange"></output></div></div>
+                     <div class="control-group"><label class="control-label" for="inputTime">Time</label><div class="controls"><input type="time" id="inputTime" placeholder="Time"/></div></div>
+                     <div class="control-group"><label class="control-label" for="inputDatetime">Datetime</label><div class="controls"><input type="datetime-local" id="inputDate" placeholder="Date"/></div></div>
+                     <div class="control-group"><label class="control-label" for="inputMulti">Multi File</label><div class="controls"><input type="file" multiple id="inputMulti" placeholder="Multi"/></div></div>
+                     <div class="control-group"><label class="control-label" for="inputList">List</label><div class="controls"><input type="text" list="browsers" id="inputList" placeholder="List"/></div></div>
+                     <datalist id="browsers"><option value="Internet Explorer"><option value="Firefox"><option value="Google Chrome"><option value="Opera"><option value="Safari"></datalist>
+                  </fieldset>
+
+                  <fieldset name="fieldset-additional" disabled >
+                     <legend>More Details</legend>
+                     <div class="control-group warning"><label class="control-label" for="inputSurname">Surname</label><div class="controls"><input type="text" id="inputSurname" placeholder="Surname" disabled /><span class="help-inline">Inline help text</span></div></div>
+                     <div class="control-group error"><label class="control-label" for="inputPhone">Phone</label><div class="controls"><input class="uneditable-input" type="phone" id="inputPhone" placeholder="(+27)11 123 4567"/><span class="help-block">A longer block of help text that breaks onto a new line and may extend beyond one line.</span></div></div>
+                     <div class="control-group"><div class="controls"><label class="checkbox"><input type="checkbox"> Remember me</label></div></div>
+                     <div class="control-group"><div class="controls"><meter id="meter" optimum="70" value="70" min="0" max="99" low="20" high="60"><span>0</span>%</meter></div></div>
+                     <div class="control-group"><div class="controls"><progress id="progress" value="70"  max="100" ><span>0</span>%</progress></div></div>
+                  </fieldset>
+                  <div class="form-actions well well-small">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-inverse">Cancel</button>
+                  </div>
+               </form>
+            </article><!--container-->
          </section>
       </section>
 
       <footer class="container-fluid">
          <section class="navbar navbar-fixed-bottom navbar-inverse navbar-static">
-            <nav class="navbar-inner">
-               <span class="brand white">&copy; 2013 RoadCover - All right reserved.</span>
-               <ul class="nav">
-						<li><a href="#">Frederick Tshimanga</a></li>
-                  <li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">About Us <b class="caret bottom-up"></b></a>
-							<ul class="dropdown-menu bottom-up pull-right">
-								<li><a href="#">Contact us</a></li><li><a href="#">Help</a></li><li><a href="#">About Us</a></li>
-							</ul>
-						</li>
-						<li><a href="#">Logout</a></li>
-               </ul>
-					<form class="navbar-search pull-left">
-					  <input type="text" class="search-query" placeholder="Search">
-					</form>
+            <nav class="navbar-inner" id="navior">
+               <span class="brand white" id="copyRight">&copy; 2013 RoadCover - All right reserved.</span>
+               <!--ingenero-->
+               <form class="navbar-search pull-left" id="frm_search"><input type="search" class="search-query" placeholder="Search"></form>
 					<span class='statusbar' contenteditable="true">Status:</span>
             </nav>
          </section>
