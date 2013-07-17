@@ -1,8 +1,92 @@
 /*
  * creates form inputs and elements.
- * dependent on lib.muneris.ls
+ * @uses jquery|lib.muneris
  */
-//============================================================================//
+/******************************************************************************/
+/**
+ * the Object to set the form fields
+ * @author fredtma
+ * @version 2.5
+ * @param {string} <var>_name</var> the main name that will be used to distinguish the form
+ * @param {string} <var>frmClass</var> global class name
+ * @param {string} <var>frmLabel</var> global form label on or off
+ * @param {string} <var>frmName</var> the name of the form
+ * @param {object} <var>Obj</var> the global object to be customly added
+ * @category object, form
+ * @return object
+ * @see placeObj|
+ */
+function SET_FORM(_name,_class,_label){
+   this.name;
+   this.frmClass;
+   this.frmLabel;
+   this.frmName;
+   this.Obj=[];
+   /*
+    * used to pass variable that will commonly be used everywhere
+    * @param {object} _obj the object
+    * @returns {object} the object returned
+    */
+   this._Set=function(_opt){
+      if(typeof(_opt)==="string"){this.Obj.addTo=_opt;}
+      else {this.Obj = _opt;}
+      return this;
+   }
+   /* This function creates the object based upon the var Attrs
+    * @param {object} _obj the object that will be iterated to extract the string value
+    * @returns {object} return the object that is to be created
+    * @see navTab|btnGroup|btnDropDown
+    */
+   this.setObject = function(_obj) {
+      if (typeof(_obj.items)==='array'||typeof(_obj.items)==='object')
+      {
+         $.each(_obj.items, function(key1, item){
+            if(!item.index){$.each(item,function(table,field){_obj.father(table,field);})}
+            else{_obj.mother(key1,item);};
+         });/*endeach*/
+      }
+   }
+   /*
+    * this function is used to place the object in the set element
+    * @param <var>_obj</var> the element to be placed
+    * @returns {object}
+    */
+   this.placeObj=function(_obj){
+      if(this.Obj.addTo) $(this.Obj.addTo).append(_obj);
+      else if(this.Obj.next) $(this.Obj.next).after(_obj);
+   }
+   /*
+    * The main script will get and set all the fields
+    * @param {obejcts} <var>_fields</var> setting of the form has the form name, class, fields, title
+    * @returns {undefined}
+    */
+   this.setFields=function(_fields){
+      this.name=_fields.index.name;
+      this.title=_fields.index.title?_fields.index.title:aNumero(_fields.index.name,true);
+      this.frmClass=_fields.index.class;
+      this.frmLabel=_fields.index.label?_fields.index.label:true;
+      this.frmName='frm_'+this.name;
+      this.setObject({"items":_fields,"father":function(_key,_field){
+            theField=_field.field;
+            theName=_field.name?_field.name:_key;
+            theLabel=_field.title?_field.title:aNumero(theName, true);
+            label=(_field.addLabel)?_field.addLabel:this.frmLabel;
+            if(label)label=creo({"clss":control-label,"forr":_key},'label');
+            placeHolder=((_field.place)===true?theLabel:(_field.place)?_field.place:false);
+            if(placeHolder!==false) theField.placeholder=placeHolder;
+
+            if(_field.icon){
+               i=creo(_field.icon,'i');
+               span=creo({"clss":"add-on"},'span');span.appendChild(i);
+               div=creo({"clss":"input-prepend"},'div');div.appendChild(input);
+            }
+         }
+      });
+   }
+   if(this instanceof SET_DISPLAY)return this;
+   else return new SET_DISPLAY();
+}
+/******************************************************************************/
 /**
  * either create a select input fields or append to an existing one.
  * @author fredtma

@@ -141,6 +141,40 @@ function timeFrame(startTime,runTime){
 }
 /******************************************************************************/
 /**
+ * used in a similar way as the php version of ucwordsn
+ * @author fredtma
+ * @version 0.2
+ * @category string
+ * @param string <var>str</var> is the string that will be converted
+ * @see PHP ucwords
+ * @return string
+ */
+ucwords = function (str)
+{
+    return (str + '').replace(/^([a-z])|\s+([a-z])/g, function ($1) {
+        return $1.toUpperCase();
+    });
+}//end function
+/******************************************************************************/
+/**
+ * change into alpha numerical, with no spacing
+ * @author fredtma
+ * @version 0.3
+ * @category string
+ * @param string <var>the_str</var> the input string to be changed
+ * @param boolean <var>transform</var> choses to make it upper case or not
+ * @see ucwords
+ * @return string
+ */
+aNumero = function(the_str,transform)
+{
+   the_str   = the_str.toLowerCase();
+   the_str   = (transform)?ucwords(the_str.toLowerCase()): the_str;
+   the_str   = the_str.replace(/[^A-Za-z0-9]*/ig,'');
+   return the_str;
+}
+/******************************************************************************/
+/**
  * used to measure script execution time
  *
  * It will verify all the variable sent to the function

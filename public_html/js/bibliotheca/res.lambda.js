@@ -7,11 +7,12 @@
 /**
  * object to create a tab menu
  * @author fredtma
- * @version 0.8
- * @category dynamic, menu
+ * @version 2.8
+ * @category dynamic, menu, object
  * @param array $__theValue is the variable taken in to clean <var>$__theValue</var>
  * @return object
  * @todo: add a level three menu step
+ * @see: placeObj
  */
 function SET_DISPLAY(_title,_subTitle,_pageNumber)
 {

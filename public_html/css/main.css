@@ -59,6 +59,8 @@ form {margin: -10px 0 20px;}
 .navbar .nav>li>a {padding: 5px 10px;}
 .navbar-search .search-query,.navbar-inverse .navbar-search .search-query:focus {padding:2px 2px 0px 8px; margin-bottom:5px; font-size:0.9em; height:1.5em;}
 footer {top:auto; bottom:0; margin-bottom:1px; position:fixed; left:0; right:0; }
+textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input
+{background: #fff url(../img/gradient.png)top left repeat-x;-webkit-box-shadow: inset 0 3px 3px rgba(0, 0, 0, 0.075);-moz-box-shadow: inset 0 3px 3px rgba(0, 0, 0, 0.075);box-shadow: inset 0 3px 3px rgba(0, 0, 0, 0.075);}
 /******************************************************************************/
 /*size setting*/
 @media all and (max-width: 1024px){

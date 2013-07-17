@@ -1,0 +1,10 @@
+{
+   "index": {"title":"Profile Page","name":"profile"},
+   "users":{
+      "username":{"valid":["unique"],"icon":"icon-user","place":true,"field":{"required":""}},
+      "password":{"icon":"icon-lock","field":{"type":"password","required":""}},
+      "firstname":{"icon":"icon-tag","place":true,"field":{"required":""}},
+      "lastname":{"icon":"icon-tags","place":true,"field":{"required":""}},
+      "email":{"icon":"icon-envelope","place":true,"field":{"type":"email","required":""}}
+   }
+}
