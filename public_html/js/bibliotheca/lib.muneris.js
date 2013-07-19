@@ -11,6 +11,10 @@ localStorage.SITE_TIME='mediumTime';
 localStorage.SITE_URL='http://localhost/RoadCover/public_html/';
 localStorage.MAIL_SUPPORT='support@roadcover.co.za';
 localStorage.DB;
+localStorage.DB_NAME='road_cover';
+localStorage.DB_VERSION='1.0';
+localStorage.DB_DESC='The internal DB version';
+localStorage.DB_SIZE=5;
 localStorage.URL_IMG=localStorage.SITE_URL+'img/';
 localStorage.URL_LIB=localStorage.SITE_URL+'js/';
 localStorage.URL_JSON=localStorage.SITE_URL+'json/';
@@ -201,63 +205,23 @@ aNumero = function(the_str,transform)
  * @todo finish the function on this page
  * @uses file|element|class|variable|function|
  */
-var progress=0;
-function isOnline(){
+function isOnline(_display){
    var myAppCache = window.applicationCache;
-   msg=navigator.onLine?"Status: <strong class='text-success'>Online</strong>":"Status: Working <strong class='txt-error'>Offline</strong>";
-   msg+=window.localStorage?", Local <strong class='text-success'>Storage</strong>":", No Local <strong class='text-error'>Storage</strong>";
-   msg+=window.sessionStorage?", Session <strong class='text-success'>Storage</strong>":", No Session <strong class='text-error'>Storage</strong>";
+   msg=navigator.onLine?"Status: Working <strong class='text-success'>Online</strong>":"Status: Working <strong class='txt-error'>Offline</strong>";
    switch (myAppCache.status) {
-     case myAppCache.UNCACHED:msg+=', UNCACHED'; break;//status 0 no cache exist
-     case myAppCache.IDLE:msg+=', IDLE'; break;//status 1 most common, all uptodate
-     case myAppCache.CHECKING:msg+=', CHECKING';break;//status 2 browser reading manifest
-     case myAppCache.DOWNLOADING:msg+=', DOWNLOADING';break;//status 3 new or updated resource dwlding
-     case myAppCache.UPDATEREADY:msg+=', UPDATEREADY';break;//status 4 file has been updated
-     case myAppCache.OBSOLETE:msg+=', OBSOLETE';break;//status 5 missing manifest, re dwld
-     default: msg+=', UKNOWN CACHE STATUS';break;
-   };
+      case myAppCache.UNCACHED:msg+=', CACHE::UNCACHED'; break;//status 0 no cache exist
+      case myAppCache.IDLE:msg+=', CACHE::IDLE'; break;//status 1 most common, all uptodate
+      case myAppCache.CHECKING:msg+=', CACHE::CHECKING';break;//status 2 browser reading manifest
+      case myAppCache.DOWNLOADING:msg+=', CACHE::DOWNLOADING';break;//status 3 new or updated resource dwlding
+      case myAppCache.UPDATEREADY:msg+=', CACHE::UPDATEREADY';break;//status 4 file has been updated
+      case myAppCache.OBSOLETE:msg+=', CACHE::OBSOLETE';break;//status 5 missing manifest, re dwld
+      default: msg+=', CACHE::UKNOWN CACHE STATUS';break;
+    };
    $('#statusbar').html(msg);
-   var appCache = window.applicationCache;
-//   console.log(appCache);
-   appCache.addEventListener('checking', function(e) {
-      $('#side-notice').html("Checking for application update<BR>");
-   }, false);
-   appCache.addEventListener('cached', function(e) {
-      $('#side-notice').html("Application cached<BR>");
-   }, false);
-   appCache.addEventListener('noupdate', function(e) {
-      $('#side-notice').html("No application update found<BR>");
-   }, false);
-   appCache.addEventListener('obsolete', function(e) {
-      $('#side-notice').html("Application obsolete<BR>");
-   }, false);
-   appCache.addEventListener('error', function(e) {
-      $('#side-notice').html("Application cache error<BR>");
-   }, false);
-   appCache.addEventListener('downloading', function(e) {
-      $('#side-notice').html("Downloading application update<BR>");
-   }, false);
-   appCache.addEventListener('progress', function(e) {
-      $('#progress').attr('value',progress+10);
-      $('#side-notice').html("Application Cache progress<BR>");
-   }, false);
-   appCache.addEventListener('updateready', function(e) {
-      forceRefresh(false);
-      $('#side-notice').html("Application update ready<BR>");
-   }, false);
-   $('#progress').hide();
-}
-/******************************************************************************/
-/**
- * forces the manifest file to reload and refresh
- * @author fredtma
- * @version 0.2
- * @category manifest
- */
-function forceRefresh(_refresh){
-   if(window.applicationCache.status==window.applicationCache.UPDATEREADY && _refresh===true){
-      window.applicationCache.swapCache();
-      window.location.reload();
+   if(_display===true){
+      note=window.localStorage?"<div id='notice1'>Local <strong class='text-success'>Storage</strong> enabled</div>":"<div id='notice1'>, No Local <strong class='text-error'>Storage</strong></div>";
+      note+=window.sessionStorage?"<div id='notice2'>Session <strong class='text-success'>Storage</strong> enabled</div>":"<div id='notice2'>, No Session <strong class='text-error'>Storage</strong></div>";
+      $('#sideNotice').append(note);
    }
 }
 /******************************************************************************/
@@ -275,5 +239,6 @@ function forceRefresh(_refresh){
  * @todo finish the function on this page
  * @uses file|element|class|variable|function|
  */
-isOnline();
-setInterval(isOnline,5000);
+isOnline(true);
+setInterval(isOnline,50000);//5min
+//$('#progressBar').hide();

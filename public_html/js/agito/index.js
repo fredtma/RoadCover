@@ -47,6 +47,8 @@ function findJSON(data){
    profileForm = new SET_FORM();
    profileForm._Set("#tmp").setAlpha(data);
 }
+//DB SETUP
+creoDB=new SET_DB();
 console.log(objectSize($.cache));
 //RESET
 roadCover=null;menuAddr=null;menuDisplay=null;username=null;mother=null;

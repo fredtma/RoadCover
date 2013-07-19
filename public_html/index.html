@@ -1,14 +1,11 @@
 <!DOCTYPE html>
-<html manifest="application.manifest">
+<html>
    <head>
-      <title>Road Cover</title>
-      <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Road Cover</title><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1">
       <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:700,400' rel='stylesheet' type='text/css'>
       <link href='http://fonts.googleapis.com/css?family=Vollkorn:400italic,700italic' rel='stylesheet' type='text/css'>
-      <link rel="stylesheet" href="css/main.css" />
-      <link rel="stylesheet" href="css/icons.css" />
-      <link rel="shortcut icon" href="img/fav.png" />
+      <link rel="stylesheet" href="css/bootstrap.min.css" /><link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+      <link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/icons.css" /><link rel="shortcut icon" href="img/fav.png" />
     <!--[if lt IE 9]>
       <script src="js/html5shiv/dist/html5shiv.js"></script>
     <![endif]-->
@@ -21,6 +18,7 @@
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bibliotheca/lib.tempus.js"></script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bibliotheca/res.lambda.js"></script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bibliotheca/res.forma.js"></script>
+   <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bibliotheca/res.notitia.js"></script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/agito/index.js"></script>
    </head>
    <body>
@@ -48,46 +46,20 @@
       <section class="container-fluid">
          <section class="aside _box">
          <hgroup id="mainHead">
-            <h1><!--ingenero--></h1><h2><!--ingenero--></h2><time datetime="2013-06-29"><!--ingenero--></time>
+            <h1><!--ingenero--></h1><h2><!--ingenero--></h2>
          </hgroup>
-            <aside id="side-notice">message notification</aside>
-            <aside id="side-grid">CRUD Grid</aside>
+            <aside id="sideTop"><time datetime="2013-06-29"><!--ingenero--></time><h3>message notification</h3><progress id="progressBar" value="10"  max="100" ><span>100</span>%</progress><div id="sideNotice" class="text-info"></div></aside>
+            <aside id="sideBot"><h3>CRUD SYSTEM</h3>
+               <div id="sideGrid" ><!--ingenero-->
+               <ul class="nav-grid">
+                  <li><a href="#">name1 surname1</a><a href="#"><i class="icon icon-color icon-trash"></i></a></li>
+                  <li><a href="#">name2 surname2</a><a href="#"><i class="icon icon-color icon-trash"></i></a></li>
+               </ul>
+               </div>
+            </aside>
          </section><!--left aside-->
          <section id="body" class="body _box">
-            <article>
-               <div id='tmp'></div>
-               <form class="form-horizontal" id="form-user" >
-                  <fieldset name="fieldset-minimum">
-                     <legend>Profile Page</legend>
-                     <div class="control-group"><label class="control-label" for="inputName">Name</label><div class="controls"><div class="input-prepend"><span class="add-on"><i class="icon-user"></i></span><input type="text" id="inputName" autofocus autocomplete="off" placeholder="Name"/></div></div></div>
-                     <div class="control-group"><label class="control-label" for="inputEmail">Email</label><div class="controls"><div class="input-prepend"><span class="add-on">@</span><input type="email" id="inputEmail" placeholder="Email" required/></div></div></div>
-                     <div class="control-group"><label class="control-label" for="inputPassword">Password</label><div class="controls"><div class="input-prepend"><span class="add-on"><i class="icon-lock"></i></span><input type="password" id="inputPassword" placeholder="Password"/></div></div></div>
-                     <div class="control-group"><label class="control-label" for="inputUrl">Website</label><div class="controls"><div class="input-prepend"><span class="add-on"><i class="icon-globe"></i></span><input type="Url" id="inputUrl" placeholder="http://www.example.com"/></div></div></div>
-                     <div class="control-group"><label class="control-label" for="inputDob">dob</label><div class="controls"><div class="input-prepend"><span class="add-on"><i class="icon-calendar"></i></span><input type="date" id="inputDob" /></div></div></div>
-                     <div class="control-group"><label class="control-label" for="inputColor">Color</label><div class="controls"><div class="input-prepend"><span class="add-on"><i class="icon-pencil"></i></span><input type="color" id="inputColor" /></div></div></div>
-                     <div class="control-group"><label class="control-label" for="inputTel">Tel</label><div class="controls"><div class="input-prepend"><span class="add-on"><i class="icon icon-black icon-book-empty"></i></span><input type="tel" pattern="(\(?\d{3}\)?[\-\s]\d{3}[\-\s]\d{4})" id="inputTel" placeholder="(011) 222 444" /><span class="help-inline">e.g:011-222-4444</span></div></div></div>
-                     <div class="control-group"><label class="control-label" for="inputRange">Range</label><div class="controls"><div class="input-prepend"><span class="add-on"><i class="icon-resize-horizontal"></i></span><input type="range" value="0" step="2" min="0" max="100" id="inputRange" onchange="outputRange.value=this.value"/></div><output name="outputRange" for="inputRange">0</output></div></div>
-                        <div class="control-group"><label class="control-label" for="inputTime">Time</label><div class="controls"><div class="input-prepend"><span class="add-on"><i class="icon-time"></i></span><input type="time" id="inputTime" /></div></div></div>
-                        <div class="control-group"><label class="control-label" for="inputDatetime">Datetime</label><div class="controls"><div class="input-prepend"><span class="add-on"><i class="icon-calendar"></i></span><input type="datetime-local" id="inputDatetime" /></div></div></div>
-                        <div class="control-group"><label class="control-label" for="inputMulti">Multi File</label><div class="controls"><div class="input-prepend"><span class="add-on"><i class="icon-picture"></i></span><input type="file" multiple id="inputMulti" name="inputMulti[]" /></div></div></div>
-                        <div class="control-group"><label class="control-label" for="inputList">List</label><div class="controls"><div class="input-prepend"><span class="add-on"><i class="icon-list"></i></span><input type="text" list="browsers" id="inputList" placeholder="List"/></div></div></div>
-                     <datalist id="browsers"><option value="Internet Explorer"><option value="Firefox"><option value="Google Chrome"><option value="Opera"><option value="Safari"></datalist>
-                  </fieldset>
-
-                  <fieldset name="fieldset-additional" disabled >
-                     <legend>More Details</legend>
-                     <div class="control-group warning"><label class="control-label" for="inputSurname">Surname</label><div class="controls"><input type="text" id="inputSurname" placeholder="Surname" disabled /></div></div>
-                     <div class="control-group error"><label class="control-label" for="inputNumber">Number</label><div class="controls"><input class="uneditable-input" type="number" id="inputNumber" /><span class="help-block">A longer block of help text that breaks onto a new line and may extend beyond one line.</span></div></div>
-                     <div class="control-group"><div class="controls"><label class="checkbox"><input type="checkbox"> Remember me</label></div></div>
-                     <div class="control-group"><div class="controls"><meter id="meter" optimum="70" value="70" min="0" max="99" low="20" high="60"><span>0</span>%</meter></div></div>
-                     <div class="control-group"><div class="controls"><progress id="progress" value="70"  max="100" ><span>0</span>%</progress></div></div>
-                  </fieldset>
-                  <div class="form-actions well well-small">
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                    <button type="button" class="btn btn-inverse">Cancel</button>
-                  </div>
-               </form>
-            </article><!--container-->
+            <article><div id='tmp'></div></article><!--container-->
          </section>
       </section>
 
@@ -101,8 +73,23 @@
             </nav>
          </section>
       </footer>
-      <section id="hiddenElements">
-         <progress id="progress" value="0"  max="100" ><span>0</span>%</progress>
-      </section>
+      <section id="hiddenElements"></section>
+      <script type="text/javascript">
+         var appCache=window.applicationCache;
+         var sideNotice=document.getElementById('sideNotice');
+         appCache.onchecking=function(e) {sideNotice.innerHTML="<div id='note0'>Checking for a new version of the application.</div>";};
+         appCache.ondownloading=function(e) {sideNotice.innerHTML+="<div id='note1'>Downloading a new offline version of the application</div>";};
+         appCache.onprogress=function(e) {if(e.lengthComputable){document.getElementById('progressBar').value=Math.round(e.loaded/e.total*100);}};
+         appCache.oncached=function(e) {sideNotice.innerHTML+="<div id='note3'>Application is available offline/cached</div>";};
+         appCache.onnoupdate=function(e) {sideNotice.innerHTML+="<div id='note4'>The application is also available offline.</div>";};
+         appCache.onobsolete=function(e) {sideNotice.innerHTML+="<div id='note5'>The application can not be updated, no manifest file was found.</div>";};
+         appCache.onerror=function(e) {sideNotice.innerHTML+="<div id='note6'>Offline version of the application not available.</div>";};
+         appCache.onupdateready=function(e) {//@todo:promt user to reload
+            if(window.applicationCache.status==window.applicationCache.UPDATEREADY && true){
+               window.applicationCache.swapCache();window.location.reload();
+            }
+            sideNotice.innerHTML+="<div id='note7'>Application update ready</div>";
+         };
+      </script>
    </body>
 </html>
