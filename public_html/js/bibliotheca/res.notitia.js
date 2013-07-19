@@ -18,7 +18,6 @@ function SET_DB(){
       var sql=_sql;
       var params=_params||[];
       db.transaction(function(trans,_msg){
-         dbSuccess.msg=dbSuccess;
          trans.executeSql(sql,params,dbSuccess,dbError);
       });
    }
@@ -43,7 +42,7 @@ function SET_DB(){
  * @version 1.6
  * @category log, success, db
  */
-dbSuccess=function(_trans,_data,_msg){
+dbSuccess=function(_trans,_data){
    console.log('Success Db transaction');
    $('#sideNotice').append("<div class='db_notice'>Successful transaction</div>");
 }
@@ -56,7 +55,7 @@ dbSuccess=function(_trans,_data,_msg){
  * @param object <var>_trans</var> the transaction variable from the db
  * @param object <var>_error</var> the error variable from the db
  */
-function dbError(_trans,_error){
+dbError=function(_trans,_error){
    console.log('Failed Db transaction');
    $('#sideNotice').append("<div class='db_notice'>"+_error.message+'</div>');
 }
