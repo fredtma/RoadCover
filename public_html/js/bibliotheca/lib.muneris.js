@@ -2,6 +2,19 @@
  * numeris is a functional set of script
  * @todo: user $.remove() to remove from DOM all generated code. $.removeData() removes $.data() use with $.detach() removes element not the handler. Check $.cache
  */
+//DEFINITION
+sessionStorage.startTime=new Date().getTime();
+sessionStorage.runTime=new Date().getTime();
+localStorage.SITE_NAME="Road Cover Title";
+localStorage.SITE_DATE='fullDate';
+localStorage.SITE_TIME='mediumTime';
+localStorage.SITE_URL='http://localhost/RoadCover/public_html/';
+localStorage.MAIL_SUPPORT='support@roadcover.co.za';
+localStorage.DB;
+localStorage.URL_IMG=localStorage.SITE_URL+'img/';
+localStorage.URL_LIB=localStorage.SITE_URL+'js/';
+localStorage.URL_JSON=localStorage.SITE_URL+'json/';
+
 /******************************************************************************/
 /**
  * similar to jquery creates an DOM element
@@ -12,8 +25,6 @@
  * @param string <var>ele</var> the name the element will be
  * @return object
  */
-var startTime=new Date().getTime();
-var runTime=new Date().getTime();
 creo=function (arr, ele, txt)
 {
    var key;
@@ -133,11 +144,13 @@ function objectSize( object ) {
  * @version 0.8
  * @category performance
  */
-function timeFrame(startTime,runTime){
+function timeFrame(_from,_total){
    endTime=new Date().getTime();
-   console.log('TimeFrame:'+endTime-runTime);
-   console.log('TimeElapse:'+endTime-startTime);
-   runTime=endTime;
+   fram=endTime-sessionStorage.runTime;
+   elapse=endTime-sessionStorage.startTime;
+   console.log('TimeFrame:'+_from+' '+fram);
+   if(_total)console.log('TimeElapse:'+_from+' '+elapse);
+   sessionStorage.runTime=endTime;
 }
 /******************************************************************************/
 /**
@@ -188,4 +201,79 @@ aNumero = function(the_str,transform)
  * @todo finish the function on this page
  * @uses file|element|class|variable|function|
  */
-
+var progress=0;
+function isOnline(){
+   var myAppCache = window.applicationCache;
+   msg=navigator.onLine?"Status: <strong class='text-success'>Online</strong>":"Status: Working <strong class='txt-error'>Offline</strong>";
+   msg+=window.localStorage?", Local <strong class='text-success'>Storage</strong>":", No Local <strong class='text-error'>Storage</strong>";
+   msg+=window.sessionStorage?", Session <strong class='text-success'>Storage</strong>":", No Session <strong class='text-error'>Storage</strong>";
+   switch (myAppCache.status) {
+     case myAppCache.UNCACHED:msg+=', UNCACHED'; break;//status 0 no cache exist
+     case myAppCache.IDLE:msg+=', IDLE'; break;//status 1 most common, all uptodate
+     case myAppCache.CHECKING:msg+=', CHECKING';break;//status 2 browser reading manifest
+     case myAppCache.DOWNLOADING:msg+=', DOWNLOADING';break;//status 3 new or updated resource dwlding
+     case myAppCache.UPDATEREADY:msg+=', UPDATEREADY';break;//status 4 file has been updated
+     case myAppCache.OBSOLETE:msg+=', OBSOLETE';break;//status 5 missing manifest, re dwld
+     default: msg+=', UKNOWN CACHE STATUS';break;
+   };
+   $('#statusbar').html(msg);
+   var appCache = window.applicationCache;
+//   console.log(appCache);
+   appCache.addEventListener('checking', function(e) {
+      $('#side-notice').html("Checking for application update<BR>");
+   }, false);
+   appCache.addEventListener('cached', function(e) {
+      $('#side-notice').html("Application cached<BR>");
+   }, false);
+   appCache.addEventListener('noupdate', function(e) {
+      $('#side-notice').html("No application update found<BR>");
+   }, false);
+   appCache.addEventListener('obsolete', function(e) {
+      $('#side-notice').html("Application obsolete<BR>");
+   }, false);
+   appCache.addEventListener('error', function(e) {
+      $('#side-notice').html("Application cache error<BR>");
+   }, false);
+   appCache.addEventListener('downloading', function(e) {
+      $('#side-notice').html("Downloading application update<BR>");
+   }, false);
+   appCache.addEventListener('progress', function(e) {
+      $('#progress').attr('value',progress+10);
+      $('#side-notice').html("Application Cache progress<BR>");
+   }, false);
+   appCache.addEventListener('updateready', function(e) {
+      forceRefresh(false);
+      $('#side-notice').html("Application update ready<BR>");
+   }, false);
+   $('#progress').hide();
+}
+/******************************************************************************/
+/**
+ * forces the manifest file to reload and refresh
+ * @author fredtma
+ * @version 0.2
+ * @category manifest
+ */
+function forceRefresh(_refresh){
+   if(window.applicationCache.status==window.applicationCache.UPDATEREADY && _refresh===true){
+      window.applicationCache.swapCache();
+      window.location.reload();
+   }
+}
+/******************************************************************************/
+/**
+ * used to measure script execution time
+ *
+ * It will verify all the variable sent to the function
+ * @author fredtma
+ * @version 0.5
+ * @category iyona
+ * @gloabl aboject $db
+ * @param array $__theValue is the variable taken in to clean <var>$__theValue</var>
+ * @see get_rich_custom_fields(), $iyona
+ * @return void|bool
+ * @todo finish the function on this page
+ * @uses file|element|class|variable|function|
+ */
+isOnline();
+setInterval(isOnline,5000);

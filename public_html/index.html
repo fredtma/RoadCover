@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html manifest="application.manifest">
    <head>
       <title>Road Cover</title>
       <meta charset="utf-8" />
@@ -20,6 +20,7 @@
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bibliotheca/lib.muneris.js"></script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bibliotheca/lib.tempus.js"></script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bibliotheca/res.lambda.js"></script>
+   <script data-cjsexec=true type="text/cjs" data-cjssrc="js/bibliotheca/res.forma.js"></script>
    <script data-cjsexec=true type="text/cjs" data-cjssrc="js/agito/index.js"></script>
    </head>
    <body>
@@ -54,6 +55,7 @@
          </section><!--left aside-->
          <section id="body" class="body _box">
             <article>
+               <div id='tmp'></div>
                <form class="form-horizontal" id="form-user" >
                   <fieldset name="fieldset-minimum">
                      <legend>Profile Page</legend>
@@ -95,9 +97,12 @@
                <span class="brand white" id="copyRight">&copy; 2013 RoadCover - All right reserved.</span>
                <!--ingenero-->
                <form class="navbar-search pull-left" id="frm_search"><input type="search" class="search-query" placeholder="Search"></form>
-					<span class='statusbar' contenteditable="true">Status:</span>
+					<span class='statusbar' id="statusbar" contenteditable="true">Status:</span>
             </nav>
          </section>
       </footer>
+      <section id="hiddenElements">
+         <progress id="progress" value="0"  max="100" ><span>0</span>%</progress>
+      </section>
    </body>
 </html>

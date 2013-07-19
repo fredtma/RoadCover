@@ -22,6 +22,20 @@ function SET_FORM(_name,_class,_label){
    this.frmLabel;
    this.frmName;
    this.Obj=[];
+   this.defaultFields={
+      "text":{"type":"text"},
+      "email":{"type":"email"},
+      "password":{"type":"password","required":""},
+      "url":{"type":"url","placeholder":"http://www.example.com"},
+      "date":{"type":"date"},
+      "datetime":{"type":"datetime-local"},
+      "time":{"type":"time"},
+      "range":{"type":"range","min":"0","max":"100","step":"1"},
+      "color":{"type":"color"},
+      "tel":{"type":"tel","pattern":"(\(?\d{3}\)?[\-\s]\d{3}[\-\s]\d{4})"},
+      "file":{"type":"file","multiple":""},
+      "list":{"type":"text","list":"theList"},
+   };
    /*
     * used to pass variable that will commonly be used everywhere
     * @param {object} _obj the object
@@ -41,8 +55,8 @@ function SET_FORM(_name,_class,_label){
       if (typeof(_obj.items)==='array'||typeof(_obj.items)==='object')
       {
          $.each(_obj.items, function(key1, item){
-            if(!item.index){$.each(item,function(table,field){_obj.father(table,field);})}
-            else{_obj.mother(key1,item);};
+            if(key1!='form'){$.each(item,function(table,field){_obj.father(table,field);})}
+            else if(_obj.mother){_obj.mother(key1,item);};
          });/*endeach*/
       }
    }
@@ -55,36 +69,80 @@ function SET_FORM(_name,_class,_label){
       if(this.Obj.addTo) $(this.Obj.addTo).append(_obj);
       else if(this.Obj.next) $(this.Obj.next).after(_obj);
    }
+
    /*
     * The main script will get and set all the fields
     * @param {obejcts} <var>_fields</var> setting of the form has the form name, class, fields, title
     * @returns {undefined}
     */
-   this.setFields=function(_fields){
-      this.name=_fields.index.name;
-      this.title=_fields.index.title?_fields.index.title:aNumero(_fields.index.name,true);
-      this.frmClass=_fields.index.class;
-      this.frmLabel=_fields.index.label?_fields.index.label:true;
+   this.setAlpha=function(_fields){
+      this.name=_fields.form.field.name;
+      this.frmLabel=mainLabel=_fields.form.label?_fields.form.label:true;
       this.frmName='frm_'+this.name;
+      theDefaults=this.defaultFields;
+      //FORM
+      form=_fields.form.field;
+      form.id=this.frmName;
+      form=creo(form,'form');
+      if(_fields.form.legend){legend=creo({},'legend');legend.appendChild(document.createTextNode(_fields.form.legend.txt))}
+      if(_fields.form.fieldset){fieldset=creo(_fields.form.fieldset,'fieldset');if(legend)fieldset.appendChild(legend);form.appendChild(fieldset);container=fieldset;}
+      else container=form;
       this.setObject({"items":_fields,"father":function(_key,_field){
             theField=_field.field;
-            theName=_field.name?_field.name:_key;
+            theField.id=_key;
+            theName=theField.name?theField.name:_key;
+            //FIELDSET
+            if(_field.legend){legend=creo({},'legend');legend.appendChild(document.createTextNode(_field.legend.txt))}
+            if(_field.fieldset){fieldset=creo(_field.fieldset,'fieldset');if(legend)fieldset.appendChild(legend);form.appendChild(fieldset);container=fieldset;}
+            div=creo({"clss":"control-group"},'div');
+            //LABEL
             theLabel=_field.title?_field.title:aNumero(theName, true);
-            label=(_field.addLabel)?_field.addLabel:this.frmLabel;
-            if(label)label=creo({"clss":control-label,"forr":_key},'label');
+            label=null;
+            label=(isset(_field.addLabel))?_field.addLabel:mainLabel;
+            if(label) {label=creo({"clss":"control-label","forr":_key},'label'); label.appendChild(document.createTextNode(theLabel)); div.appendChild(label);}
+            div1=creo({"clss":"controls"},'div');
+            //PLACEHODER
             placeHolder=((_field.place)===true?theLabel:(_field.place)?_field.place:false);
             if(placeHolder!==false) theField.placeholder=placeHolder;
-
+            //INNER DIV
+            if(!theField.type)theField.type='text';
+            tmpType=theField.type;
+            theField=$.extend({},theDefaults[tmpType],theField);
+            //input with items will not get icons
+            input=(!_field.items)?creo(theField,'input'):formInput(_key,theField,_field.items,div1);
             if(_field.icon){
-               i=creo(_field.icon,'i');
-               span=creo({"clss":"add-on"},'span');span.appendChild(i);
-               div=creo({"clss":"input-prepend"},'div');div.appendChild(input);
-            }
-         }
-      });
+               i=creo({"clss":_field.icon},'i');
+               span=creo({"clss":"add-on"},'span');
+               div2=creo({"clss":"input-prepend"},'div');
+               span.appendChild(i);div2.appendChild(span);div2.appendChild(input);div1.appendChild(div2);
+            }else if(input.tagName!='label'){
+               div1.appendChild(input);
+            }//endif
+            div.appendChild(div1);container.appendChild(div);
+         }//end father
+      });//end setObject
+      form.appendChild(this.setButton(_fields.form.button));
+      this.placeObj(form);
+      return form;
    }
-   if(this instanceof SET_DISPLAY)return this;
-   else return new SET_DISPLAY();
+   /*
+    *
+    * @param {object} <var>_btn</var> the set of buttons to be added
+    * @param {string} <var>_layout</var> the button layout option
+    * @returns {object} return the form with appended buttons
+    * @todo add a new layout
+    */
+   this.setButton=function(_btn,_layout){
+      switch(_layout){
+         default:
+            div=creo({"clss":"form-actions well well-small"},'div');
+            $.each(_btn,function(id,btn){button=creo(btn,'input');div.appendChild(button);div.appendChild(document.createTextNode('   '));});
+            return div;
+            break;
+      }//end switch
+   }
+   if(this instanceof SET_FORM)return this;
+   else return new SET_FORM();
 }
 /******************************************************************************/
 /**
@@ -109,7 +167,7 @@ function create_select (ele, create, the_list, clss, empty)
    if (create)
    {
       edit_element    = { id:ele, name:ele, clss:clss, onclick:''};
-      select_field   = create_element(edit_element,'select');
+      select_field   = creo(edit_element,'select');
    }/*end if*/
    optGrp = select_field.getElementsByTagName('optgroup');
    if (optGrp.length > 0 ) for (var i=optGrp.length-1;i>=0;i--) select_field.removeChild(optGrp[i]);
@@ -126,6 +184,49 @@ function create_select (ele, create, the_list, clss, empty)
    }/*end for*/
    return select_field;
 }/*end function*/
+/******************************************************************************/
+/**
+ * creates a form input field
+ * @author fredtma
+ * @version 2.5
+ * @category form, dynamic, input
+ * @param string <var>_key</var> the name of the field id
+ * @param object <var>_field</var> the data containing the field
+ * @param array <var>_items</var> the list of items value
+ * @param object <var>_holder</var> the DOM element to insert into
+ * @return object
+ */
+function formInput(_key,_field,_items,_holder){
+   theType=_field.type;
+   l=_items.length;
+   cnt=0;
+   switch(theType){
+      case 'bool':
+         for(x=0;x<2;x++){
+            input=creo({"id":_key+'-'+cnt,"name":_key+"[]","value":x,"type":"radio"},'input');
+            label=creo({"forr":_key+'-'+cnt,"clss":"checkbox inline"},'label');
+            label.appendChild(input);
+            label.appendChild(document.createTextNode(x?' Yes':' No'));
+            ele=label;
+            _holder.appendChild(label);
+            cnt++;
+         }break;
+      case 'check':
+      case 'radio':
+         $.each(_items,function(id,value){
+            input=creo({"id":_key+'-'+cnt,"name":_key+"[]","value":id,"type":theType},'input');
+            label=creo({"forr":_key+'-'+cnt,"clss":"checkbox inline"},'label');
+            label.appendChild(input);
+            label.appendChild(document.createTextNode(' '+value));
+            _holder.appendChild(label);
+            ele=label;
+            cnt++;
+         });break;
+      case 'select': ele=create_select (_key, true, _items, _field.clss);break;
+      default: ele=creo(_field,'input'); break;
+   }
+   return ele;
+}
 /******************************************************************************/
 /**
  * used to measure script execution time

@@ -1,10 +1,17 @@
 {
-   "index": {"title":"Profile Page","name":"profile"},
+   "form": {
+      "field":{"clss":"form-horizontal","name":"profile"},
+      "fieldset":{"name":"admin-profile"},
+      "legend":{"txt":"Administrator Profile"},
+      "button":{"submit":{"value":"Save Changed","type":"submit","clss":"btn btn-primary"},"cancel":{"value":"Cancel","type":"button","clss":"btn btn-inverse"}}
+   },
    "users":{
       "username":{"valid":["unique"],"icon":"icon-user","place":true,"field":{"required":""}},
       "password":{"icon":"icon-lock","field":{"type":"password","required":""}},
       "firstname":{"icon":"icon-tag","place":true,"field":{"required":""}},
       "lastname":{"icon":"icon-tags","place":true,"field":{"required":""}},
-      "email":{"icon":"icon-envelope","place":true,"field":{"type":"email","required":""}}
+      "email":{"icon":"icon-envelope","place":true,"field":{"type":"email","required":""}},
+      "gender":{"field":{"type":"radio","required":""},"items":["Male","Female"]},
+      "email2":{"field":{"type":"tel","required":""},"fieldset":{"name":"admin-profile","disabled":""},"legend":{"txt":"Disabled Profile"}}
    }
 }

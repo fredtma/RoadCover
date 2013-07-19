@@ -1,0 +1,52 @@
+CACHE MANIFEST
+
+NETWORK:
+#always from the network
+index.html
+css/main.css
+css/icons.css
+js/control.min.js
+js/libs/jquery-1.9.0/jquery.min.js
+js/bootstrap.min.js
+#make this one always on
+js/bibliotheca/lib.muneris.js
+js/bibliotheca/lib.tempus.js
+js/bibliotheca/res.lambda.js
+js/bibliotheca/res.forma.js
+js/agito/index.js
+json/profile.json
+http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:700,400
+http://fonts.googleapis.com/css?family=Vollkorn:400italic,700italic
+http://themes.googleusercontent.com/static/fonts/yanonekaffeesatz/v4/YDAoLskQQ5MOAgvHUQCcLRTHiN2BPBirwIkMLKUspj4.woff
+http://themes.googleusercontent.com/static/fonts/yanonekaffeesatz/v4/We_iSDqttE3etzfdfhuPRWwXwFHHZlCwprwJOQ-Se7k.woff
+http://themes.googleusercontent.com/static/fonts/vollkorn/v3/Oiz0tNwvC-Nd29SBQWfWTBsxEYwM7FgeyaSgU71cLG0.woff
+http://themes.googleusercontent.com/static/fonts/vollkorn/v3/KNiAlx6phRqXCwnZZG51JAFhaRv2pGgT5Kf0An0s4MM.woff
+
+CACHE:
+img/fav.png
+img/logo.gif
+img/bg04.png
+img/glyphicons-halflings.png
+img/glyphicons-halflings-white.png
+img/opa-icons-black16.png
+img/opa-icons-color16.png
+img/opa-icons-darkgray16.png
+img/opa-icons-gray16.png
+img/opa-icons-white16.png
+img/gradient.png
+
+FALLBACK:
+# while offline
+index.html
+css/main.css
+css/icons.css
+js/control.min.js
+js/libs/jquery-1.9.0/jquery.min.js
+js/bootstrap.min.js
+#make this one always on
+js/bibliotheca/lib.muneris.js
+js/bibliotheca/lib.tempus.js
+js/bibliotheca/res.lambda.js
+js/bibliotheca/res.forma.js
+js/agito/index.js
+json/profile.json
