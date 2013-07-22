@@ -15,6 +15,7 @@
  * @category object, form
  * @return object
  * @see placeObj|
+ * @todo add hidden
  */
 function SET_FORM(_name,_class,_label){
    this.name;
@@ -55,7 +56,7 @@ function SET_FORM(_name,_class,_label){
       if (typeof(_obj.items)==='array'||typeof(_obj.items)==='object')
       {
          $.each(_obj.items, function(key1, item){
-            if(key1!='form'){$.each(item,function(table,field){_obj.father(table,field);})}
+            if(key1=='fields'){$.each(item,function(table,field){_obj.father(table,field);})}
             else if(_obj.mother){_obj.mother(key1,item);};
          });/*endeach*/
       }
@@ -136,7 +137,7 @@ function SET_FORM(_name,_class,_label){
       switch(_layout){
          default:
             div=creo({"clss":"form-actions well well-small"},'div');
-            $.each(_btn,function(id,btn){button=creo(btn,'input');div.appendChild(button);div.appendChild(document.createTextNode('   '));});
+            $.each(_btn,function(id,btn){btn.id=id;button=creo(btn,'input');div.appendChild(button);div.appendChild(document.createTextNode('   '));});
             return div;
             break;
       }//end switch

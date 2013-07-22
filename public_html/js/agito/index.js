@@ -40,16 +40,22 @@ $('#tab-system section').append(menuSearch);
 username="Frederick Tshimanga"
 mother={"clss":"dropdown-menu bottom-up pull-right","children":{"footContact":{"href":"#","txt":"Contact us"},"footHelp":{"href":"#","txt":"Help"},"footAbout":{"href":"#","txt":"About us"}}};
 roadCover._Set({"next":"#copyRight"}).setList({"clss":"nav","items":{"userName":{"href":"#","txt":username},"sysAbout":{"href":"#","clss1":"dropdown","txt":"About Us","clss2":"dropdown-toggle","data-toggle":"dropdown","caret":"caret bottom-up","sub":mother},"userOut":{"href":"#","txt":"Logout"} }});
-//FROM
+//FORM
 timeFrame('form',true);
 $.getJSON("json/profile.json",findJSON);
 function findJSON(data){
    profileForm = new SET_FORM();
    profileForm._Set("#tmp").setAlpha(data);
+   sessionStorage.active=JSON.stringify(data);
 }
 //DB SETUP
-creoDB=new SET_DB();
+var creoDB=new SET_DB();
+creoDB.alpha();
+//   $('#frm_profile').submit(function(){alert('hello');return false;});
+//   $('#submit_profile').click(function(e){alert('world');creosDB.form('#frm_profile');return false;});
+$('#tmp').on('click','#submit_profile',function(e){try {creoDB.alpha(1);}catch(err){console.log(err.message);return false;}return false;});
+
 console.log(objectSize($.cache));
 //RESET
-roadCover=null;menuAddr=null;menuDisplay=null;username=null;mother=null;
+roadCover=null;menuAddr=null;menuDisplay=null;username=null;mother=null;profileForm=null;//creoDB=null;
 var JSONprofile;

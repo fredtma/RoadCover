@@ -14,50 +14,139 @@
  */
 function SET_DB(){
    var db=null;
-   this.creoAgito=function(_sql,_params,_msg){
+   this.mensaActive=['profile'];
+   this.creoAgito=function(_sql,_params,_msg,callback){
       var sql=_sql;
+      var msg=_msg;
       var params=_params||[];
-      db.transaction(function(trans,_msg){
-         trans.executeSql(sql,params,dbSuccess,dbError);
+//      if(!db) db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
+      db.transaction(function(trans){
+         trans.executeSql(sql,params,function(trans,results){
+            console.log('Success DB transaction: '+msg);
+            $('#sideNotice').append("<div class='db_notice'>Successful transaction: "+msg+"</div>");
+            if(callback)callback(results);
+         },function(_trans,_error){
+            console.log('Failed DB transaction: '+msg);
+            $('#sideNotice').append("<div class='db_notice text-error'>"+_error.message+'</div>');
+         });
       });
    }
 
    if(!db){
       db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
       localStorage.DB=db;
-      sql="CREATE TABLE IF NOT EXISTS users (id INTERGER PRIMARY KEY, username VARCHAR(90), password TEXT, firstname TEXT, lastname TEXT, email TEXT, gender TEXT)";
-      this.creoAgito(sql,[],'Table users created');
+//      this.creoAgito("COMMIT",[],'commit');
+//      sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL)";
+//      this.creoAgito(sql,[],'Table users creation');
       if(!localStorage.DB){
+         sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL)";
+         this.creoAgito(sql,[],'Table users creation');
          this.creoAgito("CREATE INDEX user_username ON users(username)");
          this.creoAgito("CREATE INDEX user_email ON users(email)");
       }
    }
+   /*
+    * this function will extract info from the form and determine the form action
+    * @param {string} _form the name of the form to be setup
+    * @param {string} _mensa table name, takent from _form if not mensioned
+    * @param {integer} _actum transaction type to remove the record
+    * @returns void
+    * @todo clean it up
+    */
+   this.forma=function(_actum,_iota,callback){
+      //protect and accept only valid table
+      eternal=JSON.parse(sessionStorage.active);
+      if(!eternal){console.log("not found json");return false;}
+      form='#'+eternal.form.field.id||'#frm_'+eternal.form.field.name;
+      iota=_iota;
+      iyona=eternal.mensa||form.substr(4);
+      if(!this.mensaActive.indexOf(iyona)){console.log("not found mensa");return false;}
+      var quaerere=[],params=[],set=[];
+
+      switch(_actum){
+         case 0:break;
+         case 1:
+            ubi='';
+            actum='INSERT INTO '+iyona+' (';msg='Inserted '+iyona;break;
+         case 2:
+            ubi=' WHERE id='+iota;
+            actum='UPDATE '+iyona+' SET';msg='Updated '+iyona;break;
+         case3: break;
+         default:
+            _actum=3;
+            actum='SELECT';
+            ubi=iota?' WHERE id='+iota+' LIMIT 5':' LIMIT 5';
+            ubi=' FROM '+iyona+ubi;
+            msg='Selected '+iyona;break;
+      }
+      if(_actum!=0){
+         x=0;
+         iota=iota||$(form).data('iota');
+         $.each(eternal.fields,function(field,setting){
+            val=$(form+' #'+field).val()||$(form+' [name^='+field+']:checked').val();
+            if(isset(val)){
+               quaerere[x]=(iota)?field+'= ?':field;
+               set[x]='?';
+               params[x]=val;
+               x++;
+            } else if((_actum==3)) {//select fields
+               quaerere[x]=field;
+               x++;
+            }
+         });
+
+         if(quaerere.length>0){
+            ubi=(_actum!=1)?ubi:') VALUES ('+set.valueOf()+')';
+            if(_actum==3)quaerere.push('id');
+            quaerere=actum+' '+quaerere.valueOf()+ubi;
+            this.creoAgito(quaerere,params,msg,callback);
+         }
+         console.log(quaerere);
+      }else{
+         //@todo:remove record
+      }
+   }
+   /*
+    * the successful return function
+    * @see this.forma
+    */
+   this.alpha=function(_actum,_iota){
+      this.forma(_actum,_iota,function(results){
+//         console.log(_trans);
+//         console.log(_result);
+         eternal=JSON.parse(sessionStorage.active);
+         if(!eternal){console.log("not found json");return false;}
+         form='#'+eternal.form.field.id||'#frm_'+eternal.form.field.name;
+         iyona=eternal.mensa||form.substr(4);
+         display=$('#displayMensa');
+//         iota=results.insertId?results.insertId:$(form).data('iota');
+//         $(form).data('iota',iota);
+         len=results.rows.length;
+         if(display.data('mensa')!=iyona){
+            display.data('mensa',iyona);//prevent this to fill with the same data table list
+            for(x=0;x<len;x++){
+               name='';
+               row=results.rows.item(x);
+               li=creo({'data-iota':row['id']},'li');
+               a=creo({'href':'#profile'},'a');
+               $.each(eternal.fields,function(k,v){if(v.header)name+=row[k]+' '});
+               txt=document.createTextNode(name);
+               a.onclick=function(e){e.preventDefault(); i=$(this).parent().data('iota');f=new SET_DB(); f.alpha(3,i)}
+               a.appendChild(txt);li.appendChild(a);
+               i=creo({'clss':'icon icon-color icon-trash'},'i');
+               a=creo({'href':'#'},'a');a.appendChild(i);li.appendChild(a);
+               display.append(li);
+            }
+         }
+         if(len==1){
+            row=results.rows.item(0);
+            $.each(eternal.fields,function(k,v){$(form+' #'+k).val(row[k]);});
+         }
+      });
+   }
+
    if(this instanceof SET_DB)return this;
    else return new SET_DB();
-}
-/******************************************************************************/
-/**
- * logs a successfull message from the db
- * @author fredtma
- * @version 1.6
- * @category log, success, db
- */
-dbSuccess=function(_trans,_data){
-   console.log('Success Db transaction');
-   $('#sideNotice').append("<div class='db_notice'>Successful transaction</div>");
-}
-/******************************************************************************/
-/**
- * logs an error from the db
- * @author fredtma
- * @version 1.5
- * @category db, error, log
- * @param object <var>_trans</var> the transaction variable from the db
- * @param object <var>_error</var> the error variable from the db
- */
-dbError=function(_trans,_error){
-   console.log('Failed Db transaction');
-   $('#sideNotice').append("<div class='db_notice'>"+_error.message+'</div>');
 }
 /******************************************************************************/
 /**

@@ -1,17 +1,17 @@
 {
    "form": {
-      "field":{"clss":"form-horizontal","name":"profile"},
+      "field":{"clss":"form-horizontal","name":"profile","data-iota":""},
       "fieldset":{"name":"admin-profile"},
       "legend":{"txt":"Administrator Profile"},
-      "button":{"submit":{"value":"Save Changed","type":"submit","clss":"btn btn-primary"},"cancel":{"value":"Cancel","type":"button","clss":"btn btn-inverse"}}
+      "button":{"submit_profile":{"value":"Save Changed","type":"submit","clss":"btn btn-primary"},"cancel_profile":{"value":"Cancel","type":"button","clss":"btn btn-inverse"}}
    },
-   "users":{
+   "mensa":"users",
+   "fields":{
       "username":{"valid":["unique"],"icon":"icon-user","place":true,"field":{"required":""}},
       "password":{"icon":"icon-lock","field":{"type":"password","required":""}},
-      "firstname":{"icon":"icon-tag","place":true,"field":{"required":""}},
-      "lastname":{"icon":"icon-tags","place":true,"field":{"required":""}},
+      "firstname":{"icon":"icon-tag","header":true,"place":true,"field":{"required":""}},
+      "lastname":{"icon":"icon-tags","header":true,"place":true,"field":{"required":""}},
       "email":{"icon":"icon-envelope","place":true,"field":{"type":"email","required":""}},
-      "gender":{"field":{"type":"radio","required":""},"items":["Male","Female"]},
-      "email2":{"field":{"type":"tel","required":""},"fieldset":{"name":"admin-profile","disabled":""},"legend":{"txt":"Disabled Profile"}}
+      "gender":{"field":{"type":"radio","required":""},"items":["Male","Female"]}
    }
 }
