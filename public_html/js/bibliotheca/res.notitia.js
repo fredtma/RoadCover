@@ -23,11 +23,11 @@ function SET_DB(){
       db.transaction(function(trans){
          trans.executeSql(sql,params,function(trans,results){
             console.log('Success DB transaction: '+msg);
-            $('#sideNotice').append("<div class='db_notice'>Successful transaction: "+msg+"</div>");
+            $('#sideNotice .db_notice').html("Successful transaction: "+msg);
             if(callback)callback(results);
          },function(_trans,_error){
             console.log('Failed DB transaction: '+msg);
-            $('#sideNotice').append("<div class='db_notice text-error'>"+_error.message+'</div>');
+            $('#sideNotice .db_notice').html("<div class='text-error'>"+_error.message+'</div>');
          });
       });
    }
@@ -71,7 +71,7 @@ function SET_DB(){
          case 2:
             ubi=' WHERE id='+iota;
             actum='UPDATE '+iyona+' SET';msg='Updated '+iyona;break;
-         case3: break;
+         case 3:
          default:
             _actum=3;
             actum='SELECT';
@@ -84,7 +84,7 @@ function SET_DB(){
          iota=iota||$(form).data('iota');
          $.each(eternal.fields,function(field,setting){
             val=$(form+' #'+field).val()||$(form+' [name^='+field+']:checked').val();
-            if(isset(val)){
+            if(isset(val) && _actum!=3){
                quaerere[x]=(iota)?field+'= ?':field;
                set[x]='?';
                params[x]=val;
@@ -138,9 +138,13 @@ function SET_DB(){
                display.append(li);
             }
          }
+
          if(len==1){
             row=results.rows.item(0);
+            console.log(form);
+            $(form).data('iota',row['id']);
             $.each(eternal.fields,function(k,v){$(form+' #'+k).val(row[k]);});
+            $(form+' #submit_'+eternal.form.name).click(function(){alert('alert');});
          }
       });
    }

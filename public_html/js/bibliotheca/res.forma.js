@@ -67,8 +67,8 @@ function SET_FORM(_name,_class,_label){
     * @returns {object}
     */
    this.placeObj=function(_obj){
-      if(this.Obj.addTo) $(this.Obj.addTo).append(_obj);
-      else if(this.Obj.next) $(this.Obj.next).after(_obj);
+      if(this.Obj.addTo) document.querySelector(this.Obj.addTo).appendChild(_obj);
+      else if(this.Obj.next) document.querySelector(this.Obj.next).parentNode.insertBefore(_obj, document.querySelector(this.Obj.next).nextSibling);
    }
 
    /*

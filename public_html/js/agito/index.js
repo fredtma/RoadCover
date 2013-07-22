@@ -49,6 +49,8 @@ function findJSON(data){
    sessionStorage.active=JSON.stringify(data);
 }
 //DB SETUP
+db_notice=creo({'clss':'db_notice'},'div');
+$('#sideNotice').append(db_notice);
 var creoDB=new SET_DB();
 creoDB.alpha();
 //   $('#frm_profile').submit(function(){alert('hello');return false;});
