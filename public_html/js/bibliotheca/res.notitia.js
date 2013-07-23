@@ -34,11 +34,14 @@ function SET_DB(){
 
    if(!db){
       db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
-      localStorage.DB=db;
-//      this.creoAgito("COMMIT",[],'commit');
-//      sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL)";
-//      this.creoAgito(sql,[],'Table users creation');
+      group="CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, desc TEXT, creation TEXT)";
+      this.creoAgito("CREATE INDEX groups_name ON groups(name)");
+      this.creoAgito("ALTER TABLE users ADD COLUMN creation TEXT");
+      link="CREATE TABLE IF NOT EXISTS link_users_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER, group INTEGER, creation TEXT)";
+      this.creoAgito("CREATE INDEX link_usergroup_user ON link_users_groups(user)");
+      this.creoAgito("CREATE INDEX link_usergroup_group ON link_users_groups(group)");
       if(!localStorage.DB){
+         localStorage.DB=db;
          sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL)";
          this.creoAgito(sql,[],'Table users creation');
          this.creoAgito("CREATE INDEX user_username ON users(username)");
@@ -55,16 +58,20 @@ function SET_DB(){
     */
    this.forma=function(_actum,_iota,callback){
       //protect and accept only valid table
-      eternal=JSON.parse(sessionStorage.active);
+      if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);
+      else eternal=null;
       if(!eternal){console.log("not found json");return false;}
       form='#'+eternal.form.field.id||'#frm_'+eternal.form.field.name;
       iota=_iota;
       iyona=eternal.mensa||form.substr(4);
       if(!this.mensaActive.indexOf(iyona)){console.log("not found mensa");return false;}
       var quaerere=[],params=[],set=[];
+      limit=localStorage.LIMIT||5;
 
       switch(_actum){
-         case 0:break;
+         case 0:
+            actum='DELETE FROM '+iyona+' WHERE id=?';
+            this.creoAgito(actum,[_iota],'Deleted record from '+iyona,callback);break;
          case 1:
             ubi='';
             actum='INSERT INTO '+iyona+' (';msg='Inserted '+iyona;break;
@@ -75,16 +82,18 @@ function SET_DB(){
          default:
             _actum=3;
             actum='SELECT';
-            ubi=iota?' WHERE id='+iota+' LIMIT 5':' LIMIT 5';
+            ubi=iota?' WHERE id='+iota+' LIMIT '+limit:' LIMIT '+limit;
             ubi=' FROM '+iyona+ubi;
             msg='Selected '+iyona;break;
       }
       if(_actum!=0){
          x=0;
          iota=iota||$(form).data('iota');
+         console.log('iota:'+$(form).data('iota'));
          $.each(eternal.fields,function(field,setting){
             val=$(form+' #'+field).val()||$(form+' [name^='+field+']:checked').val();
-            if(isset(val) && _actum!=3){
+            if(_actum!=3){
+               if(!val) {quaerere=[];$('#sideNotice .db_notice').html('<div class="text-error">Missing '+field+'</div>');$('.control-group.'+field).addClass('error'); return false;}//@todo add validation, this is manual validation
                quaerere[x]=(iota)?field+'= ?':field;
                set[x]='?';
                params[x]=val;
@@ -94,34 +103,34 @@ function SET_DB(){
                x++;
             }
          });
-
          if(quaerere.length>0){
-            ubi=(_actum!=1)?ubi:') VALUES ('+set.valueOf()+')';
+            $('.control-group.error').removeClass('error');
+            ubi=(_actum!=1)?ubi:') VALUES ('+set.toString()+')';
             if(_actum==3)quaerere.push('id');
-            quaerere=actum+' '+quaerere.valueOf()+ubi;
+            quaerere=actum+' '+quaerere.toString()+ubi;
             this.creoAgito(quaerere,params,msg,callback);
          }
-         console.log(quaerere);
-      }else{
-         //@todo:remove record
       }
+      console.log(quaerere);
    }
    /*
     * the successful return function
     * @see this.forma
     */
    this.alpha=function(_actum,_iota){
+      fieldDisplay=this.fieldDisplay;
       this.forma(_actum,_iota,function(results){
 //         console.log(_trans);
-//         console.log(_result);
-         eternal=JSON.parse(sessionStorage.active);
+         console.log(results);
+         if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);
+         else eternal=null;
          if(!eternal){console.log("not found json");return false;}
          form='#'+eternal.form.field.id||'#frm_'+eternal.form.field.name;
          iyona=eternal.mensa||form.substr(4);
          display=$('#displayMensa');
 //         iota=results.insertId?results.insertId:$(form).data('iota');
-//         $(form).data('iota',iota);
          len=results.rows.length;
+         //ASIDE
          if(display.data('mensa')!=iyona){
             display.data('mensa',iyona);//prevent this to fill with the same data table list
             for(x=0;x<len;x++){
@@ -129,26 +138,74 @@ function SET_DB(){
                row=results.rows.item(x);
                li=creo({'data-iota':row['id']},'li');
                a=creo({'href':'#profile'},'a');
-               $.each(eternal.fields,function(k,v){if(v.header)name+=row[k]+' '});
+               name=fieldDisplay('row',row,true).join(' ');
                txt=document.createTextNode(name);
-               a.onclick=function(e){e.preventDefault(); i=$(this).parent().data('iota');f=new SET_DB(); f.alpha(3,i)}
+               a.onclick=function(e){e.preventDefault(); i=$(this).parent().data('iota');creoDB.alpha(3,i)}
                a.appendChild(txt);li.appendChild(a);
                i=creo({'clss':'icon icon-color icon-trash'},'i');
                a=creo({'href':'#'},'a');a.appendChild(i);li.appendChild(a);
+               a.onclick=function(e){e.preventDefault(); i=$(this).parent().data('iota');creoDB.alpha(0,i); $(this).parent().hide();}
                display.append(li);
             }
+            $('#sideBot h3 a').click(function(e){
+               e.preventDefault();
+               $(form+' #submit_'+eternal.fields[0]);
+               for (first in eternal.fields)break;
+               $(form+' #'+first).focus();
+               $(form+' #submit_'+eternal.form.field.name)[0].onclick=function(e){e.preventDefault();creoDB.alpha(1);};
+               $(form).data('iota',0);
+               $(':input',form).not(':button, :submit, :reset, :hidden, :checkbox, :radio').val('');
+               $('type[checkbox],type[radio]',form).prop('checked',false).prop('selected',false);
+            });
          }
-
+         //FORM
          if(len==1){
             row=results.rows.item(0);
-            console.log(form);
             $(form).data('iota',row['id']);
-            $.each(eternal.fields,function(k,v){$(form+' #'+k).val(row[k]);});
-            $(form+' #submit_'+eternal.form.name).click(function(){alert('alert');});
+            fieldDisplay('form',row);
+            $(form+' #submit_'+eternal.form.field.name)[0].onclick=function(e){e.preventDefault();creoDB.alpha(2,row['id']);};//make the form to become update
+            $(form+' #cancel_'+eternal.form.field.name).click(function(){});//@todo
+         }
+         //UPDATE
+         if(_actum===2){
+            name='';
+            name=fieldDisplay('list',null,true).join(' ');
+//            $.each(eternal.fields,function(k,v){if(v.header){name+=$(form+' #'+k).val()+' ';}});
+            $('#displayMensa>li[data-iota='+_iota+']>a:first-child').html(name).addClass('text-success');
          }
       });
    }
-
+   /*
+    *
+    * @param {obeject} <var>_source</var> the source of the object
+    * @param {string} <var>_form</var> the name of the form
+    * @param {bool} <var>_head</var> only the head to be displayed
+    * @returns {array} the list of header
+    * @todo add radio and check return
+    */
+   this.fieldDisplay=function(_from,_source,_head){
+      f=eternal.fields;
+      c=0;
+      _return=[];
+      $.each(f,function(key,property){
+         type=property.field.type;
+         if(_head && !property.header) return true;
+         switch(type){
+            case 'radio':
+            case 'check':
+               if(_from==='form')$(form+' [name^='+key+']').each(function(){if($(this).prop('value')==_source[key])$(this).prop('checked',true);});
+               if(_from==='list')$(form+' [name^='+key+']').each(function(){if($(this).prop('checked'))_return[c]=$(this).prop('value');});
+               break;
+            default:
+               if(_from==='form')$(form+' #'+key).val(_source[key]);
+               else if(_from==='list')_return[c]=$(form+' #'+key).val();
+               else _return[c]=_source[key];
+               break;
+         }//endswitch
+         c++;
+      });
+      return _return;
+   }
    if(this instanceof SET_DB)return this;
    else return new SET_DB();
 }

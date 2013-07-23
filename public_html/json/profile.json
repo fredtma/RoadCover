@@ -1,9 +1,9 @@
 {
    "form": {
-      "field":{"clss":"form-horizontal","name":"profile","data-iota":""},
+      "field":{"clss":"form-horizontal","name":"profile","data-iota":"0"},
       "fieldset":{"name":"admin-profile"},
       "legend":{"txt":"Administrator Profile"},
-      "button":{"submit_profile":{"value":"Save Changed","type":"submit","clss":"btn btn-primary"},"cancel_profile":{"value":"Cancel","type":"button","clss":"btn btn-inverse"}}
+      "button":{"submit_profile":{"value":"Save Changed","type":"submit","clss":"btn btn-primary","save":true},"cancel_profile":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
    },
    "mensa":"users",
    "fields":{

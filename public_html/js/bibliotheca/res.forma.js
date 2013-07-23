@@ -78,6 +78,7 @@ function SET_FORM(_name,_class,_label){
     */
    this.setAlpha=function(_fields){
       this.name=_fields.form.field.name;
+      $('#sideBot h3').html('<a href="#">Add new '+this.name+'<i class="icon icon-color icon-plus addThis"></i></a>');
       this.frmLabel=mainLabel=_fields.form.label?_fields.form.label:true;
       this.frmName='frm_'+this.name;
       theDefaults=this.defaultFields;
@@ -86,6 +87,7 @@ function SET_FORM(_name,_class,_label){
       form.id=this.frmName;
       form=creo(form,'form');
       if(_fields.form.legend){legend=creo({},'legend');legend.appendChild(document.createTextNode(_fields.form.legend.txt))}
+      else legend=undefined;
       if(_fields.form.fieldset){fieldset=creo(_fields.form.fieldset,'fieldset');if(legend)fieldset.appendChild(legend);form.appendChild(fieldset);container=fieldset;}
       else container=form;
       this.setObject({"items":_fields,"father":function(_key,_field){
@@ -95,7 +97,7 @@ function SET_FORM(_name,_class,_label){
             //FIELDSET
             if(_field.legend){legend=creo({},'legend');legend.appendChild(document.createTextNode(_field.legend.txt))}
             if(_field.fieldset){fieldset=creo(_field.fieldset,'fieldset');if(legend)fieldset.appendChild(legend);form.appendChild(fieldset);container=fieldset;}
-            div=creo({"clss":"control-group"},'div');
+            div=creo({"clss":"control-group "+_key},'div');
             //LABEL
             theLabel=_field.title?_field.title:aNumero(theName, true);
             label=null;

@@ -2,7 +2,7 @@
  * script to execute on first page
  */
 timeFrame('index');
-roadCover = new SET_DISPLAY(localStorage.SITE_NAME,"Sub title",1);
+roadCover = new SET_DISPLAY(localStorage.SITE_NAME,"",1);
 roadCover._Set("#nav-main").navTab({"home":{"txt":"Home","icon":"icon-home","clss":"active"},"dealers":{"txt":"Dealers","icon":"icon-book","sub":["First Dealer","Second Dealer","Third Dealer","Fourth Dealer","hr","View All Dealers"]},"salesman":{"txt":"Salesman","icon":"icon-briefcase","sub":["First Salesman","Second Salesman","Third Salesman","Fourth Salesman","hr","View All Salesman"]},"customers":{txt:"Customers","icon":"icon-user"},"insurance":{"txt":"Insurance","icon":"icon-folder-open"},"system":{"txt":"System","icon":"icon-cog","sub":["View Logs","View Clients","Run Import","View Reports","Setup Permission"]}});
 roadCover._Set({"addTo":"#tab-home section","clss":"btn btn-primary"}).btnGroup({"btn-notify":{"title":"My Notification","icon":"icon-inbox icon-white"},"btn-print":{"title":"Print Page","icon":"icon-print icon-white"},"btn-email":{"title":"Email page","icon":"icon-envelope icon-white"},"btn-word":{"title":"Convert to MS Word","icon":"icon-th-large icon-white"},"btn-excel":{"title":"Convert to MS Excel","icon":"icon-th icon-white"}});
 menuUser=roadCover.btnDropDown({"btn-user":{"clss":"btn btn-primary","href":"#","icon":"icon-user icon-white","txt":"User"},"btn-user-caret":{"clss":"btn btn-primary dropdown-toggle","href":"#","data-toggle":"dropdown","caret":"span"},"btn-sub-user-list":{"clss":"dropdown-menu","sub":{"profile-view":{"href":"#","icon":"icon-pencil","txt":"My profile"},"profile-new":{"href":"#","icon":"icon-plus","txt":"Create profile"},"profile-see":{"href":"#","icon":"icon-map-marker","txt":"Admin List"},"profile-div":{"divider":true},"profile-off":{"href":"#","icon":"icon-ban-circle","txt":"Logoff"}}}}).cloneNode(true);
@@ -45,8 +45,8 @@ timeFrame('form',true);
 $.getJSON("json/profile.json",findJSON);
 function findJSON(data){
    profileForm = new SET_FORM();
-   profileForm._Set("#tmp").setAlpha(data);
-   sessionStorage.active=JSON.stringify(data);
+   profileForm._Set("#body article").setAlpha(data);
+   sessionStorage.active=JSON.stringify(data);//@todo:fix the first time it loads it's empty
 }
 //DB SETUP
 db_notice=creo({'clss':'db_notice'},'div');
@@ -54,8 +54,10 @@ $('#sideNotice').append(db_notice);
 var creoDB=new SET_DB();
 creoDB.alpha();
 //   $('#frm_profile').submit(function(){alert('hello');return false;});
-//   $('#submit_profile').click(function(e){alert('world');creosDB.form('#frm_profile');return false;});
-$('#tmp').on('click','#submit_profile',function(e){try {creoDB.alpha(1);}catch(err){console.log(err.message);return false;}return false;});
+//   $('#submit_profile').click(function(e){e.preventDefault(); alert('world');return false;});
+//document.getElementById('submit_profile').addEventListener('click',function(){alert('world2')},false);
+//$('#tmp').on('click','#submit_profile',function(e){e.preventDefault(); try {creoDB.alpha(1);}catch(err){console.log(err.message);}return false;});
+//$('#body article').on('onsubmit','#frm_profile',function(e){e.preventDefault(); return false;});
 
 console.log(objectSize($.cache));
 //RESET
