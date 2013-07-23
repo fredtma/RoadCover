@@ -140,11 +140,11 @@ function SET_DB(){
                a=creo({'href':'#profile'},'a');
                name=fieldDisplay('row',row,true).join(' ');
                txt=document.createTextNode(name);
-               a.onclick=function(e){e.preventDefault(); i=$(this).parent().data('iota');creoDB.alpha(3,i)}
+               a.onclick=function(e){e.preventDefault();creoDB.alpha(3,row['id'])}
                a.appendChild(txt);li.appendChild(a);
                i=creo({'clss':'icon icon-color icon-trash'},'i');
                a=creo({'href':'#'},'a');a.appendChild(i);li.appendChild(a);
-               a.onclick=function(e){e.preventDefault(); i=$(this).parent().data('iota');creoDB.alpha(0,i); $(this).parent().hide();}
+               a.onclick=function(e){e.preventDefault();creoDB.alpha(0,row['id']); $(this).parent().hide();}
                display.append(li);
             }
             $('#sideBot h3 a').click(function(e){
@@ -167,11 +167,24 @@ function SET_DB(){
             $(form+' #cancel_'+eternal.form.field.name).click(function(){});//@todo
          }
          //UPDATE
-         if(_actum===2){
+         if(_actum===2||_actum===1){
             name='';
             name=fieldDisplay('list',null,true).join(' ');
-//            $.each(eternal.fields,function(k,v){if(v.header){name+=$(form+' #'+k).val()+' ';}});
-            $('#displayMensa>li[data-iota='+_iota+']>a:first-child').html(name).addClass('text-success');
+            if(_actum===2)$('#displayMensa>li[data-iota='+_iota+']>a:first-child').html(name).addClass('text-success');
+            if(_actum===1){
+               $(form+' #submit_'+eternal.form.field.name)[0].onclick=function(e){e.preventDefault();creoDB.alpha(2,results.insertId);};//make the form to become update
+               $(form).data('iota',results.insertId);
+               li=creo({'data-iota':results.insertId},'li');
+               a=creo({'href':'#'+eternal.form.field.name},'a',name);
+               a.onclick=function(e){e.preventDefault(); creoDB.alpha(3,results.insertId)}
+               li.appendChild(a);
+               a=creo({'href':'#'},'a');
+               a.onclick=function(e){e.preventDefault();creoDB.alpha(0,results.insertId); $(this).parent().hide();}
+               i=creo({'clss':'icon icon-color icon-trash'},'i');
+               a.appendChild(i);
+               li.appendChild(a);
+               document.getElementById('displayMensa').appendChild(li);
+            }
          }
       });
    }
