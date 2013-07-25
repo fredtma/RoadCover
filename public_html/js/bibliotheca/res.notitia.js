@@ -13,7 +13,6 @@
  * @see: placeObj
  */
 function SET_DB(){
-   var db=null;
    this.mensaActive=['profile'];
    this.creoAgito=function(_sql,_params,_msg,callback){
       var sql=_sql;
@@ -26,26 +25,29 @@ function SET_DB(){
             $('#sideNotice .db_notice').html("Successful transaction: "+msg);
             if(callback)callback(results);
          },function(_trans,_error){
-            console.log('Failed DB transaction: '+msg);
+            console.log('Failed DB transaction: '+msg+':'+_error.message);
             $('#sideNotice .db_notice').html("<div class='text-error'>"+_error.message+'</div>');
          });
       });
    }
-
+   console.log('db='+db);
    if(!db){
       db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
-      group="CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, desc TEXT, creation TEXT)";
-      this.creoAgito("CREATE INDEX groups_name ON groups(name)");
-      this.creoAgito("ALTER TABLE users ADD COLUMN creation TEXT");
-      link="CREATE TABLE IF NOT EXISTS link_users_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER, group INTEGER, creation TEXT)";
-      this.creoAgito("CREATE INDEX link_usergroup_user ON link_users_groups(user)");
-      this.creoAgito("CREATE INDEX link_usergroup_group ON link_users_groups(group)");
+      d=new Date();
+      d=d.format('isoDate');
       if(!localStorage.DB){
          localStorage.DB=db;
-         sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL)";
+         sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TEXT DEFAULT '"+d+"')";
          this.creoAgito(sql,[],'Table users creation');
          this.creoAgito("CREATE INDEX user_username ON users(username)");
          this.creoAgito("CREATE INDEX user_email ON users(email)");
+         group="CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, desc TEXT, creation TEXT)";
+         this.creoAgito(group,[],'Table groups created');
+         this.creoAgito("CREATE INDEX groups_name ON groups(name)",[],'index groups_name');
+         link="CREATE TABLE IF NOT EXISTS link_users_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, `user` INTEGER, `group` INTEGER, creation TEXT DEFAULT '"+d+"')";
+         this.creoAgito(link,[],'Table link to users and groups created');
+         this.creoAgito("CREATE INDEX link_usergroup_user ON link_users_groups(`user`)",[],'index link_usergroup_user');
+         this.creoAgito("CREATE INDEX link_usergroup_group ON link_users_groups(`group`)",[],'index link_usergroup_group');
       }
    }
    /*
@@ -61,13 +63,12 @@ function SET_DB(){
       if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);
       else eternal=null;
       if(!eternal){console.log("not found json");return false;}
-      form='#'+eternal.form.field.id||'#frm_'+eternal.form.field.name;
+      form='#frm_'+eternal.form.field.name;
       iota=_iota;
       iyona=eternal.mensa||form.substr(4);
       if(!this.mensaActive.indexOf(iyona)){console.log("not found mensa");return false;}
       var quaerere=[],params=[],set=[];
-      limit=localStorage.LIMIT||5;
-
+      limit=localStorage.LIMIT||7;
       switch(_actum){
          case 0:
             actum='DELETE FROM '+iyona+' WHERE id=?';
@@ -89,8 +90,8 @@ function SET_DB(){
       if(_actum!=0){
          x=0;
          iota=iota||$(form).data('iota');
-         console.log('iota:'+$(form).data('iota'));
          $.each(eternal.fields,function(field,setting){
+            console.log(form+' #'+field);
             val=$(form+' #'+field).val()||$(form+' [name^='+field+']:checked').val();
             if(_actum!=3){
                if(!val) {quaerere=[];$('#sideNotice .db_notice').html('<div class="text-error">Missing '+field+'</div>');$('.control-group.'+field).addClass('error'); return false;}//@todo add validation, this is manual validation
@@ -125,7 +126,7 @@ function SET_DB(){
          if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);
          else eternal=null;
          if(!eternal){console.log("not found json");return false;}
-         form='#'+eternal.form.field.id||'#frm_'+eternal.form.field.name;
+         form='#frm_'+eternal.form.field.name;
          iyona=eternal.mensa||form.substr(4);
          display=$('#displayMensa');
 //         iota=results.insertId?results.insertId:$(form).data('iota');
@@ -140,11 +141,11 @@ function SET_DB(){
                a=creo({'href':'#profile'},'a');
                name=fieldDisplay('row',row,true).join(' ');
                txt=document.createTextNode(name);
-               a.onclick=function(e){e.preventDefault();creoDB.alpha(3,row['id'])}
+               a.onclick=function(e){e.preventDefault();ii=$(this).parent().data('iota');creoDB.alpha(3,ii)}
                a.appendChild(txt);li.appendChild(a);
                i=creo({'clss':'icon icon-color icon-trash'},'i');
                a=creo({'href':'#'},'a');a.appendChild(i);li.appendChild(a);
-               a.onclick=function(e){e.preventDefault();creoDB.alpha(0,row['id']); $(this).parent().hide();}
+               a.onclick=function(e){e.preventDefault();ii=$(this).parent().data('iota');creoDB.alpha(0,ii); $(this).parent().hide();}
                display.append(li);
             }
             $('#sideBot h3 a').click(function(e){

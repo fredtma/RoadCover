@@ -21,7 +21,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
    $('#mainHead h1').text(_title);
    $('title').text(_title);
    $('#mainHead h2').text(_subTitle);
-   $('#mainHead time').html(d.format(localStorage.SITE_DATE)+' '+d.format(localStorage.SITE_TIME));
+   $('#sideTop time').html(d.format(localStorage.SITE_DATE)+' '+d.format(localStorage.SITE_TIME));
    this.pageNumber=_pageNumber;
    /*
     * the number of menu name will also be the number of container

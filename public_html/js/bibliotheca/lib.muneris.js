@@ -19,7 +19,7 @@ localStorage.URL_IMG=localStorage.SITE_URL+'img/';
 localStorage.URL_LIB=localStorage.SITE_URL+'js/';
 localStorage.URL_JSON=localStorage.SITE_URL+'json/';
 localStorage.LIMIT=7;
-
+var db;
 /******************************************************************************/
 /**
  * similar to jquery creates an DOM element
@@ -56,7 +56,21 @@ creo=function (arr, ele, txt)
       if (!skip) the_element.setAttribute(attr, arr[key]);
    }/*end for each*/
    return the_element;
-}/*end function*/
+}//end function
+$anima=function(section,ele,arr,txt){
+   this.father=this.creo(arr,ele,txt);
+   this.vita=function(ele,arr,parent,txt){
+      this.child=this.creo(arr,ele,txt);
+      this.father.appendChild(this.child);
+      if(parent)this.father=this.child;
+   }
+   this.genesis=function(ele,arr,parent,txt){
+      this.child=this.creo(arr,ele,txt);
+      this.father.parentNode.insertBefore(this.child, document.querySelector(this.father).nextSibling);
+      if(parent)this.father=this.child;
+   }
+   document.querySelector(section).appendChild(this.father);
+};
 /******************************************************************************/
 /**
  * load a script dynamically in the header tag

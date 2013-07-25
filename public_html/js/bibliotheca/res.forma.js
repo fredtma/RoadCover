@@ -100,6 +100,7 @@ function SET_FORM(_name,_class,_label){
             div=creo({"clss":"control-group "+_key},'div');
             //LABEL
             theLabel=_field.title?_field.title:aNumero(theName, true);
+            theLabel=aNumero(theLabel,true);
             label=null;
             label=(isset(_field.addLabel))?_field.addLabel:mainLabel;
             if(label) {label=creo({"clss":"control-label","forr":_key},'label'); label.appendChild(document.createTextNode(theLabel)); div.appendChild(label);}
@@ -111,8 +112,9 @@ function SET_FORM(_name,_class,_label){
             if(!theField.type)theField.type='text';
             tmpType=theField.type;
             theField=$.extend({},theDefaults[tmpType],theField);
-            //input with items will not get icons
-            input=(!_field.items)?creo(theField,'input'):formInput(_key,theField,_field.items,div1);
+            //set the input type textarea|input|select|etc...
+            input=(_field.items||_field.complex)?formInput(_key,theField,_field.items,div1,_field.complex):creo(theField,'input');
+            //input with items[] sets will not get icons
             if(_field.icon){
                i=creo({"clss":_field.icon},'i');
                span=creo({"clss":"add-on"},'span');
@@ -197,11 +199,12 @@ function create_select (ele, create, the_list, clss, empty)
  * @param object <var>_field</var> the data containing the field
  * @param array <var>_items</var> the list of items value
  * @param object <var>_holder</var> the DOM element to insert into
+ * @param mixed <var>_complex</var> option for complex objects
  * @return object
  */
-function formInput(_key,_field,_items,_holder){
+function formInput(_key,_field,_items,_holder,_complex){
    theType=_field.type;
-   l=_items.length;
+   l=(isset(_items))?_items.length:0;
    cnt=0;
    switch(theType){
       case 'bool':
@@ -225,6 +228,7 @@ function formInput(_key,_field,_items,_holder){
             ele=label;
             cnt++;
          });break;
+      case 'text': ele=creo(_field,'textarea');break;//@todo make the default a complex one
       case 'select': ele=create_select (_key, true, _items, _field.clss);break;
       default: ele=creo(_field,'input'); break;
    }
