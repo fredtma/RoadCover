@@ -190,6 +190,29 @@ function SET_DB(){
       });
    }
    /*
+    * queries the db to display in list format
+    * @param {integer} <var>_actum</var> the transaction
+    * @param {integer} <var>_iota</var> the record identification
+    * @returns {undefined}
+    */
+   this.beta=function(_actum,_iota){
+      this.forma(_actum,_iota,function(results){
+         if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);
+         else eternal=null;
+         switch(_actum){
+            case 0:
+               break;
+            case 1:
+               break;
+            case 2:
+               break;
+            default:
+               theForm.setBeta(eternal,results,3)
+               break;
+         }//end switch
+      });//end anonymous
+   }
+   /*
     *
     * @param {obeject} <var>_source</var> the source of the object
     * @param {string} <var>_form</var> the name of the form

@@ -72,7 +72,7 @@ function SET_FORM(_name,_class,_label){
    }
 
    /*
-    * The main script will get and set all the fields
+    * The first form type display generation
     * @param {obejcts} <var>_fields</var> setting of the form has the form name, class, fields, title
     * @returns {undefined}
     */
@@ -129,6 +129,31 @@ function SET_FORM(_name,_class,_label){
       form.appendChild(this.setButton(_fields.form.button));
       this.placeObj(form);
       return form;
+   }
+   /*
+    * The second form list display generation
+    * @param {obejcts} <var>_fields</var> setting of the form has the form name, class, fields, title
+    * @param {obejcts} <var>_results</var> the results from the db
+    * @param {integer} <var>_actum</var> the stage of the transaction
+    * @returns {undefined}
+    */
+   this.setBeta=function(_fields,_results,_actum){
+      this.name=_fields.form.field.name;
+      $('#sideBot h3').html('<a href="#">Add new '+this.name+'<i class="icon icon-color icon-plus addThis"></i></a>');
+      //@todo: check that the button does not duplicate
+      roadCover._Set({"addTo":".tab-pane.active .secondRow"}).btnCreation("button",{"name":"btnNewProfile","clss":"btn btn-primary","title":"Create profile"}," New Profile","icon-plus icon-white");
+      container=$anima(this.Obj.addTo,'div',{});
+      len=_results.rows.length;
+      for(x=0;x<len;x++){//loop record
+         row=_results.rows.item(x);
+         console.log(x);
+         container.vita('div',{},false,row['name']);
+         console.log(container);
+      }//end for
+      this.setObject({"items":_fields,"father":function(_key,_field){
+            console.log(_key);
+         }//end function
+      });
    }
    /*
     *

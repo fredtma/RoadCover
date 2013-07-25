@@ -58,6 +58,7 @@ creo=function (arr, ele, txt)
    return the_element;
 }//end function
 $anima=function(section,ele,arr,txt){
+   this.creo=creo;
    this.father=this.creo(arr,ele,txt);
    this.vita=function(ele,arr,parent,txt){
       this.child=this.creo(arr,ele,txt);
@@ -69,7 +70,10 @@ $anima=function(section,ele,arr,txt){
       this.father.parentNode.insertBefore(this.child, document.querySelector(this.father).nextSibling);
       if(parent)this.father=this.child;
    }
+   console.log(this.father);
    document.querySelector(section).appendChild(this.father);
+   if(this instanceof $anima)return this;
+   else return new $anima(section,ele,arr,txt);
 };
 /******************************************************************************/
 /**

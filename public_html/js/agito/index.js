@@ -6,9 +6,10 @@ roadCover = new SET_DISPLAY(localStorage.SITE_NAME,"",1);
 roadCover._Set("#nav-main").navTab({"home":{"txt":"Home","icon":"icon-home","clss":"active"},"dealers":{"txt":"Dealers","icon":"icon-book","sub":["First Dealer","Second Dealer","Third Dealer","Fourth Dealer","hr","View All Dealers"]},"salesman":{"txt":"Salesman","icon":"icon-briefcase","sub":["First Salesman","Second Salesman","Third Salesman","Fourth Salesman","hr","View All Salesman"]},"customers":{txt:"Customers","icon":"icon-user"},"insurance":{"txt":"Insurance","icon":"icon-folder-open"},"system":{"txt":"System","icon":"icon-cog","sub":["View Logs","View Clients","Run Import","View Reports","Setup Permission"]}});
 roadCover._Set({"addTo":"#tab-home section","clss":"btn btn-primary"}).btnGroup({"btn-notify":{"title":"My Notification","icon":"icon-inbox icon-white"},"btn-print":{"title":"Print Page","icon":"icon-print icon-white"},"btn-email":{"title":"Email page","icon":"icon-envelope icon-white"},"btn-word":{"title":"Convert to MS Word","icon":"icon-th-large icon-white"},"btn-excel":{"title":"Convert to MS Excel","icon":"icon-th icon-white"}});
 menuUser=roadCover.btnDropDown({"btn-user":{"clss":"btn btn-primary","href":"#","icon":"icon-user icon-white","txt":"User"},"btn-user-caret":{"clss":"btn btn-primary dropdown-toggle","href":"#","data-toggle":"dropdown","caret":"span"},"btn-sub-user-list":{"clss":"dropdown-menu","sub":{"profile-view":{"href":"#","icon":"icon-pencil","txt":"My profile"},"profile-new":{"href":"#","icon":"icon-plus","txt":"Create profile"},"profile-see":{"href":"#","icon":"icon-map-marker","txt":"Admin List"},"profile-div":{"divider":true},"profile-off":{"href":"#","icon":"icon-ban-circle","txt":"Logoff"}}}}).cloneNode(true);
-menuHelp=roadCover.btnCreation("button",{"name":"btn-help","clss":"btn btn-primary","title":"Help"},"","icon-question-sign icon-white").cloneNode(true);
+menuHelp=roadCover.btnCreation("button",{"name":"btn-help","clss":"btn btn-primary libHelp","title":"Help"},"","icon-question-sign icon-white").cloneNode(true);
 menuSearch=roadCover.inputSearch({"div":{"clss":"btn-cust input-prepend pull-right"},"label":{"clss":"add-on","icon":"icon-search icon-white"},"input":{"clss":"input-medium search-all","name":"s","type":"search","placeholder":"Search page","form":"frm_search"}}).cloneNode(true);
 roadCover.pagiNation({"clss1":"pagination pull-right","clss2":"disabled","total":5,"link":"#home"});
+roadCover.placeObj(creo({'clss':'clearfix secondRow'},'div'));
 //DEALERS
 timeFrame('dealers');
 roadCover._Set("#tab-dealers section").btnDropDown({"btn-dealer":{"clss":"btn btn-primary","href":"#","icon":"icon-book icon-white","txt":"All Dealers"},"btn-dealer-caret":{"clss":"btn btn-primary dropdown-toggle","href":"#","data-toggle":"dropdown","caret":"span"},"btn-sub-dealer-list":{"clss":"dropdown-menu","sub":{"dealer-one":{"href":"#","txt":"Dealer One"},"dealer-two":{"href":"#","txt":"Dealer Two"},"dealer-three":{"href":"#","txt":"Dealer Three"},"dealer-div":{"divider":true},"dealer-all":{"href":"#","txt":"All Dealers"}}}});
@@ -46,13 +47,13 @@ $.getJSON("json/group.json",findJSON);
 function findJSON(data){
    console.log(data);
    sessionStorage.active=JSON.stringify(data);//@todo:fix the first time it loads it's empty
-   profileForm = new SET_FORM();
-   profileForm._Set("#body article").setAlpha(data);
+   theForm = new SET_FORM();
+   theForm._Set("#body article");
 //DB SETUP
    db_notice=creo({'clss':'db_notice'},'div');
    $('#sideNotice').append(db_notice);
    var creoDB=new SET_DB();
-   creoDB.alpha();
+   creoDB.beta();
 }
 //   $('#frm_profile').submit(function(){alert('hello');return false;});
 //   $('#submit_profile').click(function(e){e.preventDefault(); alert('world');return false;});
@@ -62,5 +63,5 @@ function findJSON(data){
 
 console.log(objectSize($.cache));
 //RESET
-roadCover=null;menuAddr=null;menuDisplay=null;username=null;mother=null;profileForm=null;//creoDB=null;
+menuAddr=null;menuDisplay=null;username=null;mother=null;//creoDB=null;
 var JSONprofile;
