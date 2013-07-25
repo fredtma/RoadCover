@@ -10,7 +10,7 @@
 body {margin: 1px auto; background: #fbfbfb url('../img/bg04.png');; font-family: 'Yanone Kaffeesatz'; color: #474f51;}
 .white{color:white;}.black{color:black;}
 h1 {font-size:1.8em; font-family:'Vollkorn', sans-serif; font-weight: 700; font-style:italic; text-align: right; display:block; padding: 0px; line-height: 10px;}
-h2 {font-size: 1.5em; color: #212f35; margin: 0 0 0.5em 0;  line-height: 20px;}
+h2 {font-size: 1.1em;    line-height: 20px;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);display: inline;padding: 5px;}
 h3 {font-size: 1.4em; color:#96a9b5;  line-height: 30px; margin: 10px 0 0 0;border-top: 1px solid #eeeeee;border-bottom: 1px solid #eeeeee;}
 .logo,.aside {float:left; width:16%;}.navigator, .body {float:left; width:82%;margin-left:1em;}
 .logo {min-height:7em;}.aside {min-height: 49.5em; text-align: right;}.body {min-height: 50em;}
@@ -18,6 +18,7 @@ progress {color: #0063a6;font-size: .6em;line-height: 1.5em;text-indent: .5em;wi
 progress::-moz-progress-bar { background:#0063a6;}
 progress::-webkit-progress-bar { background:#fff;}
 progress::-webkit-progress-value { background:#0063a6; }
+.btn.space{margin-left:0.2em;margin-right:0.2em;}
 /******************************************************************************/
 /*header setting*/
 .navigator {font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background:#fff;margin-top: 10px;}
@@ -37,7 +38,7 @@ address {margin: 3px 0px;}
   -webkit-box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.5);-moz-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
 }
 .btn-cust.input-prepend{margin-bottom:0px;}
-.secondRow{display:block;height:2em;margin-top:0.3em;}
+.secondRow{display:block;height:2em;margin-top: 0.3em;}
 /******************************************************************************/
 /*aSide*/
 #sideTop {margin-top:-0.8em}
@@ -53,6 +54,10 @@ address {margin: 3px 0px;}
 }
 ._box:first-child{padding: 4px 0px;}/*this is to add padding without disrupting the size of box*/
 .body article {padding: 4px 4px;}
+a[contenteditable=true]{cursor: text;}
+a[contenteditable=true]:hover{text-decoration: none;}
+a.headeditable{display:inline-block;width:29%;padding: 8px 15px;}
+a.accordion-toggle{display:initial !important;padding: 4px 4px  !important;}
 /******************************************************************************/
 /*form setting*/
 .form-horizontal .control-group {margin-bottom: 10px;}

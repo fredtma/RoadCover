@@ -141,19 +141,27 @@ function SET_FORM(_name,_class,_label){
       this.name=_fields.form.field.name;
       $('#sideBot h3').html('<a href="#">Add new '+this.name+'<i class="icon icon-color icon-plus addThis"></i></a>');
       //@todo: check that the button does not duplicate
-      roadCover._Set({"addTo":".tab-pane.active .secondRow"}).btnCreation("button",{"name":"btnNewProfile","clss":"btn btn-primary","title":"Create profile"}," New Profile","icon-plus icon-white");
-      container=$anima(this.Obj.addTo,'div',{});
+      $('.secondRow').append(creo({},'h2'));
+      $('#tab-home section h2').text(_fields.form.legend.txt);
+      roadCover._Set({"next":".tab-pane.active .libHelp"}).btnCreation("button",{"name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
+      container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
       len=_results.rows.length;
       for(x=0;x<len;x++){//loop record
          row=_results.rows.item(x);
-         console.log(x);
-         container.vita('div',{},false,row['name']);
-         console.log(container);
+         headeName=fieldDisplay('none',row,true);
+         collapse_heade=$anima('#acc_'+this.name,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group','data-iota':row['id']});
+         collapse_heade.vita('div',{'clss':'accordion-heading'},true)
+                 .vita('a',{'clss':'headeditable','contenteditable':true},true,headeName[0])
+                 .genesis('a',{'clss':'headeditable','contenteditable':true},true,headeName[1])
+                 .genesis('a',{'clss':'headeditable','contenteditable':true},true,headeName[2])
+                 .genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+x,},true)
+                 .vita('i',{'clss':'icon icon-color icon-edit'})
+                 .genesis('a',{'href':'#'},true)
+                 .vita('i',{'clss':'icon icon-color icon-trash'});
+         collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+x});
+         collapse_content.vita('div',{'clss':'accordion-inner'},false,row['desc']);
       }//end for
-      this.setObject({"items":_fields,"father":function(_key,_field){
-            console.log(_key);
-         }//end function
-      });
+      this.setObject({"items":_fields,"father":function(_key,_field){}});
    }
    /*
     *
@@ -258,6 +266,38 @@ function formInput(_key,_field,_items,_holder,_complex){
       default: ele=creo(_field,'input'); break;
    }
    return ele;
+}
+
+/*
+ *
+ * @param {obeject} <var>_source</var> the source of the object
+ * @param {string} <var>_form</var> the name of the form
+ * @param {bool} <var>_head</var> only the head to be displayed
+ * @returns {array} the list of header
+ * @todo add radio and check return
+ */
+fieldDisplay=function(_from,_source,_head){
+   f=eternal.fields;
+   c=0;
+   _return=[];
+   $.each(f,function(key,property){
+      type=property.field.type;
+      if(_head && !property.header) return true;
+      switch(type){
+         case 'radio':
+         case 'check':
+            if(_from==='form')$(form+' [name^='+key+']').each(function(){if($(this).prop('value')==_source[key])$(this).prop('checked',true);});
+            if(_from==='list')$(form+' [name^='+key+']').each(function(){if($(this).prop('checked'))_return[c]=$(this).prop('value');});
+            break;
+         default:
+            if(_from==='form')$(form+' #'+key).val(_source[key]);
+            else if(_from==='list')_return[c]=$(form+' #'+key).val();
+            else _return[c]=_source[key];
+            break;
+      }//endswitch
+      c++;
+   });
+   return _return;
 }
 /******************************************************************************/
 /**

@@ -64,16 +64,16 @@ $anima=function(section,ele,arr,txt){
       this.child=this.creo(arr,ele,txt);
       this.father.appendChild(this.child);
       if(parent)this.father=this.child;
+      return this;
    }
    this.genesis=function(ele,arr,parent,txt){
       this.child=this.creo(arr,ele,txt);
-      this.father.parentNode.insertBefore(this.child, document.querySelector(this.father).nextSibling);
+      this.father.parentNode.insertBefore(this.child, this.father.nextSibling);
       if(parent)this.father=this.child;
+      return this;
    }
-   console.log(this.father);
    document.querySelector(section).appendChild(this.father);
-   if(this instanceof $anima)return this;
-   else return new $anima(section,ele,arr,txt);
+   return this;
 };
 /******************************************************************************/
 /**
