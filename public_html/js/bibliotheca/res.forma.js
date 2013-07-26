@@ -90,42 +90,7 @@ function SET_FORM(_name,_class,_label){
       else legend=undefined;
       if(_fields.form.fieldset){fieldset=creo(_fields.form.fieldset,'fieldset');if(legend)fieldset.appendChild(legend);form.appendChild(fieldset);container=fieldset;}
       else container=form;
-      this.setObject({"items":_fields,"father":function(_key,_field){
-            theField=_field.field;
-            theField.id=_key;
-            theName=theField.name?theField.name:_key;
-            //FIELDSET
-            if(_field.legend){legend=creo({},'legend');legend.appendChild(document.createTextNode(_field.legend.txt))}
-            if(_field.fieldset){fieldset=creo(_field.fieldset,'fieldset');if(legend)fieldset.appendChild(legend);form.appendChild(fieldset);container=fieldset;}
-            div=creo({"clss":"control-group "+_key},'div');
-            //LABEL
-            theLabel=_field.title?_field.title:aNumero(theName, true);
-            theLabel=aNumero(theLabel,true);
-            label=null;
-            label=(isset(_field.addLabel))?_field.addLabel:mainLabel;
-            if(label) {label=creo({"clss":"control-label","forr":_key},'label'); label.appendChild(document.createTextNode(theLabel)); div.appendChild(label);}
-            div1=creo({"clss":"controls"},'div');
-            //PLACEHODER
-            placeHolder=((_field.place)===true?theLabel:(_field.place)?_field.place:false);
-            if(placeHolder!==false) theField.placeholder=placeHolder;
-            //INNER DIV
-            if(!theField.type)theField.type='text';
-            tmpType=theField.type;
-            theField=$.extend({},theDefaults[tmpType],theField);
-            //set the input type textarea|input|select|etc...
-            input=(_field.items||_field.complex)?formInput(_key,theField,_field.items,div1,_field.complex):creo(theField,'input');
-            //input with items[] sets will not get icons
-            if(_field.icon){
-               i=creo({"clss":_field.icon},'i');
-               span=creo({"clss":"add-on"},'span');
-               div2=creo({"clss":"input-prepend"},'div');
-               span.appendChild(i);div2.appendChild(span);div2.appendChild(input);div1.appendChild(div2);
-            }else if(input.tagName!='label'){
-               div1.appendChild(input);
-            }//endif
-            div.appendChild(div1);container.appendChild(div);
-         }//end father
-      });//end setObject
+      this.setObject({"items":_fields,"father":this.singleForm});//end setObject
       form.appendChild(this.setButton(_fields.form.button));
       this.placeObj(form);
       return form;
@@ -143,26 +108,68 @@ function SET_FORM(_name,_class,_label){
       //@todo: check that the button does not duplicate
       $('.secondRow').append(creo({},'h2'));
       $('#tab-home section h2').text(_fields.form.legend.txt);
-      roadCover._Set({"next":".tab-pane.active .libHelp"}).btnCreation("button",{"name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
+      addbtn=roadCover._Set({"next":".tab-pane.active .libHelp"}).btnCreation("button",{"name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
       container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
+      addbtn.onclick=addRecord;
       len=_results.rows.length;
       for(x=0;x<len;x++){//loop record
          row=_results.rows.item(x);
          headeName=fieldDisplay('none',row,true);
-         collapse_heade=$anima('#acc_'+this.name,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group','data-iota':row['id']});
-         collapse_heade.vita('div',{'clss':'accordion-heading'},true)
+         collapse_heade=$anima('#acc_'+this.name,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group'});
+         collapse_heade.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
                  .vita('a',{'clss':'headeditable','contenteditable':true},true,headeName[0])
                  .genesis('a',{'clss':'headeditable','contenteditable':true},true,headeName[1])
                  .genesis('a',{'clss':'headeditable','contenteditable':true},true,headeName[2])
                  .genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+x,},true)
-                 .vita('i',{'clss':'icon icon-color icon-edit'})
-                 .genesis('a',{'href':'#'},true)
-                 .vita('i',{'clss':'icon icon-color icon-trash'});
+                 .vita('i',{'clss':'icon icon-color icon-edit'}).child.onclick=edtRecord;
+         collapse_heade.genesis('a',{'href':'#'},true)
+                 .vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=delRecord;
          collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+x});
          collapse_content.vita('div',{'clss':'accordion-inner'},false,row['desc']);
       }//end for
       this.setObject({"items":_fields,"father":function(_key,_field){}});
    }
+   /*
+    * used to display a single form display
+    * @param {string} <var>_key</var> the key of the objects
+    * @param {object} <var>_field</var> the properties of the object
+    * @returns {undefined}
+    */
+   this.singleForm=function(_key,_field){
+      theField=_field.field;
+      theField.id=_key;
+      theName=theField.name?theField.name:_key;
+      //FIELDSET
+      if(_field.legend){legend=creo({},'legend');legend.appendChild(document.createTextNode(_field.legend.txt))}
+      if(_field.fieldset){fieldset=creo(_field.fieldset,'fieldset');if(legend)fieldset.appendChild(legend);form.appendChild(fieldset);container=fieldset;}
+      div=creo({"clss":"control-group "+_key},'div');
+      //LABEL
+      theLabel=_field.title?_field.title:aNumero(theName, true);
+      theLabel=aNumero(theLabel,true);
+      label=null;
+      label=(isset(_field.addLabel))?_field.addLabel:mainLabel;
+      if(label) {label=creo({"clss":"control-label","forr":_key},'label'); label.appendChild(document.createTextNode(theLabel)); div.appendChild(label);}
+      div1=creo({"clss":"controls"},'div');
+      //PLACEHODER
+      placeHolder=((_field.place)===true?theLabel:(_field.place)?_field.place:false);
+      if(placeHolder!==false) theField.placeholder=placeHolder;
+      //INNER DIV
+      if(!theField.type)theField.type='text';
+      tmpType=theField.type;
+      theField=$.extend({},theDefaults[tmpType],theField);
+      //set the input type textarea|input|select|etc...
+      input=(_field.items||_field.complex)?formInput(_key,theField,_field.items,div1,_field.complex):creo(theField,'input');
+      //input with items[] sets will not get icons
+      if(_field.icon){
+         i=creo({"clss":_field.icon},'i');
+         span=creo({"clss":"add-on"},'span');
+         div2=creo({"clss":"input-prepend"},'div');
+         span.appendChild(i);div2.appendChild(span);div2.appendChild(input);div1.appendChild(div2);
+      }else if(input.tagName!='label'){
+         div1.appendChild(input);
+      }//endif
+      div.appendChild(div1);container.appendChild(div);
+   }//end function
    /*
     *
     * @param {object} <var>_btn</var> the set of buttons to be added

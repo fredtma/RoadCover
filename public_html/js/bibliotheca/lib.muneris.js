@@ -57,7 +57,7 @@ creo=function (arr, ele, txt)
    }/*end for each*/
    return the_element;
 }//end function
-$anima=function(section,ele,arr,txt){
+$anima=function(section,ele,arr,txt,point){
    this.creo=creo;
    this.father=this.creo(arr,ele,txt);
    this.vita=function(ele,arr,parent,txt){
@@ -72,7 +72,10 @@ $anima=function(section,ele,arr,txt){
       if(parent)this.father=this.child;
       return this;
    }
-   document.querySelector(section).appendChild(this.father);
+   Node=document.querySelector(section);
+   if(point=='before')$(Node).before(this.father); //Node.insertBefore(this.father, Node.firstChild);
+   if(point=='next')Node.parentNode.insertBefore(this.father,Node.nextSibiling);
+   else Node.appendChild(this.father);
    return this;
 };
 /******************************************************************************/
