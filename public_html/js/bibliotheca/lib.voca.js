@@ -17,5 +17,7 @@ addRecord=function(){
    collapse_content=$anima('#accGroup'+d,'div',{'clss':'accordion-body collapse','id':'collapse_'+name+d});
    collapse_content.vita('div',{'clss':'accordion-inner'},false,'Content');
 }
-edtRecord=function(){}
+edtRecord=function(_class,_fields,_iota){
+   creoDB.beta(3,_iota);
+}
 delRecord=function(e){e.preventDefault();console.log($(this).parents('div').data('iota'));}

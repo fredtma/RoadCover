@@ -102,32 +102,51 @@ function SET_FORM(_name,_class,_label){
     * @param {integer} <var>_actum</var> the stage of the transaction
     * @returns {undefined}
     */
-   this.setBeta=function(_fields,_results,_actum){
-      this.name=_fields.form.field.name;
+   this.setBeta=function(_results,_actum,_iota){
+      if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;
+      this.name=eternal.form.field.name;
       $('#sideBot h3').html('<a href="#">Add new '+this.name+'<i class="icon icon-color icon-plus addThis"></i></a>');
       //@todo: check that the button does not duplicate
       $('.secondRow').append(creo({},'h2'));
-      $('#tab-home section h2').text(_fields.form.legend.txt);
+      $('#tab-home section h2').text(eternal.form.legend.txt);
       addbtn=roadCover._Set({"next":".tab-pane.active .libHelp"}).btnCreation("button",{"name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
       container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
       addbtn.onclick=addRecord;
       len=_results.rows.length;
-      for(x=0;x<len;x++){//loop record
+      len=len||1;//this will display the record even when there is no record
+      if(!_actum){
+         for(x=0;x<len;x++){//loop record
+            if(_results.rows.length){row=_results.rows.item(x);headeName=fieldDisplay('none',row,true);}else{row={'id':0};headeName=['Type '+this.name+' name here']}
+            collapse_heade=$anima('#acc_'+this.name,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group'});
+            collapse_heade.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
+                    .vita('a',{'clss':'headeditable','contenteditable':true},true,headeName[0])
+                    .genesis('a',{'clss':'headeditable','contenteditable':true},true,headeName[1])
+                    .genesis('a',{'clss':'headeditable','contenteditable':true},true,headeName[2])
+                    .genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+x,},true)
+                    .vita('i',{'clss':'icon icon-color icon-edit'}).child.onclick=creoDB.beta(3,row['id']);
+            collapse_heade.genesis('a',{'href':'#'},true)
+                    .vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=creoDB.beta(0,row['id']);
+            collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+x});
+            collapse_content.vita('div',{'clss':'accordion-inner'},false,row['desc']);
+         }//end for
+      }else if (_actum==3){
          row=_results.rows.item(x);
-         headeName=fieldDisplay('none',row,true);
-         collapse_heade=$anima('#acc_'+this.name,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group'});
-         collapse_heade.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
-                 .vita('a',{'clss':'headeditable','contenteditable':true},true,headeName[0])
-                 .genesis('a',{'clss':'headeditable','contenteditable':true},true,headeName[1])
-                 .genesis('a',{'clss':'headeditable','contenteditable':true},true,headeName[2])
-                 .genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+x,},true)
-                 .vita('i',{'clss':'icon icon-color icon-edit'}).child.onclick=edtRecord;
-         collapse_heade.genesis('a',{'href':'#'},true)
-                 .vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=delRecord;
-         collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+x});
-         collapse_content.vita('div',{'clss':'accordion-inner'},false,row['desc']);
-      }//end for
-      this.setObject({"items":_fields,"father":function(_key,_field){}});
+         this.frmLabel=mainLabel=eternal.form.label?eternal.form.label:true;
+         this.frmName='frm_'+this.name;
+         theDefaults=this.defaultFields;
+         //FORM
+         form=eternal.form.field;
+         form.id=this.frmName;
+         form=$anima('','form',form);
+         if(eternal.form.fieldset)form.vita('fieldset',eternal.form.fieldset,true);
+         if(eternal.form.legend)form.vita('legend',{},false,eternal.form.legend.txt);
+         this.setObject({"items":eternal,"father":function(_key,_property){
+
+            }
+         });//end setObject
+      }
+
+      this.setObject({"items":eternal,"father":function(_key,_field){}});
    }
    /*
     * used to display a single form display

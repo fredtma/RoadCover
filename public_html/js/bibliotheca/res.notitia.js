@@ -197,8 +197,7 @@ function SET_DB(){
     */
    this.beta=function(_actum,_iota){
       this.forma(_actum,_iota,function(results){
-         if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);
-         else eternal=null;
+         if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;
          switch(_actum){
             case 0:
                break;
@@ -206,8 +205,11 @@ function SET_DB(){
                break;
             case 2:
                break;
-            default:
-               theForm.setBeta(eternal,results,3)
+            case 3://select specific
+               theForm.setBeta(results,3)
+               break;
+            default://select all
+               theForm.setBeta(results)
                break;
          }//end switch
       });//end anonymous
