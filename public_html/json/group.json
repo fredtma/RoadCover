@@ -8,6 +8,6 @@
    "mensa": "groups",
    "fields": {
       "name":{"valid":["unique"],"icon":"icon icon-black icon-users","header":true,"place":true,"field":{"required":"","title":"Group name"}},
-      "desc":{"complex":"textarea","title":"descriiption","place":"Group Description","field":{"required":"","type":"text","rows":5,"clss":"text-area","maxlength":180}}
+      "desc":{"complex":"textarea","title":"description","place":"Group Description","field":{"required":"","type":"text","rows":5,"clss":"text-area","maxlength":180}}
    }
 }

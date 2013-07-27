@@ -125,15 +125,20 @@ function SET_FORM(_name,_class,_label){
                     .genesis('a',{'clss':'headeditable','contenteditable':true},true,headeName[1])
                     .genesis('a',{'clss':'headeditable','contenteditable':true},true,headeName[2])
                     .genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec,},true)
-                    .vita('i',{'clss':'icon icon-color icon-edit'}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(3,ii);$('.activeContent').removeClass('activeContent');$(this).parents('.accordion-group').find('.accordion-inner').addClass('activeContent');}
-
+                    .vita('i',{'clss':'icon icon-color icon-edit'}).child.onclick=function(){
+                        if($(this).data('clicked')==1){$(this).data('clicked',0);return false;}else{$(this).data('clicked',1);}
+                        ii=$(this).parents('div').data('iota');
+                        DB.beta(3,ii);
+                        $('.activeContent').removeClass('activeContent');
+                        $(this).parents('.accordion-group').find('.accordion-inner').addClass('activeContent');
+                     }
             collapse_head.genesis('a',{'href':'#'},true)
                     .vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii)};
             collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec});
-            collapse_content.vita('div',{'clss':'accordion-inner'},false,'...');
+            collapse_content.vita('div',{'clss':'accordion-inner'},false);
          }//end for
       }else if (_actum==3){
-         console.log($('.activeContent'));
+         console.log(_iota);
          row=(_iota!=-1)?_results.rows.item(0):{};
          this.frmLabel=mainLabel=eternal.form.label?eternal.form.label:true;
          this.frmName='frm_'+this.name;
@@ -144,21 +149,26 @@ function SET_FORM(_name,_class,_label){
          form=$anima('.activeContent','form',form);
          if(eternal.form.fieldset)form.vita('fieldset',eternal.form.fieldset,true);
          if(eternal.form.legend)form.vita('legend',{},false,eternal.form.legend.txt);
+         formContent=form.father;
          this.setObject({"items":eternal,"father":function(_key,_property){
                theField=_property.field;
                theField.id=_key;
                theName=theField.name?theField.name:_key;
                //FIELDSET
-               if(_property.fieldset){form.vita('fieldset',eternal.form.fieldset,true)}
-               if(_property.legend){form.vita('legend',{},false,eternal.form.legend.txt);}
-               formRow=form.vita('div',{"clss":"control-group "+_key},true);
+               if(_property.fieldset){
+                  formFields=$anima(formContent,'fieldset',eternal.form.fieldset,'','next');
+                  if(_property.legend){formFields.vita('legend',{},false,eternal.form.legend.txt);}
+                  formFields.vita('div',{"clss":"control-group "+_key});
+               }else{
+                  formFields=$anima(formContent,'div',{"clss":"control-group "+_key});
+               }
                //LABEL
                theLabel=_property.title?_property.title:theName;
                theLabel=aNumero(theLabel,true);
                label=null;
                label=(isset(_property.addLabel))?_property.addLabel:mainLabel;
-               if(label) {formRow.vita('label',{"clss":"control-label"+_key,"forr":_key},true,theLabel);}
-               formInput=formRow.genesis('div',{"clss":"controls"},true);
+               if(label) {formFields.vita('label',{"clss":"control-label "+_key,"forr":_key},true,theLabel);}
+               formControl=formFields.genesis('div',{"clss":"controls"},true).father;
                //PLACEHODER
                placeHolder=((_property.place)===true?theLabel:(_property.place)?_property.place:false);
                if(placeHolder!==false) theField.placeholder=placeHolder;
@@ -167,13 +177,12 @@ function SET_FORM(_name,_class,_label){
                tmpType=theField.type;
                theField=$.extend({},theDefaults[tmpType],theField);
                //set the input type textarea|input|select|etc...
-               input=(_property.items||_property.complex)?formInput(_key,theField,_property.items,formRow.father,_property.complex):creo(theField,'input');
+               input=(_property.items||_property.complex)?formInput(_key,theField,_property.items,formControl,_property.complex):creo(theField,'input');
                //input with items[] sets will not get icons
                if(_property.icon){
-                  formRowIcon=formRow.vita('div',{"clss":"input-prepend"},true);
-                  formRowIcon.vita('span',{"clss":"add-on"},true).vita('i',{"clss":_property.icon});
+                  formFields.vita('div',{"clss":"input-prepend"},true).vita('span',{"clss":"add-on"},true).vita('i',{"clss":_property.icon});
                }
-               formInput.father.appendChild(input);
+               formControl.appendChild(input);
             }
          });//end setObject
       }
