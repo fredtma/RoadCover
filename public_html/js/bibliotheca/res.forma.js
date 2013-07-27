@@ -103,6 +103,7 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.setBeta=function(_results,_actum,_iota){
+      var DB = new SET_DB();
       if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;
       this.name=eternal.form.field.name;
       $('#sideBot h3').html('<a href="#">Add new '+this.name+'<i class="icon icon-color icon-plus addThis"></i></a>');
@@ -114,30 +115,33 @@ function SET_FORM(_name,_class,_label){
       addbtn.onclick=addRecord;
       len=_results.rows.length;
       len=len||1;//this will display the record even when there is no record
+      console.log('@'+_actum);
       if(!_actum){
-         for(x=0;x<len;x++){//loop record
-            if(_results.rows.length){row=_results.rows.item(x);headeName=fieldDisplay('none',row,true);}else{row={'id':0};headeName=['Type '+this.name+' name here']}
-            collapse_heade=$anima('#acc_'+this.name,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group'});
-            collapse_heade.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
+         for(rec=0;rec<len;rec++){//loop record
+            if(_results.rows.length){row=_results.rows.item(rec);headeName=fieldDisplay('none',row,true);}else{row={'id':-1};headeName=['Type '+this.name+' name here']}
+            collapse_head=$anima('#acc_'+this.name,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group'});
+            collapse_head.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
                     .vita('a',{'clss':'headeditable','contenteditable':true},true,headeName[0])
                     .genesis('a',{'clss':'headeditable','contenteditable':true},true,headeName[1])
                     .genesis('a',{'clss':'headeditable','contenteditable':true},true,headeName[2])
-                    .genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+x,},true)
-                    .vita('i',{'clss':'icon icon-color icon-edit'}).child.onclick=creoDB.beta(3,row['id']);
-            collapse_heade.genesis('a',{'href':'#'},true)
-                    .vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=creoDB.beta(0,row['id']);
-            collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+x});
-            collapse_content.vita('div',{'clss':'accordion-inner'},false,row['desc']);
+                    .genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec,},true)
+                    .vita('i',{'clss':'icon icon-color icon-edit'}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(3,ii);$('.activeContent').removeClass('activeContent');$(this).parents('.accordion-group').find('.accordion-inner').addClass('activeContent');}
+
+            collapse_head.genesis('a',{'href':'#'},true)
+                    .vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii)};
+            collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec});
+            collapse_content.vita('div',{'clss':'accordion-inner'},false,'...');
          }//end for
       }else if (_actum==3){
-         row=_results.rows.item(x);
+         console.log($('.activeContent'));
+         row=(_iota!=-1)?_results.rows.item(0):{};
          this.frmLabel=mainLabel=eternal.form.label?eternal.form.label:true;
          this.frmName='frm_'+this.name;
          theDefaults=this.defaultFields;
          //FORM
          form=eternal.form.field;
          form.id=this.frmName;
-         form=$anima('','form',form);
+         form=$anima('.activeContent','form',form);
          if(eternal.form.fieldset)form.vita('fieldset',eternal.form.fieldset,true);
          if(eternal.form.legend)form.vita('legend',{},false,eternal.form.legend.txt);
          this.setObject({"items":eternal,"father":function(_key,_property){
@@ -147,14 +151,14 @@ function SET_FORM(_name,_class,_label){
                //FIELDSET
                if(_property.fieldset){form.vita('fieldset',eternal.form.fieldset,true)}
                if(_property.legend){form.vita('legend',{},false,eternal.form.legend.txt);}
-               formRow=form.vita('div',{"clss":"control-group "+_key});
+               formRow=form.vita('div',{"clss":"control-group "+_key},true);
                //LABEL
                theLabel=_property.title?_property.title:theName;
                theLabel=aNumero(theLabel,true);
                label=null;
                label=(isset(_property.addLabel))?_property.addLabel:mainLabel;
                if(label) {formRow.vita('label',{"clss":"control-label"+_key,"forr":_key},true,theLabel);}
-               formRow.genesis('div',{"clss":"controls"},true);
+               formInput=formRow.genesis('div',{"clss":"controls"},true);
                //PLACEHODER
                placeHolder=((_property.place)===true?theLabel:(_property.place)?_property.place:false);
                if(placeHolder!==false) theField.placeholder=placeHolder;
@@ -163,13 +167,13 @@ function SET_FORM(_name,_class,_label){
                tmpType=theField.type;
                theField=$.extend({},theDefaults[tmpType],theField);
                //set the input type textarea|input|select|etc...
-               input=(_property.items||_property.complex)?formInput(_key,theField,_property.items,div1,_property.complex):creo(theField,'input');
+               input=(_property.items||_property.complex)?formInput(_key,theField,_property.items,formRow.father,_property.complex):creo(theField,'input');
                //input with items[] sets will not get icons
                if(_property.icon){
-                  formRowIcon=formRow.vita('div',{"clss":"input-prepend"});
+                  formRowIcon=formRow.vita('div',{"clss":"input-prepend"},true);
                   formRowIcon.vita('span',{"clss":"add-on"},true).vita('i',{"clss":_property.icon});
                }
-               formRow.appendChild(input);
+               formInput.father.appendChild(input);
             }
          });//end setObject
       }

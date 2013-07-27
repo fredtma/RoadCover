@@ -13,7 +13,7 @@
  * @see: placeObj
  */
 function SET_DB(){
-   this.mensaActive=['profile'];
+   this.mensaActive=['users,groups,link_users_groups'];
    this.creoAgito=function(_sql,_params,_msg,callback){
       var sql=_sql;
       var msg=_msg;
@@ -205,11 +205,9 @@ function SET_DB(){
                break;
             case 2:
                break;
-            case 3://select specific
-               theForm.setBeta(results,3)
-               break;
+            case 3:
             default://select all
-               theForm.setBeta(results)
+               theForm.setBeta(results,_actum,_iota)
                break;
          }//end switch
       });//end anonymous
