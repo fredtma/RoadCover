@@ -141,7 +141,35 @@ function SET_FORM(_name,_class,_label){
          if(eternal.form.fieldset)form.vita('fieldset',eternal.form.fieldset,true);
          if(eternal.form.legend)form.vita('legend',{},false,eternal.form.legend.txt);
          this.setObject({"items":eternal,"father":function(_key,_property){
-
+               theField=_property.field;
+               theField.id=_key;
+               theName=theField.name?theField.name:_key;
+               //FIELDSET
+               if(_property.fieldset){form.vita('fieldset',eternal.form.fieldset,true)}
+               if(_property.legend){form.vita('legend',{},false,eternal.form.legend.txt);}
+               formRow=form.vita('div',{"clss":"control-group "+_key});
+               //LABEL
+               theLabel=_property.title?_property.title:theName;
+               theLabel=aNumero(theLabel,true);
+               label=null;
+               label=(isset(_property.addLabel))?_property.addLabel:mainLabel;
+               if(label) {formRow.vita('label',{"clss":"control-label"+_key,"forr":_key},true,theLabel);}
+               formRow.genesis('div',{"clss":"controls"},true);
+               //PLACEHODER
+               placeHolder=((_property.place)===true?theLabel:(_property.place)?_property.place:false);
+               if(placeHolder!==false) theField.placeholder=placeHolder;
+               //INNER DIV
+               if(!theField.type)theField.type='text';
+               tmpType=theField.type;
+               theField=$.extend({},theDefaults[tmpType],theField);
+               //set the input type textarea|input|select|etc...
+               input=(_property.items||_property.complex)?formInput(_key,theField,_property.items,div1,_property.complex):creo(theField,'input');
+               //input with items[] sets will not get icons
+               if(_property.icon){
+                  formRowIcon=formRow.vita('div',{"clss":"input-prepend"});
+                  formRowIcon.vita('span',{"clss":"add-on"},true).vita('i',{"clss":_property.icon});
+               }
+               formRow.appendChild(input);
             }
          });//end setObject
       }
