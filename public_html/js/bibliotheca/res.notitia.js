@@ -22,7 +22,7 @@ function SET_DB(){
       db.transaction(function(trans){
          trans.executeSql(sql,params,function(trans,results){
             console.log('Success DB transaction: '+msg);
-            $('#sideNotice .db_notice').html("Successful transaction: "+msg);
+            $('#sideNotice .db_notice').html("Successful transaction: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
             if(callback)callback(results);
          },function(_trans,_error){
             console.log('Failed DB transaction: '+msg+':'+_error.message);
@@ -30,8 +30,8 @@ function SET_DB(){
          });
       });
    }
-   console.log('db='+db);
    if(!db){
+      console.log('NEW DB:'+db);
       db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
       d=new Date();
       d=d.format('isoDate');
@@ -91,7 +91,6 @@ function SET_DB(){
          x=0;
          iota=iota||$(form).data('iota');
          $.each(eternal.fields,function(field,setting){
-            console.log(form+' #'+field);
             val=$(form+' #'+field).val()||$(form+' [name^='+field+']:checked').val();
             if(_actum!=3){
                if(!val) {quaerere=[];$('#sideNotice .db_notice').html('<div class="text-error">Missing '+field+'</div>');$('.control-group.'+field).addClass('error'); return false;}//@todo add validation, this is manual validation
@@ -121,8 +120,6 @@ function SET_DB(){
    this.alpha=function(_actum,_iota){
       fieldDisplay=this.fieldDisplay;
       this.forma(_actum,_iota,function(results){
-//         console.log(_trans);
-         console.log(results);
          if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);
          else eternal=null;
          if(!eternal){console.log("not found json");return false;}
@@ -196,14 +193,33 @@ function SET_DB(){
     * @returns {undefined}
     */
    this.beta=function(_actum,_iota){
+      callDB=this;
+      fieldDisplay=this.fieldDisplay;
       this.forma(_actum,_iota,function(results){
          if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;
+         this.name=eternal.form.field.name;
          switch(_actum){
             case 0:
                break;
             case 1:
+               $(form).data('iota',results.insertId);
+               nameList='';
+               nameList=fieldDisplay('list',null,true);
+               $('.accordion-body.in').data('iota',results.insertId);
+               $('.accordion-body.in').parents('.accordion-group').attr('id','accGroup'+results.insertId);
+               $('.accordion-body.in').prev().data('iota',results.insertId);
+               $(form+' #submit_'+this.name)[0].onclick=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');callDB.beta(2,results.insertId);setTimeout(function(){$('#submit_'+this.name).button('reset');}, 1000)}//make the form to become update
+               $(form+' #cancel_'+this.name).val('Done...');//@todo
+               $('#accGroup'+results.insertId+' .headeditable')[0].innerHTML=nameList[0];
+               if(nameList[1])$('#accGroup'+results.insertId+' .headeditable')[1].innerHTML=nameList[1];
+               if(nameList[2])$('#accGroup'+results.insertId+' .headeditable')[2].innerHTML=nameList[2];
                break;
             case 2:
+               $(form+' #cancel_'+this.name).val('Done...');//@todo
+               nameList='';
+               nameList=fieldDisplay('list',null,true);
+               console.log('#acc'+this.name+_iota+' .headeditable');
+               $('#accGroup'+_iota+' .headeditable')[0].innerHTML=nameList[0];
                break;
             case 3:
             default://select all

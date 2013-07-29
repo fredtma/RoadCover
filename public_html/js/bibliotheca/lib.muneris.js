@@ -73,8 +73,8 @@ $anima=function(section,ele,arr,txt,point){
       return this;
    }
    Node=(typeof(section)=='string')?document.querySelector(section):section;
-   if(point=='before')$(Node).before(this.father); //Node.insertBefore(this.father, Node.firstChild);
-   if(point=='next')Node.parentNode.insertBefore(this.father,Node.nextSibiling);
+   if(point=='first')Node.insertBefore(this.father,Node.firstChild); //Node.insertBefore(this.father, Node.firstChild);
+   else if(point=='next')Node.parentNode.insertBefore(this.father,Node.nextSibiling);
    else Node.appendChild(this.father);
    return this;
 };
@@ -133,34 +133,14 @@ function isset() {
  * @return bytes
  */
 function objectSize( object ) {
-
-    var objectList = [];
-    var stack = [ object ];
-    var bytes = 0;
-
+    var objectList = [];var stack = [ object ];var bytes = 0;
     while ( stack.length ) {
         var value = stack.pop();
-
-        if ( typeof value === 'boolean' ) {
-            bytes += 4;
-        }
-        else if ( typeof value === 'string' ) {
-            bytes += value.length * 2;
-        }
-        else if ( typeof value === 'number' ) {
-            bytes += 8;
-        }
-        else if
-        (
-            typeof value === 'object'
-            && objectList.indexOf( value ) === -1
-        )
-        {
-            objectList.push( value );
-            for( i in value ) {
-                stack.push( value[ i ] );
-            }
-        }
+        if ( typeof value === 'boolean') {bytes += 4;}
+        else if(typeof value === 'string') {bytes += value.length * 2;}
+        else if(typeof value === 'number') {bytes += 8;}
+        else if(typeof value === 'object'&& objectList.indexOf( value ) === -1)
+        {objectList.push( value );for( i in value ){stack.push( value[ i ] );}}
     }
     return bytes;
 }
@@ -247,6 +227,18 @@ function isOnline(_display){
       note+=window.sessionStorage?"<div id='notice2'>Session <strong class='text-success'>Storage</strong> enabled</div>":"<div id='notice2'>, No Session <strong class='text-error'>Storage</strong></div>";
       $('#sideNotice').append(note);
    }
+}
+/******************************************************************************/
+/**
+ * reset a form input data
+ * @author fredtma
+ * @version 2.5
+ * @category form, reset
+ * @param object <var>_frm</var> the object representing the form
+ */
+function resetForm(_frm){
+   $(':input',_frm).not(':button, :submit, :reset, :hidden, :checkbox, :radio').val('');
+   $('type[checkbox],type[radio]',form).prop('checked',false).prop('selected',false);
 }
 /******************************************************************************/
 /**

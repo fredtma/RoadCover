@@ -55,7 +55,8 @@ address {margin: 3px 0px;}
 ._box:first-child{padding: 4px 0px;}/*this is to add padding without disrupting the size of box*/
 .body article {padding: 4px 4px;}
 a[contenteditable=true]{cursor: text;}
-a[contenteditable=true]:hover{text-decoration: none;}
+a[contenteditable=false]{cursor: pointer;}
+a[contenteditable=true]:hover,a[contenteditable=false]:hover{text-decoration: none;}
 a.headeditable{display:inline-block;width:29%;padding: 8px 15px;}
 a.accordion-toggle{display:initial !important;padding: 4px 4px  !important;}
 /******************************************************************************/
@@ -63,6 +64,8 @@ a.accordion-toggle{display:initial !important;padding: 4px 4px  !important;}
 .form-horizontal .control-group {margin-bottom: 10px;}
 legend+.control-group {margin-top: 10px;-webkit-margin-top-collapse: separate;}
 .text-area, .input-text{width:234px;}
+.accordion-body.in .accordion-inner{min-height:15em;}
+.accordion-heading a.forIcon {padding: 4px;}
 /*form {margin: -10px 0 20px;}*/
 /******************************************************************************/
 /*side bar*/
@@ -91,7 +94,8 @@ input[type="radio"], input[type="checkbox"] {margin: 0 0 4px 0;margin-top: 1px \
 /******************************************************************************/
 /*size setting*/
 @media all and (max-width: 1024px){
-   .logo, .aside {display:none;}.navigator, .body {width:98%;}
+   .logo,.aside,.pagination,#statusbar {display:none;}.navigator, .body {width:100%;}
+   a.headeditable{width:26%;}
 }
 /*tab-portrait*/
 @media all and (max-width: 768px){}

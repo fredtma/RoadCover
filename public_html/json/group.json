@@ -3,7 +3,7 @@
       "field":{"clss":"form-horizontal","name":"group","data-iota":"0"},
       "fieldset":{"name":"admin-groups"},
       "legend":{"txt":"Administrator Groups"},
-      "button":{"submit_groups":{"value":"Save Changed","type":"submit","clss":"btn btn-primary","save":true},"cancel_groups":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
+      "button":{"submit_group":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_group":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
    },
    "mensa": "groups",
    "fields": {
