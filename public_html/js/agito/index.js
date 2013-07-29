@@ -43,7 +43,7 @@ mother={"clss":"dropdown-menu bottom-up pull-right","children":{"footContact":{"
 roadCover._Set({"next":"#copyRight"}).setList({"clss":"nav","items":{"userName":{"href":"#","txt":username},"sysAbout":{"href":"#","clss1":"dropdown","txt":"About Us","clss2":"dropdown-toggle","data-toggle":"dropdown","caret":"caret bottom-up","sub":mother},"userOut":{"href":"#","txt":"Logout"} }});
 //FORM
 timeFrame('form',true);
-$.getJSON("json/profile.json",findJSON);
+$.getJSON("json/group.json",findJSON);
 function findJSON(data){
    console.log(data);
    sessionStorage.active=JSON.stringify(data);//@todo:fix the first time it loads it's empty

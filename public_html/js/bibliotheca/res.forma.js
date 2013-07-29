@@ -105,6 +105,7 @@ function SET_FORM(_name,_class,_label){
     */
    this.setBeta=function(_results,_actum,_iota){
       eternal=eternal||this.eternalCall();
+      linkTable=this.linkTable;
       this.name=eternal.form.field.name;
       len=_results.rows.length;
       len=len||1;//this will display the record even when there is no record
@@ -129,19 +130,18 @@ function SET_FORM(_name,_class,_label){
                      $('#acc_'+this.name).on('shown',function(){ii=$('.accordion-body.in').data('iota');DB.beta(3,ii);});
             collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
                     .vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
-            collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
-                    .vita('i',{'clss':'icon icon-color icon-link'});
-            console.log(collapse_head.child);
-            $(collapse_head.child).click(function(linkTable){
-               if(!$(this).data('toggle')||$(this).data('toggle')==0){$(this).data('toggle',1);
-                  $(this).addClass('icon-unlink').removeClass('icon-link');
-                  linkTable(true);
-               }else{$(this).data('toggle',0);
-                  $(this).addClass('icon-link').removeClass('icon-unlink');
-                  linkTable(false);
-               }
-            })(this.linkTable);
-
+            for(link in eternal.links){
+               collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link'});
+               $(collapse_head.child).click(function(){
+                  if(!$(this).data('toggle')||$(this).data('toggle')==0){$(this).data('toggle',1);
+                     $(this).addClass('icon-unlink').removeClass('icon-link');
+                     linkTable(true, link, eternal.links[link][0], eternal.links[link][1]);
+                  }else{$(this).data('toggle',0);
+                     $(this).addClass('icon-link').removeClass('icon-unlink');
+                     linkTable(false);
+                  }
+               });
+            }
             collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec,'data-iota':row['id']});
             collapse_content.vita('div',{'clss':'accordion-inner'},false);
          }//end for
@@ -166,7 +166,6 @@ function SET_FORM(_name,_class,_label){
             $(form+' #submit_'+this.name)[0].onclick=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000)}//make the form to become update
          }
       }
-
       this.setObject({"items":eternal,"father":function(_key,_field){}});
    }
    /*
@@ -288,8 +287,16 @@ function SET_FORM(_name,_class,_label){
     * @param {bool} <var>_state</var> the state to show or not show the links
     * @returns {undefined}
     */
-   this.linkTable=function(_state){
+   this.linkTable=function(_state,_mensa,_unus,_duo){
       eternal=eternal||this.eternalCall();
+      quaerere="SELECT "+_unus+" FROM "+_duo+" ORDER BY "+_unus;
+      DB.creoAgito(quaerere,[],"Selected "+_duo,function(results){
+         len=results.rows.length;
+         for(x=0;x<len;x++){
+            row=results.rows.item(x);
+            console.log(row[_unus]);
+         }
+      });
    }
    this.eternalCall=function(){
       if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;
