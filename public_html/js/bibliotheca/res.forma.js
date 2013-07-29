@@ -104,7 +104,7 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.setBeta=function(_results,_actum,_iota){
-      if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;
+      eternal=eternal||this.eternalCall();
       this.name=eternal.form.field.name;
       len=_results.rows.length;
       len=len||1;//this will display the record even when there is no record
@@ -131,6 +131,17 @@ function SET_FORM(_name,_class,_label){
                     .vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
             collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
                     .vita('i',{'clss':'icon icon-color icon-link'});
+            console.log(collapse_head.child);
+            $(collapse_head.child).click(function(linkTable){
+               if(!$(this).data('toggle')||$(this).data('toggle')==0){$(this).data('toggle',1);
+                  $(this).addClass('icon-unlink').removeClass('icon-link');
+                  linkTable(true);
+               }else{$(this).data('toggle',0);
+                  $(this).addClass('icon-link').removeClass('icon-unlink');
+                  linkTable(false);
+               }
+            })(this.linkTable);
+
             collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec,'data-iota':row['id']});
             collapse_content.vita('div',{'clss':'accordion-inner'},false);
          }//end for
@@ -271,6 +282,18 @@ function SET_FORM(_name,_class,_label){
       });//end setObject
       formContent.appendChild(this.setButton(eternal.form.button));
       document.getElementById(this.frmName).style.display='none';
+   }
+   /*
+    * function to link the selected table in a gerund
+    * @param {bool} <var>_state</var> the state to show or not show the links
+    * @returns {undefined}
+    */
+   this.linkTable=function(_state){
+      eternal=eternal||this.eternalCall();
+   }
+   this.eternalCall=function(){
+      if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;
+      return eternal;
    }
    if(this instanceof SET_FORM)return this;
    else return new SET_FORM();

@@ -72,6 +72,11 @@ $anima=function(section,ele,arr,txt,point){
       if(parent)this.father=this.child;
       return this;
    }
+   this.novo=function(parent,ele,err,txt){
+      this.father=(typeof(parent)=='string')?document.querySelector(parent):section;
+      this.child=this.creo(arr,ele,txt);
+      return this;
+   }
    Node=(typeof(section)=='string')?document.querySelector(section):section;
    if(point=='first')Node.insertBefore(this.father,Node.firstChild); //Node.insertBefore(this.father, Node.firstChild);
    else if(point=='next')Node.parentNode.insertBefore(this.father,Node.nextSibiling);
