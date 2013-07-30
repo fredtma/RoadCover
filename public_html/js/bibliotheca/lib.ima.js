@@ -18,7 +18,6 @@
  */
 get_ajax = function (www, var_set, object, method, format, call_success)
 {
-
    if (!format) format  = 'html';
    if (!method) method  = 'post';
    if (!call_success) call_success = true;
@@ -76,6 +75,29 @@ function ajax_error (event, response, ajaxSettings, thrownError)
 /*   alert(event+'-'+response+'-'+ajaxSettings+'-'+thrownError);*/
    $(this).append(response.responseText+'<br/><strong>Error:</strong>'+thrownError);
 /*   $.each(ajaxSettings,function(k,v){$('#debug_inbox').append(k+'='+v+'<br/>')});*/
+}
+/******************************************************************************/
+/**
+ * json call and response function for success entry
+ * @author fredtma
+ * @param {string} <var>_form</var> the type of form to run
+ * @version 3.8
+ * @category ajax, dynamic
+ * @return json
+ */
+function findJSON(data,_form){
+   console.log(data);
+   timeFrame('ALPHA');
+   sessionStorage.active=JSON.stringify(data);//@todo:fix the first time it loads it's empty
+   theForm = new SET_FORM();
+   theForm._Set("#body article");
+   //DB SETUP
+   var creoDB=new SET_DB();
+   switch(_form){
+      case 'alpha':creoDB.alpha();break;
+      default:creoDB.beta();break;
+   }
+   timeFrame('OMEGA',true);
 }
 /******************************************************************************/
 /**

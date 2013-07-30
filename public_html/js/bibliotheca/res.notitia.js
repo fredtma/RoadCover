@@ -14,18 +14,21 @@
  */
 function SET_DB(){
    this.mensaActive=['users,groups,link_users_groups'];
-   this.creoAgito=function(_sql,_params,_msg,callback){
-      var sql=_sql;
+   this.creoAgito=function(_quaerere,_params,_msg,callback){
+      var quaerere=_quaerere;
       var msg=_msg;
       var params=_params||[];
 //      if(!db) db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
       db.transaction(function(trans){
-         trans.executeSql(sql,params,function(trans,results){
+         trans.executeSql(quaerere,params,function(trans,results){
             console.log('Success DB transaction: '+msg);
-            $('#sideNotice .db_notice').html("Successful transaction: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+            console.log(quaerere);
+            console.log(results);
+            $('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
             if(callback)callback(results);
          },function(_trans,_error){
-            console.log('Failed DB transaction: '+msg+':'+_error.message);
+            console.log('Failed DB: '+msg+':'+_error.message);
+            console.log('::QUAERERE='+quaerere);
             $('#sideNotice .db_notice').html("<div class='text-error'>"+_error.message+'</div>');
          });
       });
@@ -111,7 +114,6 @@ function SET_DB(){
             this.creoAgito(quaerere,params,msg,callback);
          }
       }
-      console.log(quaerere);
    }
    /*
     * the successful return function
@@ -218,7 +220,6 @@ function SET_DB(){
                $(form+' #cancel_'+this.name).val('Done...');//@todo
                nameList='';
                nameList=fieldDisplay('list',null,true);
-               console.log('#acc'+this.name+_iota+' .headeditable');
                $('#accGroup'+_iota+' .headeditable')[0].innerHTML=nameList[0];
                break;
             case 3:
@@ -261,6 +262,38 @@ function SET_DB(){
    }
    if(this instanceof SET_DB)return this;
    else return new SET_DB();
+}
+/******************************************************************************/
+/**
+ * used to measure script execution time
+ *
+ * It will verify all the variable sent to the function
+ * @author fredtma
+ * @version 0.5
+ * @category iyona
+ * @gloabl aboject $db
+ * @param array $__theValue is the variable taken in to clean <var>$__theValue</var>
+ * @see get_rich_custom_fields(), $iyona
+ * @return void|bool
+ * @todo finish the function on this page
+ * @uses file|element|class|variable|function|
+ */
+var $DB=function(quaerere,params,msg,callback){
+   if(db){
+      db.transaction(function(trans){
+         trans.executeSql(quaerere,params,function(trans,results){
+            console.log('Success DB transaction: '+msg);
+            console.log(quaerere);
+            console.log(results);
+            $('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+            if(callback)callback(results);
+         },function(_trans,_error){
+            console.log('Failed DB: '+msg+':'+_error.message);
+            console.log('::QUAERERE='+quaerere);
+            $('#sideNotice .db_notice').html("<div class='text-error'>"+_error.message+'</div>');
+         });
+      });
+   }
 }
 /******************************************************************************/
 /**

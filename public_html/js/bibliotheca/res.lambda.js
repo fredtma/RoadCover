@@ -130,7 +130,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
             ul=creo({"clss":item.clss,"id":key},'ul');
             $.each(item.sub,function(index,val){
                li=creo({'id':index},'li');
-               a=creo({"href":val.href},'a');
+               a=creo({"href":val.href,"clss":val.clss},'a');
                i=creo({"clss":val.icon},'i');
                txt=document.createTextNode(' '+val.txt);
                if(val.divider){li.className="divider";txt=document.createTextNode('');i=creo({},'i');}
@@ -247,6 +247,21 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
       this.placeObj(address);
       return address;
    }/*end function*/
+   this.userLogin=function(){
+      if(!sessionStorage.username){
+         $modal=$anima('#hiddenElements','div',{'clss':'modal','id':'userLogin','role':'dialog'})
+         .vita('div',{'clss':'modal-header'},true).vita('button',{'clss':'close','aria-hidden':true},true).vita('i',{'clss':'icon icon-color icon-close'}).genesis('h2',{},false,'Welcome to '+localStorage.SITE_NAME)
+         .novo('#userLogin','div',{'clss':'modal-body'}).vita('div',{'clss':'alert alert-info'},true)
+            .vita('h4',{},false,'Login Details').vita('span')
+            .novo('#userLogin .modal-body','form',{'clss':'form-signin','id':'loginForm','method':'post'}).vita('div',{'clss':'input-prepend fullWidth'},true).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-user'}).genesis('input',{'id':'email','type':'email','placeholder':'email address','clss':'input-block-level','required':'','autofocus':true})
+            .novo('#userLogin .form-signin','div',{'clss':'input-prepend fullWidth'}).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-lock'}).genesis('input',{'id':'password','type':'password','clss':'input-block-level','required':'','pattern':localStorage.PASSPATERN})
+            .novo('#userLogin .form-signin','label',{'name':'remember','for':'remember','clss':'checkbox'},'Remember me').vita('input',{'type':'checkbox','value':1})
+         .novo('#userLogin','div',{'clss':'modal-footer'}).vita('button',{'clss':'btn btn-primary','form':'loginForm'},false,'Login');
+         $('#hiddenElements').modal({'backdrop':'static','keyboard':true,'show':true});
+//         $('#loginForm').submit(function(){ return loginForm});
+         document.getElementById('loginForm').onsubmit=function(){loginValidation(); return false;};
+      }//end if
+   }//end function
 
    if(this instanceof SET_DISPLAY)return this;
    else return new SET_DISPLAY();

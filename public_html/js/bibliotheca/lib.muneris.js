@@ -19,6 +19,7 @@ localStorage.URL_IMG=localStorage.SITE_URL+'img/';
 localStorage.URL_LIB=localStorage.SITE_URL+'js/';
 localStorage.URL_JSON=localStorage.SITE_URL+'json/';
 localStorage.LIMIT=7;
+localStorage.PASSPATERN='.{6,}';//(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$
 var db;
 /******************************************************************************/
 /**
@@ -72,9 +73,10 @@ $anima=function(section,ele,arr,txt,point){
       if(parent)this.father=this.child;
       return this;
    }
-   this.novo=function(parent,ele,err,txt){
-      this.father=(typeof(parent)=='string')?document.querySelector(parent):section;
-      this.child=this.creo(arr,ele,txt);
+   this.novo=function(section,ele,arr,txt){
+      Node=(typeof(section)=='string')?document.querySelector(section):section;
+      this.father=this.creo(arr,ele,txt);
+      Node.appendChild(this.father);
       return this;
    }
    Node=(typeof(section)=='string')?document.querySelector(section):section;
@@ -138,14 +140,14 @@ function isset() {
  * @return bytes
  */
 function objectSize( object ) {
-    var objectList = [];var stack = [ object ];var bytes = 0;
+    var objectList=[];var stack=[object];var bytes=0;cnt=0;
     while ( stack.length ) {
         var value = stack.pop();
         if ( typeof value === 'boolean') {bytes += 4;}
         else if(typeof value === 'string') {bytes += value.length * 2;}
         else if(typeof value === 'number') {bytes += 8;}
         else if(typeof value === 'object'&& objectList.indexOf( value ) === -1)
-        {objectList.push( value );for( i in value ){stack.push( value[ i ] );}}
+        {objectList.push( value );for( i in value ){stack.push( value[ i ] );cnt++;if(cnt>500)return bytes;}}
     }
     return bytes;
 }

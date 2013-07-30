@@ -71,6 +71,7 @@ a.accordion-toggle{display:initial !important;padding: 4px 4px  !important;}
 /*side bar*/
 #sideNotice {padding-right:4px;}
 .aside hgroup {padding:4px 5px;}
+.aside time {margin-right:0.2em;}
 aside h3 {border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;padding-right: 0.2em; text-transform: capitalize;/* box-shadow: 0 0 10px #BDBDBD; *//* -webkit-box-shadow: 0 0 10px #BDBDBD; */background-color: #f5f5f5;}
 .nav-grid {margin-bottom: 20px;margin-left: 0;list-style: none;}
 .nav-grid > li {line-height: 20px; padding:5px 0px;}
@@ -91,6 +92,20 @@ footer {top:auto; bottom:0; margin-bottom:1px; position:fixed; left:0; right:0; 
 textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input
 {background: #fff url(../img/gradient.png)top left repeat-x;-webkit-box-shadow: inset 0 3px 3px rgba(0, 0, 0, 0.075);-moz-box-shadow: inset 0 3px 3px rgba(0, 0, 0, 0.075);box-shadow: inset 0 3px 3px rgba(0, 0, 0, 0.075);}
 input[type="radio"], input[type="checkbox"] {margin: 0 0 4px 0;margin-top: 1px \9;line-height: normal;}
+#hiddenElements h2 {font-size:2em;}
+/******************************************************************************/
+/*LOGIN*/
+.form-signin {
+  max-width: 20em;padding: 19px 29px 29px;margin: 0 auto 20px;background-color: #fff;border: 1px solid #e5e5e5;
+  -webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);-moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+.form-signin .form-signin-heading,.form-signin .checkbox {margin-bottom: 10px;}
+.form-signin input[type="text"],.form-signin input[type="password"] {
+  font-size: 14px;height: auto;
+  margin-bottom: 15px;
+}
+.fullWidth{width: 90%; }
 /******************************************************************************/
 /*size setting*/
 @media all and (max-width: 1024px){

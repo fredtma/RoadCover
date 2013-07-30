@@ -18,16 +18,21 @@ addRecord=function(){
    collapse_content=$anima('#accGroup'+d,'div',{'clss':'accordion-body collapse','id':'collapse_'+name+r,'data-iota':d});
    collapse_content.vita('div',{'clss':'accordion-inner'},false,'');
 }
-edtRecord=function(){
-//   creoDB.beta(3,_iota);
-   ii=$(this).parents('div').data('iota');
-   DB.beta(3,ii);
-   $('.activeContent').removeClass('activeContent');
-   $(this).parents('.accordion-group').find('.accordion-inner').addClass('activeContent');
+edtRecord=function(){ii=$(this).parents('div').data('iota');DB.beta(3,ii);$('.activeContent').removeClass('activeContent');$(this).parents('.accordion-group').find('.accordion-inner').addClass('activeContent');}
+delRecord=function(){DB=DB||new SET_DB();ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide()}
+$('.btnUser,.icon-user,.profileList').click(function(){$.getJSON("json/profile.json",findJSON);});
+$('.icon-users').click(function(){$.getJSON("json/group.json",findJSON);});
+loginValidation=function(){
+   try{
+      u=$('#loginForm #email').val();
+      p=$('#loginForm #password').val();
+      DB=new SET_DB();
+      console.log(p+'-'+u);
+      $DB("SELECT id FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(results){
+         if(results.rows.length){$('#hiddenElements').modal('hide');}
+         else{$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('Failed login attempt...')}
+      });
+   }catch(err){console.log('ERROR::'+err.message)}
+   return false;
 }
-delRecord=function(){
-   DB=DB||new SET_DB();
-   ii=$(this).parents('div').data('iota');
-   DB.beta(0,ii);
-   $(this).parents('.accordion-group').hide()
-}
+

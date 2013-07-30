@@ -27,7 +27,7 @@ function SET_FORM(_name,_class,_label){
    this.defaultFields={
       "text":{"type":"text"},
       "email":{"type":"email"},
-      "password":{"type":"password","required":""},
+      "password":{"type":"password","required":"","pattern":localStorage.PASSPATERN,"Title":"Password requires (UpperCase, LowerCase, Number/SpecialChar and min 8 Chars)"},
       "url":{"type":"url","placeholder":"http://www.example.com"},
       "date":{"type":"date"},
       "datetime":{"type":"datetime-local"},
@@ -104,21 +104,28 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.setBeta=function(_results,_actum,_iota){
+      tmpHead=[];
       eternal=eternal||this.eternalCall();
       linkTable=this.linkTable;
       this.name=eternal.form.field.name;
       len=_results.rows.length;
       len=len||1;//this will display the record even when there is no record
       if(!_actum){
-         $('#sideBot h3').html('<a href="#">Add new '+this.name+'<i class="icon icon-color icon-plus addThis"></i></a>');
-         //@todo: check that the button does not duplicate
-         $('.secondRow').append(creo({},'h2'));
+         $('#sideBot h3').html(eternal.form.legend.txt);
+         roadCover._Set({"next":".tab-pane.active .libHelp"});
+         if(!document.getElementById('newItem')){
+            $('.secondRow').append(creo({},'h2'));
+            addbtn=roadCover._Set({"next":".tab-pane.active .libHelp"}).btnCreation("button",{"id":"newItem","name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
+         }else{
+            $('#newItem').attr("name","btnNew"+this.name).attr("title","Create a new "+this.name).html(" <i class='icon-plus icon-white'></i> New "+this.name);
+         }
          $('#tab-home section h2').text(eternal.form.legend.txt);
-         addbtn=roadCover._Set({"next":".tab-pane.active .libHelp"}).btnCreation("button",{"name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
+         $(this.Obj.addTo).empty();
          container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
          addbtn.onclick=addRecord;
          for(rec=0;rec<len;rec++){//loop record
             if(_results.rows.length){row=_results.rows.item(rec);headeName=fieldDisplay('none',row,true);}else{row={'id':-1};headeName=['Type '+this.name+' name here']}
+            tmpHead[rec]=headeName;
             collapse_head=$anima('#acc_'+this.name,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group'});
             collapse_head.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
                     .vita('a',{'clss':'headeditable','contenteditable':false,'data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec},true,headeName[0])//@todo: add save on element
@@ -131,15 +138,10 @@ function SET_FORM(_name,_class,_label){
             collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
                     .vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
             for(link in eternal.links){
-               collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link'});
-               $(collapse_head.child).click(function(){
-                  if(!$(this).data('toggle')||$(this).data('toggle')==0){$(this).data('toggle',1);
-                     $(this).addClass('icon-unlink').removeClass('icon-link');
-                     linkTable(true, link, eternal.links[link][0], eternal.links[link][1]);
-                  }else{$(this).data('toggle',0);
-                     $(this).addClass('icon-link').removeClass('icon-unlink');
-                     linkTable(false);
-                  }
+               collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','data-head':headeName});
+               $(collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
+                  $('.accordion-heading .icon-black').removeClass('icon-black').addClass('icon-color');$(this).removeClass('icon-color').addClass('icon-black');
+                  linkTable($(this).data('head'), link, eternal.links[link],$(this).parents('div').data('iota'));
                });
             }
             collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec,'data-iota':row['id']});
@@ -156,7 +158,6 @@ function SET_FORM(_name,_class,_label){
          frm.style.display='block';
          $(form+' #cancel_'+this.name)[0].value='Cancel';//@todo
          $(form+' #cancel_'+this.name).click(function(){$(this).parents('.accordion-body.in').collapse('hide');});
-         console.log('++'+_iota);
          if((_iota==-1||!_iota)){
             $(form).data('iota',0);
             $(form+' #submit_'+this.name)[0].onclick=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(1);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000)}//make the form to become inserted
@@ -232,7 +233,6 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.callForm=function(_results,_iota){
-      console.log(_iota);
       row=(_iota==-1||!_iota)?{}:_results.rows.item(0);
       this.frmLabel=mainLabel=eternal.form.label?eternal.form.label:true;
       this.frmName='frm_'+this.name;
@@ -284,19 +284,43 @@ function SET_FORM(_name,_class,_label){
    }
    /*
     * function to link the selected table in a gerund
-    * @param {bool} <var>_state</var> the state to show or not show the links
+    * @param {string} <var>_name</var> list of name associated with the link
+    * @param {string} <var>_mensa</var> the gerund
+    * @param {array} <var>_agrum</var> the field to quaerere
+    * @param {integer} <var>_iota</var> groups iota
     * @returns {undefined}
     */
-   this.linkTable=function(_state,_mensa,_unus,_duo){
-      eternal=eternal||this.eternalCall();
-      quaerere="SELECT "+_unus+" FROM "+_duo+" ORDER BY "+_unus;
-      DB.creoAgito(quaerere,[],"Selected "+_duo,function(results){
+   this.linkTable=function(_name,_mensa,_agrum,_iota){
+      if(!$('#displayMensa').data('listed')||$('#displayMensa').data('listed')!=_iota){
+         $('#displayMensa').data('listed',_iota);
+         $('#displayMensa').empty();
+         eternal=eternal||this.eternalCall();
+         unus=_agrum[1];
+         duo=_agrum[2]||_agrum[0];
+         _agrum=_agrum[0];
+         agris1=unus.slice(0,-1);
+         agris2=duo.slice(0,-1);
+         $('#sideBot h3').html('Associate '+_name+' to a '+duo);
+         quaerere="SELECT a.id,"+_agrum+",b.`"+agris2+"` ref FROM `"+unus+"` a LEFT OUTER JOIN "+_mensa+" b ON b.`"+agris1+"`=a.id GROUP BY a.id ORDER BY "+_agrum;
+         DB.creoAgito(quaerere,[],"Listing "+unus,function(results){
          len=results.rows.length;
-         for(x=0;x<len;x++){
-            row=results.rows.item(x);
-            console.log(row[_unus]);
-         }
-      });
+            for(x=0;x<len;x++){
+               row=results.rows.item(x);
+               displayMensa=$anima('#displayMensa','li',{'data-iota':row['id']}).vita('a',{'href':'#link_'+unus},true,aNumero(row[_agrum])+' ').vita('i',{'clss':'icon icon-color icon-unlink'});
+               displayMensa.child.onclick=function(){
+                  if(!$(this).data('toggle')||$(this).data('toggle')==0){
+                     $(this).data('toggle',1);$(this).addClass('icon-link').removeClass('icon-unlink');
+                     d=new Date().format('isoDateTime');
+                     DB.creoAgito("INSERT INTO "+_mensa+" (`"+agris1+"`,`"+agris2+"`,`creation`) VALUES (?,?,?)",[row['id'],_iota,d],"Linked "+_name+" to "+row[_agrum]);
+                  }else{
+                     $(this).data('toggle',0);$(this).addClass('icon-unlink').removeClass('icon-link');
+                     DB.creoAgito("DELETE FROM "+_mensa+" WHERE "+agris1+"=? AND "+agris2+"=?",[row['id'],_iota],"unLinked "+_name+" to "+row[_agrum]);
+                  }//endif
+               };//end anonymous
+               if(row['ref']==_iota)$(displayMensa.child).removeClass('icon-unlink').addClass('icon-link');
+            }//end for
+         });//end callback
+      }//endfi
    }
    this.eternalCall=function(){
       if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;

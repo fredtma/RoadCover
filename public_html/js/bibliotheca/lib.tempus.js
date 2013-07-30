@@ -90,7 +90,7 @@ dateFormat.masks = {
    longTime:       "h:MM:ss TT Z",
    isoDate:        "yyyy-mm-dd",
    isoTime:        "HH:MM:ss",
-   isoDateTime:    "yyyy-mm-dd'T'HH:MM:ss",
+   isoDateTime:    "yyyy-mm-dd HH:MM:ss",
    isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
 };
 

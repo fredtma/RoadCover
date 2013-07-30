@@ -13,5 +13,6 @@
       "lastname":{"icon":"icon-tags","header":true,"place":true,"field":{"required":""}},
       "email":{"icon":"icon-envelope","place":true,"field":{"type":"email","required":""}},
       "gender":{"field":{"type":"radio","required":""},"items":["Male","Female"]}
-   }
+   },
+   "links":{"link_users_groups":["name","groups","users"]}
 }
