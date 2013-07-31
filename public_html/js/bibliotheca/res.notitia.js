@@ -23,7 +23,7 @@ function SET_DB(){
          trans.executeSql(quaerere,params,function(trans,results){
             console.log('Success DB transaction: '+msg);
             console.log(quaerere);
-            console.log(results);
+            j=$DB2JSON(results);
             $('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
             if(callback)callback(results);
          },function(_trans,_error){
@@ -36,21 +36,30 @@ function SET_DB(){
    if(!db){
       console.log('NEW DB:'+db);
       db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
-      d=new Date();
-      d=d.format('isoDate');
       if(!localStorage.DB){
          localStorage.DB=db;
-         sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TEXT DEFAULT '"+d+"')";
-         this.creoAgito(sql,[],'Table users creation');
-         this.creoAgito("CREATE INDEX user_username ON users(username)");
-         this.creoAgito("CREATE INDEX user_email ON users(email)");
-         group="CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, desc TEXT, creation TEXT)";
+         sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(sql,[],'Table users created');
+         this.creoAgito("CREATE INDEX user_username ON users(username)",[],"index user_username");
+         this.creoAgito("CREATE INDEX user_email ON users(email)",[],"index user_email");
+         group="CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, desc TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          this.creoAgito(group,[],'Table groups created');
          this.creoAgito("CREATE INDEX groups_name ON groups(name)",[],'index groups_name');
-         link="CREATE TABLE IF NOT EXISTS link_users_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, `user` INTEGER, `group` INTEGER, creation TEXT DEFAULT '"+d+"')";
+         link="CREATE TABLE IF NOT EXISTS link_users_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, `user` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          this.creoAgito(link,[],'Table link to users and groups created');
          this.creoAgito("CREATE INDEX link_usergroup_user ON link_users_groups(`user`)",[],'index link_usergroup_user');
          this.creoAgito("CREATE INDEX link_usergroup_group ON link_users_groups(`group`)",[],'index link_usergroup_group');
+         perm="CREATE TABLE IF NOT EXISTS permissions (id INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `desc` TEXT NOT NULL, `page` TEXT, `enable` INTEGER DEFAULT 1, `rank` INTEGER DEFAULT 0, `icon` TEXT, `sub` INTEGER DEFAULT 0, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(perm,[],'Table permissions created');
+         this.creoAgito("CREATE INDEX perm_name ON permissions(name)",[],"index perm_name");
+         link="CREATE TABLE IF NOT EXISTS link_permissions_groups(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(link,[],'Table link to permisions to groups created');
+         this.creoAgito("CREATE INDEX link_permgroup_perm ON link_permissions_groups(`permission`)",[],'index link_permgroup_perm');
+         this.creoAgito("CREATE INDEX link_permgroup_group ON link_permissions_groups(`group`)",[],'index link_permgroup_group');
+         link="CREATE TABLE IF NOT EXISTS link_permissions_users(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `user` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(link,[],'Table link to permisions to users created');
+         this.creoAgito("CREATE INDEX link_permuser_perm ON link_permissions_users(`permission`)",[],'index link_permuser_perm');
+         this.creoAgito("CREATE INDEX link_permuser_user ON link_permissions_users(`username`)",[],'index link_permuser_user');
       }
    }
    /*
@@ -284,7 +293,7 @@ var $DB=function(quaerere,params,msg,callback){
          trans.executeSql(quaerere,params,function(trans,results){
             console.log('Success DB transaction: '+msg);
             console.log(quaerere);
-            console.log(results);
+            j=$DB2JSON(results);
             $('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
             if(callback)callback(results);
          },function(_trans,_error){
@@ -295,6 +304,35 @@ var $DB=function(quaerere,params,msg,callback){
       });
    }
 }
+/******************************************************************************/
+/**
+ * convert either websql or indexdb to json format
+ * @author fredtma
+ * @version 2.3
+ * @category db, convert
+ * @param object <var>_results</var> the results from the DB
+ * @param integer <var>_type</var> the type pf results
+ * @return json
+ * @todo add indexdb and any other results type
+ */
+ $DB2JSON=function(_results,_type){
+   var j={};
+   switch(_type){
+      case 1:break;
+      case 2:break;
+      default:
+         len=_results.rows.length;
+         for(x=0;x<len;x++){
+            console.log(_results.rowsAffected);
+            row=_results.rows.item(x);
+            col=0;
+            for(k in row){row[col]=row[k];col++;}
+            j[x]=row;
+         }//endfor
+         break;
+   }//endswith
+   return j;
+ }
 /******************************************************************************/
 /**
  * used to measure script execution time

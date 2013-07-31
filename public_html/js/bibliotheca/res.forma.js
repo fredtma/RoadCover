@@ -36,7 +36,7 @@ function SET_FORM(_name,_class,_label){
       "color":{"type":"color"},
       "tel":{"type":"tel","pattern":"(\(?\d{3}\)?[\-\s]\d{3}[\-\s]\d{4})"},
       "file":{"type":"file","multiple":""},
-      "list":{"type":"text","list":"theList"},
+      "list":{"type":"list","list":"theList"},
    };
    /*
     * used to pass variable that will commonly be used everywhere
@@ -132,16 +132,17 @@ function SET_FORM(_name,_class,_label){
                     .genesis('a',{'clss':'headeditable','contenteditable':false,'data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec},true,headeName[1])
                     .genesis('a',{'clss':'headeditable','contenteditable':false,'data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec},true,headeName[2])
                     .genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec,},true)
-                    .vita('i',{'clss':'icon icon-color icon-edit'});
+                    .vita('i',{'clss':'icon icon-color icon-edit','title':'Edit '+headeName[0]});
                      //FIRE on shown//@todo verify why multiple triger are fired on new elements
                      $('#acc_'+this.name).on('shown',function(){ii=$('.accordion-body.in').data('iota');DB.beta(3,ii);});
             collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
-                    .vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
+                    .vita('i',{'clss':'icon icon-color icon-trash','title':'Delete '+headeName[0]}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
             for(link in eternal.links){
-               collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','data-head':headeName});
+               collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link '+eternal.links[link][1]});
+               $(collapse_head.child).data('head',headeName[0]);$(collapse_head.child).data('link',link);$(collapse_head.child).data('links',eternal.links[link]);
                $(collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
                   $('.accordion-heading .icon-black').removeClass('icon-black').addClass('icon-color');$(this).removeClass('icon-color').addClass('icon-black');
-                  linkTable($(this).data('head'), link, eternal.links[link],$(this).parents('div').data('iota'));
+                  linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).parents('div').data('iota'));
                });
             }
             collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec,'data-iota':row['id']});
@@ -156,6 +157,7 @@ function SET_FORM(_name,_class,_label){
          for (first in eternal.fields)break;
          $('#'+first,frm).focus();
          frm.style.display='block';
+         console.log(form+' #cancel_'+this.name);
          $(form+' #cancel_'+this.name)[0].value='Cancel';//@todo
          $(form+' #cancel_'+this.name).click(function(){$(this).parents('.accordion-body.in').collapse('hide');});
          if((_iota==-1||!_iota)){
@@ -167,7 +169,7 @@ function SET_FORM(_name,_class,_label){
             $(form+' #submit_'+this.name)[0].onclick=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000)}//make the form to become update
          }
       }
-      this.setObject({"items":eternal,"father":function(_key,_field){}});
+//      this.setObject({"items":eternal,"father":function(_key,_field){}});
    }
    /*
     * used to display a single form display
@@ -245,7 +247,7 @@ function SET_FORM(_name,_class,_label){
       if(eternal.form.legend)form.vita('legend',{},false,eternal.form.legend.txt);
       formContent=form.father;
       this.setObject({"items":eternal,"father":function(_key,_property){
-            theField=_property.field;
+            theField=_property.field||{};
             theField.id=_key;
             theName=theField.name?theField.name:_key;
             //FIELDSET
@@ -269,12 +271,12 @@ function SET_FORM(_name,_class,_label){
             //INNER DIV
             if(!theField.type)theField.type='text';
             tmpType=theField.type;
-            theField=$.extend({},theDefaults[tmpType],theField);
+            theField=$.extend({},theField,theDefaults[tmpType]);
             //set the input type textarea|input|select|etc...
             input=(_property.items||_property.complex)?formInput(_key,theField,_property.items,formControl,_property.complex):creo(theField,'input');
             //input with items[] sets will not get icons
             if(_property.icon){
-               formFields.vita('div',{"clss":"input-prepend"},true).vita('span',{"clss":"add-on"},true).vita('i',{"clss":_property.icon});
+               formFields.novo(formControl,'div',{"clss":"input-prepend"}).vita('span',{"clss":"add-on"},true).vita('i',{"clss":_property.icon});
             }
             formControl.appendChild(input);
          }
@@ -291,17 +293,18 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.linkTable=function(_name,_mensa,_agrum,_iota){
-      if(!$('#displayMensa').data('listed')||$('#displayMensa').data('listed')!=_iota){
-         $('#displayMensa').data('listed',_iota);
+      eternal=eternal||this.eternalCall();
+      unus=_agrum[1];
+      duo=_agrum[2]||_agrum[0];
+      _agrum=_agrum[0];
+      if(!$('#displayMensa').data('listed')||$('#displayMensa').data('listed')!=unus+_iota){
+         $('#displayMensa').data('listed',unus+_iota);
+         console.log($('#displayMensa').data('listed'));
          $('#displayMensa').empty();
-         eternal=eternal||this.eternalCall();
-         unus=_agrum[1];
-         duo=_agrum[2]||_agrum[0];
-         _agrum=_agrum[0];
          agris1=unus.slice(0,-1);
          agris2=duo.slice(0,-1);
          $('#sideBot h3').html('Associate '+_name+' to a '+duo);
-         quaerere="SELECT a.id,"+_agrum+",b.`"+agris2+"` ref FROM `"+unus+"` a LEFT OUTER JOIN "+_mensa+" b ON b.`"+agris1+"`=a.id GROUP BY a.id ORDER BY "+_agrum;
+         quaerere="SELECT a.id,"+_agrum+",a.`"+agris1+"` ref1,b.`"+agris2+"` ref2 FROM `"+unus+"` a LEFT OUTER JOIN "+_mensa+" b ON b.`"+agris1+"`=a.id GROUP BY a.id ORDER BY "+_agrum;
          DB.creoAgito(quaerere,[],"Listing "+unus,function(results){
          len=results.rows.length;
             for(x=0;x<len;x++){
@@ -383,14 +386,14 @@ function create_select (ele, create, the_list, clss, empty)
  * @return object
  */
 function formInput(_key,_field,_items,_holder,_complex){
-   theType=_field.type;
+   theType=_field.type||_complex;
    l=(isset(_items))?_items.length:0;
    cnt=0;
    switch(theType){
       case 'bool':
          for(x=0;x<2;x++){
-            input=creo({"id":_key+'-'+cnt,"name":_key+"[]","value":x,"type":"radio"},'input');
-            label=creo({"forr":_key+'-'+cnt,"clss":"checkbox inline"},'label');
+            input=creo({"id":_key+cnt,"name":_key+"[]","value":x,"type":"radio"},'input');
+            label=creo({"forr":_key+cnt,"clss":"checkbox inline"},'label');
             label.appendChild(input);
             label.appendChild(document.createTextNode(x?' Yes':' No'));
             ele=label;
@@ -400,14 +403,22 @@ function formInput(_key,_field,_items,_holder,_complex){
       case 'check':
       case 'radio':
          $.each(_items,function(id,value){
-            input=creo({"id":_key+'-'+cnt,"name":_key+"[]","value":id,"type":theType},'input');
-            label=creo({"forr":_key+'-'+cnt,"clss":"checkbox inline"},'label');
+            input=creo({"id":_key+cnt,"name":_key+"[]","value":id,"type":theType},'input');
+            label=creo({"forr":_key+cnt,"clss":"checkbox inline"},'label');
             label.appendChild(input);
             label.appendChild(document.createTextNode(' '+value));
             _holder.appendChild(label);
             ele=label;
             cnt++;
          });break;
+      case 'list':
+         _field.type='text';
+         listName='list_'+_field.id;_field.list=listName;
+         span=creo({},'span');
+         ele=$anima(span,'input',_field).genesis('datalist',{'id':listName},true);
+         for(x=0;x<l;x++) ele.vita('option',{'value':_items[x]})
+         ele=span;
+         break;
       case 'text': ele=creo(_field,'textarea');break;//@todo make the default a complex one
       case 'select': ele=create_select (_key, true, _items, _field.clss);break;
       default: ele=creo(_field,'input'); break;

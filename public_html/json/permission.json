@@ -1,0 +1,16 @@
+{
+   "form": {
+      "field":{"clss":"form-horizontal","name":"permission","data-iota":"0"},
+      "fieldset":{"name":"admin-permissions"},
+      "legend":{"txt":"Permissions Setting"},
+      "button":{"submit_permission":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_permission":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
+   },
+   "mensa": "permissions",
+   "fields": {
+      "name":{"valid":["unique"],"icon":"icon-pencil","header":true,"place":true,"field":{"required":"","title":"Permissions name"}},
+      "page":{"icon":"icon-file","header":true,"place":true,"field":{"title":"Link to","type":"list"},"items":["Profile","Group"]},
+      "enable":{"complex":true,"field":{"type":"bool"}},
+      "desc":{"complex":"textarea","title":"description","place":"Permissions Description","field":{"required":"","type":"text","rows":5,"clss":"text-area","maxlength":180}}
+   },
+   "links":{"link_permissions_groups":["name","groups","permissions"],"link_permissions_users":["firstname||' '||lastname","users","permissions"]}
+}

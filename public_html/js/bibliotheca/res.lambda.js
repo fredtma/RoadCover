@@ -86,7 +86,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
             a.appendChild(b);li.appendChild(a);
             ul2=creo({"clss":"dropdown-menu"},"ul");
             $.each(item.sub,function(index,val){
-               li2=creo({},"li");a2=creo({"data-toggle":"tab","href":"#tab-"+key},"a");txt=document.createTextNode(val);
+               li2=creo({},"li");a2=creo({"data-toggle":"tab","href":"#tab-"+key,"clss":key+index},"a");txt=document.createTextNode(val);
                if(val=='hr'){li2.className="divider";txt=document.createTextNode('')}
                a2.appendChild(txt);li2.appendChild(a2);ul2.appendChild(li2);
             });
@@ -255,7 +255,8 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
             .vita('h4',{},false,'Login Details').vita('span')
             .novo('#userLogin .modal-body','form',{'clss':'form-signin','id':'loginForm','method':'post'}).vita('div',{'clss':'input-prepend fullWidth'},true).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-user'}).genesis('input',{'id':'email','type':'email','placeholder':'email address','clss':'input-block-level','required':'','autofocus':true})
             .novo('#userLogin .form-signin','div',{'clss':'input-prepend fullWidth'}).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-lock'}).genesis('input',{'id':'password','type':'password','clss':'input-block-level','required':'','pattern':localStorage.PASSPATERN})
-            .novo('#userLogin .form-signin','label',{'name':'remember','for':'remember','clss':'checkbox'},'Remember me').vita('input',{'type':'checkbox','value':1})
+            .novo('#userLogin .form-signin','label',{'name':'remember','for':'remeberMe','clss':'checkbox inline'},'Remember me').vita('input',{'type':'checkbox','value':1,'id':'remeberMe'})
+            .genesis('label',{'name':'remember','for':'fullscreen','clss':'checkbox inline'},true,'Run in fullscreen?').vita('input',{'type':'checkbox','value':1,'id':'fullscreen'})
          .novo('#userLogin','div',{'clss':'modal-footer'}).vita('button',{'clss':'btn btn-primary','form':'loginForm'},false,'Login');
          $('#hiddenElements').modal({'backdrop':'static','keyboard':true,'show':true});
 //         $('#loginForm').submit(function(){ return loginForm});

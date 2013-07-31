@@ -18,7 +18,7 @@ localStorage.DB_SIZE=5;
 localStorage.URL_IMG=localStorage.SITE_URL+'img/';
 localStorage.URL_LIB=localStorage.SITE_URL+'js/';
 localStorage.URL_JSON=localStorage.SITE_URL+'json/';
-localStorage.LIMIT=7;
+localStorage.LIMIT=9;
 localStorage.PASSPATERN='.{6,}';//(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$
 var db;
 /******************************************************************************/

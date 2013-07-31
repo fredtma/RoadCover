@@ -19,6 +19,10 @@ progress::-moz-progress-bar { background:#0063a6;}
 progress::-webkit-progress-bar { background:#fff;}
 progress::-webkit-progress-value { background:#0063a6; }
 .btn.space{margin-left:0.2em;margin-right:0.2em;}
+:-webkit-full-screen {width: 100% !important;height:100% !important;}
+:-moz-full-screen {width: 100% !important;height:100% !important;}
+:-webkit-full-screen .tohide {display: none; /* While in fullscreen, hide any children with class 'tohide' */}
+:-moz-full-screen .tohide {display: none; /* While in fullscreen, hide any children with class 'tohide' */}
 /******************************************************************************/
 /*header setting*/
 .navigator {font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background:#fff;margin-top: 10px;}
