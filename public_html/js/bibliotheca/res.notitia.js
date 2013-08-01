@@ -21,14 +21,14 @@ function SET_DB(){
 //      if(!db) db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
       db.transaction(function(trans){
          trans.executeSql(quaerere,params,function(trans,results){
-            console.log('Success DB transaction: '+msg);
-            console.log(quaerere);
+            console.log('%c Success DB transaction: '+msg, 'background:#222;color:#48b72a;width:100%;');
+            console.log('%c'+quaerere, 'background:#222;color:#48b72a;width:100%;font-weight:bold;');
             j=$DB2JSON(results);
             $('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
             if(callback)callback(results);
          },function(_trans,_error){
             console.log('Failed DB: '+msg+':'+_error.message);
-            console.log('::QUAERERE='+quaerere);
+            console.log('%c ::QUAERERE='+quaerere, 'background:#222;color:#ff0000;font-weight:bold;');
             $('#sideNotice .db_notice').html("<div class='text-error'>"+_error.message+'</div>');
          });
       });
@@ -36,6 +36,9 @@ function SET_DB(){
    if(!db){
       console.log('NEW DB:'+db);
       db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
+      this.creoAgito("DELETE FROM link_permissions_groups",[],"Truncated table link_permissions_groups");
+      this.creoAgito("DELETE FROM link_permissions_users",[],"Truncated table link_permissions_users");
+//      this.creoAgito("DROP TABLE link_users_groups",[],"DROP table");
       if(!localStorage.DB){
          localStorage.DB=db;
          sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
@@ -71,6 +74,7 @@ function SET_DB(){
     * @todo clean it up
     */
    this.forma=function(_actum,_iota,callback){
+      reference=[];
       //protect and accept only valid table
       if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);
       else eternal=null;
@@ -83,8 +87,15 @@ function SET_DB(){
       limit=localStorage.LIMIT||7;
       switch(_actum){
          case 0:
+            switch(iyona){
+               case'users':reference[0]="DELETE FROM link_users_groups WHERE user=?";reference[1]="DELETE FROM link_permissions_users WHERE user=?;";break;
+               case'groups':reference[0]="DELETE FROM link_users_groups WHERE `group`=?";reference[1]="DELETE FROM link_permissions_groups WHERE `group`=?;";break;
+               case'permissions':reference[0]="DELETE FROM link_permissions_groups WHERE permission=?";reference[1]="DELETE FROM link_permissions_users WHERE permission=?;";break;
+            }
+            this.referenceDelete(reference,iota,iyona);
             actum='DELETE FROM '+iyona+' WHERE id=?';
-            this.creoAgito(actum,[_iota],'Deleted record from '+iyona,callback);break;
+            creoAgito=this.creoAgito;
+            setTimeout(function(){creoAgito(actum,[_iota],'Deleted record from '+iyona,callback)},15);break;
          case 1:
             ubi='';
             actum='INSERT INTO '+iyona+' (';msg='Inserted '+iyona;break;
@@ -102,7 +113,8 @@ function SET_DB(){
       if(_actum!=0){
          x=0;
          iota=iota||$(form).data('iota');
-         $.each(eternal.fields,function(field,setting){
+         $.each(eternal.fields,function(field,properties){
+            if(properties.source=='custom') return true;//skip the field
             val=$(form+' #'+field).val()||$(form+' [name^='+field+']:checked').val();
             if(_actum!=3){
                if(!val) {quaerere=[];$('#sideNotice .db_notice').html('<div class="text-error">Missing '+field+'</div>');$('.control-group.'+field).addClass('error'); return false;}//@todo add validation, this is manual validation
@@ -214,22 +226,24 @@ function SET_DB(){
                break;
             case 1:
                $(form).data('iota',results.insertId);
+               //@todo:potential hack, if code not validated
+               ref=$(form+' #name').val()||$(form+' #username').val();
                nameList='';
                nameList=fieldDisplay('list',null,true);
                $('.accordion-body.in').data('iota',results.insertId);
                $('.accordion-body.in').parents('.accordion-group').attr('id','accGroup'+results.insertId);
-               $('.accordion-body.in').prev().data('iota',results.insertId);
+               $('.accordion-body.in').prev().data('iota',results.insertId).find('.icon-link').data('head',nameList[0]).data('ref',ref).removeClass('icon-black').addClass('icon-color');
                $(form+' #submit_'+this.name)[0].onclick=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');callDB.beta(2,results.insertId);setTimeout(function(){$('#submit_'+this.name).button('reset');}, 1000)}//make the form to become update
                $(form+' #cancel_'+this.name).val('Done...');//@todo
-               $('#accGroup'+results.insertId+' .headeditable')[0].innerHTML=nameList[0];
-               if(nameList[1])$('#accGroup'+results.insertId+' .headeditable')[1].innerHTML=nameList[1];
-               if(nameList[2])$('#accGroup'+results.insertId+' .headeditable')[2].innerHTML=nameList[2];
+               $('#accGroup'+results.insertId+' .betaRow').empty();
+               s=$anima('#accGroup'+results.insertId+' .betaRow','span',{},nameList[0]);
+               l=nameList.length;for(x=1;x<l;x++)s.genesis('span',{},true,nameList[x]);
                break;
             case 2:
                $(form+' #cancel_'+this.name).val('Done...');//@todo
                nameList='';
                nameList=fieldDisplay('list',null,true);
-               $('#accGroup'+_iota+' .headeditable')[0].innerHTML=nameList[0];
+               $('#accGroup'+_iota+' .betaRow span').each(function(i,v){$(v).html(nameList[i])});
                break;
             case 3:
             default://select all
@@ -268,6 +282,34 @@ function SET_DB(){
          c++;
       });
       return _return;
+   }
+   /*
+    * deletes all references to the primary table
+    * @param {array|string} <var>_quaerere</var>
+    * @param {number|string} <var>_iota</var>
+    * @param {string} <var>_iyona</var>
+    * @returns {undefined}
+    */
+   this.referenceDelete=function(_quaerere,_iota,_iyona){
+      switch(_iyona){
+         case'users':
+            $DB("SELECT username,id FROM users WHERE id=?",[_iota],'Selected user',function(results){
+//               try{
+                  row=results.rows.item(0);
+                  l=_quaerere.length; for(x=0;x<l;x++)$DB(_quaerere[x],[row['username']],"Reference Deleted "+row['username']+" from:"+_iyona);
+//               }catch(err){console.log("Error selecting reference:"+err.message)}
+            });
+            break;
+         case'groups':
+         case'permissions':
+            $DB("SELECT name,id FROM "+_iyona+" WHERE id=?",[_iota],'Selected '+_iyona,function(results){
+               try{
+                  row=results.rows.item(0);
+                  l=_quaerere.length; for(x=0;x<l;x++)$DB(_quaerere[x],[row['name']],"Reference Deleted "+row['name']+" from:"+_iyona);
+               }catch(err){console.log("Error selecting reference:"+err.message)}
+            });
+            break;
+      }//endswith
    }
    if(this instanceof SET_DB)return this;
    else return new SET_DB();

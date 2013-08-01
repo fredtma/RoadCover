@@ -86,7 +86,7 @@ function ajax_error (event, response, ajaxSettings, thrownError)
  * @return json
  */
 function findJSON(data,_form){
-   console.log(data);
+//   jQuery.removeData();//clear cash
    timeFrame('ALPHA');
    sessionStorage.active=JSON.stringify(data);//@todo:fix the first time it loads it's empty
    theForm = new SET_FORM();
@@ -98,6 +98,7 @@ function findJSON(data,_form){
       default:creoDB.beta();break;
    }
    timeFrame('OMEGA',true);
+   load_async('js/agito/permissions.js',true,'end',true);
 }
 /******************************************************************************/
 /**

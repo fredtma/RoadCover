@@ -7,7 +7,7 @@
    },
    "mensa":"users",
    "fields":{
-      "username":{"valid":["unique"],"icon":"icon-user","place":true,"field":{"required":""}},
+      "username":{"valid":["unique"],"icon":"icon-user","place":true,"field":{"required":"","autofocus":""}},
       "password":{"icon":"icon-lock","field":{"type":"password","required":""}},
       "firstname":{"icon":"icon-tag","header":true,"place":true,"field":{"required":""}},
       "lastname":{"icon":"icon-tags","header":true,"place":true,"field":{"required":""}},

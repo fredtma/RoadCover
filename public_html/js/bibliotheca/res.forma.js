@@ -104,7 +104,6 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.setBeta=function(_results,_actum,_iota){
-      tmpHead=[];
       eternal=eternal||this.eternalCall();
       linkTable=this.linkTable;
       this.name=eternal.form.field.name;
@@ -125,24 +124,24 @@ function SET_FORM(_name,_class,_label){
          addbtn.onclick=addRecord;
          for(rec=0;rec<len;rec++){//loop record
             if(_results.rows.length){row=_results.rows.item(rec);headeName=fieldDisplay('none',row,true);}else{row={'id':-1};headeName=['Type '+this.name+' name here']}
-            tmpHead[rec]=headeName;
+            ref=row['name']||row['username'];
             collapse_head=$anima('#acc_'+this.name,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group'});
             collapse_head.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
-                    .vita('a',{'clss':'headeditable','contenteditable':false,'data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec},true,headeName[0])//@todo: add save on element
-                    .genesis('a',{'clss':'headeditable','contenteditable':false,'data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec},true,headeName[1])
-                    .genesis('a',{'clss':'headeditable','contenteditable':false,'data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec},true,headeName[2])
-                    .genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec,},true)
+                    .vita('a',{'clss':'betaRow','contenteditable':false,'data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec},true);//@todo: add save on element
+                    l=headeName.length;for(x=0;x<l;x++)collapse_head.vita('span',{},false,headeName[x]+' ');
+                    collapse_head.genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec,},true)
                     .vita('i',{'clss':'icon icon-color icon-edit','title':'Edit '+headeName[0]});
                      //FIRE on shown//@todo verify why multiple triger are fired on new elements
                      $('#acc_'+this.name).on('shown',function(){ii=$('.accordion-body.in').data('iota');DB.beta(3,ii);});
             collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
                     .vita('i',{'clss':'icon icon-color icon-trash','title':'Delete '+headeName[0]}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
+            //APPLY CHANGES TO ADD FUNCTION
             for(link in eternal.links){
                collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link '+eternal.links[link][1]});
-               $(collapse_head.child).data('head',headeName[0]);$(collapse_head.child).data('link',link);$(collapse_head.child).data('links',eternal.links[link]);
+               $(collapse_head.child).data('ref',ref);$(collapse_head.child).data('head',headeName[0]);$(collapse_head.child).data('link',link);$(collapse_head.child).data('links',eternal.links[link]);
                $(collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
                   $('.accordion-heading .icon-black').removeClass('icon-black').addClass('icon-color');$(this).removeClass('icon-color').addClass('icon-black');
-                  linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).parents('div').data('iota'));
+                  linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'));
                });
             }
             collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec,'data-iota':row['id']});
@@ -292,35 +291,37 @@ function SET_FORM(_name,_class,_label){
     * @param {integer} <var>_iota</var> groups iota
     * @returns {undefined}
     */
-   this.linkTable=function(_name,_mensa,_agrum,_iota){
+   this.linkTable=function(_name,_mensa,_agrum,_ratio){
       eternal=eternal||this.eternalCall();
       unus=_agrum[1];
       duo=_agrum[2]||_agrum[0];
+      tribus=_agrum[3]||_agrum[0];
       _agrum=_agrum[0];
-      if(!$('#displayMensa').data('listed')||$('#displayMensa').data('listed')!=unus+_iota){
-         $('#displayMensa').data('listed',unus+_iota);
-         console.log($('#displayMensa').data('listed'));
+      if(!$('#displayMensa').data('listed')||$('#displayMensa').data('listed')!=unus+_ratio){
+         $('#displayMensa').data('listed',unus+_ratio);
          $('#displayMensa').empty();
          agris1=unus.slice(0,-1);
          agris2=duo.slice(0,-1);
-         $('#sideBot h3').html('Associate '+_name+' to a '+duo);
-         quaerere="SELECT a.id,"+_agrum+",a.`"+agris1+"` ref1,b.`"+agris2+"` ref2 FROM `"+unus+"` a LEFT OUTER JOIN "+_mensa+" b ON b.`"+agris1+"`=a.id GROUP BY a.id ORDER BY "+_agrum;
+         $('#sideBot h3').html('Associate '+_name+' to a '+unus);
+         quaerere="SELECT a.id,"+_agrum+",a.`"+tribus+"`,b.`"+agris2+"` FROM `"+unus+"` a LEFT OUTER JOIN `"+_mensa+"` b ON b.`"+agris1+"`=a."+tribus+" GROUP BY a.id ORDER BY "+_agrum;
          DB.creoAgito(quaerere,[],"Listing "+unus,function(results){
          len=results.rows.length;
             for(x=0;x<len;x++){
                row=results.rows.item(x);
-               displayMensa=$anima('#displayMensa','li',{'data-iota':row['id']}).vita('a',{'href':'#link_'+unus},true,aNumero(row[_agrum])+' ').vita('i',{'clss':'icon icon-color icon-unlink'});
+               displayMensa=$anima('#displayMensa','li',{'data-iota':row['id']}).vita('a',{'href':'#link_'+unus},true,aNumero(row[_agrum],true)+' ').vita('i',{'clss':'icon icon-color icon-unlink'});
+               $(displayMensa.child).data('tribus',row[tribus]);
                displayMensa.child.onclick=function(){
                   if(!$(this).data('toggle')||$(this).data('toggle')==0){
                      $(this).data('toggle',1);$(this).addClass('icon-link').removeClass('icon-unlink');
                      d=new Date().format('isoDateTime');
-                     DB.creoAgito("INSERT INTO "+_mensa+" (`"+agris1+"`,`"+agris2+"`,`creation`) VALUES (?,?,?)",[row['id'],_iota,d],"Linked "+_name+" to "+row[_agrum]);
+                     DB.creoAgito("INSERT INTO "+_mensa+" (`"+agris1+"`,`"+agris2+"`,`creation`) VALUES (?,?,?)",[$(this).data('tribus'),_ratio,d],"Linked "+_name+" to "+row[_agrum]);
                   }else{
                      $(this).data('toggle',0);$(this).addClass('icon-unlink').removeClass('icon-link');
-                     DB.creoAgito("DELETE FROM "+_mensa+" WHERE "+agris1+"=? AND "+agris2+"=?",[row['id'],_iota],"unLinked "+_name+" to "+row[_agrum]);
+                     DB.creoAgito("DELETE FROM "+_mensa+" WHERE "+agris1+"=? AND "+agris2+"=?",[$(this).data('tribus'),_ratio],"unLinked "+_name+" to "+row[_agrum]);
                   }//endif
                };//end anonymous
-               if(row['ref']==_iota)$(displayMensa.child).removeClass('icon-unlink').addClass('icon-link');
+               console.log(row[tribus]+'=='+row[agris2]);
+               if(_ratio==row[agris2])$(displayMensa.child).removeClass('icon-unlink').addClass('icon-link');
             }//end for
          });//end callback
       }//endfi
@@ -391,26 +392,19 @@ function formInput(_key,_field,_items,_holder,_complex){
    cnt=0;
    switch(theType){
       case 'bool':
-         for(x=0;x<2;x++){
-            input=creo({"id":_key+cnt,"name":_key+"[]","value":x,"type":"radio"},'input');
-            label=creo({"forr":_key+cnt,"clss":"checkbox inline"},'label');
-            label.appendChild(input);
-            label.appendChild(document.createTextNode(x?' Yes':' No'));
-            ele=label;
-            _holder.appendChild(label);
-            cnt++;
-         }break;
+         ele=creo({'clss':'btn-group','data-toggle':'buttons-radio'},'div');
+         for(x=0;x<2;x++){b=creo({'type':'button','clss':'btn',"id":_key+cnt,"name":_key+"[]","value":x},'button',x?' Yes':' No');ele.appendChild(b);cnt++;}break;
+         for(x=0;x<2;x++){input=creo({"id":_key+cnt,"name":_key+"[]","value":x,"type":"radio"},'input');label=creo({"forr":_key+cnt,"clss":"checkbox inline"},'label');label.appendChild(input);label.appendChild(document.createTextNode(x?' Yes':' No'));ele=label;_holder.appendChild(label);cnt++;}break;
       case 'check':
       case 'radio':
+         c=theType=='check'?'checkbox':theType;
+         ele=creo({'clss':'btn-group','data-toggle':'buttons-'+c},'div');
          $.each(_items,function(id,value){
-            input=creo({"id":_key+cnt,"name":_key+"[]","value":id,"type":theType},'input');
-            label=creo({"forr":_key+cnt,"clss":"checkbox inline"},'label');
-            label.appendChild(input);
-            label.appendChild(document.createTextNode(' '+value));
-            _holder.appendChild(label);
-            ele=label;
-            cnt++;
-         });break;
+            b=creo({'type':'button','clss':'btn',"id":_key+cnt,"name":_key+"[]","value":id},'button',value);
+            ele.appendChild(b);cnt++;
+         });
+         if(false){$.each(_items,function(id,value){input=creo({"id":_key+cnt,"name":_key+"[]","value":id,"type":theType},'input');label=creo({"forr":_key+cnt,"clss":"checkbox inline"},'label');label.appendChild(input);label.appendChild(document.createTextNode(' '+value));_holder.appendChild(label);ele=label;cnt++;});}
+         break;
       case 'list':
          _field.type='text';
          listName='list_'+_field.id;_field.list=listName;

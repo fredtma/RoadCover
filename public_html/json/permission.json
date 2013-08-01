@@ -7,10 +7,11 @@
    },
    "mensa": "permissions",
    "fields": {
+      "default":{"title":"Default permissions","source":"custom","field":{"title":"Default permissions","type":"radio","autofocus":""},"items":{"Create":"Create","Edit":"Edit","Delete":"Delete","View":"View","Report":"Report","Other":"Other"}},
+      "page":{"icon":"icon-file","header":true,"place":true,"field":{"title":"Link to","type":"list","click":"atest"},"items":["Profile","Group"]},
       "name":{"valid":["unique"],"icon":"icon-pencil","header":true,"place":true,"field":{"required":"","title":"Permissions name"}},
-      "page":{"icon":"icon-file","header":true,"place":true,"field":{"title":"Link to","type":"list"},"items":["Profile","Group"]},
       "enable":{"complex":true,"field":{"type":"bool"}},
       "desc":{"complex":"textarea","title":"description","place":"Permissions Description","field":{"required":"","type":"text","rows":5,"clss":"text-area","maxlength":180}}
    },
-   "links":{"link_permissions_groups":["name","groups","permissions"],"link_permissions_users":["firstname||' '||lastname","users","permissions"]}
+   "links":{"link_permissions_groups":["name","groups","permissions"],"link_permissions_users":["firstname||' '||lastname","users","permissions","username"]}
 }

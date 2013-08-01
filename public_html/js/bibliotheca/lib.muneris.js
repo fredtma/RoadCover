@@ -51,7 +51,7 @@ creo=function (arr, ele, txt)
       else if (key=='id') {the_element.id=arr[key]; skip=true;}
       else if (key=='type') {the_element.type=arr[key]; skip=true;}
       else if (key=='name') {the_element.name=arr[key]; skip=true;}
-//      else if (key=='click') {the_element.onclick=function(){eval(arr[key])}; console.log(arr[key]); skip=true;}
+      else if (key=='click') {the_element.onclick=function(){atest()};skip=true;}
       else if (key=='save') {the_element.onclick=function(e){creoDB.alpha(1);return false;}; skip=true;}
       else attr=key;
       if (!skip) the_element.setAttribute(attr, arr[key]);
@@ -95,12 +95,16 @@ $anima=function(section,ele,arr,txt,point){
  * @param string <var>sync</var> load the script with async option on
  * @return void
  */
-function load_async(url, sync){
-   var script  = document.createElement('script'),
-   head        = document.getElementsByTagName('head')[0];
+function load_async(url,sync,position,fons){
+   var script=document.createElement('script');
+   s=document.querySelector('script[data-fons]');
+   if(!position)ele=document.getElementsByTagName('head')[0];
+   else if(position=='end')ele=document.getElementsByTagName('body')[0];
+   if(s)ele.removeChild(s);
    if (sync !== false) script.async = true;
-   script.src  = url;
-   head.appendChild(script);
+   script.src  = url;script.type="text/javascript";
+   if(fons){script.setAttribute('data-fons',fons);}
+   ele.appendChild(script);
 //   head.parentNode.insertBefore(script, head);
 }
 /******************************************************************************/
@@ -198,7 +202,7 @@ aNumero = function(the_str,transform)
 {
    the_str   = the_str.toLowerCase();
    the_str   = (transform)?ucwords(the_str.toLowerCase()): the_str;
-   the_str   = the_str.replace(/[^A-Za-z0-9]*/ig,'');
+   the_str   = the_str.replace(/[^A-Za-z0-9\s]*/ig,'');
    return the_str;
 }
 /******************************************************************************/

@@ -66,7 +66,8 @@ legend+.control-group {margin-top: 10px;-webkit-margin-top-collapse: separate;}
 a[contenteditable=true]{cursor: text;}
 a[contenteditable=false]{cursor: pointer;}
 a[contenteditable=true]:hover,a[contenteditable=false]:hover{text-decoration: none;}
-a.headeditable{display:inline-block;width:28%;padding: 8px 15px;}
+a.betaRow{display:inline-block;width:90%;padding: 8px 10px;}
+a.betaRow span {width: 20%;display:  inline-block;}
 a.accordion-toggle{display:initial !important;padding: 4px 4px  !important;}
 .accordion-body.in .accordion-inner{min-height:15em;}
 .accordion-heading a.forIcon {padding: 2px;}
@@ -114,7 +115,7 @@ input[type="radio"], input[type="checkbox"] {margin: 0 0 4px 0;margin-top: 1px \
 /*size setting*/
 @media all and (max-width: 1024px){
    .logo,.aside,.pagination,#statusbar {display:none;}.navigator, .body {width:100%;}
-   a.headeditable{width:26%;}
+   a.betaRow{width:80%;}
 }
 /*tab-portrait*/
 @media all and (max-width: 768px){}
