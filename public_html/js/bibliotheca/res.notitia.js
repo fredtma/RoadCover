@@ -36,9 +36,7 @@ function SET_DB(){
    if(!db){
       console.log('NEW DB:'+db);
       db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
-      this.creoAgito("DELETE FROM link_permissions_groups",[],"Truncated table link_permissions_groups");
-      this.creoAgito("DELETE FROM link_permissions_users",[],"Truncated table link_permissions_users");
-//      this.creoAgito("DROP TABLE link_users_groups",[],"DROP table");
+//      this.resetDB({users:true,groups:true,ug:true,perm:true,pg:true,pu:true});
       if(!localStorage.DB){
          localStorage.DB=db;
          sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
@@ -310,6 +308,36 @@ function SET_DB(){
             });
             break;
       }//endswith
+   }
+   this.resetDB=function(_option){
+         if(_option.users)this.creoAgito("DROP TABLE users",[],"DROP table");
+         if(_option.groups)this.creoAgito("DROP TABLE groups",[],"DROP table");
+         if(_option.ug)this.creoAgito("DROP TABLE link_users_groups",[],"DROP table");
+         if(_option.perm)this.creoAgito("DROP TABLE permissions",[],"DROP table");
+         if(_option.pg)this.creoAgito("DROP TABLE link_permissions_groups",[],"DROP table");
+         if(_option.pu)this.creoAgito("DROP TABLE link_permissions_users",[],"DROP table");
+         sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         if(_option.users)this.creoAgito(sql,[],'Table users created');
+         if(_option.users)this.creoAgito("CREATE INDEX user_username ON users(username)",[],"index user_username");
+         if(_option.users)this.creoAgito("CREATE INDEX user_email ON users(email)",[],"index user_email");
+         group="CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, desc TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         if(_option.groups)this.creoAgito(group,[],'Table groups created');
+         if(_option.groups)this.creoAgito("CREATE INDEX groups_name ON groups(name)",[],'index groups_name');
+         link="CREATE TABLE IF NOT EXISTS link_users_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, `user` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         if(_option.ug)this.creoAgito(link,[],'Table link to users and groups created');
+         if(_option.ug)this.creoAgito("CREATE INDEX link_usergroup_user ON link_users_groups(`user`)",[],'index link_usergroup_user');
+         if(_option.ug)this.creoAgito("CREATE INDEX link_usergroup_group ON link_users_groups(`group`)",[],'index link_usergroup_group');
+         perm="CREATE TABLE IF NOT EXISTS permissions (id INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `desc` TEXT NOT NULL, `page` TEXT, `enable` INTEGER DEFAULT 1, `rank` INTEGER DEFAULT 0, `icon` TEXT, `sub` INTEGER DEFAULT 0, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         if(_option.perm)this.creoAgito(perm,[],'Table permissions created');
+         if(_option.perm)this.creoAgito("CREATE INDEX perm_name ON permissions(name)",[],"index perm_name");
+         link="CREATE TABLE IF NOT EXISTS link_permissions_groups(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         if(_option.pg)this.creoAgito(link,[],'Table link to permisions to groups created');
+         if(_option.pg)this.creoAgito("CREATE INDEX link_permgroup_perm ON link_permissions_groups(`permission`)",[],'index link_permgroup_perm');
+         if(_option.pg)this.creoAgito("CREATE INDEX link_permgroup_group ON link_permissions_groups(`group`)",[],'index link_permgroup_group');
+         link="CREATE TABLE IF NOT EXISTS link_permissions_users(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `user` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         if(_option.pu)this.creoAgito(link,[],'Table link to permisions to users created');
+         if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_perm ON link_permissions_users(`permission`)",[],'index link_permuser_perm');
+         if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_user ON link_permissions_users(`username`)",[],'index link_permuser_user');
    }
    if(this instanceof SET_DB)return this;
    else return new SET_DB();

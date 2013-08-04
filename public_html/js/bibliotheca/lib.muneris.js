@@ -51,8 +51,8 @@ creo=function (arr, ele, txt)
       else if (key=='id') {the_element.id=arr[key]; skip=true;}
       else if (key=='type') {the_element.type=arr[key]; skip=true;}
       else if (key=='name') {the_element.name=arr[key]; skip=true;}
-      else if (key=='click') {the_element.onclick=function(){atest()};skip=true;}
-      else if (key=='save') {the_element.onclick=function(e){creoDB.alpha(1);return false;}; skip=true;}
+//      else if (key=='click') {the_element.onclick=function(){atest()};skip=true;}
+//      else if (key=='save') {the_element.onclick=function(e){creoDB.alpha(1);return false;}; skip=true;}
       else attr=key;
       if (!skip) the_element.setAttribute(attr, arr[key]);
    }/*end for each*/
