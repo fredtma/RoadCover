@@ -98,7 +98,6 @@ function findJSON(data,_form){
       default:creoDB.beta();break;
    }
    timeFrame('OMEGA',true);
-   load_async('js/agito/permissions.js',true,'end',true);
 }
 /******************************************************************************/
 /**

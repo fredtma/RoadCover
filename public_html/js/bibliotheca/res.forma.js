@@ -132,7 +132,8 @@ function SET_FORM(_name,_class,_label){
                     collapse_head.genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec,},true)
                     .vita('i',{'clss':'icon icon-color icon-edit','title':'Edit '+headeName[0]});
                      //FIRE on shown//@todo verify why multiple triger are fired on new elements
-                     $('#acc_'+this.name).on('shown',function(){ii=$('.accordion-body.in').data('iota');DB.beta(3,ii);});
+                     $('#acc_'+this.name).on('shown',function(){if(!$(this).data('toggle_shown')||$(this).data('toggle_shown')==0){$(this).data('toggle_shown',1); ii=$('.accordion-body.in').data('iota');DB.beta(3,ii);} });
+                     $('#acc_'+this.name).on('hidden',function(){$(this).data('toggle_shown',0); });
             collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
                     .vita('i',{'clss':'icon icon-color icon-trash','title':'Delete '+headeName[0]}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
             //APPLY CHANGES TO ADD FUNCTION
@@ -147,6 +148,7 @@ function SET_FORM(_name,_class,_label){
             collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec,'data-iota':row['id']});
             collapse_content.vita('div',{'clss':'accordion-inner'},false);
          }//end for
+
          this.callForm(_results,_iota);
       }else if (_actum==3){
          row=(_iota==-1||!_iota)?{}:_results.rows.item(0);
@@ -156,7 +158,6 @@ function SET_FORM(_name,_class,_label){
          for (first in eternal.fields)break;
          $('#'+first,frm).focus();
          frm.style.display='block';
-         console.log(form+' #cancel_'+this.name);
          $(form+' #cancel_'+this.name)[0].value='Cancel';//@todo
          $(form+' #cancel_'+this.name).click(function(){$(this).parents('.accordion-body.in').collapse('hide');});
          if((_iota==-1||!_iota)){
@@ -167,6 +168,8 @@ function SET_FORM(_name,_class,_label){
             fieldDisplay('form',row);
             $(form+' #submit_'+this.name)[0].onclick=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000)}//make the form to become update
          }
+
+         if(eternal.form.file)load_async('js/agito/'+eternal.form.file+'.js',false,'end',true);
       }
 //      this.setObject({"items":eternal,"father":function(_key,_field){}});
    }
@@ -320,7 +323,6 @@ function SET_FORM(_name,_class,_label){
                      DB.creoAgito("DELETE FROM "+_mensa+" WHERE "+agris1+"=? AND "+agris2+"=?",[$(this).data('tribus'),_ratio],"unLinked "+_name+" to "+row[_agrum]);
                   }//endif
                };//end anonymous
-               console.log(row[tribus]+'=='+row[agris2]);
                if(_ratio==row[agris2])$(displayMensa.child).removeClass('icon-unlink').addClass('icon-link');
             }//end for
          });//end callback
@@ -437,9 +439,10 @@ fieldDisplay=function(_from,_source,_head){
       if(_head && !property.header) return true;
       switch(type){
          case 'radio':
+         case 'bool':
          case 'check':
-            if(_from==='form')$(form+' [name^='+key+']').each(function(){if($(this).prop('value')==_source[key])$(this).prop('checked',true);});
-            if(_from==='list')$(form+' [name^='+key+']').each(function(){if($(this).prop('checked'))_return[c]=$(this).prop('value');});
+            if(_from==='form')$(form+' [name^='+key+']').each(function(){if($(this).prop('value')==_source[key])$(this).addClass('active').prop('checked',true);});
+            if(_from==='list')$(form+' [name^='+key+']').each(function(){if($(this).prop('checked'))_return[c]=$(this).addClass('active').prop('value');});
             break;
          default:
             if(_from==='form')$(form+' #'+key).val(_source[key]);

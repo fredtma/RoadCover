@@ -58,6 +58,20 @@ address {margin: 3px 0px;}
 }
 ._box:first-child{padding: 4px 0px;}/*this is to add padding without disrupting the size of box*/
 .body article {padding: 4px 4px;}
+#dashboard {padding:1em;width:98%;}
+.dash-module{height: 10em;text-align: left;border: 1px solid #3a87ad;color: #444444;cursor: pointer;}
+.dash-module:hover{background-color:skyblue;border-color: skyblue;}
+.dash-module{background-color: #006dcc;
+background-image: -moz-linear-gradient(top,#bce8f1,#d9edf7);
+background-image: -webkit-gradient(linear,0 0,0 100%,from(#bce8f1),to(#d9edf7));
+background-image: -webkit-linear-gradient(top,#bce8f1,#d9edf7);
+background-image: -o-linear-gradient(top,#bce8f1,#d9edf7);
+background-image: linear-gradient(to bottom,#bce8f1,#d9edf7 22%);
+background-repeat: repeat-x;
+border-color: #d9edf7 #d9edf7 #002a80;
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc',endColorstr='#ff0044cc',GradientType=0);
+filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);}
+.dash-module h4 i {margin:0.2em;}
 /******************************************************************************/
 /*form setting*/
 .form-horizontal .control-group {margin-bottom: 10px;}

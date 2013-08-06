@@ -1,0 +1,17 @@
+{
+   "form": {
+      "file":"",
+      "field":{"clss":"form-horizontal","name":"client","data-iota":"0"},
+      "fieldset":{"name":"admin-clients"},
+      "legend":{"txt":"Clients Setting"},
+      "button":{"submit_client":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_client":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
+   },
+   "mensa": "clients",
+   "fields": {
+      "company":{"valid":["unique"],"icon":"icon icon-contacts","header":true,"place":true,"field":{"required":"","title":"Clients name"}},
+      "code":{"icon":"icon-qrcode","header":true,"title":"Client's Code","place":true,"field":{"required":""}},
+      "email":{"icon":"icon-envelope","title":"Client's email","place":true,"field":{"required":"","type":"email"}},
+      "about":{"complex":"textarea","title":"About the company","place":true,"field":{"required":"","type":"text","rows":5,"clss":"text-area","maxlength":180}}
+   },
+   "links":{"link_clients_groups":["name","groups","clients"],"link_clients_users":["firstname||' '||lastname","users","clients","username"]}
+}

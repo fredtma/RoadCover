@@ -34,9 +34,8 @@ function SET_DB(){
       });
    }
    if(!db){
-      console.log('NEW DB:'+db);
       db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
-//      this.resetDB({users:true,groups:true,ug:true,perm:true,pg:true,pu:true});
+//      this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0});
       if(!localStorage.DB){
          localStorage.DB=db;
          sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
@@ -61,6 +60,12 @@ function SET_DB(){
          this.creoAgito(link,[],'Table link to permisions to users created');
          this.creoAgito("CREATE INDEX link_permuser_perm ON link_permissions_users(`permission`)",[],'index link_permuser_perm');
          this.creoAgito("CREATE INDEX link_permuser_user ON link_permissions_users(`username`)",[],'index link_permuser_user');
+         client="CREATE TABLE IF NOT EXISTS clients(id INTEGER PRIMARY KEY AUTOINCREMENT, company TEXT NOT NULL UNIQUE, code TEXT NOT NULL UNIQUE, about TEXT, email TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(client,[],'Table clients created');
+         contact="CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER NOT NULL,ref_group INTEGER NOT NULL DEFAULT 1, `type` TEXT NOT NULL DEFAULT 'tel', contact TEXT NOT NULL, intruction TEXT, ext TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(contact,[],'Table contacts created');
+         address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER NOT NULL,ref_group INTEGER NOT NULL DEFAULT 1, `type` TEXT NOT NULL DEFAULT 'tel', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(address,[],'Table address created');
       }
    }
    /*
@@ -113,7 +118,8 @@ function SET_DB(){
          iota=iota||$(form).data('iota');
          $.each(eternal.fields,function(field,properties){
             if(properties.source=='custom') return true;//skip the field
-            val=$(form+' #'+field).val()||$(form+' [name^='+field+']:checked').val();
+            val=$(form+' #'+field).val()||$(form+' [name^='+field+']:checked').val()||$(form+' .active[name^='+field+']').val();
+
             if(_actum!=3){
                if(!val) {quaerere=[];$('#sideNotice .db_notice').html('<div class="text-error">Missing '+field+'</div>');$('.control-group.'+field).addClass('error'); return false;}//@todo add validation, this is manual validation
                quaerere[x]=(iota)?field+'= ?':field;
@@ -256,7 +262,8 @@ function SET_DB(){
     * @param {string} <var>_form</var> the name of the form
     * @param {bool} <var>_head</var> only the head to be displayed
     * @returns {array} the list of header
-    * @todo add radio and check return
+    * @see fieldDisplay in res.forma.js
+    * @todo set a single fieldDisplay
     */
    this.fieldDisplay=function(_from,_source,_head){
       f=eternal.fields;
@@ -267,8 +274,9 @@ function SET_DB(){
          if(_head && !property.header) return true;
          switch(type){
             case 'radio':
+            case 'bool':
             case 'check':
-               if(_from==='form')$(form+' [name^='+key+']').each(function(){if($(this).prop('value')==_source[key])$(this).prop('checked',true);});
+               if(_from==='form')$(form+' [name^='+key+']').each(function(){if($(this).prop('value')==_source[key])$(this).addClass('active').prop('checked',true);});
                if(_from==='list')$(form+' [name^='+key+']').each(function(){if($(this).prop('checked'))_return[c]=$(this).prop('value');});
                break;
             default:
@@ -338,6 +346,12 @@ function SET_DB(){
          if(_option.pu)this.creoAgito(link,[],'Table link to permisions to users created');
          if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_perm ON link_permissions_users(`permission`)",[],'index link_permuser_perm');
          if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_user ON link_permissions_users(`username`)",[],'index link_permuser_user');
+         client="CREATE TABLE IF NOT EXISTS clients(id INTEGER PRIMARY KEY AUTOINCREMENT, company TEXT NOT NULL UNIQUE, code TEXT NOT NULL UNIQUE, about TEXT, email TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(client,[],'Table clients created');
+         contact="CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER NOT NULL,ref_group INTEGER NOT NULL DEFAULT 1, `type` TEXT NOT NULL DEFAULT 'tel', contact TEXT NOT NULL, intruction TEXT, ext TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(contact,[],'Table contacts created');
+         address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER NOT NULL,ref_group INTEGER NOT NULL DEFAULT 1, `type` TEXT NOT NULL DEFAULT 'tel', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(address,[],'Table address created');
    }
    if(this instanceof SET_DB)return this;
    else return new SET_DB();

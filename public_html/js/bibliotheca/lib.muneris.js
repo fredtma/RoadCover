@@ -61,9 +61,10 @@ creo=function (arr, ele, txt)
 $anima=function(section,ele,arr,txt,point){
    this.creo=creo;
    this.father=this.creo(arr,ele,txt);
-   this.vita=function(ele,arr,parent,txt){
+   this.vita=function(ele,arr,parent,txt,point){
       this.child=this.creo(arr,ele,txt);
-      this.father.appendChild(this.child);
+      if(!point)this.father.appendChild(this.child);
+      else if(point==='first')this.father.insertBefore(this.child,this.father.firstChild);
       if(parent)this.father=this.child;
       return this;
    }
@@ -99,7 +100,7 @@ function load_async(url,sync,position,fons){
    var script=document.createElement('script');
    s=document.querySelector('script[data-fons]');
    if(!position)ele=document.getElementsByTagName('head')[0];
-   else if(position=='end')ele=document.getElementsByTagName('body')[0];
+   else if(position==='end')ele=document.getElementsByTagName('body')[0];
    if(s)ele.removeChild(s);
    if (sync !== false) script.async = true;
    script.src  = url;script.type="text/javascript";
