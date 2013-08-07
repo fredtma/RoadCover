@@ -107,11 +107,13 @@ function SET_FORM(_name,_class,_label){
       eternal=eternal||this.eternalCall();
       linkTable=this.linkTable;
       this.name=eternal.form.field.name;
+      isReadOnly=eternal.form.options.readonly;
       len=_results.rows.length;
       len=len||1;//this will display the record even when there is no record
       if(!_actum){
          $('#sideBot h3').html(eternal.form.legend.txt);
          roadCover._Set({"next":".tab-pane.active .libHelp"});
+         //@todo fix the header title
          if(!document.getElementById('newItem')){
             $('.secondRow').append(creo({},'h2'));
             addbtn=roadCover._Set({"next":".tab-pane.active .libHelp"}).btnCreation("button",{"id":"newItem","name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
@@ -125,26 +127,32 @@ function SET_FORM(_name,_class,_label){
          for(rec=0;rec<len;rec++){//loop record
             if(_results.rows.length){row=_results.rows.item(rec);headeName=fieldDisplay('none',row,true);}else{row={'id':-1};headeName=['Type '+this.name+' name here']}
             ref=row['name']||row['username'];
+            collapse=!isReadOnly?'collapse':'noCollapse'
+            collapseTo=!isReadOnly?'#collapse_'+this.name+rec:'javascript:void(0)'
             collapse_head=$anima('#acc_'+this.name,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group'});
             collapse_head.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
-                    .vita('a',{'clss':'betaRow','contenteditable':false,'data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec},true);//@todo: add save on element
+                    .vita('a',{'clss':'betaRow','contenteditable':false,'data-toggle':collapse,'data-parent':'#acc_'+this.name,'href':collapseTo},true);//@todo: add save on element
                     l=headeName.length;for(x=0;x<l;x++)collapse_head.vita('span',{},false,headeName[x]+' ');
-                    collapse_head.genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec,},true)
-                    .vita('i',{'clss':'icon icon-color icon-edit','title':'Edit '+headeName[0]});
-                     //FIRE on shown//@todo verify why multiple triger are fired on new elements
-                     $('#acc_'+this.name).on('shown',function(){if(!$(this).data('toggle_shown')||$(this).data('toggle_shown')==0){$(this).data('toggle_shown',1); ii=$('.accordion-body.in').data('iota');DB.beta(3,ii);} });
-                     $('#acc_'+this.name).on('hidden',function(){$(this).data('toggle_shown',0); });
-            collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
-                    .vita('i',{'clss':'icon icon-color icon-trash','title':'Delete '+headeName[0]}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
-            //APPLY CHANGES TO ADD FUNCTION
-            for(link in eternal.links){
-               collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link '+eternal.links[link][1]});
-               $(collapse_head.child).data('ref',ref);$(collapse_head.child).data('head',headeName[0]);$(collapse_head.child).data('link',link);$(collapse_head.child).data('links',eternal.links[link]);
-               $(collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
-                  $('.accordion-heading .icon-black').removeClass('icon-black').addClass('icon-color');$(this).removeClass('icon-color').addClass('icon-black');
-                  linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'));
-               });
-            }
+            if(!isReadOnly){
+                       //edit
+                     collapse_head.genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec,},true)
+                     .vita('i',{'clss':'icon icon-color icon-edit','title':'Edit '+headeName[0]});
+                      //FIRE on shown//@todo verify why multiple triger are fired on new elements
+                      $('#acc_'+this.name).on('shown',function(){if(!$(this).data('toggle_shown')||$(this).data('toggle_shown')==0){$(this).data('toggle_shown',1); ii=$('.accordion-body.in').data('iota');DB.beta(3,ii);} });
+                      $('#acc_'+this.name).on('hidden',function(){$(this).data('toggle_shown',0); });
+                      //delete
+                      collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
+                      .vita('i',{'clss':'icon icon-color icon-trash','title':'Delete '+headeName[0]}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
+               //APPLY CHANGES TO ADD FUNCTION
+               for(link in eternal.links){
+                  collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link '+eternal.links[link][1]});
+                  $(collapse_head.child).data('ref',ref);$(collapse_head.child).data('head',headeName[0]);$(collapse_head.child).data('link',link);$(collapse_head.child).data('links',eternal.links[link]);
+                  $(collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
+                     $('.accordion-heading .icon-black').removeClass('icon-black').addClass('icon-color');$(this).removeClass('icon-color').addClass('icon-black');
+                     linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'));
+                  });
+               }//endfor links
+            }//endif read only
             collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec,'data-iota':row['id']});
             collapse_content.vita('div',{'clss':'accordion-inner'},false);
          }//end for
@@ -172,6 +180,19 @@ function SET_FORM(_name,_class,_label){
          if(eternal.form.file)load_async('js/agito/'+eternal.form.file+'.js',false,'end',true);
       }
 //      this.setObject({"items":eternal,"father":function(_key,_field){}});
+   }
+   /*
+    * display the beta form in a table format
+    * @param {obejcts} <var>_fields</var> setting of the form has the form name, class, fields, title
+    * @param {obejcts} <var>_results</var> the results from the db
+    * @param {integer} <var>_actum</var> the stage of the transaction
+    * @returns {undefined}
+    */
+   this.betaTable=function(_results,_actum,_iota){
+      eternal=eternal||this.eternalCall();
+      this.name=eternal.form.field.name;
+      len=_results.rows.length;
+      len=len||1;//this will display the record even when there is no record
    }
    /*
     * used to display a single form display

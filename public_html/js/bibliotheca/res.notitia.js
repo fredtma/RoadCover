@@ -66,6 +66,14 @@ function SET_DB(){
          this.creoAgito(contact,[],'Table contacts created');
          address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER NOT NULL,ref_group INTEGER NOT NULL DEFAULT 1, `type` TEXT NOT NULL DEFAULT 'tel', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          this.creoAgito(address,[],'Table address created');
+         dealer="CREATE TABLE IF NOT EXISTS dealers(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, code TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(dealer,[],'Table dealer created');
+         salesman="CREATE TABLE IF NOT EXISTS salesmen(id INTEGER PRIMARY KEY AUTOINCREMENT, dealer INTEGER NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, code TEXT NOT NULL, idno TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(dealer,[],'Table salesman created');
+         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=list',type:'GET',dataType:'json',success:function(json){
+            $.each(json.dealers,function(i,v){$DB("INSERT INTO dealers (name,code) VALUES (?,?)",[v,i],"added dealer "+v)})
+         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
+
       }
    }
    /*
@@ -225,6 +233,7 @@ function SET_DB(){
       this.forma(_actum,_iota,function(results){
          if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;
          this.name=eternal.form.field.name;
+         formTypes=eternal.form.options.type||null;
          switch(_actum){
             case 0:
                break;
@@ -251,7 +260,8 @@ function SET_DB(){
                break;
             case 3:
             default://select all
-               theForm.setBeta(results,_actum,_iota)
+               if(formTypes==='betaTable') theForm.betaTable(results,_actum,_iota)
+               else theForm.setBeta(results,_actum,_iota)
                break;
          }//end switch
       });//end anonymous
@@ -352,6 +362,10 @@ function SET_DB(){
          this.creoAgito(contact,[],'Table contacts created');
          address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER NOT NULL,ref_group INTEGER NOT NULL DEFAULT 1, `type` TEXT NOT NULL DEFAULT 'tel', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          this.creoAgito(address,[],'Table address created');
+         dealer="CREATE TABLE IF NOT EXISTS dealers(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, code TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(dealer,[],'Table dealer created');
+         salesman="CREATE TABLE IF NOT EXISTS salesmen(id INTEGER PRIMARY KEY AUTOINCREMENT, dealer INTEGER NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, code TEXT NOT NULL, idno TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         this.creoAgito(dealer,[],'Table salesman created');
    }
    if(this instanceof SET_DB)return this;
    else return new SET_DB();
@@ -372,21 +386,20 @@ function SET_DB(){
  * @uses file|element|class|variable|function|
  */
 var $DB=function(quaerere,params,msg,callback){
-   if(db){
-      db.transaction(function(trans){
-         trans.executeSql(quaerere,params,function(trans,results){
-            console.log('Success DB transaction: '+msg);
-            console.log(quaerere);
-            j=$DB2JSON(results);
-            $('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
-            if(callback)callback(results);
-         },function(_trans,_error){
-            console.log('Failed DB: '+msg+':'+_error.message);
-            console.log('::QUAERERE='+quaerere);
-            $('#sideNotice .db_notice').html("<div class='text-error'>"+_error.message+'</div>');
-         });
+   if(!db)db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
+   db.transaction(function(trans){
+      trans.executeSql(quaerere,params,function(trans,results){
+         console.log('Success DB transaction: '+msg);
+         console.log(quaerere);
+         j=$DB2JSON(results);
+         $('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+         if(callback)callback(results,j);
+      },function(_trans,_error){
+         console.log('Failed DB: '+msg+':'+_error.message);
+         console.log('::QUAERERE='+quaerere);
+         $('#sideNotice .db_notice').html("<div class='text-error'>"+_error.message+'</div>');
       });
-   }
+   });
 }
 /******************************************************************************/
 /**
@@ -407,7 +420,7 @@ var $DB=function(quaerere,params,msg,callback){
       default:
          len=_results.rows.length;
          for(x=0;x<len;x++){
-            console.log(_results.rowsAffected);
+//            console.log(_results.rowsAffected);
             row=_results.rows.item(x);
             col=0;
             for(k in row){row[col]=row[k];col++;}

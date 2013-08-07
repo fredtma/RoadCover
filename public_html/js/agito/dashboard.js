@@ -13,6 +13,21 @@ $('.btnUser,.icon-user,.profileList,.getUser').click(function(){$.getJSON("json/
 $('.icon-users,.getGroup').click(function(){$.getJSON("json/group.json",findJSON);});
 $('.system4,#btnSysPermission,.getPerm').click(function(){$.getJSON("json/permission.json",findJSON);});
 $('.system1,.getClient').click(function(){$.getJSON("json/client.json",findJSON);});
+$DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
+   n='dealers';
+   N=aNumero(n,true);
+   $('#drop_'+n).empty();
+   $('#btnSub'+N+'List').empty();
+   $.each(j,function(i,v){
+      $anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' oneDealer','data-iota':v[1]},false,v[0])
+      $anima('#btnSub'+N+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'oneDealer','data-iota':v[1]},false,v[0])
+   });
+   $anima('#drop_'+n,'li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'allDealer','data-iota':'all'},false,'View All '+aNumero(n,true));
+   $anima('#btnSub'+N+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'allDealer','data-iota':'all'},false,'View All '+aNumero(n,true));
+   //AGITO
+   $('.allDealer,.oneDealer').click(function(){$.getJSON("json/dealer.json",findJSON)});
+});
+SET_DB();
 
 
 

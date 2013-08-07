@@ -85,16 +85,18 @@ function ajax_error (event, response, ajaxSettings, thrownError)
  * @category ajax, dynamic
  * @return json
  */
-function findJSON(data,_form){
+function findJSON(data){
 //   jQuery.removeData();//clear cash
    timeFrame('ALPHA');
    sessionStorage.active=JSON.stringify(data);//@todo:fix the first time it loads it's empty
    theForm = new SET_FORM();
    theForm._Set("#body article");
+   formTypes=data.form.options.type||null;
    //DB SETUP
    var creoDB=new SET_DB();
-   switch(_form){
+   switch(formTypes){
       case 'alpha':creoDB.alpha();break;
+      case 'betaTable':
       default:creoDB.beta();break;
    }
    timeFrame('OMEGA',true);

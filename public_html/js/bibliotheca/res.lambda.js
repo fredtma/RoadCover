@@ -74,17 +74,17 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
             cl=item.clss?item.clss:'';
             txt=document.createTextNode(' '+item.txt);
             li=creo({"clss":cl},"li");
-            a=creo({"data-toggle":"tab","href":"#tab-"+key},"a");
+            a=creo({"data-toggle":"tab","href":"#tab-"+key,'id':'link_'+key},"a");
             if(item.icon) {i=creo({"clss":item.icon},"i");a.appendChild(i)}/*add icon if it exist*/
             a.appendChild(txt);li.appendChild(a);ul.appendChild(li);
       },"mother":function(key,item){
             li=creo({"clss":"dropdown"},"li");
-            a=creo({"data-toggle":"dropdown","href":"#","clss":"dropdown-toggle"},"a");
+            a=creo({"data-toggle":"dropdown","href":"#","clss":"dropdown-toggle",'id':'link_'+key},"a");
             if(item.icon) {i=creo({"clss":item.icon},"i");a.appendChild(i)}/*add icon if it exist*/
             a.appendChild(document.createTextNode(item.txt));
             b=creo({"clss":"caret"},"b");
             a.appendChild(b);li.appendChild(a);
-            ul2=creo({"clss":"dropdown-menu"},"ul");
+            ul2=creo({"clss":"dropdown-menu",'id':'drop_'+key},"ul");
             $.each(item.sub,function(index,val){
                li2=creo({},"li");a2=creo({"data-toggle":"tab","href":"#tab-"+key,"clss":key+index},"a");txt=document.createTextNode(val);
                if(val=='hr'){li2.className="divider";txt=document.createTextNode('')}
