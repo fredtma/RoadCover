@@ -188,11 +188,12 @@ function SET_FORM(_name,_class,_label){
     * @param {integer} <var>_actum</var> the stage of the transaction
     * @returns {undefined}
     */
-   this.betaTable=function(_results,_actum,_iota){
-      eternal=eternal||this.eternalCall();
+   this.gammaTable=function(_rows){
+      eternal=this.eternalCall();
       this.name=eternal.form.field.name;
       len=_results.rows.length;
       len=len||1;//this will display the record even when there is no record
+      $(this.Obj.addTo).empty().html(JSON.stringify(_rows));
    }
    /*
     * used to display a single form display

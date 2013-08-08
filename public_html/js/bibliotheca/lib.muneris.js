@@ -9,15 +9,16 @@ localStorage.SITE_NAME="Road Cover";
 localStorage.SITE_DATE='fullDate';
 localStorage.SITE_TIME='mediumTime';
 localStorage.SITE_URL='http://localhost/RoadCover/public_html/';
+localStorage.SITE_SERVICE='https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php';
 localStorage.MAIL_SUPPORT='support@roadcover.co.za';
 localStorage.DB;
 localStorage.DB_NAME='road_cover';
 localStorage.DB_VERSION='1.0';
 localStorage.DB_DESC='The internal DB version';
 localStorage.DB_SIZE=5;
-localStorage.URL_IMG=localStorage.SITE_URL+'img/';
-localStorage.URL_LIB=localStorage.SITE_URL+'js/';
-localStorage.URL_JSON=localStorage.SITE_URL+'json/';
+//localStorage.URL_IMG=localStorage.SITE_URL+'img/';
+//localStorage.URL_LIB=localStorage.SITE_URL+'js/';
+//localStorage.URL_JSON=localStorage.SITE_URL+'json/';
 localStorage.LIMIT=9;
 localStorage.PASSPATERN='.{6,}';//(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$
 var db;
@@ -166,9 +167,9 @@ function objectSize( object ) {
  */
 function timeFrame(_from,_total){
    endTime=new Date().getTime();
-   fram=endTime-sessionStorage.runTime;
+   from=endTime-sessionStorage.runTime;
    elapse=endTime-sessionStorage.startTime;
-   console.log('TimeFrame:'+_from+' '+fram);
+   console.log('TimeFrame:'+_from+' '+from);
    if(_total)console.log('TimeElapse:'+_from+' '+elapse);
    sessionStorage.runTime=endTime;
 }

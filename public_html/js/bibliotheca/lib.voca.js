@@ -54,11 +54,12 @@ exitFullScreen=function(){
    if(fullscreenEnabled){if(document.webkitExitFullscreen)document.webkitExitFullscreen();else if(document.mozCancelFullscreen)document.mozCancelFullscreen();else if(document.exitFullscreen)document.exitFullscreen();}
 }
 //=============================================================================//
-$('.btnUser,.icon-user,.profileList,.getUser').click(function(){$.getJSON("json/profile.json",findJSON);});
+$('.btnUser,.profileList,.getUser').click(function(){$.getJSON("json/profile.json",findJSON);});
 $('.icon-users,.getGroup').click(function(){$.getJSON("json/group.json",findJSON);});
 $('.system4,#btnSysPermission,.getPerm').click(function(){$.getJSON("json/permission.json",findJSON);});
 $('#btnDashboard').click(function(){load_async('js/agito/dashboard.js',true,'end',true)});
 $('.system1,.getClient').click(function(){$.getJSON("json/client.json",findJSON);});
+$('#link_customers').click(function(){load_async('js/agito/member.js',true,'end',true)});
 
 $('#btnFullScreen,#fullscreen').click(function(){if(!$(this).data('toggle')||$(this).data('toggle')==0){$('#btnFullScreen,#fullscreen').data('toggle',1);enableFullScreen();$('.icon-fullscreen').removeClass('icon-fullscreen').addClass('icon-screenshot');}else{$('#btnFullScreen,#fullscreen').data('toggle',0);exitFullScreen();$('.icon-screenshot').removeClass('icon-screenshot').addClass('icon-fullscreen');}});
 $('.icon-refresh').click(function(){history.go(0);console.log('history:...');});//@todo:add HTML5 history API

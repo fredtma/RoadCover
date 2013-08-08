@@ -39,6 +39,7 @@ get_ajax = function (www, var_set, object, method, format, call_success)
       error: function(data,j, txt)
       {
          msg=j+'::'+txt;
+         object=object||'#sideNotice .db_notice';
          $(object).html('There was an error sending data asynchronuosly::'+msg);
       },
       dataType: format
@@ -89,9 +90,12 @@ function findJSON(data){
 //   jQuery.removeData();//clear cash
    timeFrame('ALPHA');
    sessionStorage.active=JSON.stringify(data);//@todo:fix the first time it loads it's empty
+   console.log(sessionStorage.active);
    theForm = new SET_FORM();
    theForm._Set("#body article");
-   formTypes=data.form.options.type||null;
+//   console.log(data.form.options.type);
+//   formTypes=(!data.form.options.type)?null:data.form.options.type;
+   formTypes=null;
    //DB SETUP
    var creoDB=new SET_DB();
    switch(formTypes){
