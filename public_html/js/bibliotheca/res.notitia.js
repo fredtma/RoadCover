@@ -33,49 +33,14 @@ function SET_DB(){
          });
       });
    }
-   if(!db){
+   if(!db||!localStorage.DB){
       db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
-//      this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0});
       if(!localStorage.DB){
          localStorage.DB=db;
-         sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(sql,[],'Table users created');
-         this.creoAgito("CREATE INDEX user_username ON users(username)",[],"index user_username");
-         this.creoAgito("CREATE INDEX user_email ON users(email)",[],"index user_email");
-         group="CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, desc TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(group,[],'Table groups created');
-         this.creoAgito("CREATE INDEX groups_name ON groups(name)",[],'index groups_name');
-         link="CREATE TABLE IF NOT EXISTS link_users_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, `user` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(link,[],'Table link to users and groups created');
-         this.creoAgito("CREATE INDEX link_usergroup_user ON link_users_groups(`user`)",[],'index link_usergroup_user');
-         this.creoAgito("CREATE INDEX link_usergroup_group ON link_users_groups(`group`)",[],'index link_usergroup_group');
-         perm="CREATE TABLE IF NOT EXISTS permissions (id INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `desc` TEXT NOT NULL, `page` TEXT, `enable` INTEGER DEFAULT 1, `rank` INTEGER DEFAULT 0, `icon` TEXT, `sub` INTEGER DEFAULT 0, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(perm,[],'Table permissions created');
-         this.creoAgito("CREATE INDEX perm_name ON permissions(name)",[],"index perm_name");
-         link="CREATE TABLE IF NOT EXISTS link_permissions_groups(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(link,[],'Table link to permisions to groups created');
-         this.creoAgito("CREATE INDEX link_permgroup_perm ON link_permissions_groups(`permission`)",[],'index link_permgroup_perm');
-         this.creoAgito("CREATE INDEX link_permgroup_group ON link_permissions_groups(`group`)",[],'index link_permgroup_group');
-         link="CREATE TABLE IF NOT EXISTS link_permissions_users(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `user` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(link,[],'Table link to permisions to users created');
-         this.creoAgito("CREATE INDEX link_permuser_perm ON link_permissions_users(`permission`)",[],'index link_permuser_perm');
-         this.creoAgito("CREATE INDEX link_permuser_user ON link_permissions_users(`username`)",[],'index link_permuser_user');
-         client="CREATE TABLE IF NOT EXISTS clients(id INTEGER PRIMARY KEY AUTOINCREMENT, company TEXT NOT NULL UNIQUE, code TEXT NOT NULL UNIQUE, about TEXT, email TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(client,[],'Table clients created');
-         contact="CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER NOT NULL,ref_group INTEGER NOT NULL DEFAULT 1, `type` TEXT NOT NULL DEFAULT 'tel', contact TEXT NOT NULL, intruction TEXT, ext TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(contact,[],'Table contacts created');
-         address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER NOT NULL,ref_group INTEGER NOT NULL DEFAULT 1, `type` TEXT NOT NULL DEFAULT 'tel', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(address,[],'Table address created');
-         dealer="CREATE TABLE IF NOT EXISTS dealers(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, code TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(dealer,[],'Table dealer created');
-         salesman="CREATE TABLE IF NOT EXISTS salesmen(id INTEGER PRIMARY KEY AUTOINCREMENT, dealer INTEGER NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, code TEXT NOT NULL, idno TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(dealer,[],'Table salesman created');
-         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=list',type:'GET',dataType:'json',success:function(json){
-            $.each(json.dealers,function(i,v){$DB("INSERT INTO dealers (name,code) VALUES (?,?)",[v,i],"added dealer "+v)})
-         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
-
+         this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1});
       }
    }
+
    /*
     * this function will extract info from the form and determine the form action
     * @param {string} _form the name of the form to be setup
@@ -328,12 +293,19 @@ function SET_DB(){
       }//endswith
    }
    this.resetDB=function(_option){
-         if(_option.users)this.creoAgito("DROP TABLE users",[],"DROP table");
-         if(_option.groups)this.creoAgito("DROP TABLE groups",[],"DROP table");
-         if(_option.ug)this.creoAgito("DROP TABLE link_users_groups",[],"DROP table");
-         if(_option.perm)this.creoAgito("DROP TABLE permissions",[],"DROP table");
-         if(_option.pg)this.creoAgito("DROP TABLE link_permissions_groups",[],"DROP table");
-         if(_option.pu)this.creoAgito("DROP TABLE link_permissions_users",[],"DROP table");
+
+         if(_option.users)this.creoAgito("DROP TABLE users",[],"DROP table users");
+         if(_option.groups)this.creoAgito("DROP TABLE groups",[],"DROP table groups");
+         if(_option.ug)this.creoAgito("DROP TABLE link_users_groups",[],"DROP table link_users_groups");
+         if(_option.perm)this.creoAgito("DROP TABLE permissions",[],"DROP table permissions");
+         if(_option.pg)this.creoAgito("DROP TABLE link_permissions_groups",[],"DROP table link_permissions_groups");
+         if(_option.pu)this.creoAgito("DROP TABLE link_permissions_users",[],"DROP table link_permissions_users");
+         if(_option.client)this.creoAgito("DROP TABLE clients",[],"DROP table clients");
+         if(_option.contact)this.creoAgito("DROP TABLE contacts",[],"DROP table contact");
+         if(_option.address)this.creoAgito("DROP TABLE address",[],"DROP table address");
+         if(_option.dealer)this.creoAgito("DROP TABLE dealers",[],"DROP table dealer");
+         if(_option.salesman)this.creoAgito("DROP TABLE salesmen",[],"DROP table salesmen");
+
          sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.users)this.creoAgito(sql,[],'Table users created');
          if(_option.users)this.creoAgito("CREATE INDEX user_username ON users(username)",[],"index user_username");
@@ -355,18 +327,35 @@ function SET_DB(){
          link="CREATE TABLE IF NOT EXISTS link_permissions_users(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `user` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.pu)this.creoAgito(link,[],'Table link to permisions to users created');
          if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_perm ON link_permissions_users(`permission`)",[],'index link_permuser_perm');
-         if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_user ON link_permissions_users(`username`)",[],'index link_permuser_user');
+         if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_user ON link_permissions_users(`user`)",[],'index link_permuser_user');
          client="CREATE TABLE IF NOT EXISTS clients(id INTEGER PRIMARY KEY AUTOINCREMENT, company TEXT NOT NULL UNIQUE, code TEXT NOT NULL UNIQUE, about TEXT, email TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(client,[],'Table clients created');
+         if(_option.client)this.creoAgito(client,[],'Table clients created');
+         if(_option.client)this.creoAgito("CREATE INDEX client_company ON clients(company)",[],"index client_company");
+         if(_option.client)this.creoAgito("CREATE INDEX client_code ON clients(code)",[],"index client_code");
          contact="CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER NOT NULL,ref_group INTEGER NOT NULL DEFAULT 1, `type` TEXT NOT NULL DEFAULT 'tel', contact TEXT NOT NULL, intruction TEXT, ext TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(contact,[],'Table contacts created');
-         address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER NOT NULL,ref_group INTEGER NOT NULL DEFAULT 1, `type` TEXT NOT NULL DEFAULT 'tel', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(address,[],'Table address created');
+         if(_option.contact)this.creoAgito(contact,[],'Table contacts created');
+         if(_option.contact)this.creoAgito("CREATE INDEX contact_ref_name ON contacts(ref_name)",[],"index ref_name");
+         if(_option.contact)this.creoAgito("CREATE INDEX contact_contact ON contacts(contact)",[],"index contact");
+         address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER NOT NULL,ref_group INTEGER NOT NULL DEFAULT 1, `type` TEXT NOT NULL DEFAULT 'residential', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         if(_option.address)this.creoAgito(address,[],'Table address created');
+         if(_option.address)this.creoAgito("CREATE INDEX address_ref_name ON address(ref_name)",[],"index ref_name");
          dealer="CREATE TABLE IF NOT EXISTS dealers(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, code TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(dealer,[],'Table dealer created');
+         if(_option.dealer)this.creoAgito(dealer,[],'Table dealer created');
+         if(_option.dealer)this.creoAgito("CREATE INDEX dealer_name ON dealers(name)",[],"index dealer_name");
          salesman="CREATE TABLE IF NOT EXISTS salesmen(id INTEGER PRIMARY KEY AUTOINCREMENT, dealer INTEGER NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, code TEXT NOT NULL, idno TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         this.creoAgito(dealer,[],'Table salesman created');
-   }
+         if(_option.salesman)this.creoAgito(salesman,[],'Table salesman created');
+         if(_option.salesman)this.creoAgito("CREATE INDEX salesman_firstname ON salesmen(firstname)",[],"index salesman_firstname");
+         if(_option.salesman)this.creoAgito("CREATE INDEX salesman_lastname ON salesmen(lastname)",[],"index salesman_lastname");
+         if(_option.salesman)this.creoAgito("CREATE INDEX salesman_idno ON salesmen(idno)",[],"index salesman_idno");
+         if(_option.salesman)this.creoAgito("CREATE INDEX salesman_dealer ON salesmen(dealer)",[],"index salesman_dealer");
+         if(_option.users)$DB("INSERT INTO users (username,password,firstname,lastname,email,gender) VALUES (?,?,?,?,?,?)",['administrator','qwerty','admin','strator','admin@xpandit.co.za','Male'],"added default user ");
+         if(_option.dealer){
+            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=list',type:'GET',dataType:'json',success:function(json){
+               $.each(json.dealers,function(i,v){$DB("INSERT INTO dealers (name,code) VALUES (?,?)",[v,i],"added dealer "+v)})
+            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
+         }//endif
+   }//endfunction
+   if(db && localStorage.DB && false)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0});
    if(this instanceof SET_DB)return this;
    else return new SET_DB();
 }
