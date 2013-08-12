@@ -43,11 +43,15 @@ address {margin: 3px 0px;}
 }
 .btn-cust.input-prepend{margin-bottom:0px;}
 .secondRow{display:block;height:2em;margin-top: 0.3em;}
+.headRow{height: 2em;border: 1px solid red;width: 100px;position: relative;display: inline-block;font-size: 0;white-space: nowrap;vertical-align: middle;margin-left: 5px;}
 /******************************************************************************/
 /*aSide*/
 #sideTop {margin-top:-0.8em}
 .addThis{margin: 0.2em -0.2em 0 0.7em;}
 #sideBot h3 a {display:block;}#sideBot h3 a:hover {text-decoration: none;}
+#displayMensa .dl-horizontal {margin-right: 0.2em;}
+#displayMensa .dl-horizontal dt{width:40%}
+#displayMensa .dl-horizontal dd {margin-left: 40%;}
 /******************************************************************************/
 /*body setting*/
 ._box

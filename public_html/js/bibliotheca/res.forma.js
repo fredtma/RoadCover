@@ -107,7 +107,7 @@ function SET_FORM(_name,_class,_label){
       eternal=eternal||this.eternalCall();
       linkTable=this.linkTable;
       this.name=eternal.form.field.name;
-      isReadOnly=eternal.form.options.readonly;
+      isReadOnly=(eternal.form.options)?eternal.form.options.readonly:false;
       len=_results.rows.length;
       len=len||1;//this will display the record even when there is no record
       if(!_actum){
@@ -152,11 +152,13 @@ function SET_FORM(_name,_class,_label){
                      linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'));
                   });
                }//endfor links
+            }else{
+               $(collapse_head.father).parents(div).data('code',row['code']);
+               collapse_head.father.onclick=function(){sideDisplay($(this).parents(div).data('code'), eternal.mensa);}//@see lib.voca.js
             }//endif read only
             collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec,'data-iota':row['id']});
             collapse_content.vita('div',{'clss':'accordion-inner'},false);
          }//end for
-
          this.callForm(_results,_iota);
       }else if (_actum==3){
          row=(_iota==-1||!_iota)?{}:_results.rows.item(0);
@@ -176,7 +178,6 @@ function SET_FORM(_name,_class,_label){
             fieldDisplay('form',row);
             $(form+' #submit_'+this.name)[0].onclick=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000)}//make the form to become update
          }
-
          if(eternal.form.file)load_async('js/agito/'+eternal.form.file+'.js',false,'end',true);
       }
 //      this.setObject({"items":eternal,"father":function(_key,_field){}});
@@ -189,11 +190,28 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.gammaTable=function(_rows){
+//      for(k in _rows) if(_rows.hasOwnProperty(key))len++;
       eternal=this.eternalCall();
       this.name=eternal.form.field.name;
-      len=_results.rows.length;
-      len=len||1;//this will display the record even when there is no record
-      $(this.Obj.addTo).empty().html(JSON.stringify(_rows));
+      $('#sideBot h3').html(eternal.form.legend.txt);
+      $(this.Obj.addTo).empty();
+      $table=$anima(this.Obj.addTo,'table',{'id':'table_'+this.name,'clss':'table table-striped table-hover table-condensed'}).vita('thead',{},true);
+      $table.vita('tr',{},true).vita('th',{},false,'#');colspan=0;
+      for(k in eternal.fields){colspan++;
+         th=eternal.fields[k];if(th.header==true){title=th.title||k;$table.vita('th',{},false,title)}
+      }//endforeach
+      $table.novo('#table_'+this.name,'tbody');
+      r1=1;_rows=JSON.parse(_rows);
+      for(key in _rows){
+         row=_rows[key];console.log(row,key);
+         if(r1==1)$table.vita('tr',{},true).vita('td',{},false,r1);//for the first row
+         else $table.genesis('tr',{},true).vita('td',{},false,r1);//for the rest
+         r1++;
+         for(k in eternal.fields){
+            $table.vita('td',{},false,row[k])
+         }//endfor
+      }//endfor
+      $table.novo('#table_'+this.name,'tfoot',{}).vita('tr',{},true).vita('td',{'colspan':colspan+1},false,'Total:'+colspan);
    }
    /*
     * used to display a single form display

@@ -9,10 +9,13 @@ $welcome.novo('#dashboard .row-fluid:nth-child(1)','div',{clss:'span4 alert aler
 $welcome.novo('#dashboard','div',{clss:'row-fluid'});
 $welcome.vita('div',{clss:'span4 alert alert-info dash-module getClient'},true).vita('h4',{},true,' Clients').vita('i',{'clss':'icon-qrcode icon-white'},false,'','first').novo('#dashboard .getClient','p',{},'clients content text');
 //@fix: prevents the btn home click from loosing the events attached.
-$('.btnUser,.icon-user,.profileList,.getUser').click(function(){$.getJSON("json/profile.json",findJSON);});
-$('.icon-users,.getGroup').click(function(){$.getJSON("json/group.json",findJSON);});
-$('.system4,#btnSysPermission,.getPerm').click(function(){$.getJSON("json/permission.json",findJSON);});
-$('.system1,.getClient').click(function(){$.getJSON("json/client.json",findJSON);});
+//$('.btnUser,.profileList,.getUser').click(function(){$.getJSON("json/profile.json",findJSON);});
+//$('.icon-users,.getGroup').click(function(){$.getJSON("json/group.json",findJSON);});
+//$('.system4,#btnSysPermission,.getPerm').click(function(){$.getJSON("json/permission.json",findJSON);});
+//$('#btnDashboard').click(function(){load_async('js/agito/dashboard.js',true,'end',true)});
+//$('.system1,.getClient').click(function(){$.getJSON("json/client.json",findJSON);});
+//$('#link_customers').click(function(){load_async('js/agito/member.js',true,'end',true)});
+
 $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
    n='dealers';
    N=aNumero(n,true);

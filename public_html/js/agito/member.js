@@ -1,7 +1,7 @@
 /*
  * application page for the members page
  */
-sessionStorage.active={
+tmp={
    "form": {
       "options":{"readonly":true,"type":"betaTable"},
       "field":{"clss":"form-horizontal","name":"member","data-iota":"0"},
@@ -16,13 +16,14 @@ sessionStorage.active={
       "Fullname":{"header":true},
       "Name":{"header":true},
       "Period":{"header":true},
-      "CollectionMethod":{"header":true,"Title":"Collection Method"},
-      "TotalAmount":{"header":true,"Title":"Total Amount"},
+      "CollectionMethod":{"header":true,"title":"Collection Method"},
+      "TotalAmount":{"header":true,"title":"Total Amount"},
       "DateModified":{"header":true,"title":"Date Modified"},
    }
 }
+sessionStorage.active=JSON.stringify(tmp);tmp=null;
 get_ajax(localStorage.SITE_SERVICE,{"militia":"dealer","iota":"1654"},'','post','json',function(_rows){
    theForm = new SET_FORM();
    theForm._Set("#body article");
-   theForm.gammaTable(_rows);
+   theForm.gammaTable(JSON.stringify(_rows));
 });

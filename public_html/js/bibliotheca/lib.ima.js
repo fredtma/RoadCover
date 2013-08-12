@@ -88,13 +88,12 @@ function ajax_error (event, response, ajaxSettings, thrownError)
  */
 function findJSON(data){
 //   jQuery.removeData();//clear cash
-   timeFrame('ALPHA');
+   var eternal=data;
+   timeFrame('ALPHA--');
    sessionStorage.active=JSON.stringify(data);//@todo:fix the first time it loads it's empty
-   console.log(sessionStorage.active);
    theForm = new SET_FORM();
    theForm._Set("#body article");
-//   console.log(data.form.options.type);
-//   formTypes=(!data.form.options.type)?null:data.form.options.type;
+   formTypes=(typeof(eternal['form']['options'])!='undefined')?eternal.form.options.type:0;//using [bracket] to resolve undefined error
    formTypes=null;
    //DB SETUP
    var creoDB=new SET_DB();

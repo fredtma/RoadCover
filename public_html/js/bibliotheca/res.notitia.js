@@ -198,7 +198,7 @@ function SET_DB(){
       this.forma(_actum,_iota,function(results){
          if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;
          this.name=eternal.form.field.name;
-         formTypes=eternal.form.options.type||null;
+         formTypes=(typeof(eternal['form']['options'])!='undefined')?eternal.form.options.type:0;
          switch(_actum){
             case 0:
                break;
@@ -351,11 +351,11 @@ function SET_DB(){
          if(_option.users)$DB("INSERT INTO users (username,password,firstname,lastname,email,gender) VALUES (?,?,?,?,?,?)",['administrator','qwerty','admin','strator','admin@xpandit.co.za','Male'],"added default user ");
          if(_option.dealer){
             $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=list',type:'GET',dataType:'json',success:function(json){
-               $.each(json.dealers,function(i,v){$DB("INSERT INTO dealers (name,code) VALUES (?,?)",[v,i],"added dealer "+v)})
+               $.each(json,function(i,v){$DB("INSERT INTO dealers (name,code) VALUES (?,?)",[v.Name,v.Id],"added dealer "+v)})
             }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
          }//endif
    }//endfunction
-   if(db && localStorage.DB && false)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0});
+   if(false&&db && localStorage.DB)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0});
    if(this instanceof SET_DB)return this;
    else return new SET_DB();
 }
