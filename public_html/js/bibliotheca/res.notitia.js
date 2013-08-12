@@ -342,7 +342,7 @@ function SET_DB(){
          dealer="CREATE TABLE IF NOT EXISTS dealers(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, code TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.dealer)this.creoAgito(dealer,[],'Table dealer created');
          if(_option.dealer)this.creoAgito("CREATE INDEX dealer_name ON dealers(name)",[],"index dealer_name");
-         salesman="CREATE TABLE IF NOT EXISTS salesmen(id INTEGER PRIMARY KEY AUTOINCREMENT, dealer INTEGER NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, code TEXT NOT NULL, idno TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         salesman="CREATE TABLE IF NOT EXISTS salesmen(id INTEGER PRIMARY KEY AUTOINCREMENT, dealer INTEGER, firstname TEXT NOT NULL, lastname TEXT NOT NULL, code TEXT NOT NULL, idno TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.salesman)this.creoAgito(salesman,[],'Table salesman created');
          if(_option.salesman)this.creoAgito("CREATE INDEX salesman_firstname ON salesmen(firstname)",[],"index salesman_firstname");
          if(_option.salesman)this.creoAgito("CREATE INDEX salesman_lastname ON salesmen(lastname)",[],"index salesman_lastname");
@@ -350,8 +350,13 @@ function SET_DB(){
          if(_option.salesman)this.creoAgito("CREATE INDEX salesman_dealer ON salesmen(dealer)",[],"index salesman_dealer");
          if(_option.users)$DB("INSERT INTO users (username,password,firstname,lastname,email,gender) VALUES (?,?,?,?,?,?)",['administrator','qwerty','admin','strator','admin@xpandit.co.za','Male'],"added default user ");
          if(_option.dealer){
-            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=list',type:'GET',dataType:'json',success:function(json){
+            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getDealer',type:'GET',dataType:'json',success:function(json){
                $.each(json,function(i,v){$DB("INSERT INTO dealers (name,code) VALUES (?,?)",[v.Name,v.Id],"added dealer "+v)})
+            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
+         }//endif
+         if(_option.salesman){
+            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getSaleman',type:'GET',dataType:'json',success:function(json){
+               $.each(json,function(i,v){$DB("INSERT INTO salesmen (firstname,lastname,code) VALUES (?,?,?)",[v.FullNames,v.Surname,v.Id],"added salesman "+v)})
             }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
          }//endif
    }//endfunction

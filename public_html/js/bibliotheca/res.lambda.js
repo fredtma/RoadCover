@@ -73,12 +73,12 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
             mainMenu.push(key);
             cl=item.clss?item.clss:'';
             txt=document.createTextNode(' '+item.txt);
-            li=creo({"clss":cl},"li");
+            li=creo({"clss":cl+" navLinks","id":"nav_"+key},"li");
             a=creo({"data-toggle":"tab","href":"#tab-"+key,'id':'link_'+key},"a");
             if(item.icon) {i=creo({"clss":item.icon},"i");a.appendChild(i)}/*add icon if it exist*/
             a.appendChild(txt);li.appendChild(a);ul.appendChild(li);
       },"mother":function(key,item){
-            li=creo({"clss":"dropdown"},"li");
+            li=creo({"clss":"dropdown navLinks","id":"nav_"+key},"li");
             a=creo({"data-toggle":"dropdown","href":"#","clss":"dropdown-toggle",'id':'link_'+key},"a");
             if(item.icon) {i=creo({"clss":item.icon},"i");a.appendChild(i)}/*add icon if it exist*/
             a.appendChild(document.createTextNode(item.txt));

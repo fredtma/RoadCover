@@ -104,7 +104,7 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.setBeta=function(_results,_actum,_iota){
-      eternal=eternal||this.eternalCall();
+      eternal=eternal||eternalCall();
       linkTable=this.linkTable;
       this.name=eternal.form.field.name;
       isReadOnly=(eternal.form.options)?eternal.form.options.readonly:false;
@@ -121,7 +121,8 @@ function SET_FORM(_name,_class,_label){
             $('#newItem').attr("name","btnNew"+this.name).attr("title","Create a new "+this.name).html(" <i class='icon-plus icon-white'></i> New "+this.name);
          }
          $('#tab-home section h2').text(eternal.form.legend.txt);
-         $(this.Obj.addTo).empty();
+         $('.headRow').html(eternal.form.legend.txt);
+         $(this.Obj.addTo).empty();$('#displayMensa').empty();//main content and side listing
          container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
          addbtn.onclick=addRecord;
          for(rec=0;rec<len;rec++){//loop record
@@ -131,31 +132,40 @@ function SET_FORM(_name,_class,_label){
             collapseTo=!isReadOnly?'#collapse_'+this.name+rec:'javascript:void(0)'
             collapse_head=$anima('#acc_'+this.name,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group'});
             collapse_head.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
-                    .vita('a',{'clss':'betaRow','contenteditable':false,'data-toggle':collapse,'data-parent':'#acc_'+this.name,'href':collapseTo},true);//@todo: add save on element
-                    l=headeName.length;for(x=0;x<l;x++)collapse_head.vita('span',{},false,headeName[x]+' ');
+               .vita('a',{'clss':'betaRow','contenteditable':false,'data-toggle':collapse,'data-parent':'#acc_'+this.name,'href':collapseTo},true);//@todo: add save on element
+               l=headeName.length;for(x=0;x<l;x++)collapse_head.vita('span',{},false,headeName[x]+' ');
             if(!isReadOnly){
-                       //edit
-                     collapse_head.genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec,},true)
-                     .vita('i',{'clss':'icon icon-color icon-edit','title':'Edit '+headeName[0]});
-                      //FIRE on shown//@todo verify why multiple triger are fired on new elements
-                      $('#acc_'+this.name).on('shown',function(){if(!$(this).data('toggle_shown')||$(this).data('toggle_shown')==0){$(this).data('toggle_shown',1); ii=$('.accordion-body.in').data('iota');DB.beta(3,ii);} });
-                      $('#acc_'+this.name).on('hidden',function(){$(this).data('toggle_shown',0); });
-                      //delete
-                      collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
-                      .vita('i',{'clss':'icon icon-color icon-trash','title':'Delete '+headeName[0]}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
+               //edit
+             collapse_head.genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+this.name,'href':'#collapse_'+this.name+rec,},true)
+             .vita('i',{'clss':'icon icon-color icon-edit','title':'Edit '+headeName[0]});
+              //FIRE on shown//@todo verify why multiple triger are fired on new elements
+              $('#acc_'+this.name).on('shown',function(){if(!$(this).data('toggle_shown')||$(this).data('toggle_shown')==0){$(this).data('toggle_shown',1); ii=$('.accordion-body.in').data('iota');DB.beta(3,ii);} });
+              $('#acc_'+this.name).on('hidden',function(){$(this).data('toggle_shown',0); });
+              //delete
+              collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
+              .vita('i',{'clss':'icon icon-color icon-trash','title':'Delete '+headeName[0]}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
+            }else{
+               $(collapse_head.father).parents(div).data('code',row['code']);
+               //click on the a link
+               collapse_head.father.onclick=function(){sideDisplay($(this).parents(div).data('code'), eternal.mensa);}//@see lib.voca.js
+            }//endif read only
                //APPLY CHANGES TO ADD FUNCTION
                for(link in eternal.links){
                   collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link '+eternal.links[link][1]});
-                  $(collapse_head.child).data('ref',ref);$(collapse_head.child).data('head',headeName[0]);$(collapse_head.child).data('link',link);$(collapse_head.child).data('links',eternal.links[link]);
-                  $(collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
-                     $('.accordion-heading .icon-black').removeClass('icon-black').addClass('icon-color');$(this).removeClass('icon-color').addClass('icon-black');
-                     linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'));
-                  });
+                  if(link!='reference'){
+                     $(collapse_head.child).data('ref',ref);$(collapse_head.child).data('head',headeName[0]);$(collapse_head.child).data('link',link);$(collapse_head.child).data('links',eternal.links[link]);
+                     $(collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
+                        $('.accordion-heading .icon-black').removeClass('icon-black').addClass('icon-color');$(this).removeClass('icon-color').addClass('icon-black');
+                        linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'));
+                     });
+                  }else{//esle reference. LINK
+                     $(collapse_head.child).click(function(){
+                        $('#nav-main #link_insurance').tab('show');
+                        sessionStorage.iota=$(this).parents('div').data('code');$(".navLinks").removeClass('active');$("#nav_insurance").addClass('active');
+                        load_async(eternal.links[link][0],true,'end',true);
+                     });
+                  }//endif
                }//endfor links
-            }else{
-               $(collapse_head.father).parents(div).data('code',row['code']);
-               collapse_head.father.onclick=function(){sideDisplay($(this).parents(div).data('code'), eternal.mensa);}//@see lib.voca.js
-            }//endif read only
             collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec,'data-iota':row['id']});
             collapse_content.vita('div',{'clss':'accordion-inner'},false);
          }//end for
@@ -191,7 +201,7 @@ function SET_FORM(_name,_class,_label){
     */
    this.gammaTable=function(_rows){
 //      for(k in _rows) if(_rows.hasOwnProperty(key))len++;
-      eternal=this.eternalCall();
+      eternal=eternalCall();
       this.name=eternal.form.field.name;
       $('#sideBot h3').html(eternal.form.legend.txt);
       $(this.Obj.addTo).empty();
@@ -203,7 +213,7 @@ function SET_FORM(_name,_class,_label){
       $table.novo('#table_'+this.name,'tbody');
       r1=1;_rows=JSON.parse(_rows);
       for(key in _rows){
-         row=_rows[key];console.log(row,key);
+         row=_rows[key];
          if(r1==1)$table.vita('tr',{},true).vita('td',{},false,r1);//for the first row
          else $table.genesis('tr',{},true).vita('td',{},false,r1);//for the rest
          r1++;
@@ -335,7 +345,7 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.linkTable=function(_name,_mensa,_agrum,_ratio){
-      eternal=eternal||this.eternalCall();
+      eternal=eternal||eternalCall();
       unus=_agrum[1];
       duo=_agrum[2]||_agrum[0];
       tribus=_agrum[3]||_agrum[0];
@@ -367,10 +377,6 @@ function SET_FORM(_name,_class,_label){
             }//end for
          });//end callback
       }//endfi
-   }
-   this.eternalCall=function(){
-      if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;
-      return eternal;
    }
    if(this instanceof SET_FORM)return this;
    else return new SET_FORM();

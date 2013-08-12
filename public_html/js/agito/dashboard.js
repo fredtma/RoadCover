@@ -15,7 +15,8 @@ $welcome.vita('div',{clss:'span4 alert alert-info dash-module getClient'},true).
 //$('#btnDashboard').click(function(){load_async('js/agito/dashboard.js',true,'end',true)});
 //$('.system1,.getClient').click(function(){$.getJSON("json/client.json",findJSON);});
 //$('#link_customers').click(function(){load_async('js/agito/member.js',true,'end',true)});
-
+SET_DB();
+//@todo: test on a new DB if the menu link will appear.
 $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
    n='dealers';
    N=aNumero(n,true);
@@ -30,7 +31,21 @@ $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
    //AGITO
    $('.allDealer,.oneDealer').click(function(){$.getJSON("json/dealer.json",findJSON)});
 });
-SET_DB();
+$DB("SELECT firstname,lastname,code FROM salesmen LIMIT 3",[],"",function(r,j){
+   n='salesman';
+   N=aNumero(n,true);
+   $('#drop_'+n).empty();
+   $('#btnSub'+N+'List').empty();
+   $.each(j,function(i,v){
+      $anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' one'+N,'data-iota':v[1]},false,v[0])
+      $anima('#btnSub'+N+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,v[0])
+   });
+   $anima('#drop_'+n,'li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'all'+N,'data-iota':'all'},false,'View All '+aNumero(n,true));
+   $anima('#btnSub'+N+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'all'+N,'data-iota':'all'},false,'View All '+aNumero(n,true));
+   //AGITO
+   $('.allSalesman,.oneSalesman').click(function(){$.getJSON("json/salesman.json",findJSON)});
+});
+
 
 
 

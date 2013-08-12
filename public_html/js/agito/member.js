@@ -13,6 +13,7 @@ tmp={
    "quaerere":{"scopo":""},
    "fields": {
       "Dealer":{"header":true},
+      "Salesman":{"header":true},
       "Fullname":{"header":true},
       "Name":{"header":true},
       "Period":{"header":true},
@@ -22,8 +23,12 @@ tmp={
    }
 }
 sessionStorage.active=JSON.stringify(tmp);tmp=null;
-get_ajax(localStorage.SITE_SERVICE,{"militia":"dealer","iota":"1654"},'','post','json',function(_rows){
+eternal=typeof eternal!="undefined"?eternal:eternalCall();
+get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"iota":sessionStorage.iota},'','post','json',function(_rows){
+   sideDisplay(sessionStorage.iota,'dealers');
+   sessionStorage.removeItem("iota");
    theForm = new SET_FORM();
    theForm._Set("#body article");
    theForm.gammaTable(JSON.stringify(_rows));
 });
+//@todo add to the menu the three most recents

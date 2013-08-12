@@ -10,7 +10,7 @@
 body {margin: 1px auto; background: #fbfbfb url('../img/bg04.png');; font-family: 'Yanone Kaffeesatz'; color: #474f51;}
 .white{color:white;}.black{color:black;}
 h1 {font-size:1.8em; font-family:'Vollkorn', sans-serif; font-weight: 700; font-style:italic; text-align: right; display:block; padding: 0px; line-height: 10px;}
-h2 {font-size: 1.1em;    line-height: 20px;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);display: inline;padding: 5px;}
+h2 {font-size: 1.1em;    line-height: 20px;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);display: inline;/* padding: 5px; */}
 h3 {font-size: 1.4em; color:#96a9b5;  line-height: 30px; margin: 10px 0 0 0;border-top: 1px solid #eeeeee;border-bottom: 1px solid #eeeeee;}
 .logo,.aside {float:left; width:16%;}.navigator, .body {float:left; width:82%;margin-left:1em;}
 .logo {min-height:7em;}.aside {min-height: 49.5em; text-align: right;}.body {min-height: 50em;}
@@ -43,7 +43,7 @@ address {margin: 3px 0px;}
 }
 .btn-cust.input-prepend{margin-bottom:0px;}
 .secondRow{display:block;height:2em;margin-top: 0.3em;}
-.headRow{height: 2em;border: 1px solid red;width: 100px;position: relative;display: inline-block;font-size: 0;white-space: nowrap;vertical-align: middle;margin-left: 5px;}
+.headRow{border: 0px solid red;/* width: 100px; */position: relative;display: inline-block;white-space: nowrap;vertical-align: middle;margin: 0px 5px;}
 /******************************************************************************/
 /*aSide*/
 #sideTop {margin-top:-0.8em}
@@ -92,6 +92,7 @@ a.betaRow span {width: 20%;display:  inline-block;}
 a.accordion-toggle{display:initial !important;padding: 4px 4px  !important;}
 .accordion-body.in .accordion-inner{min-height:15em;}
 .accordion-heading a.forIcon {padding: 2px;}
+#body article table {margin-top: 0.7em;}
 /*form {margin: -10px 0 20px;}*/
 /******************************************************************************/
 /*side bar*/
@@ -118,7 +119,7 @@ footer {top:auto; bottom:0; margin-bottom:1px; position:fixed; left:0; right:0; 
 textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input
 {background: #fff url(../img/gradient.png)top left repeat-x;-webkit-box-shadow: inset 0 3px 3px rgba(0, 0, 0, 0.075);-moz-box-shadow: inset 0 3px 3px rgba(0, 0, 0, 0.075);box-shadow: inset 0 3px 3px rgba(0, 0, 0, 0.075);}
 input[type="radio"], input[type="checkbox"] {margin: 0 0 4px 0;margin-top: 1px \9;line-height: normal;}
-#hiddenElements h2 {font-size:2em;}
+#hiddenElements h2 {font-size:2em;text-transform: capitalize;}
 /******************************************************************************/
 /*LOGIN*/
 .form-signin {

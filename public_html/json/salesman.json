@@ -1,0 +1,16 @@
+{
+   "form": {
+      "options":{"readonly":true,"type":"beta"},
+      "field":{"clss":"form-horizontal","name":"salesman","data-iota":"0"},
+      "fieldset":{"name":"admin-salesmans"},
+      "legend":{"txt":"salesmans' page"},
+      "button":{"submit_salesman":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_salesman":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
+   },
+   "mensa": "salesmen",
+   "fields": {
+      "firstname":{"header":true,"field":{}},
+      "lastname":{"header":true,"field":{}},
+      "code":{"title":"salesman's code","field":{}}
+   },
+   "links":{"reference":["js/agito/member.js","#insurance"]}
+}

@@ -3,12 +3,13 @@
       "options":{"readonly":true,"type":"beta"},
       "field":{"clss":"form-horizontal","name":"dealer","data-iota":"0"},
       "fieldset":{"name":"admin-dealers"},
-      "legend":{"txt":"Administrator dealers"},
+      "legend":{"txt":"Dealers' page"},
       "button":{"submit_dealer":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_dealer":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
    },
    "mensa": "dealers",
    "fields": {
       "name":{"valid":["unique"],"icon":"icon icon-black icon-users","header":true,"place":true,"field":{"required":"","autofocus":""}},
       "code":{"valid":["unique"],"icon":"icon icon-black icon-users","title":"dealer's code","place":true,"field":{"required":""}}
-   }
+   },
+   "links":{"reference":["js/agito/member.js","#insurance"]}
 }

@@ -255,6 +255,17 @@ function resetForm(_frm){
 }
 /******************************************************************************/
 /**
+ * places the session current active json setting in a variable
+ * @author fredtma
+ * @version 2.8
+ * @category json
+ */
+eternalCall=function(){
+   if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;
+   return eternal;
+}
+/******************************************************************************/
+/**
  * used to measure script execution time
  *
  * It will verify all the variable sent to the function
