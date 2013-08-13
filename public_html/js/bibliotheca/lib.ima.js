@@ -93,17 +93,28 @@ function findJSON(data){
    sessionStorage.active=JSON.stringify(data);//@todo:fix the first time it loads it's empty
    theForm = new SET_FORM();
    theForm._Set("#body article");
-   formTypes=(typeof(eternal['form']['options'])!='undefined')?eternal.form.options.type:0;//using [bracket] to resolve undefined error
-   formTypes=null;
+   formTypes=(typeof(eternal['form']['options'])!='undefined')?eternal.form.options.type:null;//using [bracket] to resolve undefined error
    //DB SETUP
    var creoDB=new SET_DB();
    switch(formTypes){
       case 'alpha':creoDB.alpha();break;
-      case 'betaTable':
+      case 'betaTable':get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa},'','post','json',function(results){theForm.setBeta(results,3);});break;
       default:creoDB.beta();break;
    }
    timeFrame('OMEGA',true);
 }
+/******************************************************************************/
+/**
+ * the default all around error handling function for json request
+ * @author fredtma
+ * @version 2.4
+ * @category ajax, json, error handling
+ */
+
+onVituim=function(event, jqxhr,textStatus){
+   var err='<p>ajaxError:'+jqxhr+','+textStatus+'</p>';
+   $('#sideNotice .db_notice').append(err);
+};
 /******************************************************************************/
 /**
  * used to measure script execution time

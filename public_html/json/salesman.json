@@ -1,6 +1,6 @@
 {
    "form": {
-      "options":{"readonly":true,"type":"beta"},
+      "options":{"readonly":true,"type":"gamma"},
       "field":{"clss":"form-horizontal","name":"salesman","data-iota":"0"},
       "fieldset":{"name":"admin-salesmans"},
       "legend":{"txt":"salesmans' page"},

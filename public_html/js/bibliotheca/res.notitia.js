@@ -254,6 +254,10 @@ function SET_DB(){
                if(_from==='form')$(form+' [name^='+key+']').each(function(){if($(this).prop('value')==_source[key])$(this).addClass('active').prop('checked',true);});
                if(_from==='list')$(form+' [name^='+key+']').each(function(){if($(this).prop('checked'))_return[c]=$(this).prop('value');});
                break;
+            case 'p':
+            case 'span':
+               if(_from==='form')$(form+' #'+key).val(_source[key]);
+               break;
             default:
                if(_from==='form')$(form+' #'+key).val(_source[key]);
                else if(_from==='list')_return[c]=$(form+' #'+key).val();

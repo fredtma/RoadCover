@@ -128,12 +128,14 @@ sideDisplay=function(_iota,_mensa){
    }//switch
 }
 //=============================================================================//
-$('.btnUser,.profileList,.getUser').click(function(){$.getJSON("json/profile.json",findJSON);});
-$('.icon-users,.getGroup').click(function(){$.getJSON("json/group.json",findJSON);});
-$('.system4,#btnSysPermission,.getPerm').click(function(){$.getJSON("json/permission.json",findJSON);});
+$('.btnUser,.profileList').click(function(){$.getJSON("json/profile.json",findJSON).fail(onVituim);});
+$('.icon-users').click(function(){$.getJSON("json/group.json",findJSON).fail(onVituim);});
+$('.system4,#btnSysPermission').click(function(){$.getJSON("json/permission.json",findJSON).fail(onVituim);});
 $('#btnDashboard').click(function(){load_async('js/agito/dashboard.js',true,'end',true)});
-$('.system1,.getClient').click(function(){$.getJSON("json/client.json",findJSON);});
+//$('.system1,.getClient').click(function(){$.getJSON("json/client.json",findJSON).fail(onVituim);});
+$('#link_customers').click(function(){load_async('js/agito/customer.js',true,'end',true)});
 $('#link_insurance').click(function(){load_async('js/agito/member.js',true,'end',true)});
+
 
 $('#btnFullScreen,#fullscreen').click(function(){if(!$(this).data('toggle')||$(this).data('toggle')==0){$('#btnFullScreen,#fullscreen').data('toggle',1);enableFullScreen();$('.icon-fullscreen').removeClass('icon-fullscreen').addClass('icon-screenshot');}else{$('#btnFullScreen,#fullscreen').data('toggle',0);exitFullScreen();$('.icon-screenshot').removeClass('icon-screenshot').addClass('icon-fullscreen');}});
 $('.icon-refresh').click(function(){history.go(0);sessionStorage.clear();console.log('history:...');});//@todo:add HTML5 history API

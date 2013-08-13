@@ -82,17 +82,19 @@ address {margin: 3px 0px;}
 /******************************************************************************/
 /*form setting*/
 .form-horizontal .control-group {margin-bottom: 10px;}
+.form-tight .control-group{margin-bottom: 1px;}
 legend+.control-group {margin-top: 10px;-webkit-margin-top-collapse: separate;}
 .text-area, .input-text{width:234px;}
 a[contenteditable=true]{cursor: text;}
 a[contenteditable=false]{cursor: pointer;}
 a[contenteditable=true]:hover,a[contenteditable=false]:hover{text-decoration: none;}
 a.betaRow{display:inline-block;width:90%;padding: 8px 10px;}
-a.betaRow span {width: 20%;display:  inline-block;}
+a.betaRow span {width: 20%;display:  inline-block; text-transform: capitalize;}
 a.accordion-toggle{display:initial !important;padding: 4px 4px  !important;}
 .accordion-body.in .accordion-inner{min-height:15em;}
 .accordion-heading a.forIcon {padding: 2px;}
 #body article table {margin-top: 0.7em;}
+.formReader{line-height: 30px;text-transform: capitalize;}
 /*form {margin: -10px 0 20px;}*/
 /******************************************************************************/
 /*side bar*/
