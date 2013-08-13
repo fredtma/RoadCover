@@ -22,8 +22,8 @@ tmp={
       "DateModified":{"header":true,"title":"Date Modified"},
    }
 }
-sessionStorage.active=JSON.stringify(tmp);tmp=null;
-eternal=typeof eternal!="undefined"?eternal:eternalCall();
+sessionStorage.setItem('active',JSON.stringify(tmp));
+eternal=tmp;
 get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"iota":sessionStorage.iota},'','post','json',function(_rows){
    sideDisplay(sessionStorage.iota,'dealers');
    sessionStorage.removeItem("iota");

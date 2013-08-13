@@ -65,9 +65,9 @@ sideDisplay=function(_iota,_mensa){
       case 'dealers':
          get_ajax(localStorage.SITE_SERVICE,{"militia":"dealer-display",iota:_iota},null,'post','json',function(results){
             $('#displayMensa').empty();
-            if(typeof results.company!="undefined"&&results.company!=null)$('#sideBot h3').html(aNumero(results.company[0].Name,true)+' details');
+            if(typeof results.company[0]!="undefined"&&results.company[0]!=null)$('#sideBot h3').html(aNumero(results.company[0].Name,true)+' details');
             else if(eternal.mensa==="members")$('#sideBot h3').html("Current Members");
-            title=(typeof results.company!="undefined"&&results.company!=null)?"Customers under "+results.company[0].Name:eternal.form.legend.txt;
+            title=(typeof results.company[0]!="undefined"&&results.company[0]!=null)?"Customers under "+results.company[0].Name:eternal.form.legend.txt;
             $('.headRow').html(title);
             $sideDisplay=$anima('#displayMensa','dl',{"clss":"dl-horizontal","id":"displayList"});
             for(key in results.address){

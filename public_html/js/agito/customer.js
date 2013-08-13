@@ -5,7 +5,7 @@ tmp={
    "form": {
       "options":{"readonly":"display","type":"betaTable","from":"server"},
       "field":{"clss":"form-horizontal form-tight","name":"customer","data-iota":"0"},
-      "fieldset":{"name":"admin-customers"},
+      "fieldset":{"name":"admin-customers","clss":"half-form"},
       "label":false,
       "legend":{"txt":"Road Cover Customers"},
       "button":{"close_customer":{"value":"Close","type":"button","clss":"btn btn-inverse"}}
@@ -26,8 +26,8 @@ tmp={
       "cover":{"icon":"icon-download-alt ","title":"View customer's cover","quaerere":{"scopo":""},"fields":{}}
    }
 }
-sessionStorage.active=JSON.stringify(tmp);tmp=null;
-eternal=typeof eternal!="undefined"?eternal:eternalCall();
+sessionStorage.setItem('active',JSON.stringify(tmp));
+eternal=tmp;
 get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa},'','post','json',function(results){
    theForm=new SET_FORM()._Set("#body article");
    theForm.setBeta(results);

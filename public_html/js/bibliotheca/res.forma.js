@@ -168,7 +168,9 @@ function SET_FORM(_name,_class,_label){
                      fieldsDisplay('form',ii);
                      $(form+' #close_'+Name).click(function(){$('.accordion-body.in').collapse('hide');});
                      //SET CHILD FORM
-                     get_ajax(localStorage.SITE_SERVICE,{'militia':tmp,iota:code})
+                     get_ajax(localStorage.SITE_SERVICE,{'militia':tmp,iota:code},'','post','json',function(results){
+
+                     });
                   }//endif
                });
                $(collapseName).on('hidden',function(){$(this).data('toggle_shown',0); });
