@@ -56,8 +56,9 @@ function SET_FORM(_name,_class,_label){
    this.setObject = function(_obj) {
       if (typeof(_obj.items)==='array'||typeof(_obj.items)==='object')
       {
+         global=_obj.items.global||0;
          $.each(_obj.items, function(key1, item){
-            if(key1=='fields'){$.each(item,function(table,field){_obj.father(table,field);})}
+            if(key1=='fields'){$.each(item,function(table,field){_obj.father(table,field,global);})}
             else if(_obj.mother){_obj.mother(key1,item);};
          });/*endeach*/
       }
@@ -134,8 +135,8 @@ function SET_FORM(_name,_class,_label){
             ref=row['name']||row['username']||false;
             row['id']=row['id']||rec;
             collapseName='#acc_'+this.name;
-            collapse=isReadOnly===true?'noCollapse':'collapse';
-            collapseTo=isReadOnly===true?'javascript:void(0)':'#collapse_'+this.name+rec;
+            collapse=isReadOnly?'noCollapse':'collapse';
+            collapseTo=isReadOnly?'javascript:void(0)':'#collapse_'+this.name+rec;
             collapse_head=$anima(collapseName,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group'});
             collapse_head.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
                .vita('a',{'clss':'betaRow','contenteditable':false,'data-toggle':collapse,'data-parent':collapseName,'href':collapseTo},true);//@todo: add save on element
@@ -152,27 +153,7 @@ function SET_FORM(_name,_class,_label){
               .vita('i',{'clss':'icon icon-color icon-trash','title':'Delete '+headeName[0]}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
             }else if(isReadOnly==="display"){
                $(collapse_head.father).parents('div').data('code',row['code']);//@explain:set code of the table
-               //FIRE on SHOWN
-               $(collapseName).on('shown',function(){
-                  if(!$(this).data('toggle_shown')||$(this).data('toggle_shown')==0){
-                     $(this).data('toggle_shown',1);
-                     ii=$('.accordion-body.in').data('iota');
-                     tmp=eternal.mensa+'-'+$('.accordion-heading[data-iota="'+ii+'"]').data('activated');
-                     code=$('.accordion-heading[data-iota="'+ii+'"]').data('code');//@explain:get the code of the table it's like iota
-                     console.log('code',code);
-                     console.log('activated',tmp);
-                     frm=document.getElementById(frmName);
-                     resetForm(frm);
-                     document.querySelector('.accordion-body.in .accordion-inner').appendChild(frm);
-                     frm.style.display='block';
-                     fieldsDisplay('form',ii);
-                     $(form+' #close_'+Name).click(function(){$('.accordion-body.in').collapse('hide');});
-                     //SET CHILD FORM
-                     get_ajax(localStorage.SITE_SERVICE,{'militia':tmp,iota:code},'','post','json',function(results){
-
-                     });
-                  }//endif
-               });
+               //@event on SHOWN
                $(collapseName).on('hidden',function(){$(this).data('toggle_shown',0); });
             }else{
                $(collapse_head.father).parents('div').data('code',row['code']);//@check: i have change the div to 'div'
@@ -180,22 +161,7 @@ function SET_FORM(_name,_class,_label){
                collapse_head.father.onclick=function(){sideDisplay($(this).parents('div').data('code'), eternal.mensa);}//@see lib.voca.js
             }//endif read only
             //APPLY CHANGES TO ADD FUNCTION
-            for(link in eternal.links){
-               collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link '+eternal.links[link][1]});
-               if(link!='reference'){
-                  $(collapse_head.child).data('ref',ref);$(collapse_head.child).data('head',headeName[0]);$(collapse_head.child).data('link',link);$(collapse_head.child).data('links',eternal.links[link]);
-                  $(collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
-                     $('.accordion-heading .icon-black').removeClass('icon-black').addClass('icon-color');$(this).removeClass('icon-color').addClass('icon-black');
-                     linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'));
-                  });
-               }else{//esle reference. LINK
-                  $(collapse_head.child).click(function(){
-                     $('#nav-main #link_insurance').tab('show');
-                     sessionStorage.iota=$(this).parents('div').data('code');$(".navLinks").removeClass('active');$("#nav_insurance").addClass('active');
-                     load_async(eternal.links[link][0],true,'end',true);
-                  });
-               }//endif
-            }//endfor links
+            if(typeof eternal.links!="undefined") this.setLinks(eternal.links,collapse_head);
             if(typeof eternal.children!="undefined") this.setChildren(eternal.children,collapse_head,collapse,collapseTo,collapseName);
             collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec,'data-iota':row['id']});
             collapse_content.vita('div',{'clss':'accordion-inner'},false);
@@ -225,34 +191,39 @@ function SET_FORM(_name,_class,_label){
    }
    /*
     * display the beta form in a table format
-    * @param {obejcts} <var>_fields</var> setting of the form has the form name, class, fields, title
-    * @param {obejcts} <var>_results</var> the results from the db
-    * @param {integer} <var>_actum</var> the stage of the transaction
+    * @param {obejcts} <var>_rows</var> the rows to be displayed in the table
+    * @param {string} <var>_child</var> if the source is from a child
+    * @param {string} <var>_element</var> the element can be set or the default one
     * @returns {undefined}
     */
-   this.gammaTable=function(_rows){
+   this.gammaTable=function(_rows,_child,_element){
 //      for(k in _rows) if(_rows.hasOwnProperty(key))len++;
       eternal=eternalCall();
       this.name=eternal.form.field.name;
-      $('#sideBot h3').html(eternal.form.legend.txt);
-      $(this.Obj.addTo).empty();
-      $table=$anima(this.Obj.addTo,'table',{'id':'table_'+this.name,'clss':'table table-striped table-hover table-condensed'}).vita('thead',{},true);
+      if(!_child){
+         $('#sideBot h3').html(eternal.form.legend.txt);
+         addEle=this.Obj.addTo;headers=eternal.fields;allHead=false;_rows=JSON.parse(_rows);cls='table-condensed';
+      }else{
+         addEle=_element;headers=eternal.children[_child].fields;allHead=true;_rows=_rows;cls='table-bordered table-child';
+      }
+      $(addEle).empty();
+      $table=$anima(addEle,'table',{'id':'table_'+this.name,'clss':'table table-striped table-hover '+cls}).vita('thead',{},true);
       $table.vita('tr',{},true).vita('th',{},false,'#');colspan=0;
-      for(k in eternal.fields){colspan++;
-         th=eternal.fields[k];if(th.header==true){title=th.title||k;$table.vita('th',{},false,title)}
+      for(k in headers){colspan++;
+         th=headers[k];if(th.header==true||allHead){title=th.title||k;$table.vita('th',{},false,title)}
       }//endforeach
       $table.novo('#table_'+this.name,'tbody');
-      r1=1;_rows=JSON.parse(_rows);
+      r1=0;
       for(key in _rows){
          row=_rows[key];
+         r1++;
          if(r1==1)$table.vita('tr',{},true).vita('td',{},false,r1);//for the first row
          else $table.genesis('tr',{},true).vita('td',{},false,r1);//for the rest
-         r1++;
-         for(k in eternal.fields){
+         for(k in headers){
             $table.vita('td',{},false,row[k])
          }//endfor
       }//endfor
-      $table.novo('#table_'+this.name,'tfoot',{}).vita('tr',{},true).vita('td',{'colspan':colspan+1},false,'Total:'+colspan);
+      $table.novo('#table_'+this.name,'tfoot',{}).vita('tr',{},true).vita('td',{'colspan':colspan+1},false,'Total:'+r1);
    }
    /*
     * used to display a single form display
@@ -260,8 +231,9 @@ function SET_FORM(_name,_class,_label){
     * @param {object} <var>_field</var> the properties of the object
     * @returns {undefined}
     */
-   this.singleForm=function(_key,_field){
-      theField=_field.field;
+   this.singleForm=function(_key,_field,_global){
+      global=_global!=0?_global:null;
+      theField=_field.field||_field;
       theField.id=_key;
       theName=theField.name?theField.name:_key;
       //FIELDSET
@@ -279,9 +251,11 @@ function SET_FORM(_name,_class,_label){
       placeHolder=((_field.place)===true?theLabel:(_field.place)?_field.place:false);
       if(placeHolder!==false) theField.placeholder=placeHolder;
       //INNER DIV
-      if(!theField.type)theField.type='text';
+      if(!theField.type&&global)theField.type=global.type;
+      else if(!theField.type)theField.type='text';
+      if(global&&global.complex)_field.complex=global.complex;
       tmpType=theField.type;
-      theField=$.extend({},theDefaults[tmpType],theField);
+      theField=$.extend({},theField,theDefaults[tmpType]);
       //set the input type textarea|input|select|etc...
       input=(_field.items||_field.complex)?formInput(_key,theField,_field.items,div1,_field.complex):creo(theField,'input');
       //input with items[] sets will not get icons
@@ -305,7 +279,7 @@ function SET_FORM(_name,_class,_label){
    this.setButton=function(_btn,_layout){
       switch(_layout){
          default:
-            div=creo({"clss":"form-actions well well-small"},'div');
+            div=creo({"clss":"form-actions well well-small purgare"},'div');
             $.each(_btn,function(id,btn){btn.id=id;button=creo(btn,'input');div.appendChild(button);div.appendChild(document.createTextNode('   '));});
             return div;
             break;
@@ -364,7 +338,8 @@ function SET_FORM(_name,_class,_label){
             formControl.appendChild(input);
          }
       });//end setObject
-      formContent.appendChild(this.setButton(eternal.form.button));
+//      formContent.appendChild(this.setButton(eternal.form.button));
+      formContent.parentNode.insertBefore(this.setButton(eternal.form.button), formContent.nextSibling);
       document.getElementById(this.frmName).style.display='none';
    }
    /*
@@ -409,11 +384,43 @@ function SET_FORM(_name,_class,_label){
          });//end callback
       }//endfi
    }
+   /*
+    * set the links for the beta form
+    * @param {object} _children the links list
+    * @param {object} _collapse_head the node to the element
+    * @returns none
+    */
+   this.setLinks=function(_children,_collapse_head){
+      for(link in _children){
+         _collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link '+eternal.links[link][1]});
+         if(link!='reference'){
+            $(_collapse_head.child).data('ref',ref);$(_collapse_head.child).data('head',headeName[0]);$(_collapse_head.child).data('link',link);$(_collapse_head.child).data('links',eternal.links[link]);
+            $(_collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
+               $('.accordion-heading .icon-black').removeClass('icon-black').addClass('icon-color');$(this).removeClass('icon-color').addClass('icon-black');
+               linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'));
+            });
+         }else{//esle reference. LINK
+            $(_collapse_head.child).click(function(){
+               $('#nav-main #link_insurance').tab('show');
+               sessionStorage.iota=$(this).parents('div').data('code');$(".navLinks").removeClass('active');$("#nav_insurance").addClass('active');
+               load_async(eternal.links[link][0],true,'end',true);
+            });
+         }//endif
+      }//endfor links
+   }
+   /*
+    * set the icons for the beta form to display the linked tables
+    * @param {object} _children contains all the reference table details
+    * @param {object} _collapse_head the element to be added next to
+    * @param {string} _collapse if it is to be a collapse or not
+    * @param {string} _collapseTo collapse to
+    * @param {string} _collapseName the name of the collapse to collapse to
+    * @returns {undefined}
+    */
    this.setChildren=function(_children,_collapse_head,_collapse,_collapseTo,_collapseName){
       for(key in _children){tmp=_children[key];
          _collapse_head.genesis('a',{'clss':'forIcon','data-toggle':_collapse,'data-parent':_collapseName,'href':_collapseTo},true)
-         .vita('i',{'clss':'memberIcon '+tmp.icon,'title':'Link '+tmp.title,'data-agilis':key});
- //@event:member.js
+         .vita('i',{'clss':'memberIcon '+tmp.icon,'title':'Link '+tmp.title,'data-agilis':key});//@event:customer.js
       }//endfor
    }
    if(this instanceof SET_FORM)return this;
@@ -511,17 +518,20 @@ function formInput(_key,_field,_items,_holder,_complex){
  * @param {obeject} <var>_source</var> the source of the object
  * @param {string} <var>_form</var> the name of the form
  * @param {bool} <var>_head</var> only the head to be displayed
+ * @param {bool} <var>_reference</var> used to search either the main table or reference child table
  * @returns {array} the list of header
  * @todo add radio and check return
  */
-fieldsDisplay=function(_from,_source,_head){
-   f=eternal.fields;
+fieldsDisplay=function(_from,_source,_head,_reference){
+   f=!_reference?eternal.fields:eternal.children[_reference].fields;
    form='#frm_'+eternal.form.field.name;
+   if(_reference)form=form+2;
    c=0;
    _return=[];
    if(typeof _source==="number"){tmp=JSON.parse(sessionStorage.activeRecord);_source=tmp[_source];}
    $.each(f,function(key,property){
-      type=property.field.type||property.complex;
+      if(_reference) type=property.type||eternal.children[_reference].global.type;
+      else type=property.field.type||property.complex;
       if(_head && !property.header) return true;
       switch(type){
          case 'radio':
