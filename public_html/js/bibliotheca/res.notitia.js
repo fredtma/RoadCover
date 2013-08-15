@@ -14,6 +14,8 @@
  */
 function SET_DB(){
    this.mensaActive=['users,groups,link_users_groups'];
+   this.basilia={};
+   var Tau=false;
    this.creoAgito=function(_quaerere,_params,_msg,callback){
       var quaerere=_quaerere;
       var msg=_msg;
@@ -25,6 +27,10 @@ function SET_DB(){
             console.log('%c'+quaerere, 'background:#222;color:#48b72a;width:100%;font-weight:bold;');
             j=$DB2JSON(results);
             $('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+            if(Tau){
+               this.basilia={"eternal":res,"Tau":Tau,"iyona":iyona};//pas las 3 transaction
+               get_ajax(localStorage.SITE_MILITIA,this.basilia,'','post','json',function(j){console.log(j,'Online');$('#sys_msg').html(j.msg) });Tau=false;
+            }
             if(callback)callback(results);
          },function(_trans,_error){
             console.log('Failed DB: '+msg+':'+_error.message);
@@ -33,14 +39,15 @@ function SET_DB(){
          });
       });
    }
+
    if(!db||!localStorage.DB){
       db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
       if(!localStorage.DB){
          localStorage.DB=db;
-         this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1});
+         this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1,ver:0});
       }
    }
-
+   console.log('Database Version:',db.version);
    /*
     * this function will extract info from the form and determine the form action
     * @param {string} _form the name of the form to be setup
@@ -50,13 +57,13 @@ function SET_DB(){
     * @todo clean it up
     */
    this.forma=function(_actum,_iota,callback){
-      reference=[];
+      var reference=[];
       //protect and accept only valid table
       if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);
       else eternal=null;
       if(!eternal){console.log("not found json");return false;}
       form='#frm_'+eternal.form.field.name;
-      iota=_iota;
+      iota=_iota;res={"blossom":{"alpha":iota,"delta":"!@=!#"}};
       iyona=eternal.mensa||form.substr(4);
       if(!this.mensaActive.indexOf(iyona)){console.log("not found mensa");return false;}
       var quaerere=[],params=[],set=[];
@@ -70,13 +77,14 @@ function SET_DB(){
             }
             this.referenceDelete(reference,iota,iyona);
             actum='DELETE FROM '+iyona+' WHERE id=?';
+            Tau='oMegA';
             creoAgito=this.creoAgito;
             setTimeout(function(){creoAgito(actum,[_iota],'Deleted record from '+iyona,callback)},15);break;
          case 1:
-            ubi='';
+            ubi='';Tau='Alpha';
             actum='INSERT INTO '+iyona+' (';msg='Inserted '+iyona;break;
          case 2:
-            ubi=' WHERE id='+iota;
+            ubi=' WHERE id='+iota;Tau='deLta';
             actum='UPDATE '+iyona+' SET';msg='Updated '+iyona;break;
          case 3:
          default:
@@ -98,12 +106,14 @@ function SET_DB(){
                quaerere[x]=(iota)?field+'= ?':field;
                set[x]='?';
                params[x]=val;
+               res[field]=val;
                x++;
             } else if((_actum==3)) {//select fields
                quaerere[x]=field;
                x++;
             }
          });
+
          if(quaerere.length>0){
             $('.control-group.error').removeClass('error');
             ubi=(_actum!=1)?ubi:') VALUES ('+set.toString()+')';
@@ -336,11 +346,11 @@ function SET_DB(){
          if(_option.client)this.creoAgito(client,[],'Table clients created');
          if(_option.client)this.creoAgito("CREATE INDEX client_company ON clients(company)",[],"index client_company");
          if(_option.client)this.creoAgito("CREATE INDEX client_code ON clients(code)",[],"index client_code");
-         contact="CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER NOT NULL,ref_group INTEGER NOT NULL DEFAULT 1, `type` TEXT NOT NULL DEFAULT 'tel', contact TEXT NOT NULL, intruction TEXT, ext TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         contact="CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'tel', contact TEXT NOT NULL, instruction TEXT, ext TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.contact)this.creoAgito(contact,[],'Table contacts created');
          if(_option.contact)this.creoAgito("CREATE INDEX contact_ref_name ON contacts(ref_name)",[],"index ref_name");
          if(_option.contact)this.creoAgito("CREATE INDEX contact_contact ON contacts(contact)",[],"index contact");
-         address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER NOT NULL,ref_group INTEGER NOT NULL DEFAULT 1, `type` TEXT NOT NULL DEFAULT 'residential', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'residential', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.address)this.creoAgito(address,[],'Table address created');
          if(_option.address)this.creoAgito("CREATE INDEX address_ref_name ON address(ref_name)",[],"index ref_name");
          dealer="CREATE TABLE IF NOT EXISTS dealers(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, code TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
@@ -352,6 +362,8 @@ function SET_DB(){
          if(_option.salesman)this.creoAgito("CREATE INDEX salesman_lastname ON salesmen(lastname)",[],"index salesman_lastname");
          if(_option.salesman)this.creoAgito("CREATE INDEX salesman_idno ON salesmen(idno)",[],"index salesman_idno");
          if(_option.salesman)this.creoAgito("CREATE INDEX salesman_dealer ON salesmen(dealer)",[],"index salesman_dealer");
+         ver="CREATE TABLE versioning(id INTEGER RRIMARY KEY AUTOINCREMENT,user INTEGER NOT NULL,content mediumtext NOT NULL,iota INTEGER NOT NULL,trans INTEGER NOT NULL,mensa TEXT,creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         if(_option.ver)this.creoAgito(ver,[],'Version table created');
          if(_option.users)$DB("INSERT INTO users (username,password,firstname,lastname,email,gender) VALUES (?,?,?,?,?,?)",['administrator','qwerty','admin','strator','admin@xpandit.co.za','Male'],"added default user ");
          if(_option.dealer){
             $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getDealer',type:'GET',dataType:'json',success:function(json){
@@ -364,7 +376,7 @@ function SET_DB(){
             }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
          }//endif
    }//endfunction
-   if(false&&db && localStorage.DB)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0});
+   if(false&&db && localStorage.DB)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0,ver:0});
    if(this instanceof SET_DB)return this;
    else return new SET_DB();
 }

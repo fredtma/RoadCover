@@ -179,11 +179,11 @@ function SET_FORM(_name,_class,_label){
          $(form+' #cancel_'+this.name).click(function(){$(this).parents('.accordion-body.in').collapse('hide');});
          if((_iota==-1||!_iota)){
             $(form).data('iota',0);
-            $(form+' #submit_'+this.name)[0].onclick=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(1);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000)}//make the form to become inserted
+            $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(1);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000); return false;}//make the form to become inserted
          }else{
             $(form).data('iota',row['id']);
             fieldsDisplay('form',row);
-            $(form+' #submit_'+this.name)[0].onclick=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000)}//make the form to become update
+            $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000); return false;}//make the form to become update
          }
          if(eternal.form.file)load_async('js/agito/'+eternal.form.file+'.js',false,'end',true);
       }
@@ -392,7 +392,8 @@ function SET_FORM(_name,_class,_label){
     */
    this.setLinks=function(_children,_collapse_head){
       for(link in _children){
-         _collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link '+eternal.links[link][1]});
+         theLink=eternal.links[link][1];
+         _collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link #'+theLink});
          if(link!='reference'){
             $(_collapse_head.child).data('ref',ref);$(_collapse_head.child).data('head',headeName[0]);$(_collapse_head.child).data('link',link);$(_collapse_head.child).data('links',eternal.links[link]);
             $(_collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
@@ -400,9 +401,10 @@ function SET_FORM(_name,_class,_label){
                linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'));
             });
          }else{//esle reference. LINK
+            temp=[];
             $(_collapse_head.child).click(function(){
-               $('#nav-main #link_insurance').tab('show');
-               sessionStorage.iota=$(this).parents('div').data('code');$(".navLinks").removeClass('active');$("#nav_insurance").addClass('active');
+               $('#nav-main #link_'+theLink).tab('show');
+               temp[0]=$(this).parents('div').data('code');$(".navLinks").removeClass('active');$("#nav_"+theLink).addClass('active');temp[1]=eternal.mensa;$('footer').data('temp',temp);
                load_async(eternal.links[link][0],true,'end',true);
             });
          }//endif
@@ -483,6 +485,8 @@ function formInput(_key,_field,_items,_holder,_complex){
    theType=_field.type||_complex;
    l=(isset(_items))?_items.length:0;
    cnt=0;
+   _key=_key.replace(/\s/ig,'');
+   _field.id=_field.id.replace(/\s/ig,'');
    switch(theType){
       case 'bool':
          ele=creo({'clss':'btn-group','data-toggle':'buttons-radio'},'div');
@@ -492,7 +496,7 @@ function formInput(_key,_field,_items,_holder,_complex){
       case 'radio':
          c=theType=='check'?'checkbox':theType;
          ele=creo({'clss':'btn-group','data-toggle':'buttons-'+c},'div');
-         $.each(_items,function(id,value){
+         $.each(_items,function(id,value){if(value=='')return true;
             b=creo({'type':'button','clss':'btn',"id":_key+cnt,"name":_key+"[]","value":id},'button',value);
             ele.appendChild(b);cnt++;
          });
@@ -530,6 +534,7 @@ fieldsDisplay=function(_from,_source,_head,_reference){
    _return=[];
    if(typeof _source==="number"){tmp=JSON.parse(sessionStorage.activeRecord);_source=tmp[_source];}
    $.each(f,function(key,property){
+      key2=key.replace(/\s/ig,'');//removes spaces
       if(_reference) type=property.type||eternal.children[_reference].global.type;
       else type=property.field.type||property.complex;
       if(_head && !property.header) return true;
@@ -537,18 +542,18 @@ fieldsDisplay=function(_from,_source,_head,_reference){
          case 'radio':
          case 'bool':
          case 'check':
-            if(_from==='form')$(form+' [name^='+key+']').each(function(){if($(this).prop('value')==_source[key])$(this).addClass('active').prop('checked',true);});
-            if(_from==='list')$(form+' [name^='+key+']').each(function(){if($(this).prop('checked'))_return[c]=$(this).addClass('active').prop('value');});
+            if(_from==='form')$(form+' [name^='+key2+']').each(function(){if($(this).prop('value')==_source[key])$(this).addClass('active').prop('checked',true);});
+            if(_from==='list')$(form+' [name^='+key2+']').each(function(){if($(this).prop('checked'))_return[c]=$(this).addClass('active').prop('value');});
             break;
          case 'p':
          case 'span':
-            if(_from==='form')$(form+' #'+key).html(_source[key]);
+            if(_from==='form')$(form+' #'+key2).html(_source[key]);
             else _return[c]=_source[key];
             break;
          default:
-            if(_from==='form')$(form+' #'+key).val(_source[key]);
-            else if(_from==='list')_return[c]=$(form+' #'+key).val();
-            else _return[c]=_source[key];
+            if(_from==='form')$(form+' #'+key2).val(_source[key]);
+            else if(_from==='list')_return[c]=$(form+' #'+key2).val();
+            else _return[c]=_source[key2];
             break;
       }//endswitch
       c++;

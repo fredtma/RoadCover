@@ -52,8 +52,8 @@ username="Frederick Tshimanga"
 mother={"clss":"dropdown-menu bottom-up pull-right","children":{"footContact":{"href":"#","txt":"Contact us"},"footHelp":{"href":"#","txt":"Help"},"footAbout":{"href":"#","txt":"About us"}}};
 roadCover._Set({"next":"#copyRight"}).setList({"clss":"nav","items":{"userName":{"href":"#","txt":username},"sysAbout":{"href":"#","clss1":"dropdown","txt":"About Us","clss2":"dropdown-toggle","data-toggle":"dropdown","caret":"caret bottom-up","sub":mother},"userOut":{"href":"#","txt":"Logout"} }});
 //FORM
-db_notice=creo({'clss':'db_notice'},'div');
-$('#sideNotice').append(db_notice);
+$('#sideNotice').append(creo({'clss':'db_notice'},'div'));
+$('#sideNotice').append(creo({"id":"sys_msg"},'div'));
 timeFrame('welcome');
 console.log('Cash::'+objectSize($.cache));
 timeFrame('OMEGA',true);

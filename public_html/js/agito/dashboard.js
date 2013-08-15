@@ -22,7 +22,7 @@ $('.getPerm').click(function(){$.getJSON("json/permission.json",findJSON).fail(o
 $('.system1,.getClient').click(function(){$.getJSON("json/client.json",findJSON).fail(onVituim);$('#nav-main #link_system').tab('show');$(".navLinks").removeClass('active');$("#nav_system").addClass('active');});
 $('.getCustomers').click(function(){load_async('js/agito/customer.js',true,'end',true);$('#nav-main #link_customers').tab('show');$(".navLinks").removeClass('active');$("#nav_customers").addClass('active');});
 $('.getInsurance').click(function(){load_async('js/agito/member.js',true,'end',true);$('#nav-main #link_insurance').tab('show');$(".navLinks").removeClass('active');$("#nav_insurance").addClass('active');});
-SET_DB();
+//SET_DB();
 //@todo: test on a new DB if the menu link will appear.
 $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
    n='dealers';

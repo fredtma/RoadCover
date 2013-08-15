@@ -3,7 +3,7 @@
       "field":{"clss":"form-horizontal","name":"profile","data-iota":"0"},
       "fieldset":{"name":"admin-profile"},
       "legend":{"txt":"Administrator Profile"},
-      "button":{"submit_profile":{"value":"Save Changed","type":"submit","clss":"btn btn-primary","save":true},"cancel_profile":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
+      "button":{"submit_profile":{"value":"Save Changes","type":"submit","clss":"btn btn-primary","save":true},"cancel_profile":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
    },
    "mensa":"users",
    "fields":{
@@ -12,7 +12,7 @@
       "firstname":{"icon":"icon-tag","header":true,"place":true,"field":{"required":""}},
       "lastname":{"icon":"icon-tags","header":true,"place":true,"field":{"required":""}},
       "email":{"icon":"icon-envelope","place":true,"field":{"type":"email","required":""}},
-      "gender":{"field":{"type":"radio","required":""},"items":["Male","Female"]}
+      "gender":{"field":{"type":"radio","required":""},"items":["","Male","Female"]}
    },
    "links":{"link_users_groups":["name","groups","users"]}
 }
