@@ -23,9 +23,10 @@ tmp={
    }
 }
 sessionStorage.setItem('active',JSON.stringify(tmp));
-eternal=tmp;temp=$('footer').data('temp');
-get_ajax(localStorage.SITE_SERVICE,{"militia":temp[1],"iota":temp[0]},'','post','json',function(_rows){
-   sideDisplay(temp[0],'dealers');
+eternal=tmp;temp=$('footer').data('temp');console.log(temp,'temp');
+get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp},'','post','json',function(_rows){
+   if(typeof temp==="undefined")temp=[0,"dealers"];
+   sideDisplay(temp[0],temp[1]);
    theForm = new SET_FORM();
    theForm._Set("#body article");
    theForm.gammaTable(JSON.stringify(_rows));

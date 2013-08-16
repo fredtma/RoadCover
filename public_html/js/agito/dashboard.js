@@ -3,25 +3,25 @@
  */
 $('#body article').empty();
 $welcome=$anima('#body article','div',{'id':'dashboard'}).vita('div',{clss:'row-fluid'},true);
-$welcome.vita('div',{clss:'span4 alert alert-info dash-module getUser'},true).vita('h4',{},true,' Administrators ').vita('i',{'clss':'icon-user icon-white'},false,'','first').novo('#dashboard .getUser','p',{},'users content text');
-$welcome.novo('#dashboard .row-fluid:nth-child(1)','div',{clss:'span4 alert alert-info dash-module getGroup'}).vita('h4',{},true,' Groups').vita('i',{'clss':'icon icon-white icon-users'},false,'','first').novo('#dashboard .getGroup','p',{},'groups content text');
-$welcome.novo('#dashboard .row-fluid:nth-child(1)','div',{clss:'span4 alert alert-info dash-module getPerm'}).vita('h4',{},true,' Permissions').vita('i',{'clss':'icon-pencil icon-white'},false,'','first').novo('#dashboard .getPerm','p',{},'permission content text');
+$welcome.vita('div',{clss:'span4 alert alert-info dash-module getUser',"href":"#tab-home"},true).vita('h4',{},true,' Administrators ').vita('i',{'clss':'icon-user icon-white'},false,'','first').novo('#dashboard .getUser','p',{},'users content text');
+$welcome.novo('#dashboard .row-fluid:nth-child(1)','div',{clss:'span4 alert alert-info dash-module getGroup',"href":"#tab-home"}).vita('h4',{},true,' Groups').vita('i',{'clss':'icon icon-white icon-users'},false,'','first').novo('#dashboard .getGroup','p',{},'groups content text');
+$welcome.novo('#dashboard .row-fluid:nth-child(1)','div',{clss:'span4 alert alert-info dash-module getPerm',"href":"#tab-system"}).vita('h4',{},true,' Permissions').vita('i',{'clss':'icon-pencil icon-white'},false,'','first').novo('#dashboard .getPerm','p',{},'permission content text');
 $welcome.novo('#dashboard','div',{clss:'row-fluid'});
-$welcome.vita('div',{clss:'span4 alert alert-info dash-module getClient'},true).vita('h4',{},true,' Clients').vita('i',{'clss':'icon-qrcode icon-white'},false,'','first').novo('#dashboard .getClient','p',{},'clients content text');
-$welcome.novo('#dashboard .row-fluid:nth-child(2)','div',{clss:'span4 alert alert-info dash-module allDealer'}).vita('h4',{},true,' Dealers').vita('i',{'clss':'icon-book icon-white'},false,'','first').novo('#dashboard .allDealer','p',{},'Dealers content text');
-$welcome.novo('#dashboard .row-fluid:nth-child(2)','div',{clss:'span4 alert alert-info dash-module allSalesman'}).vita('h4',{},true,' Salesmen').vita('i',{'clss':'icon-briefcase icon-white'},false,'','first').novo('#dashboard .allSalesman','p',{},'Salesmen content text');
+$welcome.vita('div',{clss:'span4 alert alert-info dash-module getClient',"href":"#tab-system"},true).vita('h4',{},true,' Clients').vita('i',{'clss':'icon-qrcode icon-white'},false,'','first').novo('#dashboard .getClient','p',{},'clients content text');
+$welcome.novo('#dashboard .row-fluid:nth-child(2)','div',{clss:'span4 alert alert-info dash-module allDealer',"href":"#tab-dealers"}).vita('h4',{},true,' Dealers').vita('i',{'clss':'icon-book icon-white'},false,'','first').novo('#dashboard .allDealer','p',{},'Dealers content text');
+$welcome.novo('#dashboard .row-fluid:nth-child(2)','div',{clss:'span4 alert alert-info dash-module allSalesman',"href":"#tab-salesman"}).vita('h4',{},true,' Salesmen').vita('i',{'clss':'icon-briefcase icon-white'},false,'','first').novo('#dashboard .allSalesman','p',{},'Salesmen content text');
 $welcome.novo('#dashboard','div',{clss:'row-fluid'});
-$welcome.vita('div',{clss:'span4 alert alert-info dash-module getCustomers'},true).vita('h4',{},true,' Customers').vita('i',{'clss':'icon-user icon-white'},false,'','first').novo('#dashboard .getCustomers','p',{},'Customer content text');
-$welcome.novo('#dashboard .row-fluid:nth-child(3)','div',{clss:'span4 alert alert-info dash-module getInsurance'}).vita('h4',{},true,' Insurance').vita('i',{'clss':'icon-folder-open icon-white'},false,'','first').novo('#dashboard .getInsurance','p',{},'Insurance content text');
+$welcome.vita('div',{clss:'span4 alert alert-info dash-module getCustomers',"href":"#tab-customers"},true).vita('h4',{},true,' Customers').vita('i',{'clss':'icon-user icon-white'},false,'','first').novo('#dashboard .getCustomers','p',{},'Customer content text');
+$welcome.novo('#dashboard .row-fluid:nth-child(3)','div',{clss:'span4 alert alert-info dash-module getInsurance',"href":"#tab-insurance"}).vita('h4',{},true,' Insurance').vita('i',{'clss':'icon-folder-open icon-white'},false,'','first').novo('#dashboard .getInsurance','p',{},'Insurance content text');
 $welcome.novo('#dashboard','div',{clss:'row-fluid'});
 
 //@fix: prevents the btn home click from loosing the events attached and the dashboard blocks
-$('.getUser').click(function(){$.getJSON("json/profile.json",findJSON).fail(onVituim);});
-$('.getGroup').click(function(){$.getJSON("json/group.json",findJSON).fail(onVituim);});
-$('.getPerm').click(function(){$.getJSON("json/permission.json",findJSON).fail(onVituim);$('#nav-main #link_system').tab('show');$(".navLinks").removeClass('active');$("#nav_system").addClass('active');});
-$('.system1,.getClient').click(function(){$.getJSON("json/client.json",findJSON).fail(onVituim);$('#nav-main #link_system').tab('show');$(".navLinks").removeClass('active');$("#nav_system").addClass('active');});
-$('.getCustomers').click(function(){load_async('js/agito/customer.js',true,'end',true);$('#nav-main #link_customers').tab('show');$(".navLinks").removeClass('active');$("#nav_customers").addClass('active');});
-$('.getInsurance').click(function(){load_async('js/agito/member.js',true,'end',true);$('#nav-main #link_insurance').tab('show');$(".navLinks").removeClass('active');$("#nav_insurance").addClass('active');});
+$('.getUser').click(function(){activateMenu('profile','home',this);});
+$('.getGroup').click(function(){activateMenu('group','home',this);});
+$('.getPerm').click(function(){activateMenu('permission','system',this);});
+$('.system1,.getClient').click(function(){activateMenu('client','system',this);});
+$('.getCustomers').click(function(){activateMenu('customer','customers',this,true);});
+$('.getInsurance').click(function(){activateMenu('member','insurance',this,true);});
 //SET_DB();
 //@todo: test on a new DB if the menu link will appear.
 $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
@@ -30,29 +30,48 @@ $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
    $('#drop_'+n).empty();
    $('#btnSub'+N+'List').empty();
    $.each(j,function(i,v){
-      $anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' oneDealer','data-iota':v[1]},false,v[0])
-      $anima('#btnSub'+N+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'oneDealer','data-iota':v[1]},false,v[0])
+      $anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' oneDealer','data-iota':v[1]},false,aNumero(v[0],true))
+      $anima('#btnSub'+N+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'oneDealer','data-iota':v[1]},false,aNumero(v[0],true))
    });
-   $anima('#drop_'+n,'li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'allDealer','data-iota':'all'},false,'View All '+aNumero(n,true));
-   $anima('#btnSub'+N+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'allDealer','data-iota':'all'},false,'View All '+aNumero(n,true));
+   $anima('#drop_'+n,'li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));
+   $anima('#btnSub'+N+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));
    //AGITO
-   $('.allDealer,.oneDealer').click(function(){$.getJSON("json/dealer.json",findJSON);$('#nav-main #link_dealers').tab('show');$(".navLinks").removeClass('active');$("#nav_dealers").addClass('active');});
+   $('#drop_'+n+' .allDealer,#drop_'+n+' .oneDealer').click(function(){activateMenu('dealer','dealers',this)});//ce qui sont sous le menu
+   $('#tab-customers .allDealer,#tab-customers .oneDealer').click(function(){activateMenu('customer','customers',this,true,'dealers')});//ce qui on le button
+   $('#tab-insurance .allDealer,#tab-insurance .oneDealer').click(function(){activateMenu('member','insurance',this,true,'dealers')});//ce qui on le button
 });
-$DB("SELECT firstname,lastname,code FROM salesmen LIMIT 3",[],"",function(r,j){
+$DB("SELECT firstname||' '||lastname,code FROM salesmen LIMIT 3",[],"",function(r,j){
    n='salesman';
    N=aNumero(n,true);
    $('#drop_'+n).empty();
    $('#btnSub'+N+'List').empty();
    $.each(j,function(i,v){
-      $anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' one'+N,'data-iota':v[1]},false,v[0])
-      $anima('#btnSub'+N+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,v[0])
+      $anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' one'+N,'data-iota':v[1]},false,aNumero(v[0],true))
+      $anima('#btnSub'+N+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true))
    });
-   $anima('#drop_'+n,'li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'all'+N,'data-iota':'all'},false,'View All '+aNumero(n,true));
-   $anima('#btnSub'+N+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'all'+N,'data-iota':'all'},false,'View All '+aNumero(n,true));
+   $anima('#drop_'+n,'li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));
+   $anima('#btnSub'+N+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));
    //AGITO
-   $('.allSalesman,.oneSalesman').click(function(){$.getJSON("json/salesman.json",findJSON);$('#nav-main #link_salesman').tab('show');$(".navLinks").removeClass('active');$("#nav_salesman").addClass('active');});
+   $('#drop_'+n+' .allSalesman,#drop_'+n+' .oneSalesman').click(function(){activateMenu('salesman','salesmen',this)});
+//   $('.'+n+'List .allSalesman,.'+n+'List .oneSalesman').click(function(){activateMenu('customer','customers',this,true,'salesmen')});//what it was before
+   $('#tab-customers .allSalesman,#tab-customers .oneSalesman').click(function(){activateMenu('customer','customers',this,true,'salesmen')});
+   $('#tab-insurance .allSalesman,#tab-insurance .oneSalesman').click(function(){activateMenu('member','insurance',this,true,'salesmen')});
 });
-
-
-
-
+function activateMenu(_mensa,_mensula,_set,_script,_tab){
+   _mensula=_mensula||_mensa;
+   iota=$(_set).data('iota');
+   if(!_script)$.getJSON("json/"+_mensa+".json",findJSON).fail(onVituim);//avec json
+   else load_async("js/agito/"+_mensa+".js",true,'end',true);//sans json mait avec une script
+   if(_mensa=='salesman')_mensula='salesman';//ce si cest pour les sales seulment
+   if(!_tab){
+      $(_set).tab('show');
+      $(".navLinks").removeClass('active');
+      $("#nav_"+_mensula).addClass('active');}//montre la tab et le menu
+   else{
+      _mensula=_tab;
+      if(iota!=0)$('footer').data('temp',[iota,_tab])//montre seulment les list qui on des uniter iota
+      else {$('footer').removeData('temp');$('footer').removeData('display');}//change les deux, pour raison de afficher un neauvaux titre
+   }//change de nom pour les button, pour avoir access aux menu des dealer & des salesman
+   if(_mensa=='salesman')_mensula='salesmen';
+   if(iota){sideDisplay(iota,_mensula);}//fair apparaitre la table si une existance de parametre iota exists.
+}

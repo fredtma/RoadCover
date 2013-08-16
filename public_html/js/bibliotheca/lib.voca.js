@@ -61,24 +61,39 @@ exitFullScreen=function(){
     * @returns {undefined}
     */
 sideDisplay=function(_iota,_mensa){
+   var display=$('footer').data('display');var adrType;
+   console.log(display,'display');
+   if(typeof display!="undefined" || display==false){//pour aider le system a ne pas trop travailler
+      if(display[0]==_iota&&display[1]==_mensa) return true;else $('footer').data('display',[_iota,_mensa]);
+   }
+   $('footer').data('header',true);console.log('Header set');
+   if(_iota==0){
+      $('#sideBot h3').html("Viewing all Current Members");$('.headRow').html(eternal.form.legend.txt);return true;//pour arreter le system de continuer
+   }
+   $('footer').data('display',[_iota,_mensa]);console.log(_iota,_mensa,display,'cherche a partir des donner',$('footer').data('display'));
    switch(_mensa){
       case 'dealers':
-         get_ajax(localStorage.SITE_SERVICE,{"militia":"dealer-display",iota:_iota},null,'post','json',function(results){
+         get_ajax(localStorage.SITE_SERVICE,{"militia":_mensa+"-display",iota:_iota},null,'post','json',function(results){
+            //change la list du menu et du button avec les dernier donner
+            $("#drop_"+_mensa+" .oneDealer").last().parent().remove();$("#btnSubDealersList .oneDealer").last().parent().remove();
+            $anima("#drop_"+_mensa,"li",{},false,'first').vita("a",{"data-toggle":"tab","href":"#tab-"+_mensa,"clss":"oneDealer","data-iota":_iota},false,aNumero(results.company[0].Name,true)).father.onclick=function(){activateMenu('dealer','dealers',this)}
+            $anima("#tab-customers #btnSubDealersList ","li",{},false,'first').vita("a",{"clss":"oneDealer","data-iota":_iota},false,aNumero(results.company[0].Name,true)).father.onclick=function(){activateMenu('customer','customers',this,true,'dealers')}
+            $anima("#tab-insurance #btnSubDealersList ","li",{},false,'first').vita("a",{"clss":"oneDealer","data-iota":_iota},false,aNumero(results.company[0].Name,true)).father.onclick=function(){activateMenu('member','insurance',this,true,'dealers')}
             $('#displayMensa').empty();
             if(typeof results.company[0]!="undefined"&&results.company[0]!=null)$('#sideBot h3').html(aNumero(results.company[0].Name,true)+' details');
             else if(eternal.mensa==="members")$('#sideBot h3').html("Current Members");
             title=(typeof results.company[0]!="undefined"&&results.company[0]!=null)?"Customers under "+results.company[0].Name:eternal.form.legend.txt;
             $('.headRow').html(title);
-            $sideDisplay=$anima('#displayMensa','dl',{"clss":"dl-horizontal","id":"displayList"});
+            $sideDisplay=$anima('#displayMensa','dl',{"clss":"dl-horizontal","id":"displayList","itemtype":"http://schema.org/LocalBusiness","itemscope":""});
             for(key in results.address){
                switch(results.address[key].Type){
-                  case 'Dns.Sh.AddressBook.EmailAddress':if(results.address[key].Address)$sideDisplay.novo('#displayList','dt',{},'Email').genesis('dd',{},false,results.address[key].Address); break;
-                  case 'Dns.Sh.AddressBook.FaxNumber':$sideDisplay.novo('#displayList','dt',{},'Fax').genesis('dd',{},false,'('+results.address[key].AreaCode+')'+results.address[key].Number); break;
-                  case 'Dns.Sh.AddressBook.FixedLineNumber':$sideDisplay.novo('#displayList','dt',{},'Tel').genesis('dd',{},false,'('+results.address[key].AreaCode+')'+results.address[key].Number); break;
-                  case 'Dns.Sh.AddressBook.MobileNumber':$sideDisplay.novo('#displayList','dt',{},'Cell').genesis('dd',{},false,results.address[key].Number); break;
+                  case 'Dns.Sh.AddressBook.EmailAddress':if(results.address[key].Address)$sideDisplay.novo('#displayList','dt',{},'Email').genesis('dd',{'itemprop':'email'},false).child.innerHTML="<a href='mailto:"+results.address[key].Address+"' target='_blank'>"+results.address[key].Address+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.FaxNumber':$sideDisplay.novo('#displayList','dt',{},'Fax').genesis('dd',{"itemprop":"faxNumber"},false).child.innerHTML="<a href='tel:"+results.address[key].AreaCode+results.address[key].Number+"'>"+'('+results.address[key].AreaCode+')'+results.address[key].Number+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.FixedLineNumber':$sideDisplay.novo('#displayList','dt',{},'Tel').genesis('dd',{"itemprop":"telephone"},false).child.innerHTML="<a href='tel:"+results.address[key].AreaCode+results.address[key].Number+"'> "+'('+results.address[key].AreaCode+')'+results.address[key].Number+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.MobileNumber':$sideDisplay.novo('#displayList','dt',{},'Cell').genesis('dd',{"itemprop":"cellphone"},false).child.innerHTML="<a href='tel:"+results.address[key].AreaCode+results.address[key].Number+"'>"+results.address[key].AreaCode+results.address[key].Number+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.PostalAddress': adrType='Postal';
                   case 'Dns.Sh.AddressBook.PhysicalAddress':
-                  case 'Dns.Sh.AddressBook.PostalAddress':
-                     $sideDisplay.novo('#displayList','dt',{},'Address').genesis('dd',{},false,results.address[key].Line1);
+                     $sideDisplay.novo('#displayList','dt',{},'Address '+adrType).genesis('dd',{},false,results.address[key].Line1);
                      if(results.address[key].Line2!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].Line2);
                      if(results.address[key].UnitName!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].UnitName);
                      if(results.address[key].UnitNumber!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].UnitNumber);
@@ -95,22 +110,27 @@ sideDisplay=function(_iota,_mensa){
          break;
       case 'salesmen':
          get_ajax(localStorage.SITE_SERVICE,{"militia":"salesman-display",iota:_iota},null,'post','json',function(results){
+            //change la list du menu et du button avec les dernier donner
+            $("#drop_salesman"+" .oneSalesman").last().parent().remove();$("#btnSubSalesmanList .oneSalesman").last().parent().remove();
+            $anima("#drop_salesman","li",{},false,'first').vita("a",{"data-toggle":"tab","href":"#tab-salesman","clss":"oneSalesman","data-iota":_iota},false,aNumero(results.agent[0].FullNames+' '+results.agent[0].Surname,true)).father.onclick=function(){activateMenu(_mensa,'salesmen',this)};
+            $anima("#tab-customers #btnSubSalesmanList ","li",{},false,'first').vita("a",{"clss":"oneSalesman","data-iota":_iota},false,aNumero(results.agent[0].FullNames+' '+results.agent[0].Surname,true)).father.onclick=function(){activateMenu('customer','customers',this,true,'salesmen')}
+            $anima("#tab-insurance #btnSubSalesmanList ","li",{},false,'first').vita("a",{"clss":"oneSalesman","data-iota":_iota},false,aNumero(results.agent[0].FullNames+' '+results.agent[0].Surname,true)).father.onclick=function(){activateMenu('member','insurance',this,true,'salesmen')}
             $('#displayMensa').empty();
             if(typeof results.agent!="undefined"&&results.agent!=null)$('#sideBot h3').html(aNumero(results.agent[0].FullNames+' '+results.agent[0].Surname,true)+' details');
             else if(eternal.mensa==="members")$('#sideBot h3').html("Current Members");
             title=(typeof results.agent!="undefined"&&results.agent!=null)?"Customers under "+results.agent[0].FullNames+' '+results.agent[0].Surname:eternal.form.legend.txt;
             $('.headRow').html(title);
-            $sideDisplay=$anima('#displayMensa','dl',{"clss":"dl-horizontal","id":"displayList"});
+            $sideDisplay=$anima('#displayMensa','dl',{"clss":"dl-horizontal","id":"displayList","itemtype":"http://schema.org/Person","itemscope":""});
             $sideDisplay.novo('#displayList','dt',{},'ID').genesis('dd',{},false,results.agent[0].IdentificationNumber);
             for(key in results.address){
                switch(results.address[key].Type){
-                  case 'Dns.Sh.AddressBook.EmailAddress':if(results.address[key].Address)$sideDisplay.novo('#displayList','dt',{},'Email').genesis('dd',{},false,results.address[key].Address); break;//@todo make email links
-                  case 'Dns.Sh.AddressBook.FaxNumber':$sideDisplay.novo('#displayList','dt',{},'Fax').genesis('dd',{},false,'('+results.address[key].AreaCode+')'+results.address[key].Number); break;
-                  case 'Dns.Sh.AddressBook.FixedLineNumber':$sideDisplay.novo('#displayList','dt',{},'Tel').genesis('dd',{},false,'('+results.address[key].AreaCode+')'+results.address[key].Number); break;
-                  case 'Dns.Sh.AddressBook.MobileNumber':$sideDisplay.novo('#displayList','dt',{},'Cell').genesis('dd',{},false,results.address[key].Number); break;
+                  case 'Dns.Sh.AddressBook.EmailAddress':if(results.address[key].Address)$sideDisplay.novo('#displayList','dt',{},'Email').genesis('dd',{'itemprop':'email'},false).child.innerHTML="<a href='mailto:"+results.address[key].Address+"' target='_blank'>"+results.address[key].Address+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.FaxNumber':$sideDisplay.novo('#displayList','dt',{},'Fax').genesis('dd',{"itemprop":"faxNumber"},false).child.innerHTML="<a href='tel:"+results.address[key].AreaCode+results.address[key].Number+"'>"+'('+results.address[key].AreaCode+')'+results.address[key].Number+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.FixedLineNumber':$sideDisplay.novo('#displayList','dt',{},'Tel').genesis('dd',{"itemprop":"telephone"},false).child.innerHTML="<a href='tel:"+results.address[key].AreaCode+results.address[key].Number+"'> "+'('+results.address[key].AreaCode+')'+results.address[key].Number+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.MobileNumber':$sideDisplay.novo('#displayList','dt',{},'Cell').genesis('dd',{"itemprop":"cellphone"},false).child.innerHTML="<a href='tel:"+results.address[key].AreaCode+results.address[key].Number+"'>"+results.address[key].AreaCode+results.address[key].Number+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.PostalAddress': adrType='Postal';
                   case 'Dns.Sh.AddressBook.PhysicalAddress':
-                  case 'Dns.Sh.AddressBook.PostalAddress':
-                     $sideDisplay.novo('#displayList','dt',{},'Address').genesis('dd',{},false,results.address[key].Line1);
+                     $sideDisplay.novo('#displayList','dt',{},'Address '+adrType).genesis('dd',{},false,results.address[key].Line1);
                      if(results.address[key].Line2!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].Line2);
                      if(results.address[key].UnitName!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].UnitName);
                      if(results.address[key].UnitNumber!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].UnitNumber);
@@ -138,4 +158,9 @@ $('#link_insurance').click(function(){load_async('js/agito/member.js',true,'end'
 
 
 $('#btnFullScreen,#fullscreen').click(function(){if(!$(this).data('toggle')||$(this).data('toggle')==0){$('#btnFullScreen,#fullscreen').data('toggle',1);enableFullScreen();$('.icon-fullscreen').removeClass('icon-fullscreen').addClass('icon-screenshot');}else{$('#btnFullScreen,#fullscreen').data('toggle',0);exitFullScreen();$('.icon-screenshot').removeClass('icon-screenshot').addClass('icon-fullscreen');}});
-$('.icon-refresh').click(function(){history.go(0);sessionStorage.clear();console.log('history:...');});//@todo:add HTML5 history API
+$('.icon-refresh').click(function(){
+   history.go(0);
+   tmp=sessionStorage.username;
+   sessionStorage.clear();sessionStorage.runTime=0;sessionStorage.startTime=new Date().getTime();sessionStorage.username=tmp;
+   $('footer').removeData();
+   console.log('history:...');});//@todo:add HTML5 history API

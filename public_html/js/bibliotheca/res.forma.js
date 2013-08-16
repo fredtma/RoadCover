@@ -114,20 +114,21 @@ function SET_FORM(_name,_class,_label){
       len=_results.rows.length;
       len=len||1;//this will display the record even when there is no record
       if(!_actum){
-         $('#sideBot h3').html(eternal.form.legend.txt);
          roadCover._Set({"next":".tab-pane.active .libHelp"});
          //@todo fix the header title
-         if(!document.getElementById('newItem')){
+         if(!document.getElementById('newItem') && !isReadOnly){
             $('.secondRow').append(creo({},'h2'));
             addbtn=roadCover._Set({"next":".tab-pane.active .libHelp"}).btnCreation("button",{"id":"newItem","name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
-         }else{
+         }else if (!isReadOnly){
             $('#newItem').attr("name","btnNew"+this.name).attr("title","Create a new "+this.name).html(" <i class='icon-plus icon-white'></i> New "+this.name);
          }
-         $('#tab-home section h2').text(eternal.form.legend.txt);
-         $('.headRow').html(eternal.form.legend.txt);
-         $(this.Obj.addTo).empty();$('#displayMensa').empty();//main content and side listing
+         custHead=['members','customers'];
+         if (custHead.indexOf(eternal.mensa)==-1){console.log($('footer').data('header'),custHead.indexOf(eternal.mensa));$('footer').data('header',false);}
+         console.log($('footer').data('header'),custHead.indexOf(eternal.mensa));
+         if(!$('footer').data('header')){$('#sideBot h3').html(eternal.form.legend.txt);$('#tab-home section h2').text(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();}//lieu pour maitre le titre
+         $(this.Obj.addTo).empty();//main content and side listing
          container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
-         addbtn.onclick=addRecord;
+         if(!isReadOnly)addbtn.onclick=addRecord;
          for(rec=0;rec<len;rec++){//loop record
             if(typeof _results.rows.source!=="undefined"){row=_results[rec];headeName=fieldsDisplay('none',row,true);}
             else if(_results.rows.length){row=_results.rows.item(rec);headeName=fieldsDisplay('none',row,true);}
@@ -158,7 +159,7 @@ function SET_FORM(_name,_class,_label){
             }else{
                $(collapse_head.father).parents('div').data('code',row['code']);//@check: i have change the div to 'div'
                //click on the a link
-               collapse_head.father.onclick=function(){sideDisplay($(this).parents('div').data('code'), eternal.mensa);}//@see lib.voca.js
+               collapse_head.father.onclick=function(){sideDisplay($(this).parents('div').data('code'), eternal.mensa);temp[0]=$(this).parents('div').data('code');temp[1]=eternal.mensa;$('footer').data('temp',temp);}//@see lib.voca.js
             }//endif read only
             //APPLY CHANGES TO ADD FUNCTION
             if(typeof eternal.links!="undefined") this.setLinks(eternal.links,collapse_head);
@@ -201,7 +202,7 @@ function SET_FORM(_name,_class,_label){
       eternal=eternalCall();
       this.name=eternal.form.field.name;
       if(!_child){
-         $('#sideBot h3').html(eternal.form.legend.txt);
+         if($('header').data('header'))$('#sideBot h3').html(eternal.form.legend.txt);
          addEle=this.Obj.addTo;headers=eternal.fields;allHead=false;_rows=JSON.parse(_rows);cls='table-condensed';
       }else{
          addEle=_element;headers=eternal.children[_child].fields;allHead=true;_rows=_rows;cls='table-bordered table-child';
@@ -214,7 +215,7 @@ function SET_FORM(_name,_class,_label){
       }//endforeach
       $table.novo('#table_'+this.name,'tbody');
       r1=0;
-      for(key in _rows){
+      for(key in _rows){if(key=="rows")continue;
          row=_rows[key];
          r1++;
          if(r1==1)$table.vita('tr',{},true).vita('td',{},false,r1);//for the first row
@@ -403,8 +404,8 @@ function SET_FORM(_name,_class,_label){
          }else{//esle reference. LINK
             temp=[];
             $(_collapse_head.child).click(function(){
-               $('#nav-main #link_'+theLink).tab('show');
-               temp[0]=$(this).parents('div').data('code');$(".navLinks").removeClass('active');$("#nav_"+theLink).addClass('active');temp[1]=eternal.mensa;$('footer').data('temp',temp);
+               temp[0]=$(this).parents('div').data('code');temp[1]=eternal.mensa;$('footer').data('temp',temp);
+               $('#nav-main #link_'+theLink).tab('show');$(".navLinks").removeClass('active');$("#nav_"+theLink).addClass('active');//maitre que le menu puisse ce fair voir
                load_async(eternal.links[link][0],true,'end',true);
             });
          }//endif

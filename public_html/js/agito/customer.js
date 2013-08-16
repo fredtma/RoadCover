@@ -33,8 +33,9 @@ tmp={
    }
 }
 sessionStorage.setItem('active',JSON.stringify(tmp));
-eternal=tmp;
-get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa},'','post','json',function(results){
+eternal=tmp;temp=$('footer').data('temp');console.log(temp,'temp');
+get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,'quaerere':temp},'','post','json',function(results){
+   if(temp)sideDisplay(temp[0],temp[1]);
    theForm=new SET_FORM()._Set("#body article");
    theForm.setBeta(results);
 //   $('.memberIcon').tooltip();
