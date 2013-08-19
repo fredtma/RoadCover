@@ -22,7 +22,7 @@ $('.getPerm').click(function(){activateMenu('permission','system',this);});
 $('.system1,.getClient').click(function(){activateMenu('client','system',this);});
 $('.getCustomers').click(function(){activateMenu('customer','customers',this,true);});
 $('.getInsurance').click(function(){activateMenu('member','insurance',this,true);});
-//SET_DB();
+SET_DB();//@todo: regard pourquoi ce si coure deux foi.
 //@todo: test on a new DB if the menu link will appear.
 $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
    n='dealers';
@@ -57,6 +57,9 @@ $DB("SELECT firstname||' '||lastname,code FROM salesmen LIMIT 3",[],"",function(
    $('#tab-customers .allSalesman,#tab-customers .oneSalesman').click(function(){activateMenu('customer','customers',this,true,'salesmen')});
    $('#tab-insurance .allSalesman,#tab-insurance .oneSalesman').click(function(){activateMenu('member','insurance',this,true,'salesmen')});
 });
+/*
+ * function to activate the dashboard blocks and links of the navTab
+ */
 function activateMenu(_mensa,_mensula,_set,_script,_tab){
    _mensula=_mensula||_mensa;
    iota=$(_set).data('iota');

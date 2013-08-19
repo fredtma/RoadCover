@@ -116,10 +116,11 @@ function SET_FORM(_name,_class,_label){
       if(!_actum){
          roadCover._Set({"next":".tab-pane.active .libHelp"});
          //@todo fix the header title
-         if(!document.getElementById('newItem') && !isReadOnly){
+         if(!document.getElementById('newItem')&&isReadOnly===false&&getLicentia(this.name,'Create')){
             $('.secondRow').append(creo({},'h2'));
-            addbtn=roadCover._Set({"next":".tab-pane.active .libHelp"}).btnCreation("button",{"id":"newItem","name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
-         }else if (!isReadOnly){
+            addbtn=roadCover._Set({"next":".tab-pane.active .homeSet2"}).btnCreation("button",{"id":"newItem","name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
+            addbtn.onclick=addRecord;
+         }else if (isReadOnly===false&&getLicentia(this.name,'Create')){
             $('#newItem').attr("name","btnNew"+this.name).attr("title","Create a new "+this.name).html(" <i class='icon-plus icon-white'></i> New "+this.name);
          }
          custHead=['members','customers'];
@@ -128,7 +129,6 @@ function SET_FORM(_name,_class,_label){
          if(!$('footer').data('header')){$('#sideBot h3').html(eternal.form.legend.txt);$('#tab-home section h2').text(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();}//lieu pour maitre le titre
          $(this.Obj.addTo).empty();//main content and side listing
          container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
-         if(!isReadOnly)addbtn.onclick=addRecord;
          for(rec=0;rec<len;rec++){//loop record
             if(typeof _results.rows.source!=="undefined"){row=_results[rec];headeName=fieldsDisplay('none',row,true);}
             else if(_results.rows.length){row=_results.rows.item(rec);headeName=fieldsDisplay('none',row,true);}
@@ -142,7 +142,7 @@ function SET_FORM(_name,_class,_label){
             collapse_head.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
                .vita('a',{'clss':'betaRow','contenteditable':false,'data-toggle':collapse,'data-parent':collapseName,'href':collapseTo},true);//@todo: add save on element
                l=headeName.length;for(x=0;x<l;x++)collapse_head.vita('span',{},false).child.innerHTML=headeName[x]+' ';
-            if(!isReadOnly){
+            if(isReadOnly===false&&getLicentia(this.name,'Edit')){
              collapse_head.genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':collapseName,'href':collapseTo},true)
                //edit
              .vita('i',{'clss':'icon icon-color icon-edit','title':'Edit '+headeName[0]});
@@ -150,8 +150,10 @@ function SET_FORM(_name,_class,_label){
               $(collapseName).on('shown',function(){if(!$(this).data('toggle_shown')||$(this).data('toggle_shown')==0){$(this).data('toggle_shown',1); ii=$('.accordion-body.in').data('iota');DB.beta(3,ii);} });
               $(collapseName).on('hidden',function(){$(this).data('toggle_shown',0); });
               //delete
-              collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
-              .vita('i',{'clss':'icon icon-color icon-trash','title':'Delete '+headeName[0]}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
+              if(getLicentia(this.name,'Delete')){
+               collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
+               .vita('i',{'clss':'icon icon-color icon-trash','title':'Delete '+headeName[0]}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
+              }//endif
             }else if(isReadOnly==="display"){
                $(collapse_head.father).parents('div').data('code',row['code']);//@explain:set code of the table
                //@event on SHOWN
@@ -362,25 +364,33 @@ function SET_FORM(_name,_class,_label){
          $('#displayMensa').empty();
          agris1=unus.slice(0,-1);
          agris2=duo.slice(0,-1);
-         $('#sideBot h3').html('Associate '+_name+' to a '+unus);
-         quaerere="SELECT a.id,"+_agrum+",a.`"+tribus+"`,b.`"+agris2+"` FROM `"+unus+"` a LEFT OUTER JOIN `"+_mensa+"` b ON b.`"+agris1+"`=a."+tribus+" GROUP BY a.id ORDER BY "+_agrum;
-         DB.creoAgito(quaerere,[],"Listing "+unus,function(results){
+         $('#sideBot h3').html('Associate '+agris2+' to a '+unus);
+         quaerere="SELECT a.id,"+_agrum+",a.`"+tribus+"`,b.`"+agris2+"` FROM `"+unus+"` a LEFT OUTER JOIN `"+_mensa+"` b ON b.`"+agris1+"`=a."+tribus+" AND b.`"+agris2+"`='"+_ratio+"' GROUP BY a.`id` ORDER BY "+_agrum;
+         $DB(quaerere,[],"Listing "+unus,function(results){
          len=results.rows.length;
             for(x=0;x<len;x++){
                row=results.rows.item(x);
                displayMensa=$anima('#displayMensa','li',{'data-iota':row['id']}).vita('a',{'href':'#link_'+unus},true,aNumero(row[_agrum],true)+' ').vita('i',{'clss':'icon icon-color icon-unlink'});
                $(displayMensa.child).data('tribus',row[tribus]);
+               console.log(_ratio+'=='+row[tribus],row[agris2],_agrum);
+               if(_ratio==row[agris2])$(displayMensa.child).removeClass('icon-unlink').addClass('icon-link');
                displayMensa.child.onclick=function(){
-                  if(!$(this).data('toggle')||$(this).data('toggle')==0){
+                  quaerere={};quaerere.eternal={};quaerere.eternal[agris1]={};quaerere.eternal[agris2]={};
+                  if($(this).hasClass('icon-unlink')){
                      $(this).data('toggle',1);$(this).addClass('icon-link').removeClass('icon-unlink');
                      d=new Date().format('isoDateTime');
-                     DB.creoAgito("INSERT INTO "+_mensa+" (`"+agris1+"`,`"+agris2+"`,`creation`) VALUES (?,?,?)",[$(this).data('tribus'),_ratio,d],"Linked "+_name+" to "+row[_agrum]);
+                     quaerere.eternal[agris1]=$(this).data('tribus');quaerere.eternal[agris2]=_ratio;quaerere.Tau='Alpha';quaerere.iyona=_mensa;sessionStorage.quaerere=JSON.stringify(quaerere);
+                     console.log(quaerere,'quaerere');
+                     $DB("INSERT INTO "+_mensa+" (`"+agris1+"`,`"+agris2+"`,`creation`) VALUES (?,?,?)",[$(this).data('tribus'),_ratio,d],"Linked "+_name+" to "+row[_agrum]);
                   }else{
                      $(this).data('toggle',0);$(this).addClass('icon-unlink').removeClass('icon-link');
-                     DB.creoAgito("DELETE FROM "+_mensa+" WHERE "+agris1+"=? AND "+agris2+"=?",[$(this).data('tribus'),_ratio],"unLinked "+_name+" to "+row[_agrum]);
+                     quaerere.eternal[agris1].alpha=$(this).data('tribus');quaerere.eternal[agris1].delta="!@=!#";
+                     quaerere.eternal[agris2].alpha=_ratio;quaerere.eternal[agris2].delta=" AND !@=!#";
+                     quaerere.Tau='oMegA';quaerere.iyona=_mensa;sessionStorage.quaerere=JSON.stringify(quaerere);
+                     console.log(quaerere,'quaerere');
+                     $DB("DELETE FROM "+_mensa+" WHERE `"+agris1+"`=? AND `"+agris2+"`=?",[$(this).data('tribus'),_ratio],"unLinked "+_name+" to "+row[_agrum]);
                   }//endif
                };//end anonymous
-               if(_ratio==row[agris2])$(displayMensa.child).removeClass('icon-unlink').addClass('icon-link');
             }//end for
          });//end callback
       }//endfi
@@ -426,8 +436,7 @@ function SET_FORM(_name,_class,_label){
          .vita('i',{'clss':'memberIcon '+tmp.icon,'title':'Link '+tmp.title,'data-agilis':key});//@event:customer.js
       }//endfor
    }
-   if(this instanceof SET_FORM)return this;
-   else return new SET_FORM();
+//   if(this instanceof SET_FORM)return this; else return new SET_FORM();
 }
 /******************************************************************************/
 /**

@@ -8,7 +8,7 @@
    },
    "mensa": "permissions",
    "fields": {
-      "page":{"icon":"icon-file","header":true,"place":true,"field":{"title":"Link to","type":"list","click":"atest"},"items":["Profile","Group"]},
+      "page":{"icon":"icon-file","header":true,"place":true,"field":{"title":"Link to","type":"list","click":"atest"},"items":["Profile","Group","Permission","Clients","Dealers","Salesmen","Customers","Insurance"]},
       "default":{"title":"Default permissions","source":"custom","field":{"title":"Default permissions","type":"radio","autofocus":""},"items":{"Create":"Create","Edit":"Edit","Delete":"Delete","View":"View","Report":"Report","Other":"Other"}},
       "name":{"valid":["unique"],"icon":"icon-pencil","header":true,"place":true,"field":{"required":"","title":"Permissions name"}},
       "enable":{"complex":true,"field":{"type":"bool"}},

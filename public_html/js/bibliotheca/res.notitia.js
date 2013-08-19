@@ -28,7 +28,7 @@ function SET_DB(){
             j=$DB2JSON(results);
             $('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
             if(Tau){
-               this.basilia={"eternal":res,"Tau":Tau,"iyona":iyona};//pas las 3 transaction
+               this.basilia={"eternal":res,"Tau":Tau,"iyona":iyona};
                get_ajax(localStorage.SITE_MILITIA,this.basilia,'','post','json',function(j){console.log(j,'Online');$('#sys_msg').html(j.msg) });Tau=false;
             }
             if(callback)callback(results);
@@ -40,14 +40,6 @@ function SET_DB(){
       });
    }
 
-   if(!db||!localStorage.DB){
-      db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
-      if(!localStorage.DB){
-         localStorage.DB=db;
-         this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1,ver:0});
-      }
-   }
-   console.log('Database Version:',db.version);
    /*
     * this function will extract info from the form and determine the form action
     * @param {string} _form the name of the form to be setup
@@ -364,21 +356,43 @@ function SET_DB(){
          if(_option.salesman)this.creoAgito("CREATE INDEX salesman_dealer ON salesmen(dealer)",[],"index salesman_dealer");
          ver="CREATE TABLE versioning(id INTEGER RRIMARY KEY AUTOINCREMENT,user INTEGER NOT NULL,content mediumtext NOT NULL,iota INTEGER NOT NULL,trans INTEGER NOT NULL,mensa TEXT,creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.ver)this.creoAgito(ver,[],'Version table created');
-         if(_option.users)$DB("INSERT INTO users (username,password,firstname,lastname,email,gender) VALUES (?,?,?,?,?,?)",['administrator','qwerty','admin','strator','admin@xpandit.co.za','Male'],"added default user ");
+//         if(_option.users)$DB("INSERT INTO users (username,password,firstname,lastname,email,gender) VALUES (?,?,?,?,?,?)",['administrator','qwerty','admin','strator','admin@xpandit.co.za','Male'],"added default user ");
+         if(_option.users){
+            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getUsers',type:'GET',dataType:'json',success:function(json){
+               $.each(json,function(i,v){if(i==='rows')return true;v.gender=v.gender=='Male'?1:2;$DB("INSERT INTO users (id,username,password,firstname,lastname,email,gender) VALUES (?,?,?,?,?,?,?)",[v.id,v.username,v.password,v.firstname,v.lastname,v.email,v.gender],"added user "+v.firstname)})
+            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+         if(_option.groups){
+            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getGroups',type:'GET',dataType:'json',success:function(json){
+               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO groups (id,name,`desc`) VALUES (?,?,?)",[v.id,v.name,v.desc],"added group "+v.name)})
+            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+         if(_option.perm){
+            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPerm',type:'GET',dataType:'json',success:function(json){
+               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO permissions (id,name,`desc`,`page`,`enable`) VALUES (?,?,?,?,?)",[v.id,v.name,v.desc,v.page,v.enable],"added permision "+v.name)})
+            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+         if(_option.pg){
+            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPG',type:'GET',dataType:'json',success:function(json){
+               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_groups (id,`permission`,`group`) VALUES (?,?,?)",[v.id,v.permision,v.group],"added permision+group "+v.name)})
+            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
          if(_option.dealer){
             $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getDealer',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){$DB("INSERT INTO dealers (name,code) VALUES (?,?)",[v.Name,v.Id],"added dealer "+v)})
-            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
-         }//endif
+               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO dealers (name,code) VALUES (?,?)",[v.Name,v.Id],"added dealer "+v)})
+            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
          if(_option.salesman){
             $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getSaleman',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){$DB("INSERT INTO salesmen (firstname,lastname,code) VALUES (?,?,?)",[v.FullNames,v.Surname,v.Id],"added salesman "+v)})
-            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
-         }//endif
+               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO salesmen (firstname,lastname,code) VALUES (?,?,?)",[v.FullNames,v.Surname,v.Id],"added salesman "+v)})
+            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
    }//endfunction
-   if(false&&db && localStorage.DB)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0,ver:0});
-   if(this instanceof SET_DB)return this;
-   else return new SET_DB();
+
+   if(!db||!localStorage.DB){
+      db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
+      if(!localStorage.DB){
+         localStorage.DB=db;
+         this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1,ver:0});
+      }
+   }
+   console.log('Database Version:',db.version);
+   if(false&&db&&localStorage.DB)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0,ver:0});
+//   if(this instanceof SET_DB)return this; else return new SET_DB();
 }
 /******************************************************************************/
 /**
@@ -402,10 +416,21 @@ var $DB=function(quaerere,params,msg,callback){
          console.log('Success DB transaction: '+msg);
          console.log(quaerere);
          j=$DB2JSON(results);
+         if(sessionStorage.quaerere){
+            tmp=JSON.parse(sessionStorage.quaerere);sessionStorage.removeItem('quaerere');
+            res=tmp.eternal;Tau=tmp.Tau;iyona=tmp.iyona;
+            console.log({"eternal":res,"Tau":Tau,"iyona":iyona},'sql');
+            get_ajax(localStorage.SITE_MILITIA,{"eternal":res,"Tau":Tau,"iyona":iyona},'','post','json',function(j){console.log(j,'Online');$('#sys_msg').html(j.msg) });Tau=false;
+         }
          $('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
          if(callback)callback(results,j);
       },function(_trans,_error){
-         console.log('Failed DB: '+msg+':'+_error.message);
+         msg=_error.message;
+         if(msg.search('no such table')!=-1){
+            localStorage.removeItem('DB');
+            $('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('The application yet to be installed on this machine.<br/> We will run the installation on the next refresh')
+         }
+         console.log('Failed DB: '+msg+':'+msg);
          console.log('::QUAERERE='+quaerere);
          $('#sideNotice .db_notice').html("<div class='text-error'>"+_error.message+'</div>');
       });

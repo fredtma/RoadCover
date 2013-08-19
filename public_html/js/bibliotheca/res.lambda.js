@@ -100,9 +100,9 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
     * @returns {undefined}
     */
    this.btnGroup=function(_obj){
-      var div=creo({"clss":"btn-group"},"div");
+      var div=creo({"clss":"btn-group "+_obj.key},"div");
       var innerClass=this.Obj.clss;
-      this.setObject({"items":_obj,"father":function(key,item){
+      this.setObject({"items":_obj.btn,"father":function(key,item){
          btn=creo({"title":item.title,"id":key,"clss":innerClass},"button");
          i=creo({"clss":item.icon},"i");btn.appendChild(i);div.appendChild(btn);
       }});
@@ -248,12 +248,12 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
       return address;
    }/*end function*/
    this.userLogin=function(){
-      if(!sessionStorage.username){
+      if(!localStorage.USER_NAME){
          $modal=$anima('#hiddenElements','div',{'clss':'modal','id':'userLogin','role':'dialog'})
          .vita('div',{'clss':'modal-header'},true).vita('button',{'clss':'close','aria-hidden':true},true).vita('i',{'clss':'icon icon-color icon-close'}).genesis('h2',{},false,'Welcome to '+localStorage.SITE_NAME)
          .novo('#userLogin','div',{'clss':'modal-body'}).vita('div',{'clss':'alert alert-info'},true)
             .vita('h4',{},false,'Login Details').vita('span')
-            .novo('#userLogin .modal-body','form',{'clss':'form-signin','id':'loginForm','method':'post'}).vita('div',{'clss':'input-prepend fullWidth'},true).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-user'}).genesis('input',{'id':'email','type':'email','placeholder':'email address','clss':'input-block-level','required':'','autofocus':true})
+            .novo('#userLogin .modal-body','form',{'clss':'form-signin','id':'loginForm','method':'post'}).vita('div',{'clss':'input-prepend fullWidth'},true).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-user'}).genesis('input',{'id':'email','type':'text','placeholder':'username or email','clss':'input-block-level','required':'','autofocus':true})
             .novo('#userLogin .form-signin','div',{'clss':'input-prepend fullWidth'}).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-lock'}).genesis('input',{'id':'password','type':'password','clss':'input-block-level','required':'','pattern':localStorage.PASSPATERN})
             .novo('#userLogin .form-signin','label',{'name':'remember','for':'remeberMe','clss':'checkbox inline'},'Remember me').vita('input',{'type':'checkbox','value':1,'id':'remeberMe'})
             .genesis('label',{'name':'remember','for':'fullscreen','clss':'checkbox inline'},true,'Run in fullscreen?').vita('input',{'type':'checkbox','value':1,'id':'fullscreen'})
@@ -264,8 +264,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
       }//end if
    }//end function
 
-   if(this instanceof SET_DISPLAY)return this;
-   else return new SET_DISPLAY();
+//   if(this instanceof SET_DISPLAY)return this; else return new SET_DISPLAY();
 }/*end OBJECT*/
 /******************************************************************************/
 /**
