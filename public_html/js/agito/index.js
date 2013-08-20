@@ -14,7 +14,7 @@ menuHome=roadCover.btnGroup({"key":"homeSet1","btn":{"btnReload":{"title":"Reloa
 menuUser=roadCover.btnDropDown({"btnUser":{"clss":"btn btn-primary btnUser","href":"#","icon":"icon-user icon-white","txt":"User"},"btnUserCaret":{"clss":"btn btn-primary dropdown-toggle","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubUserList":{"clss":"dropdown-menu","sub":{"profileView":{"href":"#","icon":"icon-pencil profileView","txt":"My profile"},"profileNew":{"href":"#","icon":"icon-plus profileNew","txt":"Create profile"},"profileList":{"href":"#","clss":"profileList","icon":"icon-map-marker","txt":"Admin List"},"profileDiv":{"divider":true},"profileOff":{"href":"#","icon":"icon-ban-circle logOff","txt":"Logoff"}}}}).cloneNode(true);
 roadCover.btnGroup({"key":"homeSet2","btn":{"btnGroup":{"title":"Access all group","icon":"icon icon-white icon-users"},"btnHelp":{"title":"Help","icon":"icon-question-sign icon-white"}}});
 menuSearch=roadCover.inputSearch({"div":{"clss":"btn-cust input-prepend pull-right"},"label":{"clss":"add-on","icon":"icon-search icon-white"},"input":{"clss":"input-medium search-all","name":"s","type":"search","placeholder":"Search page","form":"frm_search"}}).cloneNode(true);
-roadCover.pagiNation({"clss1":"pagination pull-right","clss2":"disabled","total":5,"link":"#home"});
+//roadCover.pagiNation({"clss1":"pagination pull-right","clss2":"disabled","total":5,"link":"#home"});
 roadCover.placeObj(creo({'clss':'clearfix secondRow'},'div'));
 //DEALERS
 timeFrame('dealers');
@@ -53,6 +53,7 @@ roadCover._Set("#tab-system section").btnGroup({"key":"setSystem","btn":{"btnSys
 $('#tab-system section').append(menuUser);
 roadCover.btnGroup({"key":"setClient","btn":{"btnSysClient":{"title":"View Clients","icon":"icon-qrcode icon-white getClient"},"btnHelp":{"title":"Help system","icon":"icon-question-sign icon-white"},}});
 $('#tab-system section').append(menuSearch);
+$('#tab-system section').append(creo({'clss':'headRow'},'h2'));
 //FOOTER
 username="Frederick Tshimanga";//@todo: fait que le nom de la person qui et entre puisse apparaitre.
 mother={"clss":"dropdown-menu bottom-up pull-right","children":{"footContact":{"href":"#","txt":"Contact us"},"footHelp":{"href":"#","txt":"Help"},"footAbout":{"href":"#","txt":"About us"}}};

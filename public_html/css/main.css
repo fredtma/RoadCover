@@ -7,6 +7,14 @@
     Description: combines boostrap.min & bootstrap-responsive.min.
     Working with contaainer of 940px;
 */
+/******************************************************************************/
+/*font faces*/
+@font-face {font-family: 'Yanone Kaffeesatz';font-style: normal;font-weight: 400;src: local('Yanone Kaffeesatz Regular'), local('YanoneKaffeesatz-Regular'), url(../css/YDAoLskQQ5MOAgvHUQCcLRTHiN2BPBirwIkMLKUspj4.woff) format('woff');}
+@font-face {font-family: 'Yanone Kaffeesatz';font-style: normal;font-weight: 700;src: local('Yanone Kaffeesatz Bold'), local('YanoneKaffeesatz-Bold'), url(../css/We_iSDqttE3etzfdfhuPRWwXwFHHZlCwprwJOQ-Se7k.woff) format('woff');}
+@font-face {font-family: 'Vollkorn';font-style: italic;font-weight: 400;src: local('Vollkorn Italic'), local('Vollkorn-Italic'), url(../css/Oiz0tNwvC-Nd29SBQWfWTBsxEYwM7FgeyaSgU71cLG0.woff) format('woff');}
+@font-face {font-family: 'Vollkorn';font-style: italic;font-weight: 700;src: local('Vollkorn Bold Italic'), local('Vollkorn-BoldItalic'), url(../css/KNiAlx6phRqXCwnZZG51JAFhaRv2pGgT5Kf0An0s4MM.woff) format('woff');}
+/******************************************************************************/
+/*tag segment*/
 body {margin: 1px auto; background: #fbfbfb url('../img/bg04.png');; font-family: 'Yanone Kaffeesatz'; color: #474f51;}
 .white{color:white;}.black{color:black;}
 h1 {font-size:1.8em; font-family:'Vollkorn', sans-serif; font-weight: 700; font-style:italic; text-align: right; display:block; padding: 0px; line-height: 10px;}
@@ -46,6 +54,7 @@ address {margin: 3px 0px;}
 .secondRow{display:block;height:2em;margin-top: 0.3em;}
 .headRow{border: 0px solid red;/* width: 100px; */position: relative;display: inline-block;white-space: nowrap;vertical-align: middle;margin: 0px 5px;}
 #newItem{margin-left:0.2em;}
+.navig{margin-left:0.3em;margin-right:0.3em;}
 /******************************************************************************/
 /*aSide*/
 #sideTop {margin-top:-0.8em}

@@ -111,6 +111,8 @@ function SET_FORM(_name,_class,_label){
       this.frmName=frmName='frm_'+this.name;
       isReadOnly=(typeof eternal.form.options !=="undefined")?eternal.form.options.readonly:false;
       if(typeof _results.rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_results);
+      this.setNavigation(_results);
+      console.log(_results.rows,'_results');
       len=_results.rows.length;
       len=len||1;//this will display the record even when there is no record
       if(!_actum){
@@ -118,18 +120,22 @@ function SET_FORM(_name,_class,_label){
          //@todo fix the header title
          if(!document.getElementById('newItem')&&isReadOnly===false&&getLicentia(this.name,'Create')){
             $('.secondRow').append(creo({},'h2'));
-            addbtn=roadCover._Set({"next":".tab-pane.active .homeSet2"}).btnCreation("button",{"id":"newItem","name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
+            addbtn=roadCover._Set({"next":".tab-pane.active .homeSet2,.tab-pane.active .setClient"}).btnCreation("button",{"id":"newItem","name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
             addbtn.onclick=addRecord;
          }else if (isReadOnly===false&&getLicentia(this.name,'Create')){
             $('#newItem').attr("name","btnNew"+this.name).attr("title","Create a new "+this.name).html(" <i class='icon-plus icon-white'></i> New "+this.name);
          }
+
          custHead=['members','customers'];
-         if (custHead.indexOf(eternal.mensa)==-1){console.log($('footer').data('header'),custHead.indexOf(eternal.mensa));$('footer').data('header',false);}
-         console.log($('footer').data('header'),custHead.indexOf(eternal.mensa));
+         if (custHead.indexOf(eternal.mensa)==-1){$('footer').data('header',false);}
          if(!$('footer').data('header')){$('#sideBot h3').html(eternal.form.legend.txt);$('#tab-home section h2').text(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();}//lieu pour maitre le titre
          $(this.Obj.addTo).empty();//main content and side listing
          container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
-         for(rec=0;rec<len;rec++){//loop record
+         if(sessionStorage.genesis=="NaN")sessionStorage.genesis=0;
+         max=(parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT));
+         max=max>len?len:max;//@fix:prevent the last index from occuring
+         for(rec=parseInt(sessionStorage.genesis);rec<len,rec<max;rec++){//loop record
+            console.log(rec,'rec',max,len);
             if(typeof _results.rows.source!=="undefined"){row=_results[rec];headeName=fieldsDisplay('none',row,true);}
             else if(_results.rows.length){row=_results.rows.item(rec);headeName=fieldsDisplay('none',row,true);}
             else{row={'id':-1};headeName=['Type '+this.name+' name here']}
@@ -144,12 +150,12 @@ function SET_FORM(_name,_class,_label){
                l=headeName.length;for(x=0;x<l;x++)collapse_head.vita('span',{},false).child.innerHTML=headeName[x]+' ';
             if(isReadOnly===false&&getLicentia(this.name,'Edit')){
              collapse_head.genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':collapseName,'href':collapseTo},true)
-               //edit
+              //EDIT, quand le button et le lien sont frapper
              .vita('i',{'clss':'icon icon-color icon-edit','title':'Edit '+headeName[0]});
               //FIRE on shown
               $(collapseName).on('shown',function(){if(!$(this).data('toggle_shown')||$(this).data('toggle_shown')==0){$(this).data('toggle_shown',1); ii=$('.accordion-body.in').data('iota');DB.beta(3,ii);} });
               $(collapseName).on('hidden',function(){$(this).data('toggle_shown',0); });
-              //delete
+              //DELETE
               if(getLicentia(this.name,'Delete')){
                collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true)
                .vita('i',{'clss':'icon icon-color icon-trash','title':'Delete '+headeName[0]}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
@@ -159,6 +165,7 @@ function SET_FORM(_name,_class,_label){
                //@event on SHOWN
                $(collapseName).on('hidden',function(){$(this).data('toggle_shown',0); });
             }else{
+               temp=[];
                $(collapse_head.father).parents('div').data('code',row['code']);//@check: i have change the div to 'div'
                //click on the a link
                collapse_head.father.onclick=function(){sideDisplay($(this).parents('div').data('code'), eternal.mensa);temp[0]=$(this).parents('div').data('code');temp[1]=eternal.mensa;$('footer').data('temp',temp);}//@see lib.voca.js
@@ -182,12 +189,13 @@ function SET_FORM(_name,_class,_label){
          $(form+' #cancel_'+this.name).click(function(){$(this).parents('.accordion-body.in').collapse('hide');});
          if((_iota==-1||!_iota)){
             $(form).data('iota',0);
-            $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(1);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000); return false;}//make the form to become inserted
+            $(form)[0].onsubmit=function(e){e.preventDefault();console.log('inserted');$('#submit_'+eternal.form.field.name).button('loading');DB.beta(1);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000); return false;}//make the form to become inserted
          }else{
             $(form).data('iota',row['id']);
             fieldsDisplay('form',row);
-            $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000); return false;}//make the form to become update
-         }
+            $(form)[0].onsubmit=function(e){e.preventDefault();console.log('submited');$('#submit_'+eternal.form.field.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000); return false;}//make the form to become update
+         }//endif
+         console.log(_iota,form,row['id'],' check this out',$(form).data('iota'),'andso',frm.onsubmit,$(form+' #submit_'+this.name));
          if(eternal.form.file)load_async('js/agito/'+eternal.form.file+'.js',false,'end',true);
       }
 //      this.setObject({"items":eternal,"father":function(_key,_field){}});
@@ -201,6 +209,8 @@ function SET_FORM(_name,_class,_label){
     */
    this.gammaTable=function(_rows,_child,_element){
 //      for(k in _rows) if(_rows.hasOwnProperty(key))len++;
+      if(typeof _rows.rows!=="undefined"&&typeof _rows.rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_rows);
+      if(typeof _rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_rows);
       eternal=eternalCall();
       this.name=eternal.form.field.name;
       if(!_child){
@@ -435,6 +445,23 @@ function SET_FORM(_name,_class,_label){
          _collapse_head.genesis('a',{'clss':'forIcon','data-toggle':_collapse,'data-parent':_collapseName,'href':_collapseTo},true)
          .vita('i',{'clss':'memberIcon '+tmp.icon,'title':'Link '+tmp.title,'data-agilis':key});//@event:customer.js
       }//endfor
+   }
+   /*
+    * setup the navigation according to the size of the quaerere
+    * @param {object} <var>_results</var> the quaerere results from websql
+    * @returns {void}
+    */
+   this.setNavigation=function(_results){
+      $('.pagination').remove();
+      if(sessionStorage.activePage!=this.name){sessionStorage.genesis=0;sessionStorage.activePage=this.name;}//@alert:ne pas maitre deux form avec le meme nom.
+      len=_results.rows.length;
+      for(x=0;x<len;x++){}
+      if(len>localStorage.DB_LIMIT){
+         pages=Math.ceil(len/localStorage.DB_LIMIT);
+         pagination=roadCover._Set({"next":"#tab-home section .homeSet2"}).pagiNation({"clss1":"pagination pull-right","clss2":"navig","pages":pages,"total":len,"link":"#"+this.name}).cloneNode(true);
+         $('#tab-system section').append(pagination);
+      }
+      $('.navig a').click(function(){navig(this)});
    }
 //   if(this instanceof SET_FORM)return this; else return new SET_FORM();
 }

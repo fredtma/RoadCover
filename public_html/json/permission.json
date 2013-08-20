@@ -7,9 +7,10 @@
       "button":{"submit_permission":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_permission":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
    },
    "mensa": "permissions",
+   "quaerere":{"precipio":"page,name ASC"},
    "fields": {
-      "page":{"icon":"icon-file","header":true,"place":true,"field":{"title":"Link to","type":"list","click":"atest"},"items":["Profile","Group","Permission","Clients","Dealers","Salesmen","Customers","Insurance"]},
-      "default":{"title":"Default permissions","source":"custom","field":{"title":"Default permissions","type":"radio","autofocus":""},"items":{"Create":"Create","Edit":"Edit","Delete":"Delete","View":"View","Report":"Report","Other":"Other"}},
+      "page":{"icon":"icon-file","header":true,"place":true,"field":{"title":"Link to","type":"list","click":"atest"},"items":["Clients","Customers","Dealers","Insurance","Groups","Permissions","Profile","Users","Salesmen"]},
+      "default":{"title":"Default permissions","source":"custom","field":{"title":"Default permissions","type":"radio","autofocus":""},"items":{"Create":"Create","Edit":"Edit","Delete":"Delete","View":"View","Link":"Link","Report":"Report","Other":"Other"}},
       "name":{"valid":["unique"],"icon":"icon-pencil","header":true,"place":true,"field":{"required":"","title":"Permissions name"}},
       "enable":{"complex":true,"field":{"type":"bool"}},
       "desc":{"complex":"textarea","title":"description","place":"Permissions Description","field":{"required":"","type":"text","rows":5,"clss":"text-area","maxlength":180}}

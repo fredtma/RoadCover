@@ -49,7 +49,7 @@ function SET_DB(){
     * @todo clean it up
     */
    this.forma=function(_actum,_iota,callback){
-      var reference=[];
+      var reference=[];var precipio='';
       //protect and accept only valid table
       if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);
       else eternal=null;
@@ -57,9 +57,10 @@ function SET_DB(){
       form='#frm_'+eternal.form.field.name;
       iota=_iota;res={"blossom":{"alpha":iota,"delta":"!@=!#"}};
       iyona=eternal.mensa||form.substr(4);
-      if(!this.mensaActive.indexOf(iyona)){console.log("not found mensa");return false;}
+      if(typeof eternal.quaerere!="undefined"&&typeof eternal.quaerere.precipio!="undefined"){precipio=" ORDER BY "+eternal.quaerere.precipio;}
+      if(!this.mensaActive.indexOf(iyona)){console.log("not found mensa");return false;}//@todo: arrange et ajoute la securiter
       var quaerere=[],params=[],set=[];
-      limit=localStorage.LIMIT||7;
+      limit=1000;//localStorage.DB_LIMIT||7;
       switch(_actum){
          case 0:
             switch(iyona){
@@ -82,7 +83,7 @@ function SET_DB(){
          default:
             _actum=3;
             actum='SELECT';
-            ubi=iota?' WHERE id='+iota+' LIMIT '+limit:' LIMIT '+limit;
+            ubi=iota?' WHERE id='+iota+precipio+' LIMIT '+limit:precipio+' LIMIT '+limit;
             ubi=' FROM '+iyona+ubi;
             msg='Selected '+iyona;break;
       }
@@ -213,14 +214,14 @@ function SET_DB(){
                $('.accordion-body.in').data('iota',results.insertId);
                $('.accordion-body.in').parents('.accordion-group').attr('id','accGroup'+results.insertId);
                $('.accordion-body.in').prev().data('iota',results.insertId).find('.icon-link').data('head',nameList[0]).data('ref',ref).removeClass('icon-black').addClass('icon-color');
-               $(form+' #submit_'+this.name)[0].onclick=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');callDB.beta(2,results.insertId);setTimeout(function(){$('#submit_'+this.name).button('reset');}, 1000)}//make the form to become update
-               $(form+' #cancel_'+this.name).val('Done...');//@todo
+//               $(form+' #submit_'+this.name)[0].onclick=function(e){e.preventDefault();console.log('inserted&updated');$('#submit_'+eternal.form.field.name).button('loading');callDB.beta(2,results.insertId);setTimeout(function(){$('#submit_'+this.name).button('reset');}, 1000)}//make the form to become update
+               $(form+' #cancel_'+this.name).val('Close...');//@todo
                $('#accGroup'+results.insertId+' .betaRow').empty();
                s=$anima('#accGroup'+results.insertId+' .betaRow','span',{},nameList[0]);
                l=nameList.length;for(x=1;x<l;x++)s.genesis('span',{},true,nameList[x]);
                break;
             case 2:
-               $(form+' #cancel_'+this.name).val('Done...');//@todo
+               $(form+' #cancel_'+this.name).val('Close...');//@todo
                nameList='';
                nameList=fieldDisplay('list',null,true);
                $('#accGroup'+_iota+' .betaRow span').each(function(i,v){$(v).html(nameList[i])});

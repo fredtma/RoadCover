@@ -207,23 +207,25 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
     * @todo add the page variable
     */
    this.pagiNation=function(_obj){
-      var page=1;
-      div=creo({"clss":_obj.clss1},"div");
-      ul=creo({"clss":_obj.clss2},"ul");
-      prv=document.createTextNode("Prev");
-      nxt=document.createTextNode("Next");
-      a=creo({"href":_obj.link,"data-goto":page-1},"a");
-      li=creo({},"li");
-      a.appendChild(prv);li.appendChild(a);ul.appendChild(li);
-      for(x=1;x<=_obj.total;x++){
-         txt=document.createTextNode(x);
-         a=creo({"href":_obj.link,"data-goto":x},"a");
-         li=creo({},"li");
-         a.appendChild(txt);li.appendChild(a);ul.appendChild(li);
+      var curr=Math.floor(parseInt(sessionStorage.genesis)/localStorage.DB_LIMIT);
+      var prev=parseInt(sessionStorage.genesis)==0?0:curr-1;
+      var next=curr>=_obj.pages-1?_obj.pages-1:curr+1;
+      console.log(curr,'curr');
+      curr=curr==0?1:(((_obj.pages)-curr)>=4)?curr:(_obj.pages)-4;
+      var max=curr+4;
+      div=creo({"clss":_obj.clss1},"div");ul=creo({"clss":_obj.clss2},"ul");
+      dsbl=_obj.pages<3?"disabled":"";
+      console.log(curr,'curr');
+      a=creo({"href":_obj.link,"data-goto":prev,"clss":"navig"},"a","Prev");li=creo({"clss":dsbl},"li");li.appendChild(a);ul.appendChild(li);
+      for(x=curr;x<=max;x++){
+         dsbl=_obj.pages<max&&x>_obj.pages?"disabled":"";
+         tmp=(parseInt(x)-1)*localStorage.DB_LIMIT;
+         actv="";if(tmp==sessionStorage.genesis)actv=" active";
+         a=creo({"href":_obj.link,"data-goto":x},"a",x);li=creo({"clss":dsbl+actv},"li");li.appendChild(a);ul.appendChild(li);
       }
-      a=creo({"href":_obj.link,"data-goto":page+1},"a");
-      li=creo({},"li");
-      a.appendChild(nxt);li.appendChild(a);ul.appendChild(li);div.appendChild(ul);
+      dsbl=_obj.pages<3?"disabled":"";
+      a=creo({"href":_obj.link,"data-goto":next,"clss":"navig"},"a","Next");li=creo({"clss":dsbl},"li");li.appendChild(a);ul.appendChild(li);
+      div.appendChild(ul);
       this.placeObj(div);
       return div;
    }/*end function*/

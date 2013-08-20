@@ -29,7 +29,15 @@ addRecord=function(){
 }
 edtRecord=function(){ii=$(this).parents('div').data('iota');DB.beta(3,ii);$('.activeContent').removeClass('activeContent');$(this).parents('.accordion-group').find('.accordion-inner').addClass('activeContent');}
 delRecord=function(){DB=new SET_DB();ii=$(this).parents('div').data('iota'); if(ii!=-1)DB.beta(0,ii);$(this).parents('.accordion-group').hide()}
-
+function navig(set){
+   if($(set).parents('li').hasClass('disabled')) return false;
+   page=parseInt($(set).data('goto'))-1;
+   if($(set).hasClass('navig'))page=parseInt($(set).data('goto'));//ca cest pour les navigation de deriere et en avant.
+   sessionStorage.genesis=(page)*localStorage.DB_LIMIT;
+   console.log(sessionStorage.genesis, typeof sessionStorage.genesis, 'sessionStorage.genesis', $(set).data('goto'));
+   creoDB=new SET_DB();
+   creoDB.beta();
+}
 //=============================================================================//
 $('.btnUser,.profileList').click(function(){$.getJSON("json/profile.json",findJSON).fail(onVituim);});
 $('.icon-users').click(function(){$.getJSON("json/group.json",findJSON).fail(onVituim);});

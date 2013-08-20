@@ -17,7 +17,7 @@ localStorage.DB_NAME='road_cover';
 localStorage.DB_VERSION='1.0';
 localStorage.DB_DESC='The internal DB version';
 localStorage.DB_SIZE=15;
-localStorage.LIMIT=9;
+localStorage.DB_LIMIT=3;
 localStorage.PASSPATERN='.{6,}';//(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$
 var db;
 /******************************************************************************/
@@ -249,7 +249,8 @@ function isOnline(_display){
  */
 function resetForm(_frm){
    $(':input',_frm).not(':button, :submit, :reset, :hidden, :checkbox, :radio').val('');
-   $('type[checkbox],type[radio]',form).prop('checked',false).prop('selected',false);
+   $('input[type=checkbox],input[type=radio]',_frm).prop('checked',false).prop('selected',false);
+   $('button[type=button]',_frm).removeClass('active');
 }
 /******************************************************************************/
 /**
@@ -417,6 +418,12 @@ function licentia(_nominis){
       sessionStorage.lecentia=JSON.stringify(tmp);
    });
 }
+/*
+ * analyse whether a permission for the user will return true
+ * @param {string} <var>_name</var> the prefix of the permission
+ * @param {string} <var>_perm</var> the suffix of the permission
+ * @returns Boolean
+ */
 function getLicentia(_name,_perm){
    name=_name+' '+_perm;
    tmp=JSON.parse(sessionStorage.lecentia);
