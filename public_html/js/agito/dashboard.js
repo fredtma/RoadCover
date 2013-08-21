@@ -23,18 +23,21 @@ $('.system1,.getClient').click(function(){activateMenu('client','system',this);}
 $('.getCustomers').click(function(){activateMenu('customer','customers',this,true);});
 $('.getInsurance').click(function(){activateMenu('member','insurance',this,true);});
 SET_DB();//@todo: regard pourquoi ce si coure deux foi.
+if(!sessionStorage.lecentia)licentia(localStorage.USER_NAME);//si il'ya pas de session pour l'utilisateur
 //@todo: test on a new DB if the menu link will appear.
 $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
    n='dealers';
    N=aNumero(n,true);
    $('#drop_'+n).empty();
-   $('#btnSub'+N+'List').empty();
+   $('.'+n+'List').empty();
    $.each(j,function(i,v){
       $anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' oneDealer','data-iota':v[1]},false,aNumero(v[0],true))
-      $anima('#btnSub'+N+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'oneDealer','data-iota':v[1]},false,aNumero(v[0],true))
+      $anima('#tab-customers .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'oneDealer','data-iota':v[1]},false,aNumero(v[0],true))
+      $anima('#tab-insurance .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'oneDealer','data-iota':v[1]},false,aNumero(v[0],true))
    });
    $anima('#drop_'+n,'li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));
-   $anima('#btnSub'+N+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));
+   $anima('#tab-customers .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));
+   $anima('#tab-insurance .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));
    //AGITO
    $('#drop_'+n+' .allDealer,#drop_'+n+' .oneDealer').click(function(){activateMenu('dealer','dealers',this)});//ce qui sont sous le menu
    $('#tab-customers .allDealer,#tab-customers .oneDealer').click(function(){activateMenu('customer','customers',this,true,'dealers')});//ce qui on le button
@@ -44,13 +47,15 @@ $DB("SELECT firstname||' '||lastname,code FROM salesmen LIMIT 3",[],"",function(
    n='salesman';
    N=aNumero(n,true);
    $('#drop_'+n).empty();
-   $('#btnSub'+N+'List').empty();
+   $('.'+n+'List').empty();
    $.each(j,function(i,v){
       $anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' one'+N,'data-iota':v[1]},false,aNumero(v[0],true))
-      $anima('#btnSub'+N+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true))
+      $anima('#tab-customers .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true))
+      $anima('#tab-insurance .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true))
    });
    $anima('#drop_'+n,'li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));
-   $anima('#btnSub'+N+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));
+   $anima('#tab-customers .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));
+   $anima('#tab-insurance .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));
    //AGITO
    $('#drop_'+n+' .allSalesman,#drop_'+n+' .oneSalesman').click(function(){activateMenu('salesman','salesmen',this)});
 //   $('.'+n+'List .allSalesman,.'+n+'List .oneSalesman').click(function(){activateMenu('customer','customers',this,true,'salesmen')});//what it was before

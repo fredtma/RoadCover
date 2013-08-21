@@ -17,7 +17,7 @@ localStorage.DB_NAME='road_cover';
 localStorage.DB_VERSION='1.0';
 localStorage.DB_DESC='The internal DB version';
 localStorage.DB_SIZE=15;
-localStorage.DB_LIMIT=3;
+localStorage.DB_LIMIT=15;
 localStorage.PASSPATERN='.{6,}';//(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$
 var db;
 /******************************************************************************/
@@ -266,9 +266,9 @@ eternalCall=function(){
 loginValidation=function(){
    try{
       u=$('#loginForm #email').val();p=$('#loginForm #password').val();
-      $DB("SELECT id FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(results){
-         if(results.rows.length){
-            row=results.rows.item(0);
+      $DB("SELECT id FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(_results){
+         if(_results.rows.length){
+            row=_results.rows.item(0);
             $('#hiddenElements').modal('hide');
             if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=u;
             if(row['id']==1||row['id']==4)localStorage.USER_ADMIN=true;
@@ -303,82 +303,82 @@ sideDisplay=function(_iota,_mensa){
    var display=$('footer').data('display');var adrType;
    console.log(display,'display');
    if(typeof display!="undefined" || display==false){//pour aider le system a ne pas trop travailler
-      if(display[0]==_iota&&display[1]==_mensa) return true;else $('footer').data('display',[_iota,_mensa]);
+      if(display[0]==_iota&&display[1]==_mensa) return true;else $('footer').data('display',[_iota,_mensa]);//celui-ci c'est pour changer quand display a une value d'une autre source
    }
-   $('footer').data('header',true);console.log('Header set');
+   $('footer').data('header',true);console.log($('footer').data('display'),'Header set');
    if(_iota==0){
       $('#sideBot h3').html("Viewing all Current Members");$('.headRow').html(eternal.form.legend.txt);return true;//pour arreter le system de continuer
    }
    $('footer').data('display',[_iota,_mensa]);console.log(_iota,_mensa,display,'cherche a partir des donner',$('footer').data('display'));
    switch(_mensa){
       case 'dealers':
-         get_ajax(localStorage.SITE_SERVICE,{"militia":_mensa+"-display",iota:_iota},null,'post','json',function(results){
+         get_ajax(localStorage.SITE_SERVICE,{"militia":_mensa+"-display",iota:_iota},null,'post','json',function(_results){
             //change la list du menu et du button avec les dernier donner
-            $("#drop_"+_mensa+" .oneDealer").last().parent().remove();$("#btnSubDealersList .oneDealer").last().parent().remove();
-            $anima("#drop_"+_mensa,"li",{},false,'first').vita("a",{"data-toggle":"tab","href":"#tab-"+_mensa,"clss":"oneDealer","data-iota":_iota},false,aNumero(results.company[0].Name,true)).father.onclick=function(){activateMenu('dealer','dealers',this)}
-            $anima("#tab-customers #btnSubDealersList ","li",{},false,'first').vita("a",{"clss":"oneDealer","data-iota":_iota},false,aNumero(results.company[0].Name,true)).father.onclick=function(){activateMenu('customer','customers',this,true,'dealers')}
-            $anima("#tab-insurance #btnSubDealersList ","li",{},false,'first').vita("a",{"clss":"oneDealer","data-iota":_iota},false,aNumero(results.company[0].Name,true)).father.onclick=function(){activateMenu('member','insurance',this,true,'dealers')}
+            $("#drop_"+_mensa+" .oneDealer").last().parent().remove();$("#tab-customers .dealersList .oneDealer").last().parent().remove();$("#tab-insurance .dealersList .oneDealer").last().parent().remove();
+            $anima("#drop_"+_mensa,"li",{},false,'first').vita("a",{"data-toggle":"tab","href":"#tab-"+_mensa,"clss":"oneDealer","data-iota":_iota},false,aNumero(_results.company[0].Name,true)).child.onclick=function(){activateMenu('dealer','dealers',this)}
+            $anima("#tab-customers .dealersList ","li",{},false,'first').vita("a",{"clss":"oneDealer","data-iota":_iota},false,aNumero(_results.company[0].Name,true)).child.onclick=function(){activateMenu('customer','customers',this,true,'dealers')}
+            $anima("#tab-insurance .dealersList ","li",{},false,'first').vita("a",{"clss":"oneDealer","data-iota":_iota},false,aNumero(_results.company[0].Name,true)).child.onclick=function(){activateMenu('member','insurance',this,true,'dealers')}
             $('#displayMensa').empty();
-            if(typeof results.company[0]!="undefined"&&results.company[0]!=null)$('#sideBot h3').html(aNumero(results.company[0].Name,true)+' details');
+            if(typeof _results.company[0]!="undefined"&&_results.company[0]!=null)$('#sideBot h3').html(aNumero(_results.company[0].Name,true)+' details');
             else if(eternal.mensa==="members")$('#sideBot h3').html("Current Members");
-            title=(typeof results.company[0]!="undefined"&&results.company[0]!=null)?"Customers under "+results.company[0].Name:eternal.form.legend.txt;
+            title=(typeof _results.company[0]!="undefined"&&_results.company[0]!=null)?"Customers under "+_results.company[0].Name:eternal.form.legend.txt;
             $('.headRow').html(title);
             $sideDisplay=$anima('#displayMensa','dl',{"clss":"dl-horizontal","id":"displayList","itemtype":"http://schema.org/LocalBusiness","itemscope":""});
-            for(key in results.address){
-               switch(results.address[key].Type){
-                  case 'Dns.Sh.AddressBook.EmailAddress':if(results.address[key].Address)$sideDisplay.novo('#displayList','dt',{},'Email').genesis('dd',{'itemprop':'email'},false).child.innerHTML="<a href='mailto:"+results.address[key].Address+"' target='_blank'>"+results.address[key].Address+"</a>"; break;
-                  case 'Dns.Sh.AddressBook.FaxNumber':$sideDisplay.novo('#displayList','dt',{},'Fax').genesis('dd',{"itemprop":"faxNumber"},false).child.innerHTML="<a href='tel:"+results.address[key].AreaCode+results.address[key].Number+"'>"+'('+results.address[key].AreaCode+')'+results.address[key].Number+"</a>"; break;
-                  case 'Dns.Sh.AddressBook.FixedLineNumber':$sideDisplay.novo('#displayList','dt',{},'Tel').genesis('dd',{"itemprop":"telephone"},false).child.innerHTML="<a href='tel:"+results.address[key].AreaCode+results.address[key].Number+"'> "+'('+results.address[key].AreaCode+')'+results.address[key].Number+"</a>"; break;
-                  case 'Dns.Sh.AddressBook.MobileNumber':$sideDisplay.novo('#displayList','dt',{},'Cell').genesis('dd',{"itemprop":"cellphone"},false).child.innerHTML="<a href='tel:"+results.address[key].AreaCode+results.address[key].Number+"'>"+results.address[key].AreaCode+results.address[key].Number+"</a>"; break;
+            for(key in _results.address){
+               switch(_results.address[key].Type){
+                  case 'Dns.Sh.AddressBook.EmailAddress':if(_results.address[key].Address)$sideDisplay.novo('#displayList','dt',{},'Email').genesis('dd',{'itemprop':'email'},false).child.innerHTML="<a href='mailto:"+_results.address[key].Address+"' target='_blank'>"+_results.address[key].Address+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.FaxNumber':$sideDisplay.novo('#displayList','dt',{},'Fax').genesis('dd',{"itemprop":"faxNumber"},false).child.innerHTML="<a href='tel:"+_results.address[key].AreaCode+_results.address[key].Number+"'>"+'('+_results.address[key].AreaCode+')'+_results.address[key].Number+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.FixedLineNumber':$sideDisplay.novo('#displayList','dt',{},'Tel').genesis('dd',{"itemprop":"telephone"},false).child.innerHTML="<a href='tel:"+_results.address[key].AreaCode+_results.address[key].Number+"'> "+'('+_results.address[key].AreaCode+')'+_results.address[key].Number+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.MobileNumber':$sideDisplay.novo('#displayList','dt',{},'Cell').genesis('dd',{"itemprop":"cellphone"},false).child.innerHTML="<a href='tel:"+_results.address[key].AreaCode+_results.address[key].Number+"'>"+_results.address[key].AreaCode+_results.address[key].Number+"</a>"; break;
                   case 'Dns.Sh.AddressBook.PostalAddress': adrType='Postal';
                   case 'Dns.Sh.AddressBook.PhysicalAddress':
-                     $sideDisplay.novo('#displayList','dt',{},'Address '+adrType).genesis('dd',{},false,results.address[key].Line1);
-                     if(results.address[key].Line2!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].Line2);
-                     if(results.address[key].UnitName!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].UnitName);
-                     if(results.address[key].UnitNumber!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].UnitNumber);
-                     if(results.address[key].StreetName!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].StreetName);
-                     if(results.address[key].StreetNumber!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].StreetNumber);
-                     if(results.address[key].Province_cd!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].Province_cd);
-                     if(results.address[key].Suburb!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].Suburb);
-                     if(results.address[key].City!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].City);
-                     if(results.address[key].Code!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].Code);
+                     $sideDisplay.novo('#displayList','dt',{},'Address '+adrType).genesis('dd',{},false,_results.address[key].Line1);
+                     if(_results.address[key].Line2!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].Line2);
+                     if(_results.address[key].UnitName!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].UnitName);
+                     if(_results.address[key].UnitNumber!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].UnitNumber);
+                     if(_results.address[key].StreetName!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].StreetName);
+                     if(_results.address[key].StreetNumber!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].StreetNumber);
+                     if(_results.address[key].Province_cd!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].Province_cd);
+                     if(_results.address[key].Suburb!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].Suburb);
+                     if(_results.address[key].City!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].City);
+                     if(_results.address[key].Code!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].Code);
                      break;
                }//end swith
             }//end for
          });
          break;
       case 'salesmen':
-         get_ajax(localStorage.SITE_SERVICE,{"militia":"salesman-display",iota:_iota},null,'post','json',function(results){
+         get_ajax(localStorage.SITE_SERVICE,{"militia":"salesman-display",iota:_iota},null,'post','json',function(_results){
             //change la list du menu et du button avec les dernier donner
-            $("#drop_salesman"+" .oneSalesman").last().parent().remove();$("#btnSubSalesmanList .oneSalesman").last().parent().remove();
-            $anima("#drop_salesman","li",{},false,'first').vita("a",{"data-toggle":"tab","href":"#tab-salesman","clss":"oneSalesman","data-iota":_iota},false,aNumero(results.agent[0].FullNames+' '+results.agent[0].Surname,true)).father.onclick=function(){activateMenu(_mensa,'salesmen',this)};
-            $anima("#tab-customers #btnSubSalesmanList ","li",{},false,'first').vita("a",{"clss":"oneSalesman","data-iota":_iota},false,aNumero(results.agent[0].FullNames+' '+results.agent[0].Surname,true)).father.onclick=function(){activateMenu('customer','customers',this,true,'salesmen')}
-            $anima("#tab-insurance #btnSubSalesmanList ","li",{},false,'first').vita("a",{"clss":"oneSalesman","data-iota":_iota},false,aNumero(results.agent[0].FullNames+' '+results.agent[0].Surname,true)).father.onclick=function(){activateMenu('member','insurance',this,true,'salesmen')}
+            $("#drop_salesman"+" .oneSalesman").last().parent().remove();$("#tab-customers .salesmanList .oneSalesman").last().parent().remove();$("#tab-insurance .salesmanList .oneSalesman").last().parent().remove();
+            $anima("#drop_salesman","li",{},false,'first').vita("a",{"data-toggle":"tab","href":"#tab-salesman","clss":"oneSalesman","data-iota":_iota},false,aNumero(_results.agent[0].FullNames+' '+_results.agent[0].Surname,true)).child.onclick=function(){activateMenu('salesman','salesmen',this)};
+            $anima("#tab-customers .salesmanList ","li",{},false,'first').vita("a",{"clss":"oneSalesman","data-iota":_iota},false,aNumero(_results.agent[0].FullNames+' '+_results.agent[0].Surname,true)).child.onclick=function(){activateMenu('customer','customers',this,true,'salesmen')}
+            $anima("#tab-insurance .salesmanList ","li",{},false,'first').vita("a",{"clss":"oneSalesman","data-iota":_iota},false,aNumero(_results.agent[0].FullNames+' '+_results.agent[0].Surname,true)).child.onclick=function(){activateMenu('member','insurance',this,true,'salesmen')}
             $('#displayMensa').empty();
-            if(typeof results.agent!="undefined"&&results.agent!=null)$('#sideBot h3').html(aNumero(results.agent[0].FullNames+' '+results.agent[0].Surname,true)+' details');
+            if(typeof _results.agent!="undefined"&&_results.agent!=null)$('#sideBot h3').html(aNumero(_results.agent[0].FullNames+' '+_results.agent[0].Surname,true)+' details');
             else if(eternal.mensa==="members")$('#sideBot h3').html("Current Members");
-            title=(typeof results.agent!="undefined"&&results.agent!=null)?"Customers under "+results.agent[0].FullNames+' '+results.agent[0].Surname:eternal.form.legend.txt;
+            title=(typeof _results.agent!="undefined"&&_results.agent!=null)?"Customers under "+_results.agent[0].FullNames+' '+_results.agent[0].Surname:eternal.form.legend.txt;
             $('.headRow').html(title);
             $sideDisplay=$anima('#displayMensa','dl',{"clss":"dl-horizontal","id":"displayList","itemtype":"http://schema.org/Person","itemscope":""});
-            $sideDisplay.novo('#displayList','dt',{},'ID').genesis('dd',{},false,results.agent[0].IdentificationNumber);
-            for(key in results.address){
-               switch(results.address[key].Type){
-                  case 'Dns.Sh.AddressBook.EmailAddress':if(results.address[key].Address)$sideDisplay.novo('#displayList','dt',{},'Email').genesis('dd',{'itemprop':'email'},false).child.innerHTML="<a href='mailto:"+results.address[key].Address+"' target='_blank'>"+results.address[key].Address+"</a>"; break;
-                  case 'Dns.Sh.AddressBook.FaxNumber':$sideDisplay.novo('#displayList','dt',{},'Fax').genesis('dd',{"itemprop":"faxNumber"},false).child.innerHTML="<a href='tel:"+results.address[key].AreaCode+results.address[key].Number+"'>"+'('+results.address[key].AreaCode+')'+results.address[key].Number+"</a>"; break;
-                  case 'Dns.Sh.AddressBook.FixedLineNumber':$sideDisplay.novo('#displayList','dt',{},'Tel').genesis('dd',{"itemprop":"telephone"},false).child.innerHTML="<a href='tel:"+results.address[key].AreaCode+results.address[key].Number+"'> "+'('+results.address[key].AreaCode+')'+results.address[key].Number+"</a>"; break;
-                  case 'Dns.Sh.AddressBook.MobileNumber':$sideDisplay.novo('#displayList','dt',{},'Cell').genesis('dd',{"itemprop":"cellphone"},false).child.innerHTML="<a href='tel:"+results.address[key].AreaCode+results.address[key].Number+"'>"+results.address[key].AreaCode+results.address[key].Number+"</a>"; break;
+            $sideDisplay.novo('#displayList','dt',{},'ID').genesis('dd',{},false,_results.agent[0].IdentificationNumber);
+            for(key in _results.address){
+               switch(_results.address[key].Type){
+                  case 'Dns.Sh.AddressBook.EmailAddress':if(_results.address[key].Address)$sideDisplay.novo('#displayList','dt',{},'Email').genesis('dd',{'itemprop':'email'},false).child.innerHTML="<a href='mailto:"+_results.address[key].Address+"' target='_blank'>"+_results.address[key].Address+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.FaxNumber':$sideDisplay.novo('#displayList','dt',{},'Fax').genesis('dd',{"itemprop":"faxNumber"},false).child.innerHTML="<a href='tel:"+_results.address[key].AreaCode+_results.address[key].Number+"'>"+'('+_results.address[key].AreaCode+')'+_results.address[key].Number+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.FixedLineNumber':$sideDisplay.novo('#displayList','dt',{},'Tel').genesis('dd',{"itemprop":"telephone"},false).child.innerHTML="<a href='tel:"+_results.address[key].AreaCode+_results.address[key].Number+"'> "+'('+_results.address[key].AreaCode+')'+_results.address[key].Number+"</a>"; break;
+                  case 'Dns.Sh.AddressBook.MobileNumber':$sideDisplay.novo('#displayList','dt',{},'Cell').genesis('dd',{"itemprop":"cellphone"},false).child.innerHTML="<a href='tel:"+_results.address[key].AreaCode+_results.address[key].Number+"'>"+_results.address[key].AreaCode+_results.address[key].Number+"</a>"; break;
                   case 'Dns.Sh.AddressBook.PostalAddress': adrType='Postal';
                   case 'Dns.Sh.AddressBook.PhysicalAddress':
-                     $sideDisplay.novo('#displayList','dt',{},'Address '+adrType).genesis('dd',{},false,results.address[key].Line1);
-                     if(results.address[key].Line2!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].Line2);
-                     if(results.address[key].UnitName!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].UnitName);
-                     if(results.address[key].UnitNumber!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].UnitNumber);
-                     if(results.address[key].StreetName!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].StreetName);
-                     if(results.address[key].StreetNumber!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].StreetNumber);
-                     if(results.address[key].Province_cd!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].Province_cd);
-                     if(results.address[key].Suburb!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].Suburb);
-                     if(results.address[key].City!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].City);
-                     if(results.address[key].Code!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,results.address[key].Code);
+                     $sideDisplay.novo('#displayList','dt',{},'Address '+adrType).genesis('dd',{},false,_results.address[key].Line1);
+                     if(_results.address[key].Line2!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].Line2);
+                     if(_results.address[key].UnitName!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].UnitName);
+                     if(_results.address[key].UnitNumber!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].UnitNumber);
+                     if(_results.address[key].StreetName!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].StreetName);
+                     if(_results.address[key].StreetNumber!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].StreetNumber);
+                     if(_results.address[key].Province_cd!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].Province_cd);
+                     if(_results.address[key].Suburb!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].Suburb);
+                     if(_results.address[key].City!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].City);
+                     if(_results.address[key].Code!='')$sideDisplay.novo('#displayList','dt',{},'').genesis('dd',{},false,_results.address[key].Code);
                      break;
                }//end swith
             }//end for
@@ -412,9 +412,9 @@ function viewAPI(_viewing){
 function licentia(_nominis){
    quaerere="SELECT pu.`permission` as permission FROM link_permissions_users pu WHERE `user`=? UNION \
    SELECT pg.`permission` as permission FROM link_permissions_groups pg INNER JOIN link_users_groups ug ON ug.`group`=pg.`group` WHERE ug.user=?";
-   $DB(quaerere,[_nominis,_nominis],"Accessing permissions",function(results){
-      len=results.rows.length;tmp=[];
-      for(x=0;x<len;x++){row=results.rows.item(x);tmp[x]=row['permission'];}
+   $DB(quaerere,[_nominis,_nominis],"Accessing permissions",function(_results){
+      len=_results.rows.length;tmp=[];
+      for(x=0;x<len;x++){row=_results.rows.item(x);tmp[x]=row['permission'];}
       sessionStorage.lecentia=JSON.stringify(tmp);
    });
 }

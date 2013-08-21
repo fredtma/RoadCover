@@ -14,12 +14,13 @@ tmp={
    "fields": {
       "Dealer":{"header":true},
       "Salesman":{"header":true},
-      "Fullname":{"header":true},
+      "Fullname":{"header":true,"search":true},
       "Name":{"header":true},
       "Period":{"header":true},
       "CollectionMethod":{"header":true,"title":"Collection Method"},
       "TotalAmount":{"header":true,"title":"Total Amount"},
       "DateModified":{"header":true,"title":"Date Modified"},
+      "IDno":{"header":false,"search":"Fullname"}
    }
 }
 sessionStorage.setItem('active',JSON.stringify(tmp));
@@ -29,6 +30,6 @@ get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp},'',
    sideDisplay(temp[0],temp[1]);
    theForm = new SET_FORM();
    theForm._Set("#body article");
-   theForm.gammaTable(JSON.stringify(_rows));
+   theForm.gammaTable(_rows);
 });
 //@todo add to the menu the three most recents

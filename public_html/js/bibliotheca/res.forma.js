@@ -111,8 +111,9 @@ function SET_FORM(_name,_class,_label){
       this.frmName=frmName='frm_'+this.name;
       isReadOnly=(typeof eternal.form.options !=="undefined")?eternal.form.options.readonly:false;
       if(typeof _results.rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_results);
-      this.setNavigation(_results);
-      console.log(_results.rows,'_results');
+      custHead=['members','customers'];
+      navSection=custHead.indexOf(eternal.mensa)==-1?false:true;
+      this.setNavigation(_results,navSection);
       len=_results.rows.length;
       len=len||1;//this will display the record even when there is no record
       if(!_actum){
@@ -125,17 +126,15 @@ function SET_FORM(_name,_class,_label){
          }else if (isReadOnly===false&&getLicentia(this.name,'Create')){
             $('#newItem').attr("name","btnNew"+this.name).attr("title","Create a new "+this.name).html(" <i class='icon-plus icon-white'></i> New "+this.name);
          }
-
-         custHead=['members','customers'];
          if (custHead.indexOf(eternal.mensa)==-1){$('footer').data('header',false);}
-         if(!$('footer').data('header')){$('#sideBot h3').html(eternal.form.legend.txt);$('#tab-home section h2').text(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();}//lieu pour maitre le titre
+         console.log($('footer').data('header'),'form',custHead.indexOf(eternal.mensa),eternal.mensa);
+         if($('footer').data('header')===false){$('#sideBot h3').html(eternal.form.legend.txt);$('#tab-home section h2').text(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();}//lieu pour maitre le titre
          $(this.Obj.addTo).empty();//main content and side listing
          container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
          if(sessionStorage.genesis=="NaN")sessionStorage.genesis=0;
          max=(parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT));
          max=max>len?len:max;//@fix:prevent the last index from occuring
          for(rec=parseInt(sessionStorage.genesis);rec<len,rec<max;rec++){//loop record
-            console.log(rec,'rec',max,len);
             if(typeof _results.rows.source!=="undefined"){row=_results[rec];headeName=fieldsDisplay('none',row,true);}
             else if(_results.rows.length){row=_results.rows.item(rec);headeName=fieldsDisplay('none',row,true);}
             else{row={'id':-1};headeName=['Type '+this.name+' name here']}
@@ -189,13 +188,12 @@ function SET_FORM(_name,_class,_label){
          $(form+' #cancel_'+this.name).click(function(){$(this).parents('.accordion-body.in').collapse('hide');});
          if((_iota==-1||!_iota)){
             $(form).data('iota',0);
-            $(form)[0].onsubmit=function(e){e.preventDefault();console.log('inserted');$('#submit_'+eternal.form.field.name).button('loading');DB.beta(1);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000); return false;}//make the form to become inserted
+            $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(1);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000); return false;}//make the form to become inserted
          }else{
             $(form).data('iota',row['id']);
             fieldsDisplay('form',row);
-            $(form)[0].onsubmit=function(e){e.preventDefault();console.log('submited');$('#submit_'+eternal.form.field.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000); return false;}//make the form to become update
+            $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000); return false;}//make the form to become update
          }//endif
-         console.log(_iota,form,row['id'],' check this out',$(form).data('iota'),'andso',frm.onsubmit,$(form+' #submit_'+this.name));
          if(eternal.form.file)load_async('js/agito/'+eternal.form.file+'.js',false,'end',true);
       }
 //      this.setObject({"items":eternal,"father":function(_key,_field){}});
@@ -207,15 +205,17 @@ function SET_FORM(_name,_class,_label){
     * @param {string} <var>_element</var> the element can be set or the default one
     * @returns {undefined}
     */
-   this.gammaTable=function(_rows,_child,_element){
+   this.gammaTable=function(_rows,_child,_element,_unum){
 //      for(k in _rows) if(_rows.hasOwnProperty(key))len++;
-      if(typeof _rows.rows!=="undefined"&&typeof _rows.rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_rows);
-      if(typeof _rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_rows);
+      if(typeof _rows.rows!=="undefined"&&typeof _rows.rows.source!=="undefined"){sessionStorage.activeRecord=JSON.stringify(_rows);}
+      else if(typeof _rows.source!=="undefined"){sessionStorage.activeRecord=JSON.stringify(_rows);}
+      len=_rows['length']||_rows.rows['length'];
       eternal=eternalCall();
       this.name=eternal.form.field.name;
+      this.setNavigation(_rows,true,'navTable');
       if(!_child){
          if($('header').data('header'))$('#sideBot h3').html(eternal.form.legend.txt);
-         addEle=this.Obj.addTo;headers=eternal.fields;allHead=false;_rows=JSON.parse(_rows);cls='table-condensed';
+         addEle=this.Obj.addTo;headers=eternal.fields;allHead=false;cls='table-condensed';
       }else{
          addEle=_element;headers=eternal.children[_child].fields;allHead=true;_rows=_rows;cls='table-bordered table-child';
       }
@@ -227,15 +227,20 @@ function SET_FORM(_name,_class,_label){
       }//endforeach
       $table.novo('#table_'+this.name,'tbody');
       r1=0;
-      for(key in _rows){if(key=="rows")continue;
-         row=_rows[key];
+      max=(parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT));
+      max=max>len?len:max;//@fix:prevent the last index from occuring
+      //si il'ya une recherche
+      if(_unum){sessionStorage.genesis=_unum;len=_unum+1;max=_unum+1;}
+      for(rec=parseInt(sessionStorage.genesis);rec<len,rec<max;rec++){
+         row=_rows[rec];
          r1++;
          if(r1==1)$table.vita('tr',{},true).vita('td',{},false,r1);//for the first row
          else $table.genesis('tr',{},true).vita('td',{},false,r1);//for the rest
-         for(k in headers){
+         for(k in headers){ if(!headers[k].header&&!allHead) continue;
             $table.vita('td',{},false,row[k])
          }//endfor
       }//endfor
+      if(_unum){sessionStorage.genesis=0}//re maitre a zero quand on fait une recherche
       $table.novo('#table_'+this.name,'tfoot',{}).vita('tr',{},true).vita('td',{'colspan':colspan+1},false,'Total:'+r1);
    }
    /*
@@ -382,7 +387,6 @@ function SET_FORM(_name,_class,_label){
                row=results.rows.item(x);
                displayMensa=$anima('#displayMensa','li',{'data-iota':row['id']}).vita('a',{'href':'#link_'+unus},true,aNumero(row[_agrum],true)+' ').vita('i',{'clss':'icon icon-color icon-unlink'});
                $(displayMensa.child).data('tribus',row[tribus]);
-               console.log(_ratio+'=='+row[tribus],row[agris2],_agrum);
                if(_ratio==row[agris2])$(displayMensa.child).removeClass('icon-unlink').addClass('icon-link');
                displayMensa.child.onclick=function(){
                   quaerere={};quaerere.eternal={};quaerere.eternal[agris1]={};quaerere.eternal[agris2]={};
@@ -390,14 +394,12 @@ function SET_FORM(_name,_class,_label){
                      $(this).data('toggle',1);$(this).addClass('icon-link').removeClass('icon-unlink');
                      d=new Date().format('isoDateTime');
                      quaerere.eternal[agris1]=$(this).data('tribus');quaerere.eternal[agris2]=_ratio;quaerere.Tau='Alpha';quaerere.iyona=_mensa;sessionStorage.quaerere=JSON.stringify(quaerere);
-                     console.log(quaerere,'quaerere');
                      $DB("INSERT INTO "+_mensa+" (`"+agris1+"`,`"+agris2+"`,`creation`) VALUES (?,?,?)",[$(this).data('tribus'),_ratio,d],"Linked "+_name+" to "+row[_agrum]);
                   }else{
                      $(this).data('toggle',0);$(this).addClass('icon-unlink').removeClass('icon-link');
                      quaerere.eternal[agris1].alpha=$(this).data('tribus');quaerere.eternal[agris1].delta="!@=!#";
                      quaerere.eternal[agris2].alpha=_ratio;quaerere.eternal[agris2].delta=" AND !@=!#";
                      quaerere.Tau='oMegA';quaerere.iyona=_mensa;sessionStorage.quaerere=JSON.stringify(quaerere);
-                     console.log(quaerere,'quaerere');
                      $DB("DELETE FROM "+_mensa+" WHERE `"+agris1+"`=? AND `"+agris2+"`=?",[$(this).data('tribus'),_ratio],"unLinked "+_name+" to "+row[_agrum]);
                   }//endif
                };//end anonymous
@@ -449,19 +451,36 @@ function SET_FORM(_name,_class,_label){
    /*
     * setup the navigation according to the size of the quaerere
     * @param {object} <var>_results</var> the quaerere results from websql
+    * @param {string} <var>_pos</var> the position for the pagination
     * @returns {void}
     */
-   this.setNavigation=function(_results){
+   this.setNavigation=function(_results,_pos,_class){
       $('.pagination').remove();
       if(sessionStorage.activePage!=this.name){sessionStorage.genesis=0;sessionStorage.activePage=this.name;}//@alert:ne pas maitre deux form avec le meme nom.
-      len=_results.rows.length;
-      for(x=0;x<len;x++){}
+      len=_results.length||_results.rows.length;
+      srch=[];c=0;examiner=[];
+      for(f in eternal.fields){if(eternal.fields[f].search){srch[c]=f;c++;}}//trouve les lieux qui on la cherche
+      for(x=0;x<len;x++){found='';for(y=0;y<c;y++){found+=_results[x][srch[y]]+' ';}examiner[x]=found;}
+      console.log(examiner,'examiner');
+      $('input[name=s]').typeahead({source:examiner,minLength:3,updater:function(item){
+         value=examiner.indexOf(item);
+         theForm = new SET_FORM();
+         theForm._Set("#body article");
+         theForm.gammaTable(JSON.parse(sessionStorage.activeRecord),false,false,value);
+         return item;
+      }});
+      _class=!_class?'navig':_class;
       if(len>localStorage.DB_LIMIT){
          pages=Math.ceil(len/localStorage.DB_LIMIT);
-         pagination=roadCover._Set({"next":"#tab-home section .homeSet2"}).pagiNation({"clss1":"pagination pull-right","clss2":"navig","pages":pages,"total":len,"link":"#"+this.name}).cloneNode(true);
-         $('#tab-system section').append(pagination);
+         if(!_pos){
+            pagination=roadCover._Set({"next":"#tab-home section .homeSet2"}).pagiNation({"clss1":"pagination pull-right","clss2":_class,"pages":pages,"total":len,"link":"#"+this.name}).cloneNode(true);
+            $('#tab-system section').append(pagination);
+         }else{
+            roadCover._Set(".tab-pane.active section").pagiNation({"clss1":"pagination pull-right","clss2":_class,"pages":pages,"total":len,"link":"#"+this.name});
+         }
       }
-      $('.navig a').click(function(){navig(this)});
+      if(!_class)$('.navig a').click(function(){navig(this)});
+      else $('.navTable a').click(function(){navigTable(this)});
    }
 //   if(this instanceof SET_FORM)return this; else return new SET_FORM();
 }

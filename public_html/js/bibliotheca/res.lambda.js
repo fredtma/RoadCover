@@ -210,13 +210,12 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
       var curr=Math.floor(parseInt(sessionStorage.genesis)/localStorage.DB_LIMIT);
       var prev=parseInt(sessionStorage.genesis)==0?0:curr-1;
       var next=curr>=_obj.pages-1?_obj.pages-1:curr+1;
-      console.log(curr,'curr');
       curr=curr==0?1:(((_obj.pages)-curr)>=4)?curr:(_obj.pages)-4;
+      curr=curr<1?1:curr;
       var max=curr+4;
       div=creo({"clss":_obj.clss1},"div");ul=creo({"clss":_obj.clss2},"ul");
       dsbl=_obj.pages<3?"disabled":"";
-      console.log(curr,'curr');
-      a=creo({"href":_obj.link,"data-goto":prev,"clss":"navig"},"a","Prev");li=creo({"clss":dsbl},"li");li.appendChild(a);ul.appendChild(li);
+      a=creo({"href":_obj.link,"data-goto":prev,"clss":_obj.clss2},"a","Prev");li=creo({"clss":dsbl},"li");li.appendChild(a);ul.appendChild(li);
       for(x=curr;x<=max;x++){
          dsbl=_obj.pages<max&&x>_obj.pages?"disabled":"";
          tmp=(parseInt(x)-1)*localStorage.DB_LIMIT;
@@ -224,7 +223,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
          a=creo({"href":_obj.link,"data-goto":x},"a",x);li=creo({"clss":dsbl+actv},"li");li.appendChild(a);ul.appendChild(li);
       }
       dsbl=_obj.pages<3?"disabled":"";
-      a=creo({"href":_obj.link,"data-goto":next,"clss":"navig"},"a","Next");li=creo({"clss":dsbl},"li");li.appendChild(a);ul.appendChild(li);
+      a=creo({"href":_obj.link,"data-goto":next,"clss":_obj.clss2},"a","Next");li=creo({"clss":dsbl},"li");li.appendChild(a);ul.appendChild(li);
       div.appendChild(ul);
       this.placeObj(div);
       return div;

@@ -38,6 +38,15 @@ function navig(set){
    creoDB=new SET_DB();
    creoDB.beta();
 }
+function navigTable(set){
+   if($(set).parents('li').hasClass('disabled')) return false;
+   page=parseInt($(set).data('goto'))-1;//fait attention les page prev & next, il faut pas faire la subtraction
+   if($(set).hasClass('navTable'))page=parseInt($(set).data('goto'));//ca cest pour les navigation de deriere et en avant.
+   sessionStorage.genesis=(page)*localStorage.DB_LIMIT;
+   theForm = new SET_FORM();
+   theForm._Set("#body article");//@todo: ajouter les nombre du total sur la navigation
+   theForm.gammaTable(JSON.parse(sessionStorage.activeRecord));
+}
 //=============================================================================//
 $('.btnUser,.profileList').click(function(){$.getJSON("json/profile.json",findJSON).fail(onVituim);});
 $('.icon-users').click(function(){$.getJSON("json/group.json",findJSON).fail(onVituim);});
