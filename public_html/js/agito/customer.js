@@ -3,24 +3,25 @@
  */
 tmp={
    "form": {
-      "options":{"readonly":"display","type":"betaTable","from":"server"},
+      "options":{"readonly":"display","type":"","from":"server"},
       "field":{"clss":"form-horizontal form-tight","name":"customer","data-iota":"0"},
       "fieldset":{"name":"admin-customers","clss":"half-form"},
       "label":false,
       "legend":{"txt":"Road Cover Customers"},
-      "button":{"close_customer":{"value":"Close","type":"button","clss":"btn btn-inverse"}}
+      "button":{"close_customer":{"value":"Close","type":"button","clss":"btn btn-inverse"}},
+      "ortus":"server"
    },
    "mensa": "customers",
    "quaerere":{"scopo":"","ubi":true,"finis":10},
    "fields": {
       "Title":{"complex":"span","field":{"clss":"formReader"}},
-      "Fullnames":{"header":true,"complex":"span","title":"Customer name","field":{"clss":"formReader"}},
+      "Fullnames":{"header":true,"search":true,"complex":"span","title":"Customer name","field":{"clss":"formReader"}},
       "Race":{"complex":"span","field":{"clss":"formReader"}},
       "Gender":{"complex":"span","field":{"clss":"formReader"}},
       "Nationality":{"complex":"span","field":{"clss":"formReader"}},
       "EthnicGroup":{"complex":"span","title":"EthnicGroup","field":{"clss":"formReader"}},
       "DateCreated":{"header":true,"complex":"span","title":"Date Created","field":{"clss":"formReader"}},
-      "IDno":{"header":true,"complex":"span","title":"ID Number","field":{"clss":"formReader"}},
+      "IDno":{"header":true,"search":true,"complex":"span","title":"ID Number","field":{"clss":"formReader"}},
       "code":{"complex":"span","title":"code","field":{"clss":"formReader"}},
    },
    "children":{

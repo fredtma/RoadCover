@@ -7,7 +7,8 @@ tmp={
       "field":{"clss":"form-horizontal","name":"member","data-iota":"0"},
       "fieldset":{"name":"admin-members"},
       "legend":{"txt":localStorage.SITE_NAME+" Member's"},
-      "button":{"submit_member":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_member":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
+      "button":{"submit_member":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_member":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}},
+      "ortus":"server"
    },
    "mensa": "members",
    "quaerere":{"scopo":""},

@@ -117,6 +117,21 @@ onVituim=function(event, jqxhr,textStatus){
 };
 /******************************************************************************/
 /**
+ * saves the pages data into the db
+ * @author fredtma
+ * @version 2.7
+ * @category save, content, ajax
+ * @return void
+ */
+function saveData(){
+   title= $('#page_title').text();content= $('#page_content').html();Tau= $('footer').data('Tau');iyona= 'pages';day= getToday();iota=$("footer").data("iota");
+   q={"eternal":{'blossom':{"alpha":iota,"delta":"!@=!#"},"title":title,"content":content,"date_modified":day,"level":"admin","type":"content"},"Tau":Tau,"iyona":iyona};
+   sessionStorage.quaerere=JSON.stringify(q);
+   $DB("REPLACE INTO pages (id,title,content,date_modified,`level`,`type`) VALUES (?,?,?,?,?,?)",[iota,title,content,day,"admin","content"],"Setup page "+title,function(results){
+      iota=iota||results.insertId;$(".db_notice").html("The page "+title+", has been saved.");$("footer").data("iota",iota);$("footer").data("Tau","deLta");});
+}//end function send data to the server to update via ajax
+/******************************************************************************/
+/**
  * used to measure script execution time
  *
  * It will verify all the variable sent to the function

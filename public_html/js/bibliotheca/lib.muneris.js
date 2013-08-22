@@ -446,6 +446,33 @@ function getLicentia(_name,_perm){
  * @todo finish the function on this page
  * @uses file|element|class|variable|function|
  */
+function getPage(_page){
+   $DB("SELECT id,title,content,date_modified FROM pages WHERE title=?",[_page],"Found page "+_page,function(results){
+      len=results.rows.length;row=[];
+      if(len){row=results.rows.item(0);$('footer').data('Tau','deLta');$('footer').data('iota',row['id']);}
+      else {row['title']=_page;row['content']="Click here to add new content";row['date_modified']=getToday();$('footer').data('Tau','Alpha');$('footer').data('iota',null);}
+      $("#body article").empty();console.log($('footer').data('Tau'),$('footer').data('iota'),'$',row);
+      var d1 = new Date(row['date_modified']);
+      $anima("#body article","section").vita("header",{},true).vita("h1",{"id":"page_title","contenteditable":true},false,row['title']).vita('h3',{},true).vita("time",{"datetime":d1.format("isoDateTime")},false,'Last modified'+d1.format(localStorage.SITE_DATE));
+      $anima("#body article","section",{"id":"page_content","contenteditable":true}).father.innerHTML=row['content'];
+      load_async("js/libs/CKEditorMin/ckeditor.js",false,'end',true);
+   });
+}
+/******************************************************************************/
+/**
+ * used to measure script execution time
+ *
+ * It will verify all the variable sent to the function
+ * @author fredtma
+ * @version 0.5
+ * @category iyona
+ * @gloabl aboject $db
+ * @param array $__theValue is the variable taken in to clean <var>$__theValue</var>
+ * @see get_rich_custom_fields(), $iyona
+ * @return void|bool
+ * @todo finish the function on this page
+ * @uses file|element|class|variable|function|
+ */
 isOnline(true);
 setInterval(isOnline,50000);//5min
 //$('#progressBar').hide();

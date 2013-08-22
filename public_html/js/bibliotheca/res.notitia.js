@@ -63,12 +63,6 @@ function SET_DB(){
       limit=1000;//localStorage.DB_LIMIT||7;
       switch(_actum){
          case 0:
-            switch(iyona){
-               case'users':reference[0]="DELETE FROM link_users_groups WHERE user=?";reference[1]="DELETE FROM link_permissions_users WHERE user=?;";break;
-               case'groups':reference[0]="DELETE FROM link_users_groups WHERE `group`=?";reference[1]="DELETE FROM link_permissions_groups WHERE `group`=?;";break;
-               case'permissions':reference[0]="DELETE FROM link_permissions_groups WHERE permission=?";reference[1]="DELETE FROM link_permissions_users WHERE permission=?;";break;
-            }
-            this.referenceDelete(reference,iota,iyona);
             actum='DELETE FROM '+iyona+' WHERE id=?';
             Tau='oMegA';
             creoAgito=this.creoAgito;
@@ -271,34 +265,6 @@ function SET_DB(){
       });
       return _return;
    }
-   /*
-    * deletes all references to the primary table
-    * @param {array|string} <var>_quaerere</var>
-    * @param {number|string} <var>_iota</var>
-    * @param {string} <var>_iyona</var>
-    * @returns {undefined}
-    */
-   this.referenceDelete=function(_quaerere,_iota,_iyona){
-      switch(_iyona){
-         case'users':
-            $DB("SELECT username,id FROM users WHERE id=?",[_iota],'Selected user',function(results){
-//               try{
-                  row=results.rows.item(0);
-                  l=_quaerere.length; for(x=0;x<l;x++)$DB(_quaerere[x],[row['username']],"Reference Deleted "+row['username']+" from:"+_iyona);
-//               }catch(err){console.log("Error selecting reference:"+err.message)}
-            });
-            break;
-         case'groups':
-         case'permissions':
-            $DB("SELECT name,id FROM "+_iyona+" WHERE id=?",[_iota],'Selected '+_iyona,function(results){
-               try{
-                  row=results.rows.item(0);
-                  l=_quaerere.length; for(x=0;x<l;x++)$DB(_quaerere[x],[row['name']],"Reference Deleted "+row['name']+" from:"+_iyona);
-               }catch(err){console.log("Error selecting reference:"+err.message)}
-            });
-            break;
-      }//endswith
-   }
    this.resetDB=function(_option){
 
          if(_option.users)this.creoAgito("DROP TABLE users",[],"DROP table users");
@@ -312,6 +278,8 @@ function SET_DB(){
          if(_option.address)this.creoAgito("DROP TABLE address",[],"DROP table address");
          if(_option.dealer)this.creoAgito("DROP TABLE dealers",[],"DROP table dealer");
          if(_option.salesman)this.creoAgito("DROP TABLE salesmen",[],"DROP table salesmen");
+         if(_option.ver)this.creoAgito("DROP TABLE versioning",[],"DROP table versioning");
+         if(_option.pages)this.creoAgito("DROP TABLE pages",[],"DROP table pages");
 
          sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.users)this.creoAgito(sql,[],'Table users created');
@@ -320,18 +288,18 @@ function SET_DB(){
          group="CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, desc TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.groups)this.creoAgito(group,[],'Table groups created');
          if(_option.groups)this.creoAgito("CREATE INDEX groups_name ON groups(name)",[],'index groups_name');
-         link="CREATE TABLE IF NOT EXISTS link_users_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, `user` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         link="CREATE TABLE IF NOT EXISTS link_users_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, `user` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_user_group` FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_group_user` FOREIGN KEY (`group`) REFERENCES `groups` (`name`) ON UPDATE CASCADE ON DELETE CASCADE)";
          if(_option.ug)this.creoAgito(link,[],'Table link to users and groups created');
          if(_option.ug)this.creoAgito("CREATE INDEX link_usergroup_user ON link_users_groups(`user`)",[],'index link_usergroup_user');
          if(_option.ug)this.creoAgito("CREATE INDEX link_usergroup_group ON link_users_groups(`group`)",[],'index link_usergroup_group');
          perm="CREATE TABLE IF NOT EXISTS permissions (id INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `desc` TEXT NOT NULL, `page` TEXT, `enable` INTEGER DEFAULT 1, `rank` INTEGER DEFAULT 0, `icon` TEXT, `sub` INTEGER DEFAULT 0, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.perm)this.creoAgito(perm,[],'Table permissions created');
          if(_option.perm)this.creoAgito("CREATE INDEX perm_name ON permissions(name)",[],"index perm_name");
-         link="CREATE TABLE IF NOT EXISTS link_permissions_groups(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         link="CREATE TABLE IF NOT EXISTS link_permissions_groups(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_perm_group` FOREIGN KEY (`permission`) REFERENCES `permissions` (`name`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_group_perm` FOREIGN KEY (`group`) REFERENCES `groups` (`name`) ON UPDATE CASCADE ON DELETE CASCADE)";
          if(_option.pg)this.creoAgito(link,[],'Table link to permisions to groups created');
          if(_option.pg)this.creoAgito("CREATE INDEX link_permgroup_perm ON link_permissions_groups(`permission`)",[],'index link_permgroup_perm');
          if(_option.pg)this.creoAgito("CREATE INDEX link_permgroup_group ON link_permissions_groups(`group`)",[],'index link_permgroup_group');
-         link="CREATE TABLE IF NOT EXISTS link_permissions_users(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `user` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         link="CREATE TABLE IF NOT EXISTS link_permissions_users(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `user` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_perm_user` FOREIGN KEY (`permission`) REFERENCES `permissions` (`name`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_user_perm` FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON UPDATE CASCADE ON DELETE CASCADE)";
          if(_option.pu)this.creoAgito(link,[],'Table link to permisions to users created');
          if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_perm ON link_permissions_users(`permission`)",[],'index link_permuser_perm');
          if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_user ON link_permissions_users(`user`)",[],'index link_permuser_user');
@@ -339,25 +307,27 @@ function SET_DB(){
          if(_option.client)this.creoAgito(client,[],'Table clients created');
          if(_option.client)this.creoAgito("CREATE INDEX client_company ON clients(company)",[],"index client_company");
          if(_option.client)this.creoAgito("CREATE INDEX client_code ON clients(code)",[],"index client_code");
-         contact="CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'tel', contact TEXT NOT NULL, instruction TEXT, ext TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         contact="CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'tel', contact TEXT NOT NULL, instruction TEXT, ext TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_user_contact` FOREIGN KEY (`ref_name`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,CONSTRAINT `fk_client_contact` FOREIGN KEY (`ref_name`) REFERENCES `clients` (`id`) ON UPDATE CASCADE ON DELETE CASCADE)";
          if(_option.contact)this.creoAgito(contact,[],'Table contacts created');
          if(_option.contact)this.creoAgito("CREATE INDEX contact_ref_name ON contacts(ref_name)",[],"index ref_name");
          if(_option.contact)this.creoAgito("CREATE INDEX contact_contact ON contacts(contact)",[],"index contact");
-         address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'residential', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'residential', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_user_adr` FOREIGN KEY (`ref_name`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,CONSTRAINT `fk_client_adr` FOREIGN KEY (`ref_name`) REFERENCES `clients` (`id`) ON UPDATE CASCADE ON DELETE CASCADE)";
          if(_option.address)this.creoAgito(address,[],'Table address created');
          if(_option.address)this.creoAgito("CREATE INDEX address_ref_name ON address(ref_name)",[],"index ref_name");
          dealer="CREATE TABLE IF NOT EXISTS dealers(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, code TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.dealer)this.creoAgito(dealer,[],'Table dealer created');
          if(_option.dealer)this.creoAgito("CREATE INDEX dealer_name ON dealers(name)",[],"index dealer_name");
-         salesman="CREATE TABLE IF NOT EXISTS salesmen(id INTEGER PRIMARY KEY AUTOINCREMENT, dealer INTEGER, firstname TEXT NOT NULL, lastname TEXT NOT NULL, code TEXT NOT NULL, idno TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         salesman="CREATE TABLE IF NOT EXISTS salesmen(id INTEGER PRIMARY KEY AUTOINCREMENT, dealer INTEGER, firstname TEXT NOT NULL, lastname TEXT NOT NULL, code TEXT NOT NULL, idno TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT fk_sales_dealer FOREIGN KEY (`dealer`) REFERENCES dealers(`id`) ON DELETE CASCADE ON UPDATE CASCADE)";
          if(_option.salesman)this.creoAgito(salesman,[],'Table salesman created');
          if(_option.salesman)this.creoAgito("CREATE INDEX salesman_firstname ON salesmen(firstname)",[],"index salesman_firstname");
          if(_option.salesman)this.creoAgito("CREATE INDEX salesman_lastname ON salesmen(lastname)",[],"index salesman_lastname");
          if(_option.salesman)this.creoAgito("CREATE INDEX salesman_idno ON salesmen(idno)",[],"index salesman_idno");
          if(_option.salesman)this.creoAgito("CREATE INDEX salesman_dealer ON salesmen(dealer)",[],"index salesman_dealer");
-         ver="CREATE TABLE versioning(id INTEGER RRIMARY KEY AUTOINCREMENT,user INTEGER NOT NULL,content mediumtext NOT NULL,iota INTEGER NOT NULL,trans INTEGER NOT NULL,mensa TEXT,creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         ver="CREATE TABLE versioning(id INTEGER PRIMARY KEY AUTOINCREMENT,user INTEGER NOT NULL,content text NOT NULL,iota INTEGER NOT NULL,trans INTEGER NOT NULL,mensa TEXT,creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.ver)this.creoAgito(ver,[],'Version table created');
-//         if(_option.users)$DB("INSERT INTO users (username,password,firstname,lastname,email,gender) VALUES (?,?,?,?,?,?)",['administrator','qwerty','admin','strator','admin@xpandit.co.za','Male'],"added default user ");
+         pages="CREATE TABLE pages(`id` INTEGER PRIMARY KEY AUTOINCREMENT,`page_ref` TEXT ,`title` TEXT NOT NULL UNIQUE, `content` TEXT NOT NULL,`level` TEXT, `type` TEXT,`date_modified` TEXT NOT NULL,`creation` TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         if(_option.pages)this.creoAgito(pages,[],'Pages table created');
+         if(_option.pages)this.creoAgito("CREATE INDEX pages_type ON pages(`type`)",[],"index pages_type");
          if(_option.users){
             $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getUsers',type:'GET',dataType:'json',success:function(json){
                $.each(json,function(i,v){if(i==='rows')return true;v.gender=v.gender=='Male'?1:2;$DB("INSERT INTO users (id,username,password,firstname,lastname,email,gender) VALUES (?,?,?,?,?,?,?)",[v.id,v.username,v.password,v.firstname,v.lastname,v.email,v.gender],"added user "+v.firstname)})
@@ -370,6 +340,14 @@ function SET_DB(){
             $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPerm',type:'GET',dataType:'json',success:function(json){
                $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO permissions (id,name,`desc`,`page`,`enable`) VALUES (?,?,?,?,?)",[v.id,v.name,v.desc,v.page,v.enable],"added permision "+v.name)})
             }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+         if(_option.ug){
+            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getUG',type:'GET',dataType:'json',success:function(json){
+               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_users_groups (id,`user`,`group`) VALUES (?,?,?)",[v.id,v.user,v.group],"added user+group "+v.name)})
+            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+         if(_option.pu){
+            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPU',type:'GET',dataType:'json',success:function(json){
+               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_users (id,`permission`,`user`) VALUES (?,?,?)",[v.id,v.permision,v.user],"added permision+group "+v.name)})
+            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
          if(_option.pg){
             $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPG',type:'GET',dataType:'json',success:function(json){
                $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_groups (id,`permission`,`group`) VALUES (?,?,?)",[v.id,v.permision,v.group],"added permision+group "+v.name)})
@@ -380,7 +358,11 @@ function SET_DB(){
             }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
          if(_option.salesman){
             $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getSaleman',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO salesmen (firstname,lastname,code) VALUES (?,?,?)",[v.FullNames,v.Surname,v.Id],"added salesman "+v)})
+               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO salesmen (firstname,lastname,code) VALUES (?,?,?)",[v.FullNames,v.Surname,v.Id],"added salesman "+v.FullNames)})
+            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+         if(_option.pages){
+            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPages',type:'GET',dataType:'json',success:function(json){
+               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO salesmen (id,page_ref,title,content,date_modified,creation,`level`,`type`) VALUES (?,?,?,?,?,?,?,?)",[v.id,v.page_ref,v.title,v.content,v.date_modified,v.creation,v.level,v.type],"added page "+v.title)})
             }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
    }//endfunction
 
@@ -388,11 +370,11 @@ function SET_DB(){
       db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
       if(!localStorage.DB){
          localStorage.DB=db;
-         this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1,ver:0});
+         this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1,ver:1,pages:1});
       }
    }
    console.log('Database Version:',db.version);
-   if(false&&db&&localStorage.DB)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0,ver:0});
+   if(false&&db&&localStorage.DB)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0,ver:0,pages:0});
 //   if(this instanceof SET_DB)return this; else return new SET_DB();
 }
 /******************************************************************************/

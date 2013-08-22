@@ -35,16 +35,16 @@ function navig(set){
    if($(set).hasClass('navig'))page=parseInt($(set).data('goto'));//ca cest pour les navigation de deriere et en avant.
    sessionStorage.genesis=(page)*localStorage.DB_LIMIT;
    console.log(sessionStorage.genesis, typeof sessionStorage.genesis, 'sessionStorage.genesis', $(set).data('goto'));
-   creoDB=new SET_DB();
-   creoDB.beta();
+   console.log(eternal.form.ortus,'eternal.form.ortus2');
+   if(typeof eternal.form.ortus==="undefined"){creoDB=new SET_DB();creoDB.beta();}
+   else if(eternal.form.ortus=="server"){theForm=new SET_FORM()._Set("#body article");theForm.setBeta(JSON.parse(sessionStorage.activeRecord));}
 }
-function navigTable(set){
+function navigTable(set){ console.log(eternal.form.ortus,'eternal.form.ortus3');
    if($(set).parents('li').hasClass('disabled')) return false;
    page=parseInt($(set).data('goto'))-1;//fait attention les page prev & next, il faut pas faire la subtraction
    if($(set).hasClass('navTable'))page=parseInt($(set).data('goto'));//ca cest pour les navigation de deriere et en avant.
    sessionStorage.genesis=(page)*localStorage.DB_LIMIT;
-   theForm = new SET_FORM();
-   theForm._Set("#body article");//@todo: ajouter les nombre du total sur la navigation
+   theForm = new SET_FORM()._Set("#body article");//@todo: ajouter les nombre du total sur la navigation
    theForm.gammaTable(JSON.parse(sessionStorage.activeRecord));
 }
 //=============================================================================//
@@ -55,7 +55,9 @@ $('#btnDashboard').click(function(){load_async('js/agito/dashboard.js',true,'end
 //$('.system1,.getClient').click(function(){$.getJSON("json/client.json",findJSON).fail(onVituim);});
 $('#link_customers').click(function(){load_async('js/agito/customer.js',true,'end',true)});
 $('#link_insurance').click(function(){load_async('js/agito/member.js',true,'end',true)});
-
+$('#footContact').click(function(){getPage('Contact us')});
+$('#footHelp').click(function(){getPage('Help?')});
+$('#footAbout').click(function(){getPage('About us')});
 
 $('#btnFullScreen,#fullscreen').click(function(){if(!$(this).data('toggle')||$(this).data('toggle')==0){$('#btnFullScreen,#fullscreen').data('toggle',1);enableFullScreen();$('.icon-fullscreen').removeClass('icon-fullscreen').addClass('icon-screenshot');}else{$('#btnFullScreen,#fullscreen').data('toggle',0);exitFullScreen();$('.icon-screenshot').removeClass('icon-screenshot').addClass('icon-fullscreen');}});
 $('.icon-refresh').click(function(){

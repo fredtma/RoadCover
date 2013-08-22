@@ -104,15 +104,14 @@ function SET_FORM(_name,_class,_label){
     * @param {integer} <var>_actum</var> the stage of the transaction
     * @returns {undefined}
     */
-   this.setBeta=function(_results,_actum,_iota){
+   this.setBeta=function(_results,_actum,_iota,_unum){
       eternal=eternal||eternalCall();
       linkTable=this.linkTable;
       this.name=Name=eternal.form.field.name;
       this.frmName=frmName='frm_'+this.name;
       isReadOnly=(typeof eternal.form.options !=="undefined")?eternal.form.options.readonly:false;
       if(typeof _results.rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_results);
-      custHead=['members','customers'];
-      navSection=custHead.indexOf(eternal.mensa)==-1?false:true;
+      navSection=eternal.form.ortus=="server"?true:false;
       this.setNavigation(_results,navSection);
       len=_results.rows.length;
       len=len||1;//this will display the record even when there is no record
@@ -126,14 +125,14 @@ function SET_FORM(_name,_class,_label){
          }else if (isReadOnly===false&&getLicentia(this.name,'Create')){
             $('#newItem').attr("name","btnNew"+this.name).attr("title","Create a new "+this.name).html(" <i class='icon-plus icon-white'></i> New "+this.name);
          }
-         if (custHead.indexOf(eternal.mensa)==-1){$('footer').data('header',false);}
-         console.log($('footer').data('header'),'form',custHead.indexOf(eternal.mensa),eternal.mensa);
+         if (typeof eternal.form.ortus==="undefined"){$('footer').data('header',false);}
          if($('footer').data('header')===false){$('#sideBot h3').html(eternal.form.legend.txt);$('#tab-home section h2').text(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();}//lieu pour maitre le titre
          $(this.Obj.addTo).empty();//main content and side listing
          container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
          if(sessionStorage.genesis=="NaN")sessionStorage.genesis=0;
          max=(parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT));
          max=max>len?len:max;//@fix:prevent the last index from occuring
+         if(typeof _unum=="number"){sessionStorage.genesis=_unum;len=_unum+1;max=_unum+1;}
          for(rec=parseInt(sessionStorage.genesis);rec<len,rec<max;rec++){//loop record
             if(typeof _results.rows.source!=="undefined"){row=_results[rec];headeName=fieldsDisplay('none',row,true);}
             else if(_results.rows.length){row=_results.rows.item(rec);headeName=fieldsDisplay('none',row,true);}
@@ -176,6 +175,7 @@ function SET_FORM(_name,_class,_label){
             collapse_content.vita('div',{'clss':'accordion-inner'},false);
          }//end for
          this.callForm(_results,_iota);
+         if(typeof _unum=="number"){sessionStorage.genesis=0}
       }else if (_actum==3){
          row=(_iota==-1||!_iota)?{}:_results.rows.item(0);
          frm=document.getElementById(this.frmName);
@@ -230,7 +230,8 @@ function SET_FORM(_name,_class,_label){
       max=(parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT));
       max=max>len?len:max;//@fix:prevent the last index from occuring
       //si il'ya une recherche
-      if(_unum){sessionStorage.genesis=_unum;len=_unum+1;max=_unum+1;}
+      console.log(typeof _unum,'typeof _unum');
+      if(typeof _unum=="number"){sessionStorage.genesis=_unum;len=_unum+1;max=_unum+1;}
       for(rec=parseInt(sessionStorage.genesis);rec<len,rec<max;rec++){
          row=_rows[rec];
          r1++;
@@ -240,7 +241,7 @@ function SET_FORM(_name,_class,_label){
             $table.vita('td',{},false,row[k])
          }//endfor
       }//endfor
-      if(_unum){sessionStorage.genesis=0}//re maitre a zero quand on fait une recherche
+      if(typeof _unum=="number"){sessionStorage.genesis=0}//re maitre a zero quand on fait une recherche
       $table.novo('#table_'+this.name,'tfoot',{}).vita('tr',{},true).vita('td',{'colspan':colspan+1},false,'Total:'+r1);
    }
    /*
@@ -460,14 +461,19 @@ function SET_FORM(_name,_class,_label){
       len=_results.length||_results.rows.length;
       srch=[];c=0;examiner=[];
       for(f in eternal.fields){if(eternal.fields[f].search){srch[c]=f;c++;}}//trouve les lieux qui on la cherche
-      for(x=0;x<len;x++){found='';for(y=0;y<c;y++){found+=_results[x][srch[y]]+' ';}examiner[x]=found;}
-      console.log(examiner,'examiner');
-      $('input[name=s]').typeahead({source:examiner,minLength:3,updater:function(item){
+      for(x=0;x<len;x++){found='';for(y=0;y<c;y++){found+=_results[x][srch[y]]+'$ ';}examiner[x]=found;}
+
+      $('input[name=s]').typeahead({source:examiner,minLength:3,
+         highlighter:function(item){
+            var regex = /\$(.+)/;return item.replace(regex,"<span class='none'>$1</span>");
+         },
+         updater:function(item){
          value=examiner.indexOf(item);
-         theForm = new SET_FORM();
-         theForm._Set("#body article");
-         theForm.gammaTable(JSON.parse(sessionStorage.activeRecord),false,false,value);
-         return item;
+         theForm = new SET_FORM()._Set("#body article");
+         console.log(eternal.form.options.type,'eternal.form.type',value);
+         if(eternal.form.options.type=="betaTable")theForm.gammaTable(JSON.parse(sessionStorage.activeRecord),false,false,value);
+         else theForm.setBeta(JSON.parse(sessionStorage.activeRecord),false,false,value);
+         return item.replace(/\$/,'');
       }});
       _class=!_class?'navig':_class;
       if(len>localStorage.DB_LIMIT){
@@ -479,7 +485,7 @@ function SET_FORM(_name,_class,_label){
             roadCover._Set(".tab-pane.active section").pagiNation({"clss1":"pagination pull-right","clss2":_class,"pages":pages,"total":len,"link":"#"+this.name});
          }
       }
-      if(!_class)$('.navig a').click(function(){navig(this)});
+      if(_class=="navig")$('.navig a').click(function(){navig(this)});
       else $('.navTable a').click(function(){navigTable(this)});
    }
 //   if(this instanceof SET_FORM)return this; else return new SET_FORM();
