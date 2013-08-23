@@ -5,7 +5,7 @@
          /*
          var theSelectedText = editor.getSelection().getNative();
          CallCfWindow(theSelectedText);*/
-         editor.destroy();
+//         editor.destroy();
          saveData();
       }
    },

@@ -124,11 +124,14 @@ onVituim=function(event, jqxhr,textStatus){
  * @return void
  */
 function saveData(){
-   title= $('#page_title').text();content= $('#page_content').html();Tau= $('footer').data('Tau');iyona= 'pages';day= getToday();iota=$("footer").data("iota");
-   q={"eternal":{'blossom':{"alpha":iota,"delta":"!@=!#"},"title":title,"content":content,"date_modified":day,"level":"admin","type":"content"},"Tau":Tau,"iyona":iyona};
+   title= $('#page_title').text();content= $('#page_content').html();Tau= $('footer').data('Tau');day= getToday();iota=$("footer").data("iota");
+   q={"eternal":{'blossom':{"alpha":iota,"delta":"!@=!#"},"title":title,"content":content,"date_modified":day,"level":"admin","type":"content"},"Tau":Tau,"iyona":"pages"};
    sessionStorage.quaerere=JSON.stringify(q);
    $DB("REPLACE INTO pages (id,title,content,date_modified,`level`,`type`) VALUES (?,?,?,?,?,?)",[iota,title,content,day,"admin","content"],"Setup page "+title,function(results){
-      iota=iota||results.insertId;$(".db_notice").html("The page "+title+", has been saved.");$("footer").data("iota",iota);$("footer").data("Tau","deLta");});
+      iota=iota||results.insertId;
+      if(!$(".db_notice").data('toggle')||$(".db_notice").data('toggle')==0){$(".db_notice").data('toggle',1);tmp='text-success';}else {$(".db_notice").data('toggle',0);tmp='text-warning';}
+      $(".db_notice").html("<span class='"+tmp+"'>The page "+title+", has been saved.</span>").animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+      $("footer").data("iota",iota);$("footer").data("Tau","deLta");});tmp=null;
 }//end function send data to the server to update via ajax
 /******************************************************************************/
 /**

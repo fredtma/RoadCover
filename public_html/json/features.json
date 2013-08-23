@@ -1,0 +1,19 @@
+{
+   "form": {
+      "file":"",
+      "field":{"clss":"form-horizontal","name":"feature","data-iota":"0"},
+      "fieldset":{"name":"admin-features"},
+      "legend":{"txt":"features Setting"},
+      "label":true,
+      "button":{"submit_feature":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_feature":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}},
+      "ortus":"local"
+   },
+   "mensa": "features",
+   "quaerere":{"precipio":"feature ASC"},
+   "fields": {
+      "feature":{"valid":["unique"],"icon":"icon-hand-right","header":true,"place":true,"field":{"required":"","title":"features name"}},
+      "category":{"header":true,"place":true,"field":{"required":"","type":"radio"},"items":{"json":"json","json-script":"json-script","script":"script","page":"page","help":"help","execute":"execute"}},
+      "description":{"complex":"textarea","place":true,"field":{"required":"","type":"text","rows":5,"clss":"text-area","maxlength":180}},
+      "filename":{"icon":"icon-file","place":"Name the file name","field":{"required":""}}
+   }
+}

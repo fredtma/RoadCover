@@ -22,6 +22,7 @@ $('.getPerm').click(function(){activateMenu('permission','system',this);});
 $('.system1,.getClient').click(function(){activateMenu('client','system',this);});
 $('.getCustomers').click(function(){activateMenu('customer','customers',this,true);});
 $('.getInsurance').click(function(){activateMenu('member','insurance',this,true);});
+if(!window.openDatabase){$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').append('Your browser dooes not have support for websql,<br/> Recomended broswer for this application are Chrome, Opera and Safari');}
 SET_DB();//@todo: regard pourquoi ce si coure deux foi.
 if(!sessionStorage.lecentia)licentia(localStorage.USER_NAME);//si il'ya pas de session pour l'utilisateur
 //@todo: test on a new DB if the menu link will appear.
@@ -39,9 +40,9 @@ $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
    $anima('#tab-customers .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));
    $anima('#tab-insurance .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));
    //AGITO
-   $('#drop_'+n+' .allDealer,#drop_'+n+' .oneDealer').click(function(){activateMenu('dealer','dealers',this)});//ce qui sont sous le menu
-   $('#tab-customers .allDealer,#tab-customers .oneDealer').click(function(){activateMenu('customer','customers',this,true,'dealers')});//ce qui on le button
-   $('#tab-insurance .allDealer,#tab-insurance .oneDealer').click(function(){activateMenu('member','insurance',this,true,'dealers')});//ce qui on le button
+   $('#drop_'+n+' .allDealer,#drop_'+n+' .oneDealer').click(function(){activateMenu('dealer','dealers',this);sessionStorage.genesis=0;});//ce qui sont sous le menu
+   $('#tab-customers .allDealer,#tab-customers .oneDealer').click(function(){activateMenu('customer','customers',this,true,'dealers');sessionStorage.genesis=0;});//ce qui on le button
+   $('#tab-insurance .allDealer,#tab-insurance .oneDealer').click(function(){activateMenu('member','insurance',this,true,'dealers');sessionStorage.genesis=0;});//ce qui on le button
 });
 $DB("SELECT firstname||' '||lastname,code FROM salesmen LIMIT 3",[],"",function(r,j){
    n='salesman';

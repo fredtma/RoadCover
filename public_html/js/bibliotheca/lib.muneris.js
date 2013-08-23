@@ -266,14 +266,15 @@ eternalCall=function(){
 loginValidation=function(){
    try{
       u=$('#loginForm #email').val();p=$('#loginForm #password').val();
-      $DB("SELECT id FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(_results){
+      $DB("SELECT id,username FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(_results){
          if(_results.rows.length){
             row=_results.rows.item(0);
             $('#hiddenElements').modal('hide');
-            if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=u;
+            sessionStorage.username=row['username'];
+            if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=row['username'];
             if(row['id']==1||row['id']==4)localStorage.USER_ADMIN=true;
             else viewAPI(false);
-            licentia(u);
+            licentia(row['username']);
          }else{$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('Failed login attempt...')}
       });
    }catch(err){console.log('ERROR::'+err.message)}
@@ -451,8 +452,8 @@ function getPage(_page){
       len=results.rows.length;row=[];
       if(len){row=results.rows.item(0);$('footer').data('Tau','deLta');$('footer').data('iota',row['id']);}
       else {row['title']=_page;row['content']="Click here to add new content";row['date_modified']=getToday();$('footer').data('Tau','Alpha');$('footer').data('iota',null);}
-      $("#body article").empty();console.log($('footer').data('Tau'),$('footer').data('iota'),'$',row);
-      var d1 = new Date(row['date_modified']);
+      $("#body article").empty();tmp=row['date_modified'];d=(tmp.search('0000-00-00')!=-1)?getToday():tmp;
+      var d1 = new Date(d);d=tmp=null;
       $anima("#body article","section").vita("header",{},true).vita("h1",{"id":"page_title","contenteditable":true},false,row['title']).vita('h3',{},true).vita("time",{"datetime":d1.format("isoDateTime")},false,'Last modified'+d1.format(localStorage.SITE_DATE));
       $anima("#body article","section",{"id":"page_content","contenteditable":true}).father.innerHTML=row['content'];
       load_async("js/libs/CKEditorMin/ckeditor.js",false,'end',true);

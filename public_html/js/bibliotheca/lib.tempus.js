@@ -166,5 +166,5 @@ function getToday(){
    d=new Date();
    dd=d.getDate();mm=(parseInt(d.getMonth())+1);yy=d.getFullYear();hh=d.getHours();m=d.getMinutes();s=d.getSeconds();
    dd=dd<10?'0'+dd:dd;mm=mm<10?'0'+mm:mm;m=m<10?'0'+m:m;hh=hh<10?'0'+hh:hh;s=s<10?'0'+s:s;
-   return mm+'/'+dd+'/'+yy+' '+hh+':'+m+':'+s;
+   return yy+'-'+mm+'-'+dd+' '+hh+':'+m+':'+s;
 }

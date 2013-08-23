@@ -55,6 +55,7 @@ $('#btnDashboard').click(function(){load_async('js/agito/dashboard.js',true,'end
 //$('.system1,.getClient').click(function(){$.getJSON("json/client.json",findJSON).fail(onVituim);});
 $('#link_customers').click(function(){load_async('js/agito/customer.js',true,'end',true)});
 $('#link_insurance').click(function(){load_async('js/agito/member.js',true,'end',true)});
+$('#btnFeatures').click(function(){activateMenu('features',false,false,false,true);});
 $('#footContact').click(function(){getPage('Contact us')});
 $('#footHelp').click(function(){getPage('Help?')});
 $('#footAbout').click(function(){getPage('About us')});

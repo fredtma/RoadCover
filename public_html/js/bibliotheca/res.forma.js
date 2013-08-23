@@ -146,8 +146,10 @@ function SET_FORM(_name,_class,_label){
             collapse_head.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
                .vita('a',{'clss':'betaRow','contenteditable':false,'data-toggle':collapse,'data-parent':collapseName,'href':collapseTo},true);//@todo: add save on element
                l=headeName.length;for(x=0;x<l;x++)collapse_head.vita('span',{},false).child.innerHTML=headeName[x]+' ';
+             //icon holder
+             collapse_head.novo('#accGroup'+row['id']+' .accordion-heading','i',{'clss':'betaRight'})
             if(isReadOnly===false&&getLicentia(this.name,'Edit')){
-             collapse_head.genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':collapseName,'href':collapseTo},true)
+             collapse_head.vita('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':collapseName,'href':collapseTo},true)
               //EDIT, quand le button et le lien sont frapper
              .vita('i',{'clss':'icon icon-color icon-edit','title':'Edit '+headeName[0]});
               //FIRE on shown

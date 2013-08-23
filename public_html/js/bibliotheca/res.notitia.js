@@ -280,6 +280,7 @@ function SET_DB(){
          if(_option.salesman)this.creoAgito("DROP TABLE salesmen",[],"DROP table salesmen");
          if(_option.ver)this.creoAgito("DROP TABLE versioning",[],"DROP table versioning");
          if(_option.pages)this.creoAgito("DROP TABLE pages",[],"DROP table pages");
+         if(_option.features)this.creoAgito("DROP TABLE features",[],"DROP table features");
 
          sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.users)this.creoAgito(sql,[],'Table users created');
@@ -325,6 +326,8 @@ function SET_DB(){
          if(_option.salesman)this.creoAgito("CREATE INDEX salesman_dealer ON salesmen(dealer)",[],"index salesman_dealer");
          ver="CREATE TABLE versioning(id INTEGER PRIMARY KEY AUTOINCREMENT,user INTEGER NOT NULL,content text NOT NULL,iota INTEGER NOT NULL,trans INTEGER NOT NULL,mensa TEXT,creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.ver)this.creoAgito(ver,[],'Version table created');
+         features="CREATE TABLE features(id INTEGER PRIMARY KEY AUTOINCREMENT,feature TEXT NOT NULL UNIQUE,description TEXT,category TEXT,filename TEXT,creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+         if(_option.features)this.creoAgito(features,[],'Version table created');
          pages="CREATE TABLE pages(`id` INTEGER PRIMARY KEY AUTOINCREMENT,`page_ref` TEXT ,`title` TEXT NOT NULL UNIQUE, `content` TEXT NOT NULL,`level` TEXT, `type` TEXT,`date_modified` TEXT NOT NULL,`creation` TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
          if(_option.pages)this.creoAgito(pages,[],'Pages table created');
          if(_option.pages)this.creoAgito("CREATE INDEX pages_type ON pages(`type`)",[],"index pages_type");
@@ -362,7 +365,11 @@ function SET_DB(){
             }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
          if(_option.pages){
             $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPages',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO salesmen (id,page_ref,title,content,date_modified,creation,`level`,`type`) VALUES (?,?,?,?,?,?,?,?)",[v.id,v.page_ref,v.title,v.content,v.date_modified,v.creation,v.level,v.type],"added page "+v.title)})
+               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO pages (id,page_ref,title,content,date_modified,creation,`level`,`type`) VALUES (?,?,?,?,?,?,?,?)",[v.id,v.page_ref,v.title,v.content,v.date_modified,v.creation,v.level,v.type],"added page "+v.title)})
+            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+         if(_option.features){
+            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getFeatures',type:'GET',dataType:'json',success:function(json){
+               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO pages (id,feature,description,category,filename,creation) VALUES (?,?,?,?,?,?)",[v.id,v.feature,v.description,v.category,v.filename,v.creation],"added page "+v.feature)})
             }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
    }//endfunction
 
@@ -370,11 +377,11 @@ function SET_DB(){
       db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
       if(!localStorage.DB){
          localStorage.DB=db;
-         this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1,ver:1,pages:1});
+         this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1,ver:1,pages:1,features:1});
       }
    }
    console.log('Database Version:',db.version);
-   if(false&&db&&localStorage.DB)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0,ver:0,pages:0});
+   if(false&&db&&localStorage.DB)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0,ver:0,pages:0,features:0});
 //   if(this instanceof SET_DB)return this; else return new SET_DB();
 }
 /******************************************************************************/
