@@ -8,7 +8,9 @@ tmp={
       "fieldset":{"name":"admin-members"},
       "legend":{"txt":localStorage.SITE_NAME+" Member's"},
       "button":{"submit_member":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_member":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}},
-      "ortus":"server"
+      "ortus":"server",
+      "aliquam":true,
+      "navigation":true
    },
    "mensa": "members",
    "quaerere":{"scopo":""},

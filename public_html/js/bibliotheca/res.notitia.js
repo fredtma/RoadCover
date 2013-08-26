@@ -208,7 +208,7 @@ function SET_DB(){
                $('.accordion-body.in').data('iota',results.insertId);
                $('.accordion-body.in').parents('.accordion-group').attr('id','accGroup'+results.insertId);
                $('.accordion-body.in').prev().data('iota',results.insertId).find('.icon-link').data('head',nameList[0]).data('ref',ref).removeClass('icon-black').addClass('icon-color');
-//               $(form+' #submit_'+this.name)[0].onclick=function(e){e.preventDefault();console.log('inserted&updated');$('#submit_'+eternal.form.field.name).button('loading');callDB.beta(2,results.insertId);setTimeout(function(){$('#submit_'+this.name).button('reset');}, 1000)}//make the form to become update
+               $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');callDB.beta(2,results.insertId);setTimeout(function(){$('#submit_'+this.name).button('reset');}, 800)}//make the form to become update
                $(form+' #cancel_'+this.name).val('Close...');//@todo
                $('#accGroup'+results.insertId+' .betaRow').empty();
                s=$anima('#accGroup'+results.insertId+' .betaRow','span',{},nameList[0]);
@@ -249,11 +249,13 @@ function SET_DB(){
             case 'bool':
             case 'check':
                if(_from==='form')$(form+' [name^='+key+']').each(function(){if($(this).prop('value')==_source[key])$(this).addClass('active').prop('checked',true);});
-               if(_from==='list')$(form+' [name^='+key+']').each(function(){if($(this).prop('checked'))_return[c]=$(this).prop('value');});
+               else if(_from==='list')$(form+' [name^='+key+']').each(function(){if($(this).prop('checked')||$(this).hasClass('active'))_return[c]=$(this).prop('value');});
+               else _return[c]=_source[key];
                break;
             case 'p':
             case 'span':
                if(_from==='form')$(form+' #'+key).val(_source[key]);
+               else _return[c]=_source[key];
                break;
             default:
                if(_from==='form')$(form+' #'+key).val(_source[key]);
@@ -337,7 +339,7 @@ function SET_DB(){
             }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
          if(_option.groups){
             $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getGroups',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO groups (id,name,`desc`) VALUES (?,?,?)",[v.id,v.name,v.desc],"added group "+v.name)})
+               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO groups (id,`name`,`desc`) VALUES (?,?,?)",[v.id,v.name,v.desc],"added group "+v.name)})
             }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
          if(_option.perm){
             $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPerm',type:'GET',dataType:'json',success:function(json){
@@ -451,6 +453,7 @@ var $DB=function(quaerere,params,msg,callback){
             for(k in row){row[col]=row[k];col++;}
             j[x]=row;
          }//endfor
+         j['rows']={"length":len,"source":"generated"}
          break;
    }//endswith
    return j;

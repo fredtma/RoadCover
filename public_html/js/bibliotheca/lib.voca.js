@@ -8,10 +8,12 @@ addRecord=function(){
    r='_new'+Math.floor((Math.random()*100)+1);
    collapse_heade=$anima('#acc_'+name,'div',{'id':'accGroup'+d,'clss':'accordion-group'},'','first');
    collapse_heade.vita('div',{'clss':'accordion-heading','data-iota':d},true)
-           .vita('a',{'clss':'betaRow','contenteditable':false,'data-toggle':'collapse','data-parent':'#acc_'+name,'href':'#collapse_'+name+r},true)
-           .vita('span',{},false,'Type '+name+' name here');
-           collapse_head.genesis('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+name,'href':'#collapse_'+name+r,},true)
-           .vita('i',{'clss':'icon icon-color icon-edit'});
+      .vita('a',{'clss':'betaRow','contenteditable':false,'data-toggle':'collapse','data-parent':'#acc_'+name,'href':'#collapse_'+name+r},true)
+      .vita('span',{},false,'Type '+name+' name here');
+   collapse_head.novo('#accGroup'+d+' .accordion-heading','i',{'clss':'betaRight'})
+      //EDIT
+      collapse_head.vita('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+name,'href':'#collapse_'+name+r,},true)
+      .vita('i',{'clss':'icon icon-color icon-edit'});
    collapse_heade.genesis('a',{'href':'#'},true)
            .vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=delRecord;
             for(link in eternal.links){
@@ -34,12 +36,10 @@ function navig(set){
    page=parseInt($(set).data('goto'))-1;
    if($(set).hasClass('navig'))page=parseInt($(set).data('goto'));//ca cest pour les navigation de deriere et en avant.
    sessionStorage.genesis=(page)*localStorage.DB_LIMIT;
-   console.log(sessionStorage.genesis, typeof sessionStorage.genesis, 'sessionStorage.genesis', $(set).data('goto'));
-   console.log(eternal.form.ortus,'eternal.form.ortus2');
    if(typeof eternal.form.ortus==="undefined"){creoDB=new SET_DB();creoDB.beta();}
    else if(eternal.form.ortus=="server"){theForm=new SET_FORM()._Set("#body article");theForm.setBeta(JSON.parse(sessionStorage.activeRecord));}
 }
-function navigTable(set){ console.log(eternal.form.ortus,'eternal.form.ortus3');
+function navigTable(set){
    if($(set).parents('li').hasClass('disabled')) return false;
    page=parseInt($(set).data('goto'))-1;//fait attention les page prev & next, il faut pas faire la subtraction
    if($(set).hasClass('navTable'))page=parseInt($(set).data('goto'));//ca cest pour les navigation de deriere et en avant.
@@ -55,7 +55,7 @@ $('#btnDashboard').click(function(){load_async('js/agito/dashboard.js',true,'end
 //$('.system1,.getClient').click(function(){$.getJSON("json/client.json",findJSON).fail(onVituim);});
 $('#link_customers').click(function(){load_async('js/agito/customer.js',true,'end',true)});
 $('#link_insurance').click(function(){load_async('js/agito/member.js',true,'end',true)});
-$('#btnFeatures').click(function(){activateMenu('features',false,false,false,true);});
+$('#btnFeatures').click(function(){activateMenu('feature',false,false,false,true);});
 $('#footContact').click(function(){getPage('Contact us')});
 $('#footHelp').click(function(){getPage('Help?')});
 $('#footAbout').click(function(){getPage('About us')});

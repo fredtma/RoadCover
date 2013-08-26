@@ -1,5 +1,6 @@
 {
    "form": {
+      "navigation":true,
       "options":{"readonly":true,"type":"beta"},
       "field":{"clss":"form-horizontal","name":"dealer","data-iota":"0"},
       "fieldset":{"name":"admin-dealers"},

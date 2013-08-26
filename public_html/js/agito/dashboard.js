@@ -15,6 +15,7 @@ $welcome.vita('div',{clss:'span4 alert alert-info dash-module getCustomers',"hre
 $welcome.novo('#dashboard .row-fluid:nth-child(3)','div',{clss:'span4 alert alert-info dash-module getInsurance',"href":"#tab-insurance"}).vita('h4',{},true,' Insurance').vita('i',{'clss':'icon-folder-open icon-white'},false,'','first').novo('#dashboard .getInsurance','p',{},'Insurance content text');
 $welcome.novo('#dashboard','div',{clss:'row-fluid'});
 
+$("#search_all").typeahead({minLength:0,source:searchAll});
 //@fix: prevents the btn home click from loosing the events attached and the dashboard blocks
 $('.getUser').click(function(){activateMenu('profile','home',this);});
 $('.getGroup').click(function(){activateMenu('group','home',this);});
@@ -31,7 +32,7 @@ $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
    N=aNumero(n,true);
    $('#drop_'+n).empty();
    $('.'+n+'List').empty();
-   $.each(j,function(i,v){
+   $.each(j,function(i,v){if(i=='rows') return true;
       $anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' oneDealer','data-iota':v[1]},false,aNumero(v[0],true))
       $anima('#tab-customers .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'oneDealer','data-iota':v[1]},false,aNumero(v[0],true))
       $anima('#tab-insurance .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'oneDealer','data-iota':v[1]},false,aNumero(v[0],true))
@@ -40,7 +41,7 @@ $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
    $anima('#tab-customers .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));
    $anima('#tab-insurance .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));
    //AGITO
-   $('#drop_'+n+' .allDealer,#drop_'+n+' .oneDealer').click(function(){activateMenu('dealer','dealers',this);sessionStorage.genesis=0;});//ce qui sont sous le menu
+   $('#drop_'+n+' .allDealer,#drop_'+n+' .oneDealer').click(function(){if($(this).hasClass('oneDealer'))$('footer').data('header',true);/*this is for a bug fix. menu links are supposed to display header from the function and not from the form beta */activateMenu('dealer','dealers',this);sessionStorage.genesis=0;});//ce qui sont sous le menu
    $('#tab-customers .allDealer,#tab-customers .oneDealer').click(function(){activateMenu('customer','customers',this,true,'dealers');sessionStorage.genesis=0;});//ce qui on le button
    $('#tab-insurance .allDealer,#tab-insurance .oneDealer').click(function(){activateMenu('member','insurance',this,true,'dealers');sessionStorage.genesis=0;});//ce qui on le button
 });
@@ -49,7 +50,7 @@ $DB("SELECT firstname||' '||lastname,code FROM salesmen LIMIT 3",[],"",function(
    N=aNumero(n,true);
    $('#drop_'+n).empty();
    $('.'+n+'List').empty();
-   $.each(j,function(i,v){
+   $.each(j,function(i,v){if(i=='rows') return true;
       $anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' one'+N,'data-iota':v[1]},false,aNumero(v[0],true))
       $anima('#tab-customers .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true))
       $anima('#tab-insurance .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true))
@@ -58,10 +59,10 @@ $DB("SELECT firstname||' '||lastname,code FROM salesmen LIMIT 3",[],"",function(
    $anima('#tab-customers .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));
    $anima('#tab-insurance .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));
    //AGITO
-   $('#drop_'+n+' .allSalesman,#drop_'+n+' .oneSalesman').click(function(){activateMenu('salesman','salesmen',this)});
+   $('#drop_'+n+' .allSalesman,#drop_'+n+' .oneSalesman').click(function(){if($(this).hasClass('oneSalesman'))$('footer').data('header',true);/*this is for a bug fix. menu links are supposed to display header from the function and not from the form beta */activateMenu('salesman','salesmen',this);sessionStorage.genesis=0;});
 //   $('.'+n+'List .allSalesman,.'+n+'List .oneSalesman').click(function(){activateMenu('customer','customers',this,true,'salesmen')});//what it was before
-   $('#tab-customers .allSalesman,#tab-customers .oneSalesman').click(function(){activateMenu('customer','customers',this,true,'salesmen')});
-   $('#tab-insurance .allSalesman,#tab-insurance .oneSalesman').click(function(){activateMenu('member','insurance',this,true,'salesmen')});
+   $('#tab-customers .allSalesman,#tab-customers .oneSalesman').click(function(){activateMenu('customer','customers',this,true,'salesmen');sessionStorage.genesis=0;});
+   $('#tab-insurance .allSalesman,#tab-insurance .oneSalesman').click(function(){activateMenu('member','insurance',this,true,'salesmen');sessionStorage.genesis=0;});
 });
 /*
  * function to activate the dashboard blocks and links of the navTab

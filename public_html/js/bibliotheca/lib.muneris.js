@@ -461,6 +461,28 @@ function getPage(_page){
 }
 /******************************************************************************/
 /**
+ * searches all the functions in the system
+ * @author fredtma
+ * @version 1.2
+ * @category search, query
+ * @param string <var>_query</var> the part of the string to search
+ * @param function <var>_process</var> the function that return the results
+ * @see get_rich_custom_fields(), $iyona
+ * @return void|bool
+ * @todo finish the function on this page
+ * @uses file|element|class|variable|function|
+ */
+function searchAll(_query,_process){
+   set=this;set.shown=true;_query=_query||'%';
+   $DB("SELECT feature,category,filename FROM features WHERE feature LIKE ?",[_query+'%'],"searching "+_query,function(_results,results){
+      len=results.rows.length;got=getResults=[];console.log(results,'results',len);
+      for(x=0;x<len;x++){got[x]=results[x]['feature'];getResults[results[x]["feature"]]={"cat":results[x]["category"],"file":results[x]["filename"]}}
+      _process(got);
+      set.$menu[0].style.top='auto';
+   });
+}
+/******************************************************************************/
+/**
  * used to measure script execution time
  *
  * It will verify all the variable sent to the function

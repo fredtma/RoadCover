@@ -105,16 +105,19 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.setBeta=function(_results,_actum,_iota,_unum){
+      $collapseElement=null;
+      len=_results.rows.length;
+      len=len||1;//this will display the record even when there is no record
       eternal=eternal||eternalCall();
       linkTable=this.linkTable;
       this.name=Name=eternal.form.field.name;
       this.frmName=frmName='frm_'+this.name;
       isReadOnly=(typeof eternal.form.options !=="undefined")?eternal.form.options.readonly:false;
       if(typeof _results.rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_results);
-      navSection=eternal.form.ortus=="server"?true:false;
+      else this.setActiveRecord(_results,len);//maitre ce si quand la source et du system interne
+      navSection=eternal.form.navigation!==true?false:eternal.form.navigation;
+      console.log(navSection,'navSection',eternal.form.navigation);
       this.setNavigation(_results,navSection);
-      len=_results.rows.length;
-      len=len||1;//this will display the record even when there is no record
       if(!_actum){
          roadCover._Set({"next":".tab-pane.active .libHelp"});
          //@todo fix the header title
@@ -125,7 +128,11 @@ function SET_FORM(_name,_class,_label){
          }else if (isReadOnly===false&&getLicentia(this.name,'Create')){
             $('#newItem').attr("name","btnNew"+this.name).attr("title","Create a new "+this.name).html(" <i class='icon-plus icon-white'></i> New "+this.name);
          }
-         if (typeof eternal.form.ortus==="undefined"){$('footer').data('header',false);}
+         /*@note:$('footer').data('header') is set from the menu links
+          * aliquam: from server or localhost
+          * */
+         console.log(eternal.form.aliquam,'aliquam',$('footer').data('header'));
+         if (eternal.form.aliquam!==true&&$('footer').data('header')!==true){$('footer').data('header',false);}
          if($('footer').data('header')===false){$('#sideBot h3').html(eternal.form.legend.txt);$('#tab-home section h2').text(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();}//lieu pour maitre le titre
          $(this.Obj.addTo).empty();//main content and side listing
          container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
@@ -145,9 +152,11 @@ function SET_FORM(_name,_class,_label){
             collapse_head=$anima(collapseName,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group'});
             collapse_head.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
                .vita('a',{'clss':'betaRow','contenteditable':false,'data-toggle':collapse,'data-parent':collapseName,'href':collapseTo},true);//@todo: add save on element
+               $collapseElement=collapse_head.father;
                l=headeName.length;for(x=0;x<l;x++)collapse_head.vita('span',{},false).child.innerHTML=headeName[x]+' ';
              //icon holder
              collapse_head.novo('#accGroup'+row['id']+' .accordion-heading','i',{'clss':'betaRight'})
+             console.log(isReadOnly,'isReadOnly');
             if(isReadOnly===false&&getLicentia(this.name,'Edit')){
              collapse_head.vita('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':collapseName,'href':collapseTo},true)
               //EDIT, quand le button et le lien sont frapper
@@ -168,7 +177,10 @@ function SET_FORM(_name,_class,_label){
                temp=[];
                $(collapse_head.father).parents('div').data('code',row['code']);//@check: i have change the div to 'div'
                //click on the a link
-               collapse_head.father.onclick=function(){sideDisplay($(this).parents('div').data('code'), eternal.mensa);temp[0]=$(this).parents('div').data('code');temp[1]=eternal.mensa;$('footer').data('temp',temp);}//@see lib.voca.js
+               $collapseElement.onclick=function(){console.log($(this).parents('div').data('code'),eternal.mensa,'mensa');
+                  temp[0]=$(this).parents('div').data('code');temp[1]=eternal.mensa;$('footer').data('temp',temp);
+                  sideDisplay($(this).parents('div').data('code'), eternal.mensa);
+               }//@see lib.voca.js
             }//endif read only
             //APPLY CHANGES TO ADD FUNCTION
             if(typeof eternal.links!="undefined") this.setLinks(eternal.links,collapse_head);
@@ -190,11 +202,11 @@ function SET_FORM(_name,_class,_label){
          $(form+' #cancel_'+this.name).click(function(){$(this).parents('.accordion-body.in').collapse('hide');});
          if((_iota==-1||!_iota)){
             $(form).data('iota',0);
-            $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(1);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000); return false;}//make the form to become inserted
+            $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(1);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 500); return false;}//make the form to become inserted
          }else{
             $(form).data('iota',row['id']);
             fieldsDisplay('form',row);
-            $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 1000); return false;}//make the form to become update
+            $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 500); return false;}//make the form to become update
          }//endif
          if(eternal.form.file)load_async('js/agito/'+eternal.form.file+'.js',false,'end',true);
       }
@@ -419,7 +431,7 @@ function SET_FORM(_name,_class,_label){
    this.setLinks=function(_children,_collapse_head){
       for(link in _children){
          theLink=eternal.links[link][1];
-         _collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link #'+theLink});
+         _collapse_head.vita('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link #'+theLink});
          if(link!='reference'){
             $(_collapse_head.child).data('ref',ref);$(_collapse_head.child).data('head',headeName[0]);$(_collapse_head.child).data('link',link);$(_collapse_head.child).data('links',eternal.links[link]);
             $(_collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
@@ -447,7 +459,7 @@ function SET_FORM(_name,_class,_label){
     */
    this.setChildren=function(_children,_collapse_head,_collapse,_collapseTo,_collapseName){
       for(key in _children){tmp=_children[key];
-         _collapse_head.genesis('a',{'clss':'forIcon','data-toggle':_collapse,'data-parent':_collapseName,'href':_collapseTo},true)
+         _collapse_head.vita('a',{'clss':'forIcon','data-toggle':_collapse,'data-parent':_collapseName,'href':_collapseTo},true)
          .vita('i',{'clss':'memberIcon '+tmp.icon,'title':'Link '+tmp.title,'data-agilis':key});//@event:customer.js
       }//endfor
    }
@@ -463,19 +475,18 @@ function SET_FORM(_name,_class,_label){
       len=_results.length||_results.rows.length;
       srch=[];c=0;examiner=[];
       for(f in eternal.fields){if(eternal.fields[f].search){srch[c]=f;c++;}}//trouve les lieux qui on la cherche
-      for(x=0;x<len;x++){found='';for(y=0;y<c;y++){found+=_results[x][srch[y]]+'$ ';}examiner[x]=found;}
-
-      $('input[name=s]').typeahead({source:examiner,minLength:3,
-         highlighter:function(item){
-            var regex = /\$(.+)/;return item.replace(regex,"<span class='none'>$1</span>");
-         },
+      for(x=0;x<len;x++){found='';for(y=0;y<c;y++){row=_results[x]||_results.rows.item(x);found+=row[srch[y]]+'$ ';}examiner[x]=found;}
+      $('input[name=s]').each(function(i){//@fix:this has to be set as below for each search has it own typeahead.
+         if(typeof $(this).data('typeahead')!=="undefined")$(this).data('typeahead').source=examiner;
+      });
+      $('input[name=s]').val('').typeahead({source:examiner,minLength:3,
+         highlighter:function(item){var regex = /\$(.+)/;return item.replace(regex,"<span class='none'>$1</span>");},
          updater:function(item){
          value=examiner.indexOf(item);
          theForm = new SET_FORM()._Set("#body article");
-         console.log(eternal.form.options.type,'eternal.form.type',value);
-         if(eternal.form.options.type=="betaTable")theForm.gammaTable(JSON.parse(sessionStorage.activeRecord),false,false,value);
+         if(eternal.form.options&&eternal.form.options.type=="betaTable")theForm.gammaTable(JSON.parse(sessionStorage.activeRecord),false,false,value);
          else theForm.setBeta(JSON.parse(sessionStorage.activeRecord),false,false,value);
-         return item.replace(/\$/,'');
+         return item.replace(/\$(.+)/,'');
       }});
       _class=!_class?'navig':_class;
       if(len>localStorage.DB_LIMIT){
@@ -490,8 +501,18 @@ function SET_FORM(_name,_class,_label){
       if(_class=="navig")$('.navig a').click(function(){navig(this)});
       else $('.navTable a').click(function(){navigTable(this)});
    }
+   /*
+    * set the local rec into the session activeRecord
+    * @param {object} <var>_results</var> the result from local
+    * @param {integer} <var>_len</var> the size of the rec
+    * @returns {undefined}
+    */
+   this.setActiveRecord=function(_results,_len){
+      tmp={};tmp["rows"]={'length':_len,'source':'generated'};for(x=0;x<_len;x++){tmp[x]=_results.rows.item(x);}
+      sessionStorage.activeRecord=JSON.stringify(tmp);tmp=null;
+   }
 //   if(this instanceof SET_FORM)return this; else return new SET_FORM();
-}
+}//END CLASS
 /******************************************************************************/
 /**
  * either create a select input fields or append to an existing one.
@@ -607,7 +628,8 @@ fieldsDisplay=function(_from,_source,_head,_reference){
          case 'bool':
          case 'check':
             if(_from==='form')$(form+' [name^='+key2+']').each(function(){if($(this).prop('value')==_source[key])$(this).addClass('active').prop('checked',true);});
-            if(_from==='list')$(form+' [name^='+key2+']').each(function(){if($(this).prop('checked'))_return[c]=$(this).addClass('active').prop('value');});
+            else if(_from==='list')$(form+' [name^='+key2+']').each(function(){if($(this).prop('checked')||$(this).hasClass('active'))_return[c]=$(this).addClass('active').prop('value');});
+            else _return[c]=_source[key2];
             break;
          case 'p':
          case 'span':

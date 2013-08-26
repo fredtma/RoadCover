@@ -9,7 +9,9 @@ tmp={
       "label":false,
       "legend":{"txt":"Road Cover Customers"},
       "button":{"close_customer":{"value":"Close","type":"button","clss":"btn btn-inverse"}},
-      "ortus":"server"
+      "ortus":"server",
+      "aliquam":true,
+      "navigation":true
    },
    "mensa": "customers",
    "quaerere":{"scopo":"","ubi":true,"finis":10},
@@ -34,7 +36,7 @@ tmp={
    }
 }
 sessionStorage.setItem('active',JSON.stringify(tmp));
-eternal=tmp;temp=$('footer').data('temp');console.log(temp,'temp');
+eternal=tmp;temp=$('footer').data('temp');
 get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,'quaerere':temp},'','post','json',function(results){
    if(temp)sideDisplay(temp[0],temp[1]);
    theForm=new SET_FORM()._Set("#body article");

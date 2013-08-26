@@ -9,8 +9,8 @@
    "fields":{
       "username":{"valid":["unique"],"icon":"icon-user","place":true,"field":{"required":"","autofocus":""}},
       "password":{"icon":"icon-lock","field":{"type":"password","required":""}},
-      "firstname":{"icon":"icon-tag","header":true,"place":true,"field":{"required":""}},
-      "lastname":{"icon":"icon-tags","header":true,"place":true,"field":{"required":""}},
+      "firstname":{"icon":"icon-tag","search":true,"header":true,"place":true,"field":{"required":""}},
+      "lastname":{"icon":"icon-tags","search":true,"header":true,"place":true,"field":{"required":""}},
       "email":{"icon":"icon-envelope","place":true,"field":{"type":"email","required":""}},
       "gender":{"field":{"type":"radio","required":""},"items":["","Male","Female"]}
    },
