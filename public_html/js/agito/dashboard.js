@@ -8,19 +8,20 @@ $welcome.novo('#dashboard .row-fluid:nth-child(1)','div',{clss:'span4 alert aler
 $welcome.novo('#dashboard .row-fluid:nth-child(1)','div',{clss:'span4 alert alert-info dash-module getPerm',"href":"#tab-system"}).vita('h4',{},true,' Permissions').vita('i',{'clss':'icon-pencil icon-white'},false,'','first').novo('#dashboard .getPerm','p',{},'permission content text');
 $welcome.novo('#dashboard','div',{clss:'row-fluid'});
 $welcome.vita('div',{clss:'span4 alert alert-info dash-module getClient',"href":"#tab-system"},true).vita('h4',{},true,' Clients').vita('i',{'clss':'icon-qrcode icon-white'},false,'','first').novo('#dashboard .getClient','p',{},'clients content text');
-$welcome.novo('#dashboard .row-fluid:nth-child(2)','div',{clss:'span4 alert alert-info dash-module allDealer',"href":"#tab-dealers"}).vita('h4',{},true,' Dealers').vita('i',{'clss':'icon-book icon-white'},false,'','first').novo('#dashboard .allDealer','p',{},'Dealers content text');
-$welcome.novo('#dashboard .row-fluid:nth-child(2)','div',{clss:'span4 alert alert-info dash-module allSalesman',"href":"#tab-salesman"}).vita('h4',{},true,' Salesmen').vita('i',{'clss':'icon-briefcase icon-white'},false,'','first').novo('#dashboard .allSalesman','p',{},'Salesmen content text');
+$welcome.novo('#dashboard .row-fluid:nth-child(2)','div',{clss:'span4 alert alert-info dash-module getDealer',"href":"#tab-dealers"}).vita('h4',{},true,' Dealers').vita('i',{'clss':'icon-book icon-white'},false,'','first').novo('#dashboard .getDealer','p',{},'Dealers content text');
+$welcome.novo('#dashboard .row-fluid:nth-child(2)','div',{clss:'span4 alert alert-info dash-module getSalesman',"href":"#tab-salesman"}).vita('h4',{},true,' Salesmen').vita('i',{'clss':'icon-briefcase icon-white'},false,'','first').novo('#dashboard .getSalesman','p',{},'Salesmen content text');
 $welcome.novo('#dashboard','div',{clss:'row-fluid'});
 $welcome.vita('div',{clss:'span4 alert alert-info dash-module getCustomers',"href":"#tab-customers"},true).vita('h4',{},true,' Customers').vita('i',{'clss':'icon-user icon-white'},false,'','first').novo('#dashboard .getCustomers','p',{},'Customer content text');
 $welcome.novo('#dashboard .row-fluid:nth-child(3)','div',{clss:'span4 alert alert-info dash-module getInsurance',"href":"#tab-insurance"}).vita('h4',{},true,' Insurance').vita('i',{'clss':'icon-folder-open icon-white'},false,'','first').novo('#dashboard .getInsurance','p',{},'Insurance content text');
 $welcome.novo('#dashboard','div',{clss:'row-fluid'});
 
-$("#search_all").typeahead({minLength:0,source:searchAll});
 //@fix: prevents the btn home click from loosing the events attached and the dashboard blocks
 $('.getUser').click(function(){activateMenu('profile','home',this);});
 $('.getGroup').click(function(){activateMenu('group','home',this);});
 $('.getPerm').click(function(){activateMenu('permission','system',this);});
 $('.system1,.getClient').click(function(){activateMenu('client','system',this);});
+$('.getDealer').click(function(){activateMenu('dealer','dealers',this);});
+$('.getSalesman').click(function(){activateMenu('salesman','salesmen',this);});
 $('.getCustomers').click(function(){activateMenu('customer','customers',this,true);});
 $('.getInsurance').click(function(){activateMenu('member','insurance',this,true);});
 if(!window.openDatabase){$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').append('Your browser dooes not have support for websql,<br/> Recomended broswer for this application are Chrome, Opera and Safari');}
@@ -51,9 +52,9 @@ $DB("SELECT firstname||' '||lastname,code FROM salesmen LIMIT 3",[],"",function(
    $('#drop_'+n).empty();
    $('.'+n+'List').empty();
    $.each(j,function(i,v){if(i=='rows') return true;
-      $anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' one'+N,'data-iota':v[1]},false,aNumero(v[0],true))
-      $anima('#tab-customers .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true))
-      $anima('#tab-insurance .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true))
+      $anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' one'+N,'data-iota':v[1]},false,aNumero(v[0],true));
+      $anima('#tab-customers .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true));
+      $anima('#tab-insurance .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true));
    });
    $anima('#drop_'+n,'li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));
    $anima('#tab-customers .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));
@@ -73,7 +74,7 @@ function activateMenu(_mensa,_mensula,_set,_script,_tab){
    if(!_script)$.getJSON("json/"+_mensa+".json",findJSON).fail(onVituim);//avec json
    else load_async("js/agito/"+_mensa+".js",true,'end',true);//sans json mait avec une script
    if(_mensa=='salesman')_mensula='salesman';//ce si cest pour les sales seulment
-   if(!_tab){
+   if(!_tab){console.log(_set,'_set');
       $(_set).tab('show');
       $(".navLinks").removeClass('active');
       $("#nav_"+_mensula).addClass('active');}//montre la tab et le menu

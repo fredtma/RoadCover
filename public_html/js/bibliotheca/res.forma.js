@@ -108,6 +108,7 @@ function SET_FORM(_name,_class,_label){
       $collapseElement=null;
       len=_results.rows.length;
       len=len||1;//this will display the record even when there is no record
+      console.log(len,'len');
       eternal=eternal||eternalCall();
       linkTable=this.linkTable;
       this.name=Name=eternal.form.field.name;
@@ -140,6 +141,9 @@ function SET_FORM(_name,_class,_label){
          max=(parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT));
          max=max>len?len:max;//@fix:prevent the last index from occuring
          if(typeof _unum=="number"){sessionStorage.genesis=_unum;len=_unum+1;max=_unum+1;}
+         len=len||1;//this will display the record even when there is no record
+         max=max||1;
+         //LOOP
          for(rec=parseInt(sessionStorage.genesis);rec<len,rec<max;rec++){//loop record
             if(typeof _results.rows.source!=="undefined"){row=_results[rec];headeName=fieldsDisplay('none',row,true);}
             else if(_results.rows.length){row=_results.rows.item(rec);headeName=fieldsDisplay('none',row,true);}
@@ -508,6 +512,7 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.setActiveRecord=function(_results,_len){
+      _len=_results.rows.length;
       tmp={};tmp["rows"]={'length':_len,'source':'generated'};for(x=0;x<_len;x++){tmp[x]=_results.rows.item(x);}
       sessionStorage.activeRecord=JSON.stringify(tmp);tmp=null;
    }

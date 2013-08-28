@@ -59,7 +59,7 @@ $('#btnFeatures').click(function(){activateMenu('feature',false,false,false,true
 $('#footContact').click(function(){getPage('Contact us')});
 $('#footHelp').click(function(){getPage('Help?')});
 $('#footAbout').click(function(){getPage('About us')});
-
+$("#search_all").focus(function(){this.select();}).typeahead({minLength:0,source:searchAll,updater:searchUpdate});
 $('#btnFullScreen,#fullscreen').click(function(){if(!$(this).data('toggle')||$(this).data('toggle')==0){$('#btnFullScreen,#fullscreen').data('toggle',1);enableFullScreen();$('.icon-fullscreen').removeClass('icon-fullscreen').addClass('icon-screenshot');}else{$('#btnFullScreen,#fullscreen').data('toggle',0);exitFullScreen();$('.icon-screenshot').removeClass('icon-screenshot').addClass('icon-fullscreen');}});
 $('.icon-refresh').click(function(){
    history.go(0);

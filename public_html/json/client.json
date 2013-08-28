@@ -12,6 +12,5 @@
       "code":{"icon":"icon-qrcode","header":true,"title":"Client's Code","place":true,"field":{"required":""}},
       "email":{"icon":"icon-envelope","title":"Client's email","place":true,"field":{"required":"","type":"email"}},
       "about":{"complex":"textarea","title":"About the company","place":true,"field":{"required":"","type":"text","rows":5,"clss":"text-area","maxlength":180}}
-   },
-   "links":{"link_clients_groups":["name","groups","clients"],"link_clients_users":["firstname||' '||lastname","users","clients","username"]}
+   }
 }

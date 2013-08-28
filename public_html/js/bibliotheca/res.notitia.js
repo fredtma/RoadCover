@@ -269,110 +269,116 @@ function SET_DB(){
    }
    this.resetDB=function(_option){
 
-         if(_option.users)this.creoAgito("DROP TABLE users",[],"DROP table users");
-         if(_option.groups)this.creoAgito("DROP TABLE groups",[],"DROP table groups");
-         if(_option.ug)this.creoAgito("DROP TABLE link_users_groups",[],"DROP table link_users_groups");
-         if(_option.perm)this.creoAgito("DROP TABLE permissions",[],"DROP table permissions");
-         if(_option.pg)this.creoAgito("DROP TABLE link_permissions_groups",[],"DROP table link_permissions_groups");
-         if(_option.pu)this.creoAgito("DROP TABLE link_permissions_users",[],"DROP table link_permissions_users");
-         if(_option.client)this.creoAgito("DROP TABLE clients",[],"DROP table clients");
-         if(_option.contact)this.creoAgito("DROP TABLE contacts",[],"DROP table contact");
-         if(_option.address)this.creoAgito("DROP TABLE address",[],"DROP table address");
-         if(_option.dealer)this.creoAgito("DROP TABLE dealers",[],"DROP table dealer");
-         if(_option.salesman)this.creoAgito("DROP TABLE salesmen",[],"DROP table salesmen");
-         if(_option.ver)this.creoAgito("DROP TABLE versioning",[],"DROP table versioning");
-         if(_option.pages)this.creoAgito("DROP TABLE pages",[],"DROP table pages");
-         if(_option.features)this.creoAgito("DROP TABLE features",[],"DROP table features");
+      if(_option.users)this.creoAgito("DROP TABLE users",[],"DROP table users");
+      if(_option.groups)this.creoAgito("DROP TABLE groups",[],"DROP table groups");
+      if(_option.ug)this.creoAgito("DROP TABLE link_users_groups",[],"DROP table link_users_groups");
+      if(_option.perm)this.creoAgito("DROP TABLE permissions",[],"DROP table permissions");
+      if(_option.pg)this.creoAgito("DROP TABLE link_permissions_groups",[],"DROP table link_permissions_groups");
+      if(_option.pu)this.creoAgito("DROP TABLE link_permissions_users",[],"DROP table link_permissions_users");
+      if(_option.client)this.creoAgito("DROP TABLE clients",[],"DROP table clients");
+      if(_option.contact)this.creoAgito("DROP TABLE contacts",[],"DROP table contact");
+      if(_option.address)this.creoAgito("DROP TABLE address",[],"DROP table address");
+      if(_option.dealer)this.creoAgito("DROP TABLE dealers",[],"DROP table dealer");
+      if(_option.salesman)this.creoAgito("DROP TABLE salesmen",[],"DROP table salesmen");
+      if(_option.ver)this.creoAgito("DROP TABLE versioning",[],"DROP table versioning");
+      if(_option.pages)this.creoAgito("DROP TABLE pages",[],"DROP table pages");
+      if(_option.features)this.creoAgito("DROP TABLE features",[],"DROP table features");
 
-         sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         if(_option.users)this.creoAgito(sql,[],'Table users created');
-         if(_option.users)this.creoAgito("CREATE INDEX user_username ON users(username)",[],"index user_username");
-         if(_option.users)this.creoAgito("CREATE INDEX user_email ON users(email)",[],"index user_email");
-         group="CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, desc TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         if(_option.groups)this.creoAgito(group,[],'Table groups created');
-         if(_option.groups)this.creoAgito("CREATE INDEX groups_name ON groups(name)",[],'index groups_name');
-         link="CREATE TABLE IF NOT EXISTS link_users_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, `user` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_user_group` FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_group_user` FOREIGN KEY (`group`) REFERENCES `groups` (`name`) ON UPDATE CASCADE ON DELETE CASCADE)";
-         if(_option.ug)this.creoAgito(link,[],'Table link to users and groups created');
-         if(_option.ug)this.creoAgito("CREATE INDEX link_usergroup_user ON link_users_groups(`user`)",[],'index link_usergroup_user');
-         if(_option.ug)this.creoAgito("CREATE INDEX link_usergroup_group ON link_users_groups(`group`)",[],'index link_usergroup_group');
-         perm="CREATE TABLE IF NOT EXISTS permissions (id INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `desc` TEXT NOT NULL, `page` TEXT, `enable` INTEGER DEFAULT 1, `rank` INTEGER DEFAULT 0, `icon` TEXT, `sub` INTEGER DEFAULT 0, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         if(_option.perm)this.creoAgito(perm,[],'Table permissions created');
-         if(_option.perm)this.creoAgito("CREATE INDEX perm_name ON permissions(name)",[],"index perm_name");
-         link="CREATE TABLE IF NOT EXISTS link_permissions_groups(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_perm_group` FOREIGN KEY (`permission`) REFERENCES `permissions` (`name`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_group_perm` FOREIGN KEY (`group`) REFERENCES `groups` (`name`) ON UPDATE CASCADE ON DELETE CASCADE)";
-         if(_option.pg)this.creoAgito(link,[],'Table link to permisions to groups created');
-         if(_option.pg)this.creoAgito("CREATE INDEX link_permgroup_perm ON link_permissions_groups(`permission`)",[],'index link_permgroup_perm');
-         if(_option.pg)this.creoAgito("CREATE INDEX link_permgroup_group ON link_permissions_groups(`group`)",[],'index link_permgroup_group');
-         link="CREATE TABLE IF NOT EXISTS link_permissions_users(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `user` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_perm_user` FOREIGN KEY (`permission`) REFERENCES `permissions` (`name`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_user_perm` FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON UPDATE CASCADE ON DELETE CASCADE)";
-         if(_option.pu)this.creoAgito(link,[],'Table link to permisions to users created');
-         if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_perm ON link_permissions_users(`permission`)",[],'index link_permuser_perm');
-         if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_user ON link_permissions_users(`user`)",[],'index link_permuser_user');
-         client="CREATE TABLE IF NOT EXISTS clients(id INTEGER PRIMARY KEY AUTOINCREMENT, company TEXT NOT NULL UNIQUE, code TEXT NOT NULL UNIQUE, about TEXT, email TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         if(_option.client)this.creoAgito(client,[],'Table clients created');
-         if(_option.client)this.creoAgito("CREATE INDEX client_company ON clients(company)",[],"index client_company");
-         if(_option.client)this.creoAgito("CREATE INDEX client_code ON clients(code)",[],"index client_code");
-         contact="CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'tel', contact TEXT NOT NULL, instruction TEXT, ext TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_user_contact` FOREIGN KEY (`ref_name`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,CONSTRAINT `fk_client_contact` FOREIGN KEY (`ref_name`) REFERENCES `clients` (`id`) ON UPDATE CASCADE ON DELETE CASCADE)";
-         if(_option.contact)this.creoAgito(contact,[],'Table contacts created');
-         if(_option.contact)this.creoAgito("CREATE INDEX contact_ref_name ON contacts(ref_name)",[],"index ref_name");
-         if(_option.contact)this.creoAgito("CREATE INDEX contact_contact ON contacts(contact)",[],"index contact");
-         address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'residential', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_user_adr` FOREIGN KEY (`ref_name`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,CONSTRAINT `fk_client_adr` FOREIGN KEY (`ref_name`) REFERENCES `clients` (`id`) ON UPDATE CASCADE ON DELETE CASCADE)";
-         if(_option.address)this.creoAgito(address,[],'Table address created');
-         if(_option.address)this.creoAgito("CREATE INDEX address_ref_name ON address(ref_name)",[],"index ref_name");
-         dealer="CREATE TABLE IF NOT EXISTS dealers(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, code TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         if(_option.dealer)this.creoAgito(dealer,[],'Table dealer created');
-         if(_option.dealer)this.creoAgito("CREATE INDEX dealer_name ON dealers(name)",[],"index dealer_name");
-         salesman="CREATE TABLE IF NOT EXISTS salesmen(id INTEGER PRIMARY KEY AUTOINCREMENT, dealer INTEGER, firstname TEXT NOT NULL, lastname TEXT NOT NULL, code TEXT NOT NULL, idno TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT fk_sales_dealer FOREIGN KEY (`dealer`) REFERENCES dealers(`id`) ON DELETE CASCADE ON UPDATE CASCADE)";
-         if(_option.salesman)this.creoAgito(salesman,[],'Table salesman created');
-         if(_option.salesman)this.creoAgito("CREATE INDEX salesman_firstname ON salesmen(firstname)",[],"index salesman_firstname");
-         if(_option.salesman)this.creoAgito("CREATE INDEX salesman_lastname ON salesmen(lastname)",[],"index salesman_lastname");
-         if(_option.salesman)this.creoAgito("CREATE INDEX salesman_idno ON salesmen(idno)",[],"index salesman_idno");
-         if(_option.salesman)this.creoAgito("CREATE INDEX salesman_dealer ON salesmen(dealer)",[],"index salesman_dealer");
-         ver="CREATE TABLE versioning(id INTEGER PRIMARY KEY AUTOINCREMENT,user INTEGER NOT NULL,content text NOT NULL,iota INTEGER NOT NULL,trans INTEGER NOT NULL,mensa TEXT,creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         if(_option.ver)this.creoAgito(ver,[],'Version table created');
-         features="CREATE TABLE features(id INTEGER PRIMARY KEY AUTOINCREMENT,feature TEXT NOT NULL UNIQUE,description TEXT,category TEXT,filename TEXT,creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         if(_option.features)this.creoAgito(features,[],'Version table created');
-         pages="CREATE TABLE pages(`id` INTEGER PRIMARY KEY AUTOINCREMENT,`page_ref` TEXT ,`title` TEXT NOT NULL UNIQUE, `content` TEXT NOT NULL,`level` TEXT, `type` TEXT,`date_modified` TEXT NOT NULL,`creation` TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
-         if(_option.pages)this.creoAgito(pages,[],'Pages table created');
-         if(_option.pages)this.creoAgito("CREATE INDEX pages_type ON pages(`type`)",[],"index pages_type");
-         if(_option.users){
-            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getUsers',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){if(i==='rows')return true;v.gender=v.gender=='Male'?1:2;$DB("INSERT INTO users (id,username,password,firstname,lastname,email,gender) VALUES (?,?,?,?,?,?,?)",[v.id,v.username,v.password,v.firstname,v.lastname,v.email,v.gender],"added user "+v.firstname)})
-            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-         if(_option.groups){
-            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getGroups',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO groups (id,`name`,`desc`) VALUES (?,?,?)",[v.id,v.name,v.desc],"added group "+v.name)})
-            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-         if(_option.perm){
-            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPerm',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO permissions (id,name,`desc`,`page`,`enable`) VALUES (?,?,?,?,?)",[v.id,v.name,v.desc,v.page,v.enable],"added permision "+v.name)})
-            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-         if(_option.ug){
-            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getUG',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_users_groups (id,`user`,`group`) VALUES (?,?,?)",[v.id,v.user,v.group],"added user+group "+v.name)})
-            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-         if(_option.pu){
-            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPU',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_users (id,`permission`,`user`) VALUES (?,?,?)",[v.id,v.permision,v.user],"added permision+group "+v.name)})
-            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-         if(_option.pg){
-            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPG',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_groups (id,`permission`,`group`) VALUES (?,?,?)",[v.id,v.permision,v.group],"added permision+group "+v.name)})
-            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-         if(_option.dealer){
-            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getDealer',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO dealers (name,code) VALUES (?,?)",[v.Name,v.Id],"added dealer "+v)})
-            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-         if(_option.salesman){
-            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getSaleman',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO salesmen (firstname,lastname,code) VALUES (?,?,?)",[v.FullNames,v.Surname,v.Id],"added salesman "+v.FullNames)})
-            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-         if(_option.pages){
-            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPages',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO pages (id,page_ref,title,content,date_modified,creation,`level`,`type`) VALUES (?,?,?,?,?,?,?,?)",[v.id,v.page_ref,v.title,v.content,v.date_modified,v.creation,v.level,v.type],"added page "+v.title)})
-            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-         if(_option.features){
-            $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getFeatures',type:'GET',dataType:'json',success:function(json){
-               $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO pages (id,feature,description,category,filename,creation) VALUES (?,?,?,?,?,?)",[v.id,v.feature,v.description,v.category,v.filename,v.creation],"added page "+v.feature)})
-            }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+      sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+      if(_option.users)this.creoAgito(sql,[],'Table users created');
+      if(_option.users)this.creoAgito("CREATE INDEX user_username ON users(username)",[],"index user_username");
+      if(_option.users)this.creoAgito("CREATE INDEX user_email ON users(email)",[],"index user_email");
+      group="CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, desc TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+      if(_option.groups)this.creoAgito(group,[],'Table groups created');
+      if(_option.groups)this.creoAgito("CREATE INDEX groups_name ON groups(name)",[],'index groups_name');
+      link="CREATE TABLE IF NOT EXISTS link_users_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, `user` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_user_group` FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_group_user` FOREIGN KEY (`group`) REFERENCES `groups` (`name`) ON UPDATE CASCADE ON DELETE CASCADE)";
+      if(_option.ug)this.creoAgito(link,[],'Table link to users and groups created');
+      if(_option.ug)this.creoAgito("CREATE INDEX link_usergroup_user ON link_users_groups(`user`)",[],'index link_usergroup_user');
+      if(_option.ug)this.creoAgito("CREATE INDEX link_usergroup_group ON link_users_groups(`group`)",[],'index link_usergroup_group');
+      perm="CREATE TABLE IF NOT EXISTS permissions (id INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `desc` TEXT NOT NULL, `page` TEXT, `enable` INTEGER DEFAULT 1, `rank` INTEGER DEFAULT 0, `icon` TEXT, `sub` INTEGER DEFAULT 0, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+      if(_option.perm)this.creoAgito(perm,[],'Table permissions created');
+      if(_option.perm)this.creoAgito("CREATE INDEX perm_name ON permissions(name)",[],"index perm_name");
+      link="CREATE TABLE IF NOT EXISTS link_permissions_groups(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_perm_group` FOREIGN KEY (`permission`) REFERENCES `permissions` (`name`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_group_perm` FOREIGN KEY (`group`) REFERENCES `groups` (`name`) ON UPDATE CASCADE ON DELETE CASCADE)";
+      if(_option.pg)this.creoAgito(link,[],'Table link to permisions to groups created');
+      if(_option.pg)this.creoAgito("CREATE INDEX link_permgroup_perm ON link_permissions_groups(`permission`)",[],'index link_permgroup_perm');
+      if(_option.pg)this.creoAgito("CREATE INDEX link_permgroup_group ON link_permissions_groups(`group`)",[],'index link_permgroup_group');
+      link="CREATE TABLE IF NOT EXISTS link_permissions_users(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `user` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_perm_user` FOREIGN KEY (`permission`) REFERENCES `permissions` (`name`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_user_perm` FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON UPDATE CASCADE ON DELETE CASCADE)";
+      if(_option.pu)this.creoAgito(link,[],'Table link to permisions to users created');
+      if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_perm ON link_permissions_users(`permission`)",[],'index link_permuser_perm');
+      if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_user ON link_permissions_users(`user`)",[],'index link_permuser_user');
+      client="CREATE TABLE IF NOT EXISTS clients(id INTEGER PRIMARY KEY AUTOINCREMENT, company TEXT NOT NULL UNIQUE, code TEXT NOT NULL UNIQUE, about TEXT, email TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+      if(_option.client)this.creoAgito(client,[],'Table clients created');
+      if(_option.client)this.creoAgito("CREATE INDEX client_company ON clients(company)",[],"index client_company");
+      if(_option.client)this.creoAgito("CREATE INDEX client_code ON clients(code)",[],"index client_code");
+      contact="CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'tel', contact TEXT NOT NULL, instruction TEXT, ext TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_user_contact` FOREIGN KEY (`ref_name`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,CONSTRAINT `fk_client_contact` FOREIGN KEY (`ref_name`) REFERENCES `clients` (`id`) ON UPDATE CASCADE ON DELETE CASCADE)";
+      if(_option.contact)this.creoAgito(contact,[],'Table contacts created');
+      if(_option.contact)this.creoAgito("CREATE INDEX contact_ref_name ON contacts(ref_name)",[],"index ref_name");
+      if(_option.contact)this.creoAgito("CREATE INDEX contact_contact ON contacts(contact)",[],"index contact");
+      address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'residential', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_user_adr` FOREIGN KEY (`ref_name`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,CONSTRAINT `fk_client_adr` FOREIGN KEY (`ref_name`) REFERENCES `clients` (`id`) ON UPDATE CASCADE ON DELETE CASCADE)";
+      if(_option.address)this.creoAgito(address,[],'Table address created');
+      if(_option.address)this.creoAgito("CREATE INDEX address_ref_name ON address(ref_name)",[],"index ref_name");
+      dealer="CREATE TABLE IF NOT EXISTS dealers(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, code TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+      if(_option.dealer)this.creoAgito(dealer,[],'Table dealer created');
+      if(_option.dealer)this.creoAgito("CREATE INDEX dealer_name ON dealers(name)",[],"index dealer_name");
+      salesman="CREATE TABLE IF NOT EXISTS salesmen(id INTEGER PRIMARY KEY AUTOINCREMENT, dealer INTEGER, firstname TEXT NOT NULL, lastname TEXT NOT NULL, code TEXT NOT NULL, idno TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT fk_sales_dealer FOREIGN KEY (`dealer`) REFERENCES dealers(`id`) ON DELETE CASCADE ON UPDATE CASCADE)";
+      if(_option.salesman)this.creoAgito(salesman,[],'Table salesman created');
+      if(_option.salesman)this.creoAgito("CREATE INDEX salesman_firstname ON salesmen(firstname)",[],"index salesman_firstname");
+      if(_option.salesman)this.creoAgito("CREATE INDEX salesman_lastname ON salesmen(lastname)",[],"index salesman_lastname");
+      if(_option.salesman)this.creoAgito("CREATE INDEX salesman_idno ON salesmen(idno)",[],"index salesman_idno");
+      if(_option.salesman)this.creoAgito("CREATE INDEX salesman_dealer ON salesmen(dealer)",[],"index salesman_dealer");
+      ver="CREATE TABLE versioning(id INTEGER PRIMARY KEY AUTOINCREMENT,user INTEGER NOT NULL,content text NOT NULL,iota INTEGER NOT NULL,trans INTEGER NOT NULL,mensa TEXT,creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+      if(_option.ver)this.creoAgito(ver,[],'Version table created');
+      features="CREATE TABLE features(id INTEGER PRIMARY KEY AUTOINCREMENT,feature TEXT NOT NULL UNIQUE,description TEXT,category TEXT,filename TEXT,creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+      if(_option.features)this.creoAgito(features,[],'Version table created');
+      pages="CREATE TABLE pages(`id` INTEGER PRIMARY KEY AUTOINCREMENT,`page_ref` TEXT ,`title` TEXT NOT NULL UNIQUE, `content` TEXT NOT NULL,`level` TEXT, `type` TEXT,`date_modified` TEXT NOT NULL,`creation` TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+      if(_option.pages)this.creoAgito(pages,[],'Pages table created');
+      if(_option.pages)this.creoAgito("CREATE INDEX pages_type ON pages(`type`)",[],"index pages_type");
+      if(_option.users){
+         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getUsers',type:'GET',dataType:'json',success:function(json){
+            $.each(json,function(i,v){if(i==='rows')return true;v.gender=v.gender=='Male'?1:2;$DB("INSERT INTO users (id,username,password,firstname,lastname,email,gender) VALUES (?,?,?,?,?,?,?)",[v.id,v.username,v.password,v.firstname,v.lastname,v.email,v.gender],"added user "+v.firstname)})
+         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+      if(_option.client){
+         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getClients',type:'GET',dataType:'json',success:function(json){
+            $.each(json,function(i,v){if(i==='rows')return true;v.gender=v.gender=='Male'?1:2;$DB("INSERT INTO clients (id,company,code,about,email,creation) VALUES (?,?,?,?,?,?)",[v.id,v.company,v.code,v.about,v.email,v.creation],"added "+v.company)})
+         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+      if(_option.groups){
+         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getGroups',type:'GET',dataType:'json',success:function(json){
+            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO groups (id,`name`,`desc`) VALUES (?,?,?)",[v.id,v.name,v.desc],"added group "+v.name)})
+         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+      if(_option.perm){
+         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPerm',type:'GET',dataType:'json',success:function(json){
+            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO permissions (id,name,`desc`,`page`,`enable`) VALUES (?,?,?,?,?)",[v.id,v.name,v.desc,v.page,v.enable],"added permision "+v.name)})
+         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+      if(_option.ug){
+         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getUG',type:'GET',dataType:'json',success:function(json){
+            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_users_groups (id,`user`,`group`) VALUES (?,?,?)",[v.id,v.user,v.group],"added user+group "+v.name)})
+         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+      if(_option.pu){
+         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPU',type:'GET',dataType:'json',success:function(json){
+            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_users (id,`permission`,`user`) VALUES (?,?,?)",[v.id,v.permision,v.user],"added permision+group "+v.name)})
+         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+      if(_option.pg){
+         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPG',type:'GET',dataType:'json',success:function(json){
+            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_groups (id,`permission`,`group`) VALUES (?,?,?)",[v.id,v.permision,v.group],"added permision+group "+v.name)})
+         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+      if(_option.dealer){
+         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getDealer',type:'GET',dataType:'json',success:function(json){
+            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO dealers (name,code) VALUES (?,?)",[v.Name,v.Id],"added dealer "+v)});
+            $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){n='dealers';N=aNumero(n,true);$('#drop_'+n).empty();$('.'+n+'List').empty();$.each(j,function(i,v){if(i=='rows') return true;$anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' oneDealer','data-iota':v[1]},false,aNumero(v[0],true));$anima('#tab-customers .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'oneDealer','data-iota':v[1]},false,aNumero(v[0],true));$anima('#tab-insurance .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'oneDealer','data-iota':v[1]},false,aNumero(v[0],true));});$anima('#drop_'+n,'li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));$anima('#tab-customers .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));$anima('#tab-insurance .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));$('#drop_'+n+' .allDealer,#drop_'+n+' .oneDealer').click(function(){if($(this).hasClass('oneDealer'))$('footer').data('header',true);/*this is for a bug fix. menu links are supposed to display header from the function and not from the form beta */activateMenu('dealer','dealers',this);sessionStorage.genesis=0;});$('#tab-customers .allDealer,#tab-customers .oneDealer').click(function(){activateMenu('customer','customers',this,true,'dealers');sessionStorage.genesis=0;});$('#tab-insurance .allDealer,#tab-insurance .oneDealer').click(function(){activateMenu('member','insurance',this,true,'dealers');sessionStorage.genesis=0;});});
+         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+      if(_option.salesman){
+         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getSaleman',type:'GET',dataType:'json',success:function(json){
+            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO salesmen (firstname,lastname,code) VALUES (?,?,?)",[v.FullNames,v.Surname,v.Id],"added salesman "+v.FullNames)});
+            $DB("SELECT firstname||' '||lastname,code FROM salesmen LIMIT 3",[],"",function(r,j){n='salesman';N=aNumero(n,true);$('#drop_'+n).empty();$('.'+n+'List').empty();$.each(j,function(i,v){if(i=='rows') return true;$anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' one'+N,'data-iota':v[1]},false,aNumero(v[0],true));$anima('#tab-customers .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true));$anima('#tab-insurance .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true));});$anima('#drop_'+n,'li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));$anima('#tab-customers .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));$anima('#tab-insurance .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));$('#drop_'+n+' .allSalesman,#drop_'+n+' .oneSalesman').click(function(){if($(this).hasClass('oneSalesman'))$('footer').data('header',true);activateMenu('salesman','salesmen',this);sessionStorage.genesis=0;});$('#tab-customers .allSalesman,#tab-customers .oneSalesman').click(function(){activateMenu('customer','customers',this,true,'salesmen');sessionStorage.genesis=0;});$('#tab-insurance .allSalesman,#tab-insurance .oneSalesman').click(function(){activateMenu('member','insurance',this,true,'salesmen');sessionStorage.genesis=0;});});
+         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+      if(_option.pages){
+         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPages',type:'GET',dataType:'json',success:function(json){
+            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO pages (id,page_ref,title,content,date_modified,creation,`level`,`type`) VALUES (?,?,?,?,?,?,?,?)",[v.id,v.page_ref,v.title,v.content,v.date_modified,v.creation,v.level,v.type],"added page "+v.title)})
+         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+      if(_option.features){
+         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getFeatures',type:'GET',dataType:'json',success:function(json){
+            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO features (id,feature,description,category,filename,creation) VALUES (?,?,?,?,?,?)",[v.id,v.feature,v.description,v.category,v.filename,v.creation],"added page "+v.feature)})
+         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
    }//endfunction
 
    if(!db||!localStorage.DB){

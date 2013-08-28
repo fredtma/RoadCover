@@ -475,11 +475,39 @@ function getPage(_page){
 function searchAll(_query,_process){
    set=this;set.shown=true;_query=_query||'%';
    $DB("SELECT feature,category,filename FROM features WHERE feature LIKE ?",[_query+'%'],"searching "+_query,function(_results,results){
-      len=results.rows.length;got=getResults=[];console.log(results,'results',len);
-      for(x=0;x<len;x++){got[x]=results[x]['feature'];getResults[results[x]["feature"]]={"cat":results[x]["category"],"file":results[x]["filename"]}}
+      len=results.rows.length;got=[];getResults={};
+      for(x=0;x<len;x++){got[x]=results[x]['feature'];getResults[results[x]["feature"]]={"cat":results[x]["category"],"file":results[x]["filename"]};sessionStorage.tempus=JSON.stringify(getResults);}
       _process(got);
       set.$menu[0].style.top='auto';
    });
+}
+/******************************************************************************/
+/**
+ * typeahead search result upon click function
+ * This will also change the page according to the result selected
+ * @author fredtma
+ * @version 2.3
+ * @param string <var>item</var> the value clicked upon
+ * @return object
+ */
+function searchUpdate(item){
+   var _mensa,_mensula,_set,_script=false;sessionStorage.genesis=0;
+   getResults=JSON.parse(sessionStorage.tempus);
+   getResults=getResults[item];
+   _mensula=getResults.filename||'home';
+   _set='#link_'+_mensula;
+   switch(getResults.cat){
+      case 'json-script':
+      case 'json':_tab=false;break;
+      case 'script':_script=true;break;
+      case 'page':getPage(item);return item;break;
+      case 'help':break;
+      case 'execute':break;
+   }
+   sessionStorage.removeItem('tempus');
+   _mensa=aNumero(item);console.log(_set,'_set',document.querySelector(_set));
+   activateMenu(_mensa,_mensula,_set,_script,_tab);
+   return item;
 }
 /******************************************************************************/
 /**
