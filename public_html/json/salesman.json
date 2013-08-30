@@ -9,8 +9,8 @@
    },
    "mensa": "salesmen",
    "fields": {
-      "firstname":{"header":true,"field":{}},
-      "lastname":{"header":true,"field":{}},
+      "firstname":{"header":true,"search":true,"field":{}},
+      "lastname":{"header":true,"search":true,"field":{}},
       "code":{"title":"salesman's code","field":{}}
    },
    "links":{"reference":["js/agito/member.js","insurance"]}

@@ -11,7 +11,7 @@
    "fields": {
       "page":{"icon":"icon-file","header":true,"place":true,"field":{"title":"Link to","type":"list","click":"atest"},"items":["Clients","Customers","Dealers","Insurance","Groups","Permissions","Profile","Users","Salesmen"]},
       "default":{"title":"Default permissions","source":"custom","field":{"title":"Default permissions","type":"radio","autofocus":""},"items":{"Create":"Create","Edit":"Edit","Delete":"Delete","View":"View","Link":"Link","Report":"Report","Other":"Other"}},
-      "name":{"valid":["unique"],"icon":"icon-pencil","header":true,"place":true,"field":{"required":"","title":"Permissions name"}},
+      "name":{"valid":["unique"],"icon":"icon-pencil","search":true,"header":true,"place":true,"field":{"required":"","title":"Permissions name"}},
       "enable":{"complex":true,"field":{"type":"bool"}},
       "desc":{"complex":"textarea","title":"description","place":"Permissions Description","field":{"required":"","type":"text","rows":5,"clss":"text-area","maxlength":180}}
    },

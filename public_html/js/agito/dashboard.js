@@ -1,7 +1,7 @@
 /*
  * creates the dashboard on the home page
  */
-$('#body article').empty();
+newSection();//rest #body, button, pagination
 $welcome=$anima('#body article','div',{'id':'dashboard'}).vita('div',{clss:'row-fluid'},true);
 $welcome.vita('div',{clss:'span4 alert alert-info dash-module getUser',"href":"#tab-home"},true).vita('h4',{},true,' Administrators ').vita('i',{'clss':'icon-user icon-white'},false,'','first').novo('#dashboard .getUser','p',{},'users content text');
 $welcome.novo('#dashboard .row-fluid:nth-child(1)','div',{clss:'span4 alert alert-info dash-module getGroup',"href":"#tab-home"}).vita('h4',{},true,' Groups').vita('i',{'clss':'icon icon-white icon-users'},false,'','first').novo('#dashboard .getGroup','p',{},'groups content text');
@@ -24,13 +24,13 @@ $('.getDealer').click(function(){activateMenu('dealer','dealers',this);});
 $('.getSalesman').click(function(){activateMenu('salesman','salesmen',this);});
 $('.getCustomers').click(function(){activateMenu('customer','customers',this,true);});
 $('.getInsurance').click(function(){activateMenu('member','insurance',this,true);});
+//$(".search-all").focus(function(){this.select();}).typeahead({minLength:0,source:searchAll,updater:searchUpdate});//@see:lib.voca.js
 if(!window.openDatabase){$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').append('Your browser dooes not have support for websql,<br/> Recomended broswer for this application are Chrome, Opera and Safari');}
 SET_DB();//@todo: regard pourquoi ce si coure deux foi.
-if(!sessionStorage.lecentia)licentia(localStorage.USER_NAME);//si il'ya pas de session pour l'utilisateur
 //@todo: test on a new DB if the menu link will appear.
 $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
-   n='dealers';
-   N=aNumero(n,true);
+   var n='dealers';
+   var N=aNumero(n,true);
    $('#drop_'+n).empty();
    $('.'+n+'List').empty();
    $.each(j,function(i,v){if(i=='rows') return true;
@@ -47,8 +47,8 @@ $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){
    $('#tab-insurance .allDealer,#tab-insurance .oneDealer').click(function(){activateMenu('member','insurance',this,true,'dealers');sessionStorage.genesis=0;});//ce qui on le button
 });
 $DB("SELECT firstname||' '||lastname,code FROM salesmen LIMIT 3",[],"",function(r,j){
-   n='salesman';
-   N=aNumero(n,true);
+   var n='salesman';
+   var N=aNumero(n,true);
    $('#drop_'+n).empty();
    $('.'+n+'List').empty();
    $.each(j,function(i,v){if(i=='rows') return true;
@@ -69,8 +69,8 @@ $DB("SELECT firstname||' '||lastname,code FROM salesmen LIMIT 3",[],"",function(
  * function to activate the dashboard blocks and links of the navTab
  */
 function activateMenu(_mensa,_mensula,_set,_script,_tab){
-   _mensula=_mensula||_mensa;
-   iota=$(_set).data('iota');
+   var _mensula=_mensula||_mensa;
+   var iota=$(_set).data('iota');
    if(!_script)$.getJSON("json/"+_mensa+".json",findJSON).fail(onVituim);//avec json
    else load_async("js/agito/"+_mensa+".js",true,'end',true);//sans json mait avec une script
    if(_mensa=='salesman')_mensula='salesman';//ce si cest pour les sales seulment
@@ -86,3 +86,4 @@ function activateMenu(_mensa,_mensula,_set,_script,_tab){
    if(_mensa=='salesman')_mensula='salesmen';
    if(iota){sideDisplay(iota,_mensula);}//fair apparaitre la table si une existance de parametre iota exists.
 }
+delete $welcome;

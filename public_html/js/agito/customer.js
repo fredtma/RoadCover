@@ -6,7 +6,7 @@ tmp={
       "options":{"readonly":"display","type":"","from":"server"},
       "field":{"clss":"form-horizontal form-tight","name":"customer","data-iota":"0"},
       "fieldset":{"name":"admin-customers","clss":"half-form"},
-      "label":false,
+      "label":true,
       "legend":{"txt":"Road Cover Customers"},
       "button":{"close_customer":{"value":"Close","type":"button","clss":"btn btn-inverse"}},
       "ortus":"server",
@@ -38,13 +38,14 @@ tmp={
 sessionStorage.setItem('active',JSON.stringify(tmp));
 eternal=tmp;temp=$('footer').data('temp');
 get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,'quaerere':temp},'','post','json',function(results){
+   var collapseName,tmp;
    if(temp)sideDisplay(temp[0],temp[1]);
    theForm=new SET_FORM()._Set("#body article");
    theForm.setBeta(results);
 //   $('.memberIcon').tooltip();
-   Name=eternal.form.field.name;
-   frmId='#frm_'+Name;
-   frmName='frm_'+Name;
+   var Name=eternal.form.field.name;
+   var frmId='#frm_'+Name;
+   var frmName='frm_'+Name;
    collapseName='#acc_'+Name;
    $('.memberIcon').click(function(){
       tmp=$(this).data('agilis');$(this).parents('.accordion-heading').data('activated',tmp);
@@ -62,9 +63,13 @@ get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,'quaerere':temp},'',
       }//endif
    });//@onShown
    $(collapseName).on('hidden',function(){$(this).data('toggle_shown',0); });//@onHidden
+   delete tmp, delete temp;
 });//@getAjax
 function onShow(on){
-   ii=$('.accordion-body.in').data('iota');
+   var Name=eternal.form.field.name;
+   var frmId='#frm_'+Name;
+   var frmName='frm_'+Name;
+   var ii=$('.accordion-body.in').data('iota');var frm,active,code,reference,setEle,container,tmp;
    if(on){
       frm=document.getElementById(frmName);
       resetForm(frm);
@@ -77,7 +82,7 @@ function onShow(on){
    code=$('.accordion-heading[data-iota="'+ii+'"]').data('code');//@explain:get the code of the table it's like iota
    if(typeof active!=="undefined"){
       get_ajax(localStorage.SITE_SERVICE,{'militia':eternal.mensa+'-'+active,iota:code},'','get','json',function(results){
-         reference=eternal.children[active];console.log(reference,active);
+         reference=eternal.children[active];
          setEle=document.querySelector(frmId+' fieldset');
          if(!document.querySelector(frmId+2))container=$anima(frmId,'fieldset',{'clss':'half-form formReader','id':frmName+2}).father;
          else container=document.querySelector(frmId+2);
@@ -87,6 +92,7 @@ function onShow(on){
          if(reference.global.complex=="table"){
             theForm.gammaTable(results,active,frmId+2);
          }else{//endif
+            theForm.form2=container;//to place in the second form
             theForm.setObject({"items":reference,"father":theForm.singleForm});//end setObject
             fieldsDisplay('form',results[0],false,active);
          }//endif

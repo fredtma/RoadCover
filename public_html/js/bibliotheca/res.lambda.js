@@ -17,7 +17,7 @@
 function SET_DISPLAY(_title,_subTitle,_pageNumber)
 {
    this.Obj={};
-   d=new Date();
+   var d=new Date();
    $('#mainHead h1').text(_title);
    $('title').text(_title);
    $('#mainHead h2').text(_subTitle);
@@ -67,6 +67,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
     * @returns {undefined}
     */
    this.navTab = function(_obj) {
+      var li,a,b,ul2,li2,a2,cl,txt,i;
       var ul=creo({"clss":"nav nav-tabs"},"ul");/*the first element created ul, for the list*/
       this.setObject({"items":_obj,/*the menu is passed as the first obj*/
          "father":function(key,item){/*the parent will be the second obj and a function*/
@@ -100,6 +101,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
     * @returns {undefined}
     */
    this.btnGroup=function(_obj){
+      var btn,i;
       var div=creo({"clss":"btn-group "+_obj.key},"div");
       var innerClass=this.Obj.clss;
       this.setObject({"items":_obj.btn,"father":function(key,item){
@@ -115,6 +117,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
     * @returns {object} the html content of the object
     */
    this.btnDropDown=function(_obj){
+      var ul,li,a,txt,i,dataToggle;
       var div=creo({"clss":"btn-group"},"div");
       this.setObject({
          "items":_obj,
@@ -147,8 +150,8 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
     * @returns {object}
     */
    this.setList=function(_obj){
+      var ul,li,a,txt,i,ul2,li2,a2,b;;
       var ul=creo({"clss":_obj.clss},'ul');
-
       this.setObject({items:_obj.items,"father":function(key,item){
             li=creo({"id":key},'li');
             a=creo({"href":item.href},'a');
@@ -181,7 +184,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
     * @returns {object}
     */
    this.btnCreation=function(_ele,_btn,_txt,_icon){
-      btn=creo(_btn,_ele,_txt);
+      var btn=creo(_btn,_ele,_txt),i;
       if(_icon){i=creo({"clss":_icon},'i');$(btn).prepend(i)}
       this.placeObj(btn);
       return btn;
@@ -192,6 +195,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
     * @returns {object}
     */
    this.inputSearch=function(_obj){
+      var div,span,i,input;
       div=creo({"clss":_obj.div.clss},"div");
       span=creo({"clss":_obj.label.clss},"span");
       i=creo({"clss":_obj.label.icon},"i");
@@ -207,6 +211,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
     * @todo add the page variable
     */
    this.pagiNation=function(_obj){
+      var div,dsbl,a,x,tmp,actv,ul,li;
       var curr=Math.floor(parseInt(sessionStorage.genesis)/localStorage.DB_LIMIT);
       var prev=parseInt(sessionStorage.genesis)==0?0:curr-1;
       var next=curr>=_obj.pages-1?_obj.pages-1:curr+1;
@@ -234,6 +239,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
     * @returns {object} the object containing all the address details
     */
    this.setAddress=function(_adr){
+      var abbr,space,a,txt,address;
       address=creo({"itemscope":"","itemtype":"http://schema.org/LocalBusiness","clss":"muted add"},"address");
       $.each(_adr,function(index,val){
          space = document.createTextNode(" ");
@@ -250,20 +256,26 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
    }/*end function*/
    this.userLogin=function(){
       if(!localStorage.USER_NAME){
-         $modal=$anima('#hiddenElements','div',{'clss':'modal','id':'userLogin','role':'dialog'})
-         .vita('div',{'clss':'modal-header'},true).vita('button',{'clss':'close','aria-hidden':true},true).vita('i',{'clss':'icon icon-color icon-close'}).genesis('h2',{},false,'Welcome to '+localStorage.SITE_NAME)
-         .novo('#userLogin','div',{'clss':'modal-body'}).vita('div',{'clss':'alert alert-info'},true)
-            .vita('h4',{},false,'Login Details').vita('span')
-            .novo('#userLogin .modal-body','form',{'clss':'form-signin','id':'loginForm','method':'post'}).vita('div',{'clss':'input-prepend fullWidth'},true).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-user'}).genesis('input',{'id':'email','type':'text','placeholder':'username or email','clss':'input-block-level','required':'','autofocus':true})
-            .novo('#userLogin .form-signin','div',{'clss':'input-prepend fullWidth'}).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-lock'}).genesis('input',{'id':'password','type':'password','clss':'input-block-level','required':'','pattern':localStorage.PASSPATERN})
-            .novo('#userLogin .form-signin','label',{'name':'remember','for':'remeberMe','clss':'checkbox inline'},'Remember me').vita('input',{'type':'checkbox','value':1,'id':'remeberMe'})
-            .genesis('label',{'name':'remember','for':'fullscreen','clss':'checkbox inline'},true,'Run in fullscreen?').vita('input',{'type':'checkbox','value':1,'id':'fullscreen'})
-         .novo('#userLogin','div',{'clss':'modal-footer'}).vita('button',{'clss':'btn btn-primary','form':'loginForm'},false,'Login');
-         $('#hiddenElements').modal({'backdrop':'static','keyboard':true,'show':true});
-//         $('#loginForm').submit(function(){ return loginForm});
-         document.getElementById('loginForm').onsubmit=function(){loginValidation(); return false;};
+         this.loginForm();
+      } else {
+         licentia(localStorage.USER_NAME);//si il'ya pas de session pour l'utilisateur
+         $('#userName a').html(localStorage.USER_DETAILS);
+         if(!localStorage.USER_ADMIN) viewAPI(false);
       }//end if
    }//end function
+   this.loginForm=function(){
+      $anima('#hiddenElements','div',{'clss':'modal','id':'userLogin','role':'dialog'})
+      .vita('div',{'clss':'modal-header'},true).vita('button',{'clss':'close','aria-hidden':true},true).vita('i',{'clss':'icon icon-color icon-close'}).genesis('h2',{},false,'Welcome to '+localStorage.SITE_NAME)
+      .novo('#userLogin','div',{'clss':'modal-body'}).vita('div',{'clss':'alert alert-info'},true)
+         .vita('h4',{},false,'Login Details').vita('span')
+         .novo('#userLogin .modal-body','form',{'clss':'form-signin','id':'loginForm','method':'post'}).vita('div',{'clss':'input-prepend fullWidth'},true).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-user'}).genesis('input',{'id':'email','type':'text','placeholder':'username or email','clss':'input-block-level','required':'','autofocus':true})
+         .novo('#userLogin .form-signin','div',{'clss':'input-prepend fullWidth'}).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-lock'}).genesis('input',{'id':'password','type':'password','clss':'input-block-level','required':'','pattern':localStorage.PASSPATERN,'placeholder':'password'})
+         .novo('#userLogin .form-signin','label',{'name':'remember','for':'remeberMe','clss':'checkbox inline'},'Remember me').vita('input',{'type':'checkbox','value':1,'id':'remeberMe'})
+         .genesis('label',{'name':'remember','for':'fullscreen','clss':'checkbox inline'},true,'Run in fullscreen?').vita('input',{'type':'checkbox','value':1,'id':'fullscreen'})
+      .novo('#userLogin','div',{'clss':'modal-footer'}).vita('button',{'clss':'btn btn-primary','form':'loginForm'},false,'Login');
+      $('#userLogin').modal({'backdrop':'static','keyboard':true,'show':true});
+      document.getElementById('loginForm').onsubmit=function(){loginValidation(); return false;};
+   }
 
 //   if(this instanceof SET_DISPLAY)return this; else return new SET_DISPLAY();
 }/*end OBJECT*/

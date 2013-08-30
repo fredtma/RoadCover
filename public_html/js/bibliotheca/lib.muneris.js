@@ -20,7 +20,7 @@ localStorage.DB_SIZE=15;
 localStorage.DB_LIMIT=15;
 localStorage.PASSPATERN='.{6,}';//(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$
 var db;
-/******************************************************************************/
+//============================================================================//
 /**
  * similar to jquery creates an DOM element
  * @author fredtma
@@ -32,7 +32,7 @@ var db;
  */
 creo=function (arr, ele, txt)
 {
-   var key;
+   var key,attr,key;
    var the_element   = document.createElement(ele);
    if (txt)
    {
@@ -41,7 +41,7 @@ creo=function (arr, ele, txt)
    }
    /*
     * @todo:the @placehoder and @form also not compatible with setAttribute
-    */
+ */
    for (key in arr)
    {
       var skip = false;
@@ -57,7 +57,21 @@ creo=function (arr, ele, txt)
    }/*end for each*/
    return the_element;
 }//end function
+//============================================================================//
+/**
+ * automatic element chain creation
+ * @author fredtma
+ * @version 3.4
+ * @category DOM, element
+ * @param {mized} <var>section</var> the element to search where the insertion will occure
+ * @param string <var>ele</var> the element type to be created
+ * @param object <var>arr</var> the attributes of the element to be created
+ * @param string <var>txt</var> the text that the element is to have
+ * @param string <var>point</var> the position where the element will occure
+ * @return object
+ */
 $anima=function(section,ele,arr,txt,point){
+   var Node;
    this.creo=creo;
    this.father=this.creo(arr,ele,txt);
    this.vita=function(ele,arr,parent,txt,point){
@@ -85,7 +99,7 @@ $anima=function(section,ele,arr,txt,point){
    else Node.appendChild(this.father);
    return this;
 };
-/******************************************************************************/
+//============================================================================//
 /**
  * load a script dynamically in the header tag
  * @author fredtma
@@ -96,6 +110,7 @@ $anima=function(section,ele,arr,txt,point){
  * @return void
  */
 function load_async(url,sync,position,fons){
+   var s,ele;
    var script=document.createElement('script');
    s=document.querySelector('script[data-fons]');
    if(!position)ele=document.getElementsByTagName('head')[0];
@@ -107,7 +122,7 @@ function load_async(url,sync,position,fons){
    ele.appendChild(script);
 //   head.parentNode.insertBefore(script, head);
 }
-/******************************************************************************/
+//============================================================================//
 /**
  * similar to PHP issset function, it will test if a variable is empty
  * @author fredtma
@@ -133,7 +148,7 @@ function isset() {
    }
    return true;
 }//end function
-/******************************************************************************/
+//============================================================================//
 /**
  * get the size of an object
  *
@@ -144,7 +159,7 @@ function isset() {
  * @return bytes
  */
 function objectSize( object ) {
-    var objectList=[];var stack=[object];var bytes=0;cnt=0;
+    var objectList=[];var stack=[object];var bytes=0; var cnt=0; var i;
     while ( stack.length ) {
         var value = stack.pop();
         if ( typeof value === 'boolean') {bytes += 4;}
@@ -155,7 +170,7 @@ function objectSize( object ) {
     }
     return bytes;
 }
-/******************************************************************************/
+//============================================================================//
 /**
  * measure two time frame from the begining of the script TimeElapse
  * for the current script TimeFrame
@@ -164,6 +179,7 @@ function objectSize( object ) {
  * @category performance
  */
 function timeFrame(_from,_total){
+   var endTime,from,elapse;
    endTime=new Date().getTime();
    from=endTime-sessionStorage.runTime;
    elapse=endTime-sessionStorage.startTime;
@@ -171,7 +187,7 @@ function timeFrame(_from,_total){
    if(_total)console.log('TimeElapse:'+_from+' '+elapse);
    sessionStorage.runTime=endTime;
 }
-/******************************************************************************/
+//============================================================================//
 /**
  * used in a similar way as the php version of ucwordsn
  * @author fredtma
@@ -187,7 +203,7 @@ ucwords = function (str)
         return $1.toUpperCase();
     });
 }//end function
-/******************************************************************************/
+//============================================================================//
 /**
  * change into alpha numerical, with no spacing
  * @author fredtma
@@ -205,7 +221,7 @@ aNumero = function(the_str,transform)
    the_str   = the_str.replace(/[^A-Za-z0-9\s]*/ig,'');
    return the_str;
 }
-/******************************************************************************/
+//============================================================================//
 /**
  * used to measure script execution time
  *
@@ -221,8 +237,8 @@ aNumero = function(the_str,transform)
  * @uses file|element|class|variable|function|
  */
 function isOnline(_display){
-   var myAppCache = window.applicationCache;
-   msg=navigator.onLine?"Status: Working <strong class='text-success'>Online</strong>":"Status: Working <strong class='txt-error'>Offline</strong>";
+   var myAppCache = window.applicationCache; var note;
+   var msg=navigator.onLine?"Status: Working <strong class='text-success'>Online</strong>":"Status: Working <strong class='txt-error'>Offline</strong>";
    switch (myAppCache.status) {
       case myAppCache.UNCACHED:msg+=', CACHE::UNCACHED'; break;//status 0 no cache exist
       case myAppCache.IDLE:msg+=', CACHE::IDLE'; break;//status 1 most common, all uptodate
@@ -239,7 +255,7 @@ function isOnline(_display){
       $('#sideNotice').append(note);
    }
 }
-/******************************************************************************/
+//============================================================================//
 /**
  * reset a form input data
  * @author fredtma
@@ -252,7 +268,7 @@ function resetForm(_frm){
    $('input[type=checkbox],input[type=radio]',_frm).prop('checked',false).prop('selected',false);
    $('button[type=button]',_frm).removeClass('active');
 }
-/******************************************************************************/
+//============================================================================//
 /**
  * places the session current active json setting in a variable
  * @author fredtma
@@ -263,23 +279,66 @@ eternalCall=function(){
    if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;
    return eternal;
 }
+//============================================================================//
+/**
+ * login validation, once user click login on the form.
+ * Validates the user, give session and permanent variable respectively
+ * @author fredtma
+ * @version 2.9
+ * @category json
+ */
 loginValidation=function(){
+   var u,row;
    try{
       u=$('#loginForm #email').val();p=$('#loginForm #password').val();
-      $DB("SELECT id,username FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(_results){
+      $DB("SELECT id,username,firstname||' '||lastname as name FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(_results){
          if(_results.rows.length){
             row=_results.rows.item(0);
-            $('#hiddenElements').modal('hide');
-            sessionStorage.username=row['username'];
-            if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=row['username'];
-            if(row['id']==1||row['id']==4)localStorage.USER_ADMIN=true;
-            else viewAPI(false);
-            licentia(row['username']);
+            sessionStorage.username=row['username'];localStorage.USER_DETAILS=row['name'];
+            if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=JSON.stringify({"operarius":row['username'],"singularis":row['id'],"nominis":row['name']});
+            if(row['id']==1||row['id']==4||row['level']=='supper')localStorage.USER_ADMIN=true; else viewAPI(false);
+            $('#userName a').html(localStorage.USER_DETAILS); licentia(row['username']);
+            $('#userLogin').modal('hide').remove();
          }else{$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('Failed login attempt...')}
       });
    }catch(err){console.log('ERROR::'+err.message)}
    return false;
 }
+//============================================================================//
+/**
+ * login OUT removes all session and some permanent variable
+ * creates the login form dynamically as well
+ * @author fredtma
+ * @version 3.2
+ * @category login, dynamic
+ */
+loginOUT=function(){
+   roadCover.loginForm();
+   $('#userLogin .alert-info').find('span').append('You have successfully logout.<br/>Enter your username and password below if you wish to login again');
+   refreshLook();sessionStorage.removeItem('username');localStorage.removeItem('USER_ADMIN');localStorage.removeItem('USER_NAME');localStorage.removeItem('USER_DETAILS');
+}
+//============================================================================//
+/**
+ * refreshes the pages and removes session variable, cleares out some variable
+ * this is used in case an error occures
+ * @author fredtma
+ * @version 3.4
+ * @category refresh, clean, safety
+ */
+refreshLook=function(){
+   history.go(0);
+   var tmp=sessionStorage.username;
+   sessionStorage.clear();sessionStorage.runTime=0;sessionStorage.startTime=new Date().getTime();sessionStorage.username=tmp;
+   $('footer').removeData();
+   console.log('history:...');
+}
+//============================================================================//
+/**
+ * places the screen in fullscreen
+ * @author fredtma
+ * @version 1.8
+ * @category feature
+ */
 enableFullScreen=function(elem){
    elem=elem||'fullBody';
    elem=document.getElementById(elem);
@@ -289,11 +348,19 @@ enableFullScreen=function(elem){
    var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;//the element in fullscreen
    var fullscreenEnabled = document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled;//is the view in fullscreen?
 }
+//============================================================================//
+/**
+ * removes the full screen feature
+ * @author fredtma
+ * @version 1.9
+ * @category fullscreen, features
+ */
 exitFullScreen=function(){
    if(document.cancelFullScreen)document.cancelFullScreen();else if(document.mozCancelFullScreen)document.mozCancelFullScreen();else if(document.webkitCancelFullScreen)document.webkitCancelFullScreen();
    var fullscreenEnabled = document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled;//is the view in fullscreen?
    if(fullscreenEnabled){if(document.webkitExitFullscreen)document.webkitExitFullscreen();else if(document.mozCancelFullscreen)document.mozCancelFullscreen();else if(document.exitFullscreen)document.exitFullscreen();}
 }
+//============================================================================//
 /*
     *
     * @param {integer} <var>_iota</var> the single indentifier
@@ -301,7 +368,7 @@ exitFullScreen=function(){
     * @returns {undefined}
     */
 sideDisplay=function(_iota,_mensa){
-   var display=$('footer').data('display');var adrType;
+   var display=$('footer').data('display');var adrType,title,key;
    console.log(display,'display');
    if(typeof display!="undefined" || display==false){//pour aider le system a ne pas trop travailler
       if(display[0]==_iota&&display[1]==_mensa) return true;else $('footer').data('display',[_iota,_mensa]);//celui-ci c'est pour changer quand display a une value d'une autre source
@@ -324,7 +391,7 @@ sideDisplay=function(_iota,_mensa){
             else if(eternal.mensa==="members")$('#sideBot h3').html("Current Members");
             title=(typeof _results.company[0]!="undefined"&&_results.company[0]!=null)?"Customers under "+_results.company[0].Name:eternal.form.legend.txt;
             $('.headRow').html(title);
-            $sideDisplay=$anima('#displayMensa','dl',{"clss":"dl-horizontal","id":"displayList","itemtype":"http://schema.org/LocalBusiness","itemscope":""});
+            var $sideDisplay=$anima('#displayMensa','dl',{"clss":"dl-horizontal","id":"displayList","itemtype":"http://schema.org/LocalBusiness","itemscope":""});
             for(key in _results.address){
                switch(_results.address[key].Type){
                   case 'Dns.Sh.AddressBook.EmailAddress':if(_results.address[key].Address)$sideDisplay.novo('#displayList','dt',{},'Email').genesis('dd',{'itemprop':'email'},false).child.innerHTML="<a href='mailto:"+_results.address[key].Address+"' target='_blank'>"+_results.address[key].Address+"</a>"; break;
@@ -360,7 +427,7 @@ sideDisplay=function(_iota,_mensa){
             else if(eternal.mensa==="members")$('#sideBot h3').html("Current Members");
             title=(typeof _results.agent!="undefined"&&_results.agent!=null)?"Customers under "+_results.agent[0].FullNames+' '+_results.agent[0].Surname:eternal.form.legend.txt;
             $('.headRow').html(title);
-            $sideDisplay=$anima('#displayMensa','dl',{"clss":"dl-horizontal","id":"displayList","itemtype":"http://schema.org/Person","itemscope":""});
+            var $sideDisplay=$anima('#displayMensa','dl',{"clss":"dl-horizontal","id":"displayList","itemtype":"http://schema.org/Person","itemscope":""});
             $sideDisplay.novo('#displayList','dt',{},'ID').genesis('dd',{},false,_results.agent[0].IdentificationNumber);
             for(key in _results.address){
                switch(_results.address[key].Type){
@@ -387,7 +454,7 @@ sideDisplay=function(_iota,_mensa){
          break;
    }//switch
 }
-/******************************************************************************/
+//============================================================================//
 /**
  * this function sets the viewing option of the API
  * @author fredtma
@@ -402,7 +469,7 @@ function viewAPI(_viewing){
      $('.homeSet0,.setDisplay,.setSystem').hide();
    }
 }
-/******************************************************************************/
+//============================================================================//
 /**
  * gets the permissions of the user. Note permission are static
  * @author fredtma
@@ -411,7 +478,8 @@ function viewAPI(_viewing){
  * @param string <var>_nominis</var> the nominis of the user
  */
 function licentia(_nominis){
-   quaerere="SELECT pu.`permission` as permission FROM link_permissions_users pu WHERE `user`=? UNION \
+   var len,x,tmp,row;
+   var quaerere="SELECT pu.`permission` as permission FROM link_permissions_users pu WHERE `user`=? UNION \
    SELECT pg.`permission` as permission FROM link_permissions_groups pg INNER JOIN link_users_groups ug ON ug.`group`=pg.`group` WHERE ug.user=?";
    $DB(quaerere,[_nominis,_nominis],"Accessing permissions",function(_results){
       len=_results.rows.length;tmp=[];
@@ -419,6 +487,7 @@ function licentia(_nominis){
       sessionStorage.lecentia=JSON.stringify(tmp);
    });
 }
+//============================================================================//
 /*
  * analyse whether a permission for the user will return true
  * @param {string} <var>_name</var> the prefix of the permission
@@ -426,13 +495,13 @@ function licentia(_nominis){
  * @returns Boolean
  */
 function getLicentia(_name,_perm){
-   name=_name+' '+_perm;
-   tmp=JSON.parse(sessionStorage.lecentia);
+   var name=_name+' '+_perm;
+   var tmp=JSON.parse(sessionStorage.lecentia);
    if(localStorage.USER_ADMIN) return true;
    if(tmp.indexOf(name)!=-1) return true;
    return false;
 }
-/******************************************************************************/
+//============================================================================//
 /**
  * used to measure script execution time
  *
@@ -448,6 +517,7 @@ function getLicentia(_name,_perm){
  * @uses file|element|class|variable|function|
  */
 function getPage(_page){
+   var len,row,tmp,d;
    $DB("SELECT id,title,content,date_modified FROM pages WHERE title=?",[_page],"Found page "+_page,function(results){
       len=results.rows.length;row=[];
       if(len){row=results.rows.item(0);$('footer').data('Tau','deLta');$('footer').data('iota',row['id']);}
@@ -459,7 +529,7 @@ function getPage(_page){
       load_async("js/libs/CKEditorMin/ckeditor.js",false,'end',true);
    });
 }
-/******************************************************************************/
+//============================================================================//
 /**
  * searches all the functions in the system
  * @author fredtma
@@ -473,7 +543,8 @@ function getPage(_page){
  * @uses file|element|class|variable|function|
  */
 function searchAll(_query,_process){
-   set=this;set.shown=true;_query=_query||'%';
+   var len,x,got;
+   var set=this;set.shown=true;_query=_query||'%';
    $DB("SELECT feature,category,filename FROM features WHERE feature LIKE ?",[_query+'%'],"searching "+_query,function(_results,results){
       len=results.rows.length;got=[];getResults={};
       for(x=0;x<len;x++){got[x]=results[x]['feature'];getResults[results[x]["feature"]]={"cat":results[x]["category"],"file":results[x]["filename"]};sessionStorage.tempus=JSON.stringify(getResults);}
@@ -481,7 +552,7 @@ function searchAll(_query,_process){
       set.$menu[0].style.top='auto';
    });
 }
-/******************************************************************************/
+//============================================================================//
 /**
  * typeahead search result upon click function
  * This will also change the page according to the result selected
@@ -491,10 +562,10 @@ function searchAll(_query,_process){
  * @return object
  */
 function searchUpdate(item){
-   var _mensa,_mensula,_set,_script=false;sessionStorage.genesis=0;
-   getResults=JSON.parse(sessionStorage.tempus);
+   var _mensa,_mensula,_set,_script,_tab=false;sessionStorage.genesis=0;
+   var getResults=JSON.parse(sessionStorage.tempus);
    getResults=getResults[item];
-   _mensula=getResults.filename||'home';
+   _mensula=getResults.file||'home';
    _set='#link_'+_mensula;
    switch(getResults.cat){
       case 'json-script':
@@ -505,11 +576,28 @@ function searchUpdate(item){
       case 'execute':break;
    }
    sessionStorage.removeItem('tempus');
-   _mensa=aNumero(item);console.log(_set,'_set',document.querySelector(_set));
+   _mensa=aNumero(item);
+   console.log(_set,'_set',document.querySelector(_set));
+   console.log(getResults,'getResults');
    activateMenu(_mensa,_mensula,_set,_script,_tab);
    return item;
 }
-/******************************************************************************/
+//============================================================================//
+/**
+ * reset a the body, removes the pagination and new button
+ * @author fredtma
+ * @version 3.4
+ * @category reset, new
+ * @see dashboard,res.notitia
+ * @return void
+ */
+function newSection(){
+   $('#newItem').remove();$('.pagination').remove();$('#verbum').empty();
+   $('.search-all').val('').prop('disabled',true);
+   $('#link_home').tab('show');
+   sessionStorage.genesis=0;//reset each time ur on dashboard
+}
+//============================================================================//
 /**
  * used to measure script execution time
  *

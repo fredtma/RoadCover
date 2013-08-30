@@ -27,12 +27,13 @@ tmp={
    }
 }
 sessionStorage.setItem('active',JSON.stringify(tmp));
-eternal=tmp;temp=$('footer').data('temp');console.log(temp,'temp');
+eternal=tmp;temp=$('footer').data('temp');
 get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp},'','post','json',function(_rows){
    if(typeof temp==="undefined")temp=[0,"dealers"];
    sideDisplay(temp[0],temp[1]);
    theForm = new SET_FORM();
    theForm._Set("#body article");
    theForm.gammaTable(_rows);
+   delete temp;delete tmp;
 });
 //@todo add to the menu the three most recents

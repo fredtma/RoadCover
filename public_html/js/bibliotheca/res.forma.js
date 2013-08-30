@@ -19,10 +19,13 @@
  */
 function SET_FORM(_name,_class,_label){
    var DB = new SET_DB();//to enable db access
+   var SET = this;
    this.name;
+   this.form;this.form2;
+   this.frmName;
+   this.frmID;
    this.frmClass;
    this.frmLabel;
-   this.frmName;
    this.Obj=[];
    this.defaultFields={
       "text":{"type":"text"},
@@ -54,6 +57,7 @@ function SET_FORM(_name,_class,_label){
     * @see navTab|btnGroup|btnDropDown
     */
    this.setObject = function(_obj) {
+      var global;
       if (typeof(_obj.items)==='array'||typeof(_obj.items)==='object')
       {
          global=_obj.items.global||0;
@@ -78,24 +82,26 @@ function SET_FORM(_name,_class,_label){
     * @param {obejcts} <var>_fields</var> setting of the form has the form name, class, fields, title
     * @returns {undefined}
     */
-   this.setAlpha=function(_fields){
-      this.name=_fields.form.field.name;
-      $('#sideBot h3').html('<a href="#">Add new '+this.name+'<i class="icon icon-color icon-plus addThis"></i></a>');
-      this.frmLabel=mainLabel=_fields.form.label?_fields.form.label:true;
+   this.setAlpha=function(){
+      var mainLabel, legend,fieldset,container;
+      eternal=eternalCall();
+      this.name=eternal.form.field.name;
+      this.frmLabel=mainLabel=eternal.form.label?eternal.form.label:true;
       this.frmName='frm_'+this.name;
-      theDefaults=this.defaultFields;
+      this.frmID='#frm_'+this.name;
+      $('#sideBot h3').html('<a href="#">Add new '+this.name+'<i class="icon icon-color icon-plus addThis"></i></a>');
       //FORM
-      form=_fields.form.field;
-      form.id=this.frmName;
-      form=creo(form,'form');
-      if(_fields.form.legend){legend=creo({},'legend');legend.appendChild(document.createTextNode(_fields.form.legend.txt))}
+      this.form=eternal.form.field;
+      this.form.id=this.frmName;
+      this.form=creo(this.form,'form');
+      if(eternal.form.legend){legend=creo({},'legend');legend.appendChild(document.createTextNode(eternal.form.legend.txt))}
       else legend=undefined;
-      if(_fields.form.fieldset){fieldset=creo(_fields.form.fieldset,'fieldset');if(legend)fieldset.appendChild(legend);form.appendChild(fieldset);container=fieldset;}
-      else container=form;
-      this.setObject({"items":_fields,"father":this.singleForm});//end setObject
-      form.appendChild(this.setButton(_fields.form.button));
-      this.placeObj(form);
-      return form;
+      if(eternal.form.fieldset){fieldset=creo(eternal.form.fieldset,'fieldset');if(legend)fieldset.appendChild(legend);this.form.appendChild(fieldset);container=fieldset;}
+      else container=this.form;
+      this.setObject({"items":eternal,"father":this.singleForm});//end setObject
+      this.form.appendChild(this.setButton(eternal.form.button));
+      this.placeObj(this.form);
+      return this.form;
    }
    /*
     * The second form list display generation
@@ -105,19 +111,20 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.setBeta=function(_results,_actum,_iota,_unum){
-      $collapseElement=null;
-      len=_results.rows.length;
+      var $collapseElement=null;
+      var len=_results.rows.length;
+      var Name,navSection,len,addbtn,max,len,ref,row,rec,frm,frmName;var collapseName,collapse,collapseTo,collapse_head,collapse_content,headeName,ii,x,l,first;
       len=len||1;//this will display the record even when there is no record
-      console.log(len,'len');
       eternal=eternal||eternalCall();
-      linkTable=this.linkTable;
+      var linkTable=this.linkTable;
       this.name=Name=eternal.form.field.name;
       this.frmName=frmName='frm_'+this.name;
-      isReadOnly=(typeof eternal.form.options !=="undefined")?eternal.form.options.readonly:false;
+      this.frmID='#frm_'+this.name;
+      this.frmLabel=typeof eternal.form.label=="boolean"?eternal.form.label:true;;
+      var isReadOnly=(typeof eternal.form.options !=="undefined")?eternal.form.options.readonly:false;
       if(typeof _results.rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_results);
       else this.setActiveRecord(_results,len);//maitre ce si quand la source et du system interne
       navSection=eternal.form.navigation!==true?false:eternal.form.navigation;
-      console.log(navSection,'navSection',eternal.form.navigation);
       this.setNavigation(_results,navSection);
       if(!_actum){
          roadCover._Set({"next":".tab-pane.active .libHelp"});
@@ -125,14 +132,13 @@ function SET_FORM(_name,_class,_label){
          if(!document.getElementById('newItem')&&isReadOnly===false&&getLicentia(this.name,'Create')){
             $('.secondRow').append(creo({},'h2'));
             addbtn=roadCover._Set({"next":".tab-pane.active .homeSet2,.tab-pane.active .setClient"}).btnCreation("button",{"id":"newItem","name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
-            addbtn.onclick=addRecord;
+            addbtn.onclick=addRecord;//function call
          }else if (isReadOnly===false&&getLicentia(this.name,'Create')){
             $('#newItem').attr("name","btnNew"+this.name).attr("title","Create a new "+this.name).html(" <i class='icon-plus icon-white'></i> New "+this.name);
          }
          /*@note:$('footer').data('header') is set from the menu links
           * aliquam: from server or localhost
           * */
-         console.log(eternal.form.aliquam,'aliquam',$('footer').data('header'));
          if (eternal.form.aliquam!==true&&$('footer').data('header')!==true){$('footer').data('header',false);}
          if($('footer').data('header')===false){$('#sideBot h3').html(eternal.form.legend.txt);$('#tab-home section h2').text(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();}//lieu pour maitre le titre
          $(this.Obj.addTo).empty();//main content and side listing
@@ -160,7 +166,6 @@ function SET_FORM(_name,_class,_label){
                l=headeName.length;for(x=0;x<l;x++)collapse_head.vita('span',{},false).child.innerHTML=headeName[x]+' ';
              //icon holder
              collapse_head.novo('#accGroup'+row['id']+' .accordion-heading','i',{'clss':'betaRight'})
-             console.log(isReadOnly,'isReadOnly');
             if(isReadOnly===false&&getLicentia(this.name,'Edit')){
              collapse_head.vita('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':collapseName,'href':collapseTo},true)
               //EDIT, quand le button et le lien sont frapper
@@ -178,16 +183,16 @@ function SET_FORM(_name,_class,_label){
                //@event on SHOWN
                $(collapseName).on('hidden',function(){$(this).data('toggle_shown',0); });
             }else{
-               temp=[];
+               var temp=[];
                $(collapse_head.father).parents('div').data('code',row['code']);//@check: i have change the div to 'div'
                //click on the a link
-               $collapseElement.onclick=function(){console.log($(this).parents('div').data('code'),eternal.mensa,'mensa');
+               $collapseElement.onclick=function(){
                   temp[0]=$(this).parents('div').data('code');temp[1]=eternal.mensa;$('footer').data('temp',temp);
                   sideDisplay($(this).parents('div').data('code'), eternal.mensa);
                }//@see lib.voca.js
             }//endif read only
             //APPLY CHANGES TO ADD FUNCTION
-            if(typeof eternal.links!="undefined") this.setLinks(eternal.links,collapse_head);
+            if(typeof eternal.links!="undefined") this.setLinks(eternal.links,collapse_head,headeName[0],ref);
             if(typeof eternal.children!="undefined") this.setChildren(eternal.children,collapse_head,collapse,collapseTo,collapseName);
             collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec,'data-iota':row['id']});
             collapse_content.vita('div',{'clss':'accordion-inner'},false);
@@ -202,15 +207,15 @@ function SET_FORM(_name,_class,_label){
          for (first in eternal.fields)break;
          $('#'+first,frm).focus();
          frm.style.display='block';
-         $(form+' #cancel_'+this.name)[0].value='Cancel';
-         $(form+' #cancel_'+this.name).click(function(){$(this).parents('.accordion-body.in').collapse('hide');});
+         $(this.frmID+' #cancel_'+this.name)[0].value='Cancel';
+         $(this.frmID+' #cancel_'+this.name).click(function(){$(this).parents('.accordion-body.in').collapse('hide');});
          if((_iota==-1||!_iota)){
-            $(form).data('iota',0);
-            $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(1);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 500); return false;}//make the form to become inserted
+            $(this.frmID).data('iota',0);
+            $(this.frmID)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+SET.name).button('loading');DB.beta(1);setTimeout(function(){$(SET.frmID+' #submit_'+SET.name).button('reset');}, 500); return false;}//make the form to become inserted
          }else{
-            $(form).data('iota',row['id']);
+            $(this.frmID).data('iota',row['id']);
             fieldsDisplay('form',row);
-            $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(form+' #submit_'+this.name).button('reset');}, 500); return false;}//make the form to become update
+            $(this.frmID)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.SET.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(SET.frmID+' #submit_'+SET.name).button('reset');}, 500); return false;}//make the form to become update
          }//endif
          if(eternal.form.file)load_async('js/agito/'+eternal.form.file+'.js',false,'end',true);
       }
@@ -224,6 +229,7 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.gammaTable=function(_rows,_child,_element,_unum){
+      var addEle,len,headers,$table,r1,max,len,k,th,title,allHead,cls,colspan,row,rec;
 //      for(k in _rows) if(_rows.hasOwnProperty(key))len++;
       if(typeof _rows.rows!=="undefined"&&typeof _rows.rows.source!=="undefined"){sessionStorage.activeRecord=JSON.stringify(_rows);}
       else if(typeof _rows.source!=="undefined"){sessionStorage.activeRecord=JSON.stringify(_rows);}
@@ -248,7 +254,6 @@ function SET_FORM(_name,_class,_label){
       max=(parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT));
       max=max>len?len:max;//@fix:prevent the last index from occuring
       //si il'ya une recherche
-      console.log(typeof _unum,'typeof _unum');
       if(typeof _unum=="number"){sessionStorage.genesis=_unum;len=_unum+1;max=_unum+1;}
       for(rec=parseInt(sessionStorage.genesis);rec<len,rec<max;rec++){
          row=_rows[rec];
@@ -269,19 +274,21 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.singleForm=function(_key,_field,_global){
-      global=_global!=0?_global:null;
+      var global,theField,theName,legend,div,theLabel,label,placeHolder,fieldset,div1,tmpType,input,i,span,div2,container;
+      global=_global!=0?_global:null;//global variable to give default value
       theField=_field.field||_field;
       theField.id=_key;
       theName=theField.name?theField.name:_key;
+      container=SET.form2||SET.form;//to place in the second form.
       //FIELDSET
       if(_field.legend){legend=creo({},'legend');legend.appendChild(document.createTextNode(_field.legend.txt))}
-      if(_field.fieldset){fieldset=creo(_field.fieldset,'fieldset');if(legend)fieldset.appendChild(legend);form.appendChild(fieldset);container=fieldset;}
+      if(_field.fieldset){fieldset=creo(_field.fieldset,'fieldset');if(legend)fieldset.appendChild(legend);SET.form.appendChild(fieldset);container=fieldset;}
       div=creo({"clss":"control-group "+_key},'div');
       //LABEL
       theLabel=_field.title?_field.title:aNumero(theName, true);
       theLabel=aNumero(theLabel,true);
       label=null;
-      label=(isset(_field.addLabel))?_field.addLabel:mainLabel;
+      label=(isset(_field.addLabel))?_field.addLabel:SET.frmLabel;
       if(label) {label=creo({"clss":"control-label","forr":_key},'label'); label.appendChild(document.createTextNode(theLabel)); div.appendChild(label);}
       div1=creo({"clss":"controls"},'div');
       //PLACEHODER
@@ -292,7 +299,7 @@ function SET_FORM(_name,_class,_label){
       else if(!theField.type)theField.type='text';
       if(global&&global.complex)_field.complex=global.complex;
       tmpType=theField.type;
-      theField=$.extend({},theField,theDefaults[tmpType]);
+      theField=$.extend({},theField,SET.defaultFields[tmpType]);
       //set the input type textarea|input|select|etc...
       input=(_field.items||_field.complex)?formInput(_key,theField,_field.items,div1,_field.complex):creo(theField,'input');
       //input with items[] sets will not get icons
@@ -314,6 +321,7 @@ function SET_FORM(_name,_class,_label){
     * @todo add a new layout
     */
    this.setButton=function(_btn,_layout){
+      var div,button;
       switch(_layout){
          default:
             div=creo({"clss":"form-actions well well-small purgare"},'div');
@@ -329,17 +337,18 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.callForm=function(_results,_iota){
+      var row,mainLabel,theDefaults,theField,theName,formFields,theLabel,label,formControl,placeHolder,tmpType,input,formContent;
       row=(_iota==-1||!_iota)?{}:_results.rows.item(0);//@todo:check that <var>row</var> is not used and remove it also change the function var
       this.frmLabel=mainLabel=eternal.form.label?eternal.form.label:true;
-      this.frmName='frm_'+this.name;
       theDefaults=this.defaultFields;
       //FORM
-      form=eternal.form.field;
-      form.id=this.frmName;
-      form=$anima(this.Obj.addTo,'form',form);
-      if(eternal.form.fieldset)form.vita('fieldset',eternal.form.fieldset,true);
-      if(eternal.form.legend)form.vita('legend',{},false,eternal.form.legend.txt);
-      formContent=form.father;
+      this.form=eternal.form.field;
+      this.form.id=this.frmName;
+      var $form=$anima(this.Obj.addTo,'form',this.form);
+      this.form=$form.father;
+      if(eternal.form.fieldset)$form.vita('fieldset',eternal.form.fieldset,true);
+      if(eternal.form.legend)$form.vita('legend',{},false,eternal.form.legend.txt);
+      formContent=$form.father;
       this.setObject({"items":eternal,"father":function(_key,_property){
             theField=_property.field||{};
             theField.id=_key;
@@ -376,6 +385,7 @@ function SET_FORM(_name,_class,_label){
          }
       });//end setObject
 //      formContent.appendChild(this.setButton(eternal.form.button));
+
       formContent.parentNode.insertBefore(this.setButton(eternal.form.button), formContent.nextSibling);
       document.getElementById(this.frmName).style.display='none';
    }
@@ -388,10 +398,11 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.linkTable=function(_name,_mensa,_agrum,_ratio){
+      var agris1,agris2,quaerere,len,x,row,$displayMensa
       eternal=eternal||eternalCall();
-      unus=_agrum[1];
-      duo=_agrum[2]||_agrum[0];
-      tribus=_agrum[3]||_agrum[0];
+      var unus=_agrum[1];
+      var duo=_agrum[2]||_agrum[0];
+      var tribus=_agrum[3]||_agrum[0];
       _agrum=_agrum[0];
       if(!$('#displayMensa').data('listed')||$('#displayMensa').data('listed')!=unus+_ratio){
          $('#displayMensa').data('listed',unus+_ratio);
@@ -404,10 +415,10 @@ function SET_FORM(_name,_class,_label){
          len=results.rows.length;
             for(x=0;x<len;x++){
                row=results.rows.item(x);
-               displayMensa=$anima('#displayMensa','li',{'data-iota':row['id']}).vita('a',{'href':'#link_'+unus},true,aNumero(row[_agrum],true)+' ').vita('i',{'clss':'icon icon-color icon-unlink'});
-               $(displayMensa.child).data('tribus',row[tribus]);
-               if(_ratio==row[agris2])$(displayMensa.child).removeClass('icon-unlink').addClass('icon-link');
-               displayMensa.child.onclick=function(){
+               $displayMensa=$anima('#displayMensa','li',{'data-iota':row['id']}).vita('a',{'href':'#link_'+unus},true,aNumero(row[_agrum],true)+' ').vita('i',{'clss':'icon icon-color icon-unlink'});
+               $($displayMensa.child).data('tribus',row[tribus]);
+               if(_ratio==row[agris2]){$($displayMensa.child).removeClass('icon-unlink').addClass('icon-link');$($displayMensa.child).parent().addClass('text-success');}
+               $displayMensa.child.onclick=function(){
                   quaerere={};quaerere.eternal={};quaerere.eternal[agris1]={};quaerere.eternal[agris2]={};
                   if($(this).hasClass('icon-unlink')){
                      $(this).data('toggle',1);$(this).addClass('icon-link').removeClass('icon-unlink');
@@ -428,19 +439,21 @@ function SET_FORM(_name,_class,_label){
    }
    /*
     * set the links for the beta form
-    * @param {object} _children the links list
-    * @param {object} _collapse_head the node to the element
+    * @param {object} <var>_children</var> the links list
+    * @param {object} <var>_collapse_head</var> the node to the element
+    * @param {string} )<var>_headKey</var> the name of the header that will be used as a key
     * @returns none
     */
-   this.setLinks=function(_children,_collapse_head){
+   this.setLinks=function(_children,_collapse_head,_headKey,_ref){
+      var link,theLink,temp;
       for(link in _children){
          theLink=eternal.links[link][1];
          _collapse_head.vita('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link #'+theLink});
          if(link!='reference'){
-            $(_collapse_head.child).data('ref',ref);$(_collapse_head.child).data('head',headeName[0]);$(_collapse_head.child).data('link',link);$(_collapse_head.child).data('links',eternal.links[link]);
+            $(_collapse_head.child).data('ref',_ref);$(_collapse_head.child).data('head',_headKey);$(_collapse_head.child).data('link',link);$(_collapse_head.child).data('links',eternal.links[link]);
             $(_collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
                $('.accordion-heading .icon-black').removeClass('icon-black').addClass('icon-color');$(this).removeClass('icon-color').addClass('icon-black');
-               linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'));
+               SET.linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'));
             });
          }else{//esle reference. LINK
             temp=[];
@@ -462,6 +475,7 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.setChildren=function(_children,_collapse_head,_collapse,_collapseTo,_collapseName){
+      var key,tmp;
       for(key in _children){tmp=_children[key];
          _collapse_head.vita('a',{'clss':'forIcon','data-toggle':_collapse,'data-parent':_collapseName,'href':_collapseTo},true)
          .vita('i',{'clss':'memberIcon '+tmp.icon,'title':'Link '+tmp.title,'data-agilis':key});//@event:customer.js
@@ -474,6 +488,7 @@ function SET_FORM(_name,_class,_label){
     * @returns {void}
     */
    this.setNavigation=function(_results,_pos,_class){
+      var len,x,srch,found,y,row,c,f,examiner,value,pages,pagination;
       $('.pagination').remove();
       if(sessionStorage.activePage!=this.name){sessionStorage.genesis=0;sessionStorage.activePage=this.name;}//@alert:ne pas maitre deux form avec le meme nom.
       len=_results.length||_results.rows.length;
@@ -483,7 +498,7 @@ function SET_FORM(_name,_class,_label){
       $('input[name=s]').each(function(i){//@fix:this has to be set as below for each search has it own typeahead.
          if(typeof $(this).data('typeahead')!=="undefined")$(this).data('typeahead').source=examiner;
       });
-      $('input[name=s]').val('').typeahead({source:examiner,minLength:3,
+      $('input[name=s]').val('').prop('disabled',false).typeahead({source:examiner,minLength:3,
          highlighter:function(item){var regex = /\$(.+)/;return item.replace(regex,"<span class='none'>$1</span>");},
          updater:function(item){
          value=examiner.indexOf(item);
@@ -512,6 +527,7 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.setActiveRecord=function(_results,_len){
+      var tmp;
       _len=_results.rows.length;
       tmp={};tmp["rows"]={'length':_len,'source':'generated'};for(x=0;x<_len;x++){tmp[x]=_results.rows.item(x);}
       sessionStorage.activeRecord=JSON.stringify(tmp);tmp=null;
@@ -534,6 +550,7 @@ function SET_FORM(_name,_class,_label){
  */
 function create_select (ele, create, the_list, clss, empty)
 {
+   var optGrp,x,i;
    ele = ele.indexOf('#')!=-1?ele.substr(1):ele;
    var select_field  = document.getElementById(ele);
 
@@ -544,7 +561,7 @@ function create_select (ele, create, the_list, clss, empty)
       select_field   = creo(edit_element,'select');
    }/*end if*/
    optGrp = select_field.getElementsByTagName('optgroup');
-   if (optGrp.length > 0 ) for (var i=optGrp.length-1;i>=0;i--) select_field.removeChild(optGrp[i]);
+   if (optGrp.length > 0 ) for (i=optGrp.length-1;i>=0;i--) select_field.removeChild(optGrp[i]);
    if (select_field.length > 0)for (x=select_field.length-1; x>=0; x--) select_field.remove(x);
 
    for (i in the_list)
@@ -557,7 +574,7 @@ function create_select (ele, create, the_list, clss, empty)
       /*try {select_field.add(option,select_field.options[null]);} catch(e) { select_field.add(option,null);}*/
    }/*end for*/
    return select_field;
-}/*end function*/
+}
 /******************************************************************************/
 /**
  * creates a form input field
@@ -572,9 +589,10 @@ function create_select (ele, create, the_list, clss, empty)
  * @return object
  */
 function formInput(_key,_field,_items,_holder,_complex){
-   theType=_field.type||_complex;
-   l=(isset(_items))?_items.length:0;
-   cnt=0;
+   var ele,c,b,label,input,listName,x,span;
+   var theType=_field.type||_complex;
+   var l=(isset(_items))?_items.length:0;
+   var cnt=0;
    _key=_key.replace(/\s/ig,'');
    _field.id=_field.id.replace(/\s/ig,'');
    switch(theType){
@@ -617,11 +635,12 @@ function formInput(_key,_field,_items,_holder,_complex){
  * @todo add radio and check return
  */
 fieldsDisplay=function(_from,_source,_head,_reference){
-   f=!_reference?eternal.fields:eternal.children[_reference].fields;
-   form='#frm_'+eternal.form.field.name;
-   if(_reference)form=form+2;
-   c=0;
-   _return=[];
+   var tmp,type,key2;
+   var f=!_reference?eternal.fields:eternal.children[_reference].fields;
+   var frmID='#frm_'+eternal.form.field.name;
+   if(_reference)frmID=frmID+2;
+   var c=0;
+   var _return=[];
    if(typeof _source==="number"){tmp=JSON.parse(sessionStorage.activeRecord);_source=tmp[_source];}
    $.each(f,function(key,property){
       key2=key.replace(/\s/ig,'');//removes spaces
@@ -632,18 +651,18 @@ fieldsDisplay=function(_from,_source,_head,_reference){
          case 'radio':
          case 'bool':
          case 'check':
-            if(_from==='form')$(form+' [name^='+key2+']').each(function(){if($(this).prop('value')==_source[key])$(this).addClass('active').prop('checked',true);});
-            else if(_from==='list')$(form+' [name^='+key2+']').each(function(){if($(this).prop('checked')||$(this).hasClass('active'))_return[c]=$(this).addClass('active').prop('value');});
+            if(_from==='form')$(frmID+' [name^='+key2+']').each(function(){if($(this).prop('value')==_source[key])$(this).addClass('active').prop('checked',true);else $(this).removeClass('active').prop('checked',false);});
+            else if(_from==='list')$(frmID+' [name^='+key2+']').each(function(){if($(this).prop('checked')||$(this).hasClass('active'))_return[c]=$(this).addClass('active').prop('value');});
             else _return[c]=_source[key2];
             break;
          case 'p':
          case 'span':
-            if(_from==='form')$(form+' #'+key2).html(_source[key]);
+            if(_from==='form')$(frmID+' #'+key2).html(_source[key]);
             else _return[c]=_source[key];
             break;
          default:
-            if(_from==='form')$(form+' #'+key2).val(_source[key]);
-            else if(_from==='list')_return[c]=$(form+' #'+key2).val();
+            if(_from==='form')$(frmID+' #'+key2).val(_source[key]);
+            else if(_from==='list')_return[c]=$(frmID+' #'+key2).val();
             else _return[c]=_source[key2];
             break;
       }//endswitch

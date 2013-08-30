@@ -9,7 +9,7 @@
    },
    "mensa": "dealers",
    "fields": {
-      "name":{"valid":["unique"],"icon":"icon icon-black icon-users","header":true,"place":true,"field":{"required":"","autofocus":""}},
+      "name":{"valid":["unique"],"search":true,"icon":"icon icon-black icon-users","header":true,"place":true,"field":{"required":"","autofocus":""}},
       "code":{"valid":["unique"],"icon":"icon icon-black icon-users","title":"dealer's code","place":true,"field":{"required":""}}
    },
    "links":{"reference":["js/agito/member.js","insurance"]}

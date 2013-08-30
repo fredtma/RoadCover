@@ -154,9 +154,9 @@ cal_days_in_month = function (iMonth, iYear) {
 moveToDayOfWeek = function (tmp_date, cnt_week, option, loop){
 
    option= (!option)?1:option;
-   cnt   = 0;
+   var cnt   = 0;
    do {
-      target_date = tmp_date.setDate(tmp_date.getDate()+option);
+      var target_date = tmp_date.setDate(tmp_date.getDate()+option);
       cnt++;
    } while (dateFormat(target_date,'ddd')!=cnt_week );
    return target_date;

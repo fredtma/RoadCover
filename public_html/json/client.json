@@ -8,7 +8,7 @@
    },
    "mensa": "clients",
    "fields": {
-      "company":{"valid":["unique"],"icon":"icon icon-contacts","header":true,"place":true,"field":{"required":"","title":"Clients name"}},
+      "company":{"valid":["unique"],"search":true,"icon":"icon icon-contacts","header":true,"place":true,"field":{"required":"","title":"Clients name"}},
       "code":{"icon":"icon-qrcode","header":true,"title":"Client's Code","place":true,"field":{"required":""}},
       "email":{"icon":"icon-envelope","title":"Client's email","place":true,"field":{"required":"","type":"email"}},
       "about":{"complex":"textarea","title":"About the company","place":true,"field":{"required":"","type":"text","rows":5,"clss":"text-area","maxlength":180}}

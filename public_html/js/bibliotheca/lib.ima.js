@@ -18,6 +18,7 @@
  */
 get_ajax = function (www, var_set, object, method, format, call_success)
 {
+   var msg;
    if (!format) format  = 'html';
    if (!method) method  = 'post';
    if (!call_success) call_success = true;
@@ -93,11 +94,11 @@ function findJSON(data){
    sessionStorage.active=JSON.stringify(data);//@todo:fix the first time it loads it's empty
    theForm = new SET_FORM();
    theForm._Set("#body article");
-   formTypes=(typeof(eternal['form']['options'])!='undefined')?eternal.form.options.type:null;//using [bracket] to resolve undefined error
+   var formTypes=(typeof(eternal['form']['options'])!='undefined')?eternal.form.options.type:sessionStorage.formTypes;//using [bracket] to resolve undefined error
    //DB SETUP
-   var creoDB=new SET_DB();
+   var creoDB=new SET_DB();sessionStorage.removeItem('formTypes');
    switch(formTypes){
-      case 'alpha':creoDB.alpha();break;
+      case 'alpha':var spicio=JSON.parse(localStorage.USER_NAME); creoDB.alpha(null,null,spicio.singularis);break;
       case 'betaTable':get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa},'','post','json',function(results){theForm.setBeta(results,3);});break;
       default:creoDB.beta();break;
    }
@@ -124,7 +125,7 @@ onVituim=function(event, jqxhr,textStatus){
  * @return void
  */
 function saveData(){
-   title= $('#page_title').text();content= $('#page_content').html();Tau= $('footer').data('Tau');day= getToday();iota=$("footer").data("iota");
+   var title= $('#page_title').text();var content= $('#page_content').html();var Tau= $('footer').data('Tau');var day= getToday();var iota=$("footer").data("iota");var tmp;
    q={"eternal":{'blossom':{"alpha":iota,"delta":"!@=!#"},"title":title,"content":content,"date_modified":day,"level":"admin","type":"content"},"Tau":Tau,"iyona":"pages"};
    sessionStorage.quaerere=JSON.stringify(q);
    $DB("REPLACE INTO pages (id,title,content,date_modified,`level`,`type`) VALUES (?,?,?,?,?,?)",[iota,title,content,day,"admin","content"],"Setup page "+title,function(results){

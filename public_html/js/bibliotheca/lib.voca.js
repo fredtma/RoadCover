@@ -3,18 +3,19 @@
  * @see jquery|bootstrap.min|lib.muneris|res.lambda|res.forma|res.notitia|lib.ima.js
  */
 addRecord=function(){
-   name=eternal.form.field.name;
-   d=-1;
-   r='_new'+Math.floor((Math.random()*100)+1);
-   collapse_heade=$anima('#acc_'+name,'div',{'id':'accGroup'+d,'clss':'accordion-group'},'','first');
-   collapse_heade.vita('div',{'clss':'accordion-heading','data-iota':d},true)
+   var link,collapse_content;
+   var name=eternal.form.field.name;
+   var d=-1;console.log(name,'name');
+   var r='_new'+Math.floor((Math.random()*100)+1);
+   var collapse_head=$anima('#acc_'+name,'div',{'id':'accGroup'+d,'clss':'accordion-group'},'','first');
+   collapse_head.vita('div',{'clss':'accordion-heading','data-iota':d},true)
       .vita('a',{'clss':'betaRow','contenteditable':false,'data-toggle':'collapse','data-parent':'#acc_'+name,'href':'#collapse_'+name+r},true)
       .vita('span',{},false,'Type '+name+' name here');
    collapse_head.novo('#accGroup'+d+' .accordion-heading','i',{'clss':'betaRight'})
       //EDIT
       collapse_head.vita('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':'#acc_'+name,'href':'#collapse_'+name+r,},true)
       .vita('i',{'clss':'icon icon-color icon-edit'});
-   collapse_heade.genesis('a',{'href':'#'},true)
+   collapse_head.genesis('a',{'href':'#'},true)
            .vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=delRecord;
             for(link in eternal.links){
                collapse_head.genesis('a',{'href':'#','clss':'forIcon'},true).vita('i',{'clss':'icon icon-black icon-link','title':'Link '+eternal.links[link][1]});
@@ -29,11 +30,11 @@ addRecord=function(){
    collapse_content=$anima('#accGroup'+d,'div',{'clss':'accordion-body collapse','id':'collapse_'+name+r,'data-iota':d});
    collapse_content.vita('div',{'clss':'accordion-inner'},false,'');
 }
-edtRecord=function(){ii=$(this).parents('div').data('iota');DB.beta(3,ii);$('.activeContent').removeClass('activeContent');$(this).parents('.accordion-group').find('.accordion-inner').addClass('activeContent');}
-delRecord=function(){DB=new SET_DB();ii=$(this).parents('div').data('iota'); if(ii!=-1)DB.beta(0,ii);$(this).parents('.accordion-group').hide()}
+edtRecord=function(){var ii;ii=$(this).parents('div').data('iota');DB.beta(3,ii);$('.activeContent').removeClass('activeContent');$(this).parents('.accordion-group').find('.accordion-inner').addClass('activeContent');}
+delRecord=function(){var ii;DB=new SET_DB();ii=$(this).parents('div').data('iota'); if(ii!=-1)DB.beta(0,ii);$(this).parents('.accordion-group').hide()}
 function navig(set){
    if($(set).parents('li').hasClass('disabled')) return false;
-   page=parseInt($(set).data('goto'))-1;
+   var page=parseInt($(set).data('goto'))-1;
    if($(set).hasClass('navig'))page=parseInt($(set).data('goto'));//ca cest pour les navigation de deriere et en avant.
    sessionStorage.genesis=(page)*localStorage.DB_LIMIT;
    if(typeof eternal.form.ortus==="undefined"){creoDB=new SET_DB();creoDB.beta();}
@@ -41,7 +42,7 @@ function navig(set){
 }
 function navigTable(set){
    if($(set).parents('li').hasClass('disabled')) return false;
-   page=parseInt($(set).data('goto'))-1;//fait attention les page prev & next, il faut pas faire la subtraction
+   var page=parseInt($(set).data('goto'))-1;//fait attention les page prev & next, il faut pas faire la subtraction
    if($(set).hasClass('navTable'))page=parseInt($(set).data('goto'));//ca cest pour les navigation de deriere et en avant.
    sessionStorage.genesis=(page)*localStorage.DB_LIMIT;
    theForm = new SET_FORM()._Set("#body article");//@todo: ajouter les nombre du total sur la navigation
@@ -49,6 +50,7 @@ function navigTable(set){
 }
 //=============================================================================//
 $('.btnUser,.profileList').click(function(){$.getJSON("json/profile.json",findJSON).fail(onVituim);});
+$('.profileView,#userName').click(function(){sessionStorage.formTypes='alpha';$.getJSON("json/profile.json",findJSON).fail(onVituim);})
 $('.icon-users').click(function(){$.getJSON("json/group.json",findJSON).fail(onVituim);});
 $('.system4,#btnSysPermission').click(function(){$.getJSON("json/permission.json",findJSON).fail(onVituim);});
 $('#btnDashboard').click(function(){load_async('js/agito/dashboard.js',true,'end',true)});
@@ -61,9 +63,5 @@ $('#footHelp').click(function(){getPage('Help?')});
 $('#footAbout').click(function(){getPage('About us')});
 $("#search_all").focus(function(){this.select();}).typeahead({minLength:0,source:searchAll,updater:searchUpdate});
 $('#btnFullScreen,#fullscreen').click(function(){if(!$(this).data('toggle')||$(this).data('toggle')==0){$('#btnFullScreen,#fullscreen').data('toggle',1);enableFullScreen();$('.icon-fullscreen').removeClass('icon-fullscreen').addClass('icon-screenshot');}else{$('#btnFullScreen,#fullscreen').data('toggle',0);exitFullScreen();$('.icon-screenshot').removeClass('icon-screenshot').addClass('icon-fullscreen');}});
-$('.icon-refresh').click(function(){
-   history.go(0);
-   tmp=sessionStorage.username;
-   sessionStorage.clear();sessionStorage.runTime=0;sessionStorage.startTime=new Date().getTime();sessionStorage.username=tmp;
-   $('footer').removeData();
-   console.log('history:...');});//@todo:add HTML5 history API
+$('#userOut,#profileOff').click(loginOUT);
+$('.icon-refresh').click(refreshLook);//@todo:add HTML5 history API

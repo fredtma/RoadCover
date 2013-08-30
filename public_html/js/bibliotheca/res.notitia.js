@@ -13,9 +13,11 @@
  * @see: placeObj
  */
 function SET_DB(){
+   SET=this;
+   this.frmName;this.frmID;
    this.mensaActive=['users,groups,link_users_groups'];
    this.basilia={};
-   var Tau=false;
+   var Tau=false,res;
    this.creoAgito=function(_quaerere,_params,_msg,callback){
       var quaerere=_quaerere;
       var msg=_msg;
@@ -25,7 +27,7 @@ function SET_DB(){
          trans.executeSql(quaerere,params,function(trans,results){
             console.log('%c Success DB transaction: '+msg, 'background:#222;color:#48b72a;width:100%;');
             console.log('%c'+quaerere, 'background:#222;color:#48b72a;width:100%;font-weight:bold;');
-            j=$DB2JSON(results);
+            var j=$DB2JSON(results);
             $('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
             if(Tau){
                this.basilia={"eternal":res,"Tau":Tau,"iyona":iyona};
@@ -49,20 +51,20 @@ function SET_DB(){
     * @todo clean it up
     */
    this.forma=function(_actum,_iota,callback){
-      var reference=[];var precipio='';
+      var reference=[];var precipio='';var actum,ubi,msg,x,val;
+      var quaerere=[],params=[],set=[];
+      var limit=1000;//localStorage.DB_LIMIT||7;
       //protect and accept only valid table
-      if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);
-      else eternal=null;
+      if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active); else eternal=null;
       if(!eternal){console.log("not found json");return false;}
-      form='#frm_'+eternal.form.field.name;
+      var form='#frm_'+eternal.form.field.name;
       iota=_iota;res={"blossom":{"alpha":iota,"delta":"!@=!#"}};
       iyona=eternal.mensa||form.substr(4);
       if(typeof eternal.quaerere!="undefined"&&typeof eternal.quaerere.precipio!="undefined"){precipio=" ORDER BY "+eternal.quaerere.precipio;}
       if(!this.mensaActive.indexOf(iyona)){console.log("not found mensa");return false;}//@todo: arrange et ajoute la securiter
-      var quaerere=[],params=[],set=[];
-      limit=1000;//localStorage.DB_LIMIT||7;
       switch(_actum){
          case 0:
+            this.constraintForeignKey(_iota,iyona);
             actum='DELETE FROM '+iyona+' WHERE id=?';
             Tau='oMegA';
             creoAgito=this.creoAgito;
@@ -71,6 +73,8 @@ function SET_DB(){
             ubi='';Tau='Alpha';
             actum='INSERT INTO '+iyona+' (';msg='Inserted '+iyona;break;
          case 2:
+            val=$(form+' #name').val()||$(form+' #username').val();
+            this.constraintForeignKey(_iota,iyona,val);
             ubi=' WHERE id='+iota;Tau='deLta';
             actum='UPDATE '+iyona+' SET';msg='Updated '+iyona;break;
          case 3:
@@ -114,15 +118,17 @@ function SET_DB(){
     * the successful return function
     * @see this.forma
     */
-   this.alpha=function(_actum,_iota){
-      fieldDisplay=this.fieldDisplay;
+   this.alpha=function(_actum,_iota,_spicio){
+      var display,name,row,li,a,ii,i,len,x,first;
+      eternal=eternalCall();
+      if(!eternal){console.log("not found json");return false;}
+      this.name=eternal.form.field.name;
+      this.frmName='frm_'+eternal.form.field.name;
+      this.frmID='#frm_'+eternal.form.field.name;
       this.forma(_actum,_iota,function(results){
-         if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);
-         else eternal=null;
-         if(!eternal){console.log("not found json");return false;}
-         form='#frm_'+eternal.form.field.name;
-         iyona=eternal.mensa||form.substr(4);
+         iyona=eternal.mensa||SET.frmID.substr(4);
          display=$('#displayMensa');
+         var $display;
 //         iota=results.insertId?results.insertId:$(form).data('iota');
          len=results.rows.length;
          //ASIDE
@@ -131,57 +137,45 @@ function SET_DB(){
             for(x=0;x<len;x++){
                name='';
                row=results.rows.item(x);
-               li=creo({'data-iota':row['id']},'li');
-               a=creo({'href':'#profile'},'a');
-               name=fieldDisplay('row',row,true).join(' ');
-               txt=document.createTextNode(name);
-               a.onclick=function(e){e.preventDefault();ii=$(this).parent().data('iota');creoDB.alpha(3,ii)}
-               a.appendChild(txt);li.appendChild(a);
-               i=creo({'clss':'icon icon-color icon-trash'},'i');
-               a=creo({'href':'#'},'a');a.appendChild(i);li.appendChild(a);
-               a.onclick=function(e){e.preventDefault();ii=$(this).parent().data('iota');creoDB.alpha(0,ii); $(this).parent().hide();}
-               display.append(li);
-            }
-            $('#sideBot h3 a').click(function(e){
+               name=SET.fieldDisplay('row',row,true).join(' ');
+               $display=$anima('#displayMensa','li',{'data-iota':row['id']}).vita('a',{'href':'#'+SET.name},false,name);
+               $display.child.onclick=function(e){e.preventDefault();ii=$(this).parent().data('iota');SET.alpha(3,ii);}
+               $display.vita('a',{'href':'#'},true).vita('i',{'clss':'icon icon-color icon-trash'})
+                  .child.onclick=function(e){e.preventDefault();ii=$(this).parents('li').data('iota');SET.alpha(0,ii);$(this).parents('li').hide();}
+            }//endfor
+            $('#sideBot h3').click(function(e){
                e.preventDefault();
-               $(form+' #submit_'+eternal.fields[0]);
+               resetForm(document.getElementById(SET.frmName));
                for (first in eternal.fields)break;
-               $(form+' #'+first).focus();
-               $(form+' #submit_'+eternal.form.field.name)[0].onclick=function(e){e.preventDefault();creoDB.alpha(1);};
-               $(form).data('iota',0);
-               $(':input',form).not(':button, :submit, :reset, :hidden, :checkbox, :radio').val('');
-               $('type[checkbox],type[radio]',form).prop('checked',false).prop('selected',false);
-            });
-         }
+               $(SET.frmID+' #'+first).focus();$(SET.frmID).data('iota',0);
+               $(SET.frmID+' #submit_'+SET.name)[0].onclick=function(e){e.preventDefault();$('#submit_'+SET.name).button('loading');SET.alpha(1);setTimeout(function(){$(SET.frmID+' #submit_'+SET.name).button('reset');}, 500); return false; };
+            });//endEvent
+            newSection();
+            theForm.setAlpha();
+            SET.alpha(3,_spicio);
+         }//enf if
          //FORM
          if(len==1){
             row=results.rows.item(0);
-            $(form).data('iota',row['id']);
-            fieldDisplay('form',row);
-            $(form+' #submit_'+eternal.form.field.name)[0].onclick=function(e){e.preventDefault();creoDB.alpha(2,row['id']);};//make the form to become update
-            $(form+' #cancel_'+eternal.form.field.name).click(function(){});//@todo
+            $(SET.frmID).data('iota',row['id']);
+            SET.fieldDisplay('form',row);
+            $(SET.frmID)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+SET.name).button('loading');SET.alpha(2,row['id']);setTimeout(function(){$(SET.frmID+' #submit_'+SET.name).button('reset');}, 500); return false;};//make the form to become update
          }
          //UPDATE
          if(_actum===2||_actum===1){
             name='';
-            name=fieldDisplay('list',null,true).join(' ');
+            name=SET.fieldDisplay('list',null,true).join(' ');
             if(_actum===2)$('#displayMensa>li[data-iota='+_iota+']>a:first-child').html(name).addClass('text-success');
             if(_actum===1){
-               $(form+' #submit_'+eternal.form.field.name)[0].onclick=function(e){e.preventDefault();creoDB.alpha(2,results.insertId);};//make the form to become update
-               $(form).data('iota',results.insertId);
-               li=creo({'data-iota':results.insertId},'li');
-               a=creo({'href':'#'+eternal.form.field.name},'a',name);
-               a.onclick=function(e){e.preventDefault(); creoDB.alpha(3,results.insertId)}
-               li.appendChild(a);
-               a=creo({'href':'#'},'a');
-               a.onclick=function(e){e.preventDefault();creoDB.alpha(0,results.insertId); $(this).parent().hide();}
-               i=creo({'clss':'icon icon-color icon-trash'},'i');
-               a.appendChild(i);
-               li.appendChild(a);
-               document.getElementById('displayMensa').appendChild(li);
-            }
-         }
-      });
+               $(SET.frmID+' #submit_'+eternal.form.field.name)[0].onclick=function(e){e.preventDefault();SET.alpha(2,results.insertId);};//make the form to become update
+               $(SET.frmID).data('iota',results.insertId);
+               $display=$anima('#displayMensa','li',{'data-iota':results.insertId}).vita('a',{'href':'#'+SET.name},false,name);
+               $display.child.onclick=function(e){e.preventDefault();SET.alpha(3,results.insertId);}
+               $display.vita('a',{'href':'#'},true).vita('i',{'clss':'icon icon-color icon-trash'})
+                  .child.onclick=function(e){e.preventDefault();SET.alpha(0,results.insertId); $(this).parents('li').hide();}
+            }//endif
+         }//endif
+      });//endFunc
    }
    /*
     * queries the db to display in list format
@@ -190,34 +184,36 @@ function SET_DB(){
     * @returns {undefined}
     */
    this.beta=function(_actum,_iota){
-      callDB=this;
-      fieldDisplay=this.fieldDisplay;
+      var callDB=this;var formTypes,ref,nameList,s,l;
+      eternal=eternal=eternalCall();
+      if(!eternal){console.log("not found json");return false;}
+      this.name=eternal.form.field.name;
+      this.frmName='frm_'+eternal.form.field.name;
+      this.frmID='#frm_'+eternal.form.field.name;
       this.forma(_actum,_iota,function(results){
-         if(sessionStorage.active)eternal=JSON.parse(sessionStorage.active);else eternal=null;
-         this.name=eternal.form.field.name;
          formTypes=(typeof(eternal['form']['options'])!='undefined')?eternal.form.options.type:0;
          switch(_actum){
             case 0:
                break;
             case 1:
-               $(form).data('iota',results.insertId);
+               $(SET.frmID).data('iota',results.insertId);
                //@todo:potential hack, if code not validated
-               ref=$(form+' #name').val()||$(form+' #username').val();
+               ref=$(SET.frmID+' #name').val()||$(SET.frmID+' #username').val();
                nameList='';
-               nameList=fieldDisplay('list',null,true);
+               nameList=SET.fieldDisplay('list',null,true);
                $('.accordion-body.in').data('iota',results.insertId);
                $('.accordion-body.in').parents('.accordion-group').attr('id','accGroup'+results.insertId);
                $('.accordion-body.in').prev().data('iota',results.insertId).find('.icon-link').data('head',nameList[0]).data('ref',ref).removeClass('icon-black').addClass('icon-color');
-               $(form)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');callDB.beta(2,results.insertId);setTimeout(function(){$('#submit_'+this.name).button('reset');}, 800)}//make the form to become update
-               $(form+' #cancel_'+this.name).val('Close...');//@todo
+               $(SET.frmID)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+eternal.form.field.name).button('loading');callDB.beta(2,results.insertId);setTimeout(function(){$('#submit_'+this.name).button('reset');}, 800)}//make the form to become update
+               $(SET.frmID+' #cancel_'+SET.name).val('Close...');//@todo
                $('#accGroup'+results.insertId+' .betaRow').empty();
                s=$anima('#accGroup'+results.insertId+' .betaRow','span',{},nameList[0]);
                l=nameList.length;for(x=1;x<l;x++)s.genesis('span',{},true,nameList[x]);
                break;
             case 2:
-               $(form+' #cancel_'+this.name).val('Close...');//@todo
+               $(SET.frmID+' #cancel_'+SET.name).val('Close...');//@todo
                nameList='';
-               nameList=fieldDisplay('list',null,true);
+               nameList=SET.fieldDisplay('list',null,true);
                $('#accGroup'+_iota+' .betaRow span').each(function(i,v){$(v).html(nameList[i])});
                break;
             case 3:
@@ -229,7 +225,6 @@ function SET_DB(){
       });//end anonymous
    }
    /*
-    *
     * @param {obeject} <var>_source</var> the source of the object
     * @param {string} <var>_form</var> the name of the form
     * @param {bool} <var>_head</var> only the head to be displayed
@@ -238,28 +233,26 @@ function SET_DB(){
     * @todo set a single fieldDisplay
     */
    this.fieldDisplay=function(_from,_source,_head){
-      f=eternal.fields;
-      c=0;
-      _return=[];
+      var f=eternal.fields;var c=0;var _return=[];
       $.each(f,function(key,property){
-         type=property.field.type;
+         var type=property.field.type;
          if(_head && !property.header) return true;
          switch(type){
             case 'radio':
             case 'bool':
             case 'check':
-               if(_from==='form')$(form+' [name^='+key+']').each(function(){if($(this).prop('value')==_source[key])$(this).addClass('active').prop('checked',true);});
-               else if(_from==='list')$(form+' [name^='+key+']').each(function(){if($(this).prop('checked')||$(this).hasClass('active'))_return[c]=$(this).prop('value');});
+               if(_from==='form')$(SET.frmID+' [name^='+key+']').each(function(){if($(this).prop('value')==_source[key])$(this).addClass('active').prop('checked',true);else $(this).removeClass('active').prop('checked',false);});
+               else if(_from==='list')$(SET.frmID+' [name^='+key+']').each(function(){if($(this).prop('checked')||$(this).hasClass('active'))_return[c]=$(this).prop('value');});
                else _return[c]=_source[key];
                break;
             case 'p':
             case 'span':
-               if(_from==='form')$(form+' #'+key).val(_source[key]);
+               if(_from==='form')$(SET.frmID+' #'+key).val(_source[key]);
                else _return[c]=_source[key];
                break;
             default:
-               if(_from==='form')$(form+' #'+key).val(_source[key]);
-               else if(_from==='list')_return[c]=$(form+' #'+key).val();
+               if(_from==='form')$(SET.frmID+' #'+key).val(_source[key]);
+               else if(_from==='list')_return[c]=$(SET.frmID+' #'+key).val();
                else _return[c]=_source[key];
                break;
          }//endswitch
@@ -267,8 +260,58 @@ function SET_DB(){
       });
       return _return;
    }
+   /*
+    * deletes all references to the primary table
+    * @param {number|string} <var>_iota</var>
+    * @param {string} <var>_iyona</var>
+    * @returns {undefined}
+    */
+   this.constraintForeignKey = function(_iota,_iyona,_Tau) {
+      var tt,row,l,x;
+      var omega=alpha=[];tt=['users','groups','permissions'];//to speed up process on pf table
+      if(tt.indexOf(_iyona)==-1) return false;
+      switch (_iyona) {
+         case'users':
+            omega[0] = "DELETE FROM link_users_groups WHERE user=?";omega[1] = "DELETE FROM link_permissions_users WHERE user=?;";
+            alpha[0] = "UPDATE link_users_groups SET user=? WHERE user=?";alpha[1] = "UPDATE link_permissions_users SET user=? WHERE user=?;";
+            break;
+         case'groups':
+            omega[0] = "DELETE FROM link_users_groups WHERE `group`=?";omega[1] = "DELETE FROM link_permissions_groups WHERE `group`=?;";
+            alpha[0] = "UPDATE link_users_groups SET `group`=? WHERE `group`=?";alpha[1] = "UPDATE link_permissions_groups SET `group`=? WHERE `group`=?;";
+            break;
+         case'permissions':
+            omega[0] = "DELETE FROM link_permissions_groups WHERE permission=?";omega[1] = "DELETE FROM link_permissions_users WHERE permission=?;";
+            alpha[0] = "UPDATE link_permissions_groups WHERE SET permission=? permission=?";alpha[1] = "UPDATE link_permissions_users SET permission=? WHERE permission=?;";
+            break;
+      }
+      switch (_iyona) {
+         case'users':
+            $DB("SELECT username,id FROM users WHERE id=?", [_iota], 'Selected user', function(results) {
+               try {
+                  row = results.rows.item(0);
+                  console.log(omega,'_Tau',alpha,_iyona);
+                  if (typeof _Tau==="undefined") {l = omega.length;for (x = 0; x < l; x++){console.log(omega,'_Tau',l,omega[x]);$DB(omega[x], [row['username']], "Ref deleted "+row['username']+" from:"+_iyona);}}
+                  else if (_Tau) {l = alpha.length;for (x = 0; x < l; x++)$DB(alpha[x], [_Tau, row['username']], "Ref updated "+row['username']+" from:"+_iyona);}
+               } catch (err) {console.log("Error selecting reference:" + err.message)}
+            });break;
+         case'groups':
+         case'permissions':
+            $DB("SELECT name,id FROM " + _iyona + " WHERE id=?", [_iota], 'Selected ' + _iyona, function(results) {
+               try {
+                  row = results.rows.item(0);
+                  if (typeof _Tau== "undefined") {l = omega.length;for (x = 0; x < l; x++)$DB(omega[x], [row['name']], "Ref deleted "+row['name']+" from:" + _iyona);}
+                  else if (_Tau) {l = alpha.length;for (x = 0; x < l; x++)$DB(alpha[x], [_Tau, row['name']], "Ref updated "+row['name']+" to "+_Tau+" from:" + _iyona);}
+               } catch (err) {console.log("Error selecting reference:" + err.message)}
+            });break;
+      }//endswith
+   }
+   /*
+    * creats the db
+    * @param {object} <var>_option</var> the option for which table is to be reset
+    * @returns void
+    */
    this.resetDB=function(_option){
-
+      var sql,group,link,perm,client,contact,address,dealer,salesman,ver,features,pages;
       if(_option.users)this.creoAgito("DROP TABLE users",[],"DROP table users");
       if(_option.groups)this.creoAgito("DROP TABLE groups",[],"DROP table groups");
       if(_option.ug)this.creoAgito("DROP TABLE link_users_groups",[],"DROP table link_users_groups");
@@ -284,7 +327,7 @@ function SET_DB(){
       if(_option.pages)this.creoAgito("DROP TABLE pages",[],"DROP table pages");
       if(_option.features)this.creoAgito("DROP TABLE features",[],"DROP table features");
 
-      sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+      sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL,`level` TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
       if(_option.users)this.creoAgito(sql,[],'Table users created');
       if(_option.users)this.creoAgito("CREATE INDEX user_username ON users(username)",[],"index user_username");
       if(_option.users)this.creoAgito("CREATE INDEX user_email ON users(email)",[],"index user_email");
@@ -335,7 +378,7 @@ function SET_DB(){
       if(_option.pages)this.creoAgito("CREATE INDEX pages_type ON pages(`type`)",[],"index pages_type");
       if(_option.users){
          $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getUsers',type:'GET',dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;v.gender=v.gender=='Male'?1:2;$DB("INSERT INTO users (id,username,password,firstname,lastname,email,gender) VALUES (?,?,?,?,?,?,?)",[v.id,v.username,v.password,v.firstname,v.lastname,v.email,v.gender],"added user "+v.firstname)})
+            $.each(json,function(i,v){if(i==='rows')return true;v.gender=v.gender=='Male'?1:2;$DB("INSERT INTO users (id,username,password,firstname,lastname,email,gender,`level`,creation) VALUES (?,?,?,?,?,?,?)",[v.id,v.username,v.password,v.firstname,v.lastname,v.email,v.gender,v.level,v.creation],"added user "+v.firstname)})
          }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
       if(_option.client){
          $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getClients',type:'GET',dataType:'json',success:function(json){
@@ -355,7 +398,7 @@ function SET_DB(){
          }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
       if(_option.pu){
          $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPU',type:'GET',dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_users (id,`permission`,`user`) VALUES (?,?,?)",[v.id,v.permision,v.user],"added permision+group "+v.name)})
+            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_users (id,`permission`,`user`) VALUES (?,?,?)",[v.id,v.permission,v.user],"added permision+group "+v.name)})
          }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
       if(_option.pg){
          $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPG',type:'GET',dataType:'json',success:function(json){
@@ -388,7 +431,6 @@ function SET_DB(){
          this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1,ver:1,pages:1,features:1});
       }
    }
-   console.log('Database Version:',db.version);
    if(false&&db&&localStorage.DB)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0,ver:0,pages:0,features:0});
 //   if(this instanceof SET_DB)return this; else return new SET_DB();
 }
@@ -408,6 +450,7 @@ function SET_DB(){
  * @uses file|element|class|variable|function|
  */
 var $DB=function(quaerere,params,msg,callback){
+   var tmp,res,Tau;
    if(!db)db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
    db.transaction(function(trans){
       trans.executeSql(quaerere,params,function(trans,results){
@@ -446,7 +489,7 @@ var $DB=function(quaerere,params,msg,callback){
  * @todo add indexdb and any other results type
  */
  $DB2JSON=function(_results,_type){
-   var j={};
+   var j={},row,col,len,x,k;
    switch(_type){
       case 1:break;
       case 2:break;
