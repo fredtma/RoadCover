@@ -12,11 +12,12 @@
  * @todo: add a level three menu step
  * @see: placeObj
  */
-function SET_DB(){
+function SET_DB(_reset){
    SET=this;
    this.frmName;this.frmID;
    this.mensaActive=['users,groups,link_users_groups'];
    this.basilia={};
+   this.reset=_reset||false;
    var Tau=false,res;
    this.creoAgito=function(_quaerere,_params,_msg,callback){
       var quaerere=_quaerere;
@@ -41,7 +42,6 @@ function SET_DB(){
          });
       });
    }
-
    /*
     * this function will extract info from the form and determine the form action
     * @param {string} _form the name of the form to be setup
@@ -81,7 +81,8 @@ function SET_DB(){
          default:
             _actum=3;
             actum='SELECT';
-            ubi=iota?' WHERE id='+iota+precipio+' LIMIT '+limit:precipio+' LIMIT '+limit;
+            ubi=('quaerere' in eternal && 'ubi' in eternal.quaerere)?eternal.quaerere.ubi:'';
+            ubi=iota?' WHERE id='+iota+' '+ubi+' '+precipio+' LIMIT '+limit:' WHERE 1=1 '+ubi+' '+precipio+' LIMIT '+limit;//ADD the where clasue in both
             ubi=' FROM '+iyona+ubi;
             msg='Selected '+iyona;break;
       }
@@ -342,11 +343,11 @@ function SET_DB(){
       if(_option.perm)this.creoAgito(perm,[],'Table permissions created');
       if(_option.perm)this.creoAgito("CREATE INDEX perm_name ON permissions(name)",[],"index perm_name");
       link="CREATE TABLE IF NOT EXISTS link_permissions_groups(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `group` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_perm_group` FOREIGN KEY (`permission`) REFERENCES `permissions` (`name`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_group_perm` FOREIGN KEY (`group`) REFERENCES `groups` (`name`) ON UPDATE CASCADE ON DELETE CASCADE)";
-      if(_option.pg)this.creoAgito(link,[],'Table link to permisions to groups created');
+      if(_option.pg)this.creoAgito(link,[],'Table link to permissions to groups created');
       if(_option.pg)this.creoAgito("CREATE INDEX link_permgroup_perm ON link_permissions_groups(`permission`)",[],'index link_permgroup_perm');
       if(_option.pg)this.creoAgito("CREATE INDEX link_permgroup_group ON link_permissions_groups(`group`)",[],'index link_permgroup_group');
       link="CREATE TABLE IF NOT EXISTS link_permissions_users(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `user` TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,CONSTRAINT `fk_perm_user` FOREIGN KEY (`permission`) REFERENCES `permissions` (`name`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_user_perm` FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON UPDATE CASCADE ON DELETE CASCADE)";
-      if(_option.pu)this.creoAgito(link,[],'Table link to permisions to users created');
+      if(_option.pu)this.creoAgito(link,[],'Table link to permissions to users created');
       if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_perm ON link_permissions_users(`permission`)",[],'index link_permuser_perm');
       if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_user ON link_permissions_users(`user`)",[],'index link_permuser_user');
       client="CREATE TABLE IF NOT EXISTS clients(id INTEGER PRIMARY KEY AUTOINCREMENT, company TEXT NOT NULL UNIQUE, code TEXT NOT NULL UNIQUE, about TEXT, email TEXT NOT NULL, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
@@ -371,14 +372,14 @@ function SET_DB(){
       if(_option.salesman)this.creoAgito("CREATE INDEX salesman_dealer ON salesmen(dealer)",[],"index salesman_dealer");
       ver="CREATE TABLE versioning(id INTEGER PRIMARY KEY AUTOINCREMENT,user INTEGER NOT NULL,content text NOT NULL,iota INTEGER NOT NULL,trans INTEGER NOT NULL,mensa TEXT,creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
       if(_option.ver)this.creoAgito(ver,[],'Version table created');
-      features="CREATE TABLE features(id INTEGER PRIMARY KEY AUTOINCREMENT,feature TEXT NOT NULL UNIQUE,description TEXT,category TEXT,filename TEXT,creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+      features="CREATE TABLE features(id INTEGER PRIMARY KEY AUTOINCREMENT,feature TEXT NOT NULL UNIQUE,description TEXT,category TEXT,filename TEXT,manus TEXT,tab TEXT, creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
       if(_option.features)this.creoAgito(features,[],'Version table created');
       pages="CREATE TABLE pages(`id` INTEGER PRIMARY KEY AUTOINCREMENT,`page_ref` TEXT ,`title` TEXT NOT NULL UNIQUE, `content` TEXT NOT NULL,`level` TEXT, `type` TEXT,`date_modified` TEXT NOT NULL,`creation` TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
       if(_option.pages)this.creoAgito(pages,[],'Pages table created');
       if(_option.pages)this.creoAgito("CREATE INDEX pages_type ON pages(`type`)",[],"index pages_type");
       if(_option.users){
          $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getUsers',type:'GET',dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;v.gender=v.gender=='Male'?1:2;$DB("INSERT INTO users (id,username,password,firstname,lastname,email,gender,`level`,creation) VALUES (?,?,?,?,?,?,?)",[v.id,v.username,v.password,v.firstname,v.lastname,v.email,v.gender,v.level,v.creation],"added user "+v.firstname)})
+            $.each(json,function(i,v){if(i==='rows')return true;v.gender=v.gender=='Male'?'1':'2';$DB("INSERT INTO users (id,username,password,firstname,lastname,email,gender,`level`,creation) VALUES (?,?,?,?,?,?,?,?,?)",[v.id,v.username,v.password,v.firstname,v.lastname,v.email,v.gender,v.level,v.creation],"added user "+v.firstname)})
          }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
       if(_option.client){
          $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getClients',type:'GET',dataType:'json',success:function(json){
@@ -390,7 +391,7 @@ function SET_DB(){
          }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
       if(_option.perm){
          $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPerm',type:'GET',dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO permissions (id,name,`desc`,`page`,`enable`) VALUES (?,?,?,?,?)",[v.id,v.name,v.desc,v.page,v.enable],"added permision "+v.name)})
+            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO permissions (id,name,`desc`,`page`,`enable`,`sub`) VALUES (?,?,?,?,?,?)",[v.id,v.name,v.desc,v.page,v.enable,v.sub],"added permission "+v.name)})
          }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
       if(_option.ug){
          $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getUG',type:'GET',dataType:'json',success:function(json){
@@ -398,11 +399,11 @@ function SET_DB(){
          }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
       if(_option.pu){
          $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPU',type:'GET',dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_users (id,`permission`,`user`) VALUES (?,?,?)",[v.id,v.permission,v.user],"added permision+group "+v.name)})
+            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_users (id,`permission`,`user`) VALUES (?,?,?)",[v.id,v.permission,v.user],"added permission+group "+v.name)})
          }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
       if(_option.pg){
          $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPG',type:'GET',dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_groups (id,`permission`,`group`) VALUES (?,?,?)",[v.id,v.permision,v.group],"added permision+group "+v.name)})
+            $.each(json,function(i,v){if(i==='rows')return true;console.log(v,'v');$DB("INSERT INTO link_permissions_groups (id,`permission`,`group`) VALUES (?,?,?)",[v.id,v.permission,v.group],"added permission+group "+v.name)})
          }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
       if(_option.dealer){
          $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getDealer',type:'GET',dataType:'json',success:function(json){
@@ -420,18 +421,19 @@ function SET_DB(){
          }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
       if(_option.features){
          $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getFeatures',type:'GET',dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO features (id,feature,description,category,filename,creation) VALUES (?,?,?,?,?,?)",[v.id,v.feature,v.description,v.category,v.filename,v.creation],"added page "+v.feature)})
+            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO features (id,feature,description,category,filename,manus,tab,creation) VALUES (?,?,?,?,?,?,?,?)",[v.id,v.feature,v.description,v.category,v.filename,v.manus,v.tab,v.creation],"added page "+v.feature)})
          }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
    }//endfunction
-
+//$DB("update permissions set sub=17 where id in (1,2,3)");
    if(!db||!localStorage.DB){
       db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
-      if(!localStorage.DB){
+      if(!localStorage.DB&&window.worker){
          localStorage.DB=db;
          this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1,ver:1,pages:1,features:1});
       }
    }
    if(false&&db&&localStorage.DB)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0,ver:0,pages:0,features:0});
+   if(this.reset&&db&&localStorage.DB)this.resetDB(this.reset);
 //   if(this instanceof SET_DB)return this; else return new SET_DB();
 }
 /******************************************************************************/
@@ -449,19 +451,19 @@ function SET_DB(){
  * @todo finish the function on this page
  * @uses file|element|class|variable|function|
  */
-var $DB=function(quaerere,params,msg,callback){
+$DB=function(quaerere,params,msg,callback){
    var tmp,res,Tau;
    if(!db)db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
    db.transaction(function(trans){
       trans.executeSql(quaerere,params,function(trans,results){
          console.log('Success DB transaction: '+msg);
          console.log(quaerere);
-         j=$DB2JSON(results);
+         var j=$DB2JSON(results);
          if(sessionStorage.quaerere){
-            tmp=JSON.parse(sessionStorage.quaerere);sessionStorage.removeItem('quaerere');
+            tmp=JSON.parse(sessionStorage.quaerere);
             res=tmp.eternal;Tau=tmp.Tau;iyona=tmp.iyona;
-            console.log({"eternal":res,"Tau":Tau,"iyona":iyona},'sql');
-            get_ajax(localStorage.SITE_MILITIA,{"eternal":res,"Tau":Tau,"iyona":iyona},'','post','json',function(j){console.log(j,'Online');$('#sys_msg').html(j.msg) });Tau=false;
+            get_ajax(localStorage.SITE_MILITIA,{"eternal":res,"Tau":Tau,"iyona":iyona},'','post','json',function(j){console.log(j,'Online');$('#sys_msg').html(j.msg) });
+            sessionStorage.removeItem('quaerere');Tau=false;
          }
          $('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
          if(callback)callback(results,j);
@@ -488,7 +490,7 @@ var $DB=function(quaerere,params,msg,callback){
  * @return json
  * @todo add indexdb and any other results type
  */
- $DB2JSON=function(_results,_type){
+$DB2JSON=function(_results,_type){
    var j={},row,col,len,x,k;
    switch(_type){
       case 1:break;
@@ -509,6 +511,72 @@ var $DB=function(quaerere,params,msg,callback){
  }
 /******************************************************************************/
 /**
+ * update text in table from a single field
+ * @author fredtma
+ * @version 4.3
+ * @category update, notitia
+ * @param object <var>_set</var> the object containing the field to be updated
+ * @return void
+ */
+function deltaNotitia(_set){
+   var agrum=_set.className.replace(/col_/,'');
+   var iota=$(_set).parents('tr').data('iota');
+   var name=eternal.form.field.name;
+   var valor=$(_set).text();
+   var delta='UPDATE `'+eternal.mensa+'` SET `'+agrum+'`=? WHERE id=?';var msg='  Updated field '+agrum;
+   var quaerere={};quaerere.eternal={'blossom':{"alpha":iota,"delta":"!@=!#"}};quaerere.eternal[agrum]=valor;
+   quaerere.Tau='deLta';quaerere.iyona=eternal.mensa;sessionStorage.quaerere=JSON.stringify(quaerere);
+   $DB(delta,[valor,iota],msg,function(){
+      $('.table-msg-'+name).html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+   });
+}
+/******************************************************************************/
+/**
+ * when a new row is created via a table
+ * @author fredtma
+ * @version 4.5
+ * @category insert, db
+ * @param object <var>_row</var> the row containing the default data
+ * @param object <var>_tr</var> the new row created
+ */
+function alphaNotitia(_row,_tr){
+   var fields,field;var name=eternal.form.field.name;
+   if(eternal.child) {for (fields in eternal.child) break; fields=eternal.child[fields].fields}
+   else fields=eternal.fields;
+   var agris=[]; var valor=[]; var res={};
+   //get all the fields set in the config, takes value from colums if it exist, other wise from the default config or null
+   for(field in fields){agris.push('`'+field+'`');if(_row[field]){val=_row[field]}else{var val=fields[field].value||'';}valor.push(val);res[field]=val;}
+   var l=agris.length;var q=[],x; for(x=0;x<l;x++)q.push('?');
+   var delta='INSERT INTO `'+eternal.mensa+'` ('+agris+') VALUES ('+q.join()+')';var msg='  New record created ';
+   var quaerere={};quaerere.eternal=res;
+   quaerere.Tau='Alpha';quaerere.iyona=eternal.mensa;sessionStorage.quaerere=JSON.stringify(quaerere);
+   $DB(delta,valor,msg,function(r,j){
+      $(_tr).data('iota',r.insertId);
+      $('.table-msg-'+name).html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+   });
+   return true;
+}
+/******************************************************************************/
+/**
+ * removes a row from the db and table
+ * @author fredtma
+ * @version 4.6
+ * @category delete, database
+ * @param object <var>_set</var> the element cliented
+ * @param integer <var>_iota</var>
+ */
+function omegaNotitia(_set,_iota){
+   var name=eternal.form.field.name;
+   var iota=_iota||$(_set).parents('tr').data('iota');
+   $(_set).parents('tr').hide();var msg = " Record removed ";
+   console.log(eternal.mensa,$(_set).parents('tr'),iota,'iota');
+   var quaerere={"eternal":{"blossom":{"alpha":iota,"delta":"!@=!#"}},"iyona":eternal.mensa,"Tau":"oMegA"};sessionStorage.quaerere=JSON.stringify(quaerere);
+   $DB("DELETE FROM "+eternal.mensa+" WHERE id=?",[iota],msg,function(){
+      $('.table-msg-'+name).html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+   });
+};
+/******************************************************************************/
+/**
  * used to measure script execution time
  *
  * It will verify all the variable sent to the function
@@ -522,4 +590,3 @@ var $DB=function(quaerere,params,msg,callback){
  * @todo finish the function on this page
  * @uses file|element|class|variable|function|
  */
-

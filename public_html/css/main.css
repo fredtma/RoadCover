@@ -111,10 +111,11 @@ a.betaRow{display:inline-block;width:85%;padding: 8px 10px;}
 a.betaRow span {width: 32%;display:  inline-block; text-transform: capitalize;}
 a.accordion-toggle{display:initial !important;padding: 4px 4px  !important;}
 .accordion-body.in .accordion-inner{min-height:15em;}
-.accordion-heading a.forIcon {padding: 2px;}
+.accordion-heading a.forIcon,a.forIcon {padding: 5px;}
 #body article table {margin-top: 0.7em;}#body article table.table-child{margin-top:0.2em;}
 .formReader,.formReader .controls span {line-height: 30px;text-transform: capitalize;}
 .half-form{width:48%;float:left;}
+.control-group.hiddenField{margin-bottom:0px;}
 /*form {margin: -10px 0 20px;}*/
 /******************************************************************************/
 /*side bar*/

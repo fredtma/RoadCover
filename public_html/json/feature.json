@@ -14,6 +14,8 @@
       "feature":{"valid":["unique"],"search":true,"icon":"icon-hand-right","header":true,"place":true,"field":{"required":"","title":"features name"}},
       "category":{"header":true,"search":true,"place":true,"field":{"required":"","type":"radio"},"items":{"json":"json","json-script":"json-script","script":"script","page":"page","help":"help","execute":"execute"}},
       "description":{"complex":"textarea","place":true,"field":{"required":"","type":"text","rows":5,"clss":"text-area","maxlength":180}},
+      "manus":{"place":"json script only to be added","field":{"required":"","type":"text"}},
+      "tab":{"place":true,"field":{"required":"","type":"radio"},"items":{"home":"home","dealers":"dealers","salesman":"salesman","customers":"customers","insurance":"insurance","system":"system"}},
       "filename":{"icon":"icon-file","place":"Name the file name","field":{"required":""}}
    }
 }

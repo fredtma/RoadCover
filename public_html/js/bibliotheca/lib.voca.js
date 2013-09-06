@@ -49,14 +49,14 @@ function navigTable(set){
    theForm.gammaTable(JSON.parse(sessionStorage.activeRecord));
 }
 //=============================================================================//
-$('.btnUser,.profileList').click(function(){$.getJSON("json/profile.json",findJSON).fail(onVituim);});
-$('.profileView,#userName').click(function(){sessionStorage.formTypes='alpha';$.getJSON("json/profile.json",findJSON).fail(onVituim);})
-$('.icon-users').click(function(){$.getJSON("json/group.json",findJSON).fail(onVituim);});
-$('.system4,#btnSysPermission').click(function(){$.getJSON("json/permission.json",findJSON).fail(onVituim);});
-$('#btnDashboard').click(function(){load_async('js/agito/dashboard.js',true,'end',true)});
-//$('.system1,.getClient').click(function(){$.getJSON("json/client.json",findJSON).fail(onVituim);});
-$('#link_customers').click(function(){load_async('js/agito/customer.js',true,'end',true)});
-$('#link_insurance').click(function(){load_async('js/agito/member.js',true,'end',true)});
+$('.btnUser,.profileList').click(function(){activateMenu("profile","home","#link_home");});
+$('.profileView,#userName').click(function(){activateMenu("profile","home","#link_home",false,false,"alpha");})
+$('.btnGroup').click(function(){activateMenu("group","home","#link_home");});
+$('.system4,#btnSysPermission').click(function(){activateMenu("permission","system","#link_system")});
+$('#btnDashboard').click(function(){activateMenu("dashboard","home","#link_home",true);});
+$('.system1,#btnSysClient').click(function(){activateMenu("client","system","#link_system");});
+$('#link_customers').click(function(){activateMenu("customer","customers","#link_customers",true);});
+$('#link_insurance').click(function(){activateMenu("member","insurance","#link_insurance",true);});
 $('#btnFeatures').click(function(){activateMenu('feature',false,false,false,true);});
 $('#footContact').click(function(){getPage('Contact us')});
 $('#footHelp').click(function(){getPage('Help?')});
@@ -65,3 +65,5 @@ $("#search_all").focus(function(){this.select();}).typeahead({minLength:0,source
 $('#btnFullScreen,#fullscreen').click(function(){if(!$(this).data('toggle')||$(this).data('toggle')==0){$('#btnFullScreen,#fullscreen').data('toggle',1);enableFullScreen();$('.icon-fullscreen').removeClass('icon-fullscreen').addClass('icon-screenshot');}else{$('#btnFullScreen,#fullscreen').data('toggle',0);exitFullScreen();$('.icon-screenshot').removeClass('icon-screenshot').addClass('icon-fullscreen');}});
 $('#userOut,#profileOff').click(loginOUT);
 $('.icon-refresh').click(refreshLook);//@todo:add HTML5 history API
+$(".btnHelp").click(helpfullLink);
+$('#btnTest').click(function(){activateMenu("permission-probatio","home","#link_home");});

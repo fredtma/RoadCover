@@ -19,7 +19,11 @@ localStorage.DB_DESC='The internal DB version';
 localStorage.DB_SIZE=15;
 localStorage.DB_LIMIT=15;
 localStorage.PASSPATERN='.{6,}';//(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$
-var db;
+var db,hasNarro=false,roadCover,eternal,theForm,creoDB,iyona,iota,notitiaWorker;
+sessionStorage.removeItem('quaerere');//clean up
+//============================================================================//WORKERS
+//notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
+//notitiaWorker.postMessage({"novum":{"perm":1}});
 //============================================================================//
 /**
  * similar to jquery creates an DOM element
@@ -250,8 +254,10 @@ function isOnline(_display){
     };
    $('#statusbar').html(msg);
    if(_display===true){
-      note=window.localStorage?"<div id='notice1'>Local <strong class='text-success'>Storage</strong> enabled</div>":"<div id='notice1'>, No Local <strong class='text-error'>Storage</strong></div>";
-      note+=window.sessionStorage?"<div id='notice2'>Session <strong class='text-success'>Storage</strong> enabled</div>":"<div id='notice2'>, No Session <strong class='text-error'>Storage</strong></div>";
+      note=window.localStorage?"<ouput id='notice1'>Local <strong class='text-success'>Storage</strong> enabled.</ouput>":"<ouput id='notice1'>No Local <strong class='text-error'>Storage</strong></ouput>";
+      note+=window.sessionStorage?"<ouput id='notice2'>Session <strong class='text-success'>Storage</strong> enabled.</ouput>":"<ouput id='notice2'>No Session <strong class='text-error'>Storage</strong></ouput>";
+      note+=window.Worker?"<ouput id='notice3'>Multy threading <strong class='text-success'>Worker</strong> enabled.</ouput>":"<ouput id='notice2'>No support for <strong class='text-error'>Multy threading </strong></ouput>";
+      note+=window.openDatabase?"<ouput id='notice4'> <strong class='text-success'>WebSql</strong> enabled.</ouput>":"<ouput id='notice2'>No <strong class='text-error'>WebSql</strong></ouput>";
       $('#sideNotice').append(note);
    }
 }
@@ -296,7 +302,7 @@ loginValidation=function(){
             row=_results.rows.item(0);
             sessionStorage.username=row['username'];localStorage.USER_DETAILS=row['name'];
             if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=JSON.stringify({"operarius":row['username'],"singularis":row['id'],"nominis":row['name']});
-            if(row['id']==1||row['id']==4||row['level']=='supper')localStorage.USER_ADMIN=true; else viewAPI(false);
+            if(row['id']==1||row['id']==4||row['level']=='supper'){localStorage.USER_ADMIN=true;viewAPI(true);} else viewAPI(false);
             $('#userName a').html(localStorage.USER_DETAILS); licentia(row['username']);
             $('#userLogin').modal('hide').remove();
          }else{$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('Failed login attempt...')}
@@ -327,9 +333,12 @@ loginOUT=function(){
  */
 refreshLook=function(){
    history.go(0);
+//   console.log(history.length);
+//   console.log(history.state);
+//   console.log(history);
    var tmp=sessionStorage.username;
-   sessionStorage.clear();sessionStorage.runTime=0;sessionStorage.startTime=new Date().getTime();sessionStorage.username=tmp;
-   $('footer').removeData();
+   $('.search-all').val('');$('footer').removeData();
+   sessionStorage.clear();sessionStorage.runTime=0;sessionStorage.startTime=new Date().getTime();sessionStorage.username=tmp;sessionStorage.genesis=0;
    console.log('history:...');
 }
 //============================================================================//
@@ -464,11 +473,7 @@ sideDisplay=function(_iota,_mensa){
  * @return void
  * @todo add all the permission options
  */
-function viewAPI(_viewing){
-   if(!_viewing){
-     $('.homeSet0,.setDisplay,.setSystem').hide();
-   }
-}
+function viewAPI(_viewing){if(!_viewing) $('.homeSet0,.setDisplay,.setSystem').hide();else $('.homeSet0,.setDisplay,.setSystem').show();}
 //============================================================================//
 /**
  * gets the permissions of the user. Note permission are static
@@ -484,7 +489,7 @@ function licentia(_nominis){
    $DB(quaerere,[_nominis,_nominis],"Accessing permissions",function(_results){
       len=_results.rows.length;tmp=[];
       for(x=0;x<len;x++){row=_results.rows.item(x);tmp[x]=row['permission'];}
-      sessionStorage.lecentia=JSON.stringify(tmp);
+      sessionStorage.licentia=JSON.stringify(tmp);
    });
 }
 //============================================================================//
@@ -496,7 +501,7 @@ function licentia(_nominis){
  */
 function getLicentia(_name,_perm){
    var name=_name+' '+_perm;
-   var tmp=JSON.parse(sessionStorage.lecentia);
+   var tmp=sessionStorage.licentia?JSON.parse(sessionStorage.licentia):[];
    if(localStorage.USER_ADMIN) return true;
    if(tmp.indexOf(name)!=-1) return true;
    return false;
@@ -518,6 +523,7 @@ function getLicentia(_name,_perm){
  */
 function getPage(_page){
    var len,row,tmp,d;
+   recHistory(_page,false,false,false,false,true);
    $DB("SELECT id,title,content,date_modified FROM pages WHERE title=?",[_page],"Found page "+_page,function(results){
       len=results.rows.length;row=[];
       if(len){row=results.rows.item(0);$('footer').data('Tau','deLta');$('footer').data('iota',row['id']);}
@@ -545,9 +551,9 @@ function getPage(_page){
 function searchAll(_query,_process){
    var len,x,got;
    var set=this;set.shown=true;_query=_query||'%';
-   $DB("SELECT feature,category,filename FROM features WHERE feature LIKE ?",[_query+'%'],"searching "+_query,function(_results,results){
+   $DB("SELECT feature,category,filename,manus,tab FROM features WHERE feature LIKE ?",['%'+_query+'%'],"searching "+_query,function(_results,results){
       len=results.rows.length;got=[];getResults={};
-      for(x=0;x<len;x++){got[x]=results[x]['feature'];getResults[results[x]["feature"]]={"cat":results[x]["category"],"file":results[x]["filename"]};sessionStorage.tempus=JSON.stringify(getResults);}
+      for(x=0;x<len;x++){got[x]=results[x]['feature'];getResults[results[x]["feature"]]={"cat":results[x]["category"],"file":results[x]["filename"],"manus":results[x]["manus"],"tab":results[x]["tab"]};sessionStorage.tempus=JSON.stringify(getResults);}
       _process(got);
       set.$menu[0].style.top='auto';
    });
@@ -565,7 +571,7 @@ function searchUpdate(item){
    var _mensa,_mensula,_set,_script,_tab=false;sessionStorage.genesis=0;
    var getResults=JSON.parse(sessionStorage.tempus);
    getResults=getResults[item];
-   _mensula=getResults.file||'home';
+   _mensula=getResults.tab;
    _set='#link_'+_mensula;
    switch(getResults.cat){
       case 'json-script':
@@ -576,9 +582,13 @@ function searchUpdate(item){
       case 'execute':break;
    }
    sessionStorage.removeItem('tempus');
-   _mensa=aNumero(item);
-   console.log(_set,'_set',document.querySelector(_set));
-   console.log(getResults,'getResults');
+   _mensa=getResults.file;
+   if(getResults.manus && getResults.manus !="{}"){
+      var manus=JSON.parse(getResults.manus);
+      if(manus.form=="alpha")sessionStorage.formTypes="alpha";
+   }
+//   console.log(_set,'_set',document.querySelector(_set));
+//   console.log(getResults,'getResults');
    activateMenu(_mensa,_mensula,_set,_script,_tab);
    return item;
 }
@@ -596,6 +606,117 @@ function newSection(){
    $('.search-all').val('').prop('disabled',true);
    $('#link_home').tab('show');
    sessionStorage.genesis=0;//reset each time ur on dashboard
+}
+//============================================================================//
+/*
+ * function to activate the dashboard blocks and links of the navTab
+ */
+function activateMenu(_mensa,_mensula,_set,_script,_tab,_formType){
+   _mensula=_mensula||_mensa;
+//   console.log(_mensa,'_mensa',history.state);
+   var iota=$(_set).data('iota');var narro={};
+   if(_formType)sessionStorage.formTypes=_formType;
+//   console.log(_mensa,_mensula,_script,'[FORM]',_tab,_formType,sessionStorage.formTypes,'[this is it]',_set,'----------------------',$(_set)[0]);
+   recHistory(_mensa,_mensula,_script,_tab,_formType);
+   if(!_script)$.getJSON("json/"+_mensa+".json",findJSON).fail(onVituim);
+   else load_async("js/agito/"+_mensa+".js",true,'end',true);
+   if(_mensa=='salesman')_mensula='salesman';//ce si cest pour les sales seulment
+   if(!_tab){
+      $(_set).tab('show');
+      $(".navLinks").removeClass('active');
+      $("#nav_"+_mensula).addClass('active');}//montre la tab et le menu
+   else{
+      _mensula=_tab;
+      if(iota!=0)$('footer').data('temp',[iota,_tab])//montre seulment les list qui on des uniter iota
+      else {$('footer').removeData('temp');$('footer').removeData('display');}//change les deux, pour raison de afficher un neauvaux titre
+   }//change de nom pour les button, pour avoir access aux menu des dealer & des salesman
+   if(_mensa=='salesman')_mensula='salesmen';
+   if(iota){sideDisplay(iota,_mensula);}//fair apparaitre la table si une existance de parametre iota exists.
+}
+//============================================================================//
+/**
+ * used to measure script execution time
+ *
+ * It will verify all the variable sent to the function
+ * @author fredtma
+ * @version 0.5
+ * @category iyona
+ * @gloabl aboject $db
+ * @param array $__theValue is the variable taken in to clean <var>$__theValue</var>
+ * @see get_rich_custom_fields(), $iyona
+ * @return void|bool
+ * @todo finish the function on this page
+ * @uses file|element|class|variable|function|
+ */
+function recHistory(_mensa,_mensula,_script,_tab,_formType,_page){
+   var narro={};
+   //prepare l'object puor ecrire l'histoire
+   if(sessionStorage.narro) narro = JSON.parse(sessionStorage.narro);//si il ya rien dans l'objet d'histoire
+   var mensa=(_formType)?_mensa:false;//to prevent the lost of the original file
+   _mensa=(_formType)?_mensa+"_"+_formType:_mensa;//This will change the key value if a formType is included
+   narro[_mensa]={"table":_mensula,"manus":_script,"tab":_tab,"type":_formType,"page":_page,"store":mensa};//ajoute une nouvelle histoire
+   sessionStorage.narro=JSON.stringify(narro);
+   history.pushState({path:_mensa},_mensula);
+//   console.log(sessionStorage.narro,'sessionStorage.narro',narro);
+}
+//============================================================================//
+/**
+ * enables the tooltip help function
+ * @author fredtma
+ * @version 2.3
+ * @category help
+ * @return void
+ * @todo retrieve data from the db.
+ */
+helpfullLink=function(){
+   if(!$('.btnHelp').data('toggle')||$('.btnHelp').data('toggle')==0){$('.btnHelp i').removeClass('icon-white');$('.helpfullLink').popover({"html":true,"trigger":"click"});$('.helpfullLink').popover('show');$('.btnHelp').data('toggle',1);}
+   else {$('.btnHelp i').addClass('icon-white');$('.helpfullLink').popover('destroy');$('.btnHelp').data('toggle',0);}
+}
+//============================================================================//
+/**
+ * used for the second callback when giveng all of the master table to the child table
+ * @author fredtma
+ * @version 5.2
+ * @category references
+ * @param integer <var>x1</var> the interation number to the main query results
+ * @param object <var>j</var> the result of the main table
+ * @param element <var>set</var> te element that was clicked
+ * @param string <var>f</var> the name of the field to look for
+ * @param string <var>_mensa</var> the link table
+ * @param string <var>agris1</var> the first field to add
+ * @param string <var>agris2</var> the second field to add
+ * @param date <var>d</var> the date of the creation.
+ */
+function savingGrace(x1,j,set,f,_mensa,agris1,agris2,d,del){
+   var quaerere={};quaerere.eternal={};quaerere.eternal[agris1]={};quaerere.eternal[agris2]={};
+   if(del){//use it x2 first to delete and initiate the first record
+         quaerere.eternal[agris1].alpha=$(set).data('tribus');quaerere.eternal[agris1].delta="!@=!#";
+         quaerere.eternal[agris2].alpha=j[x1][f];quaerere.eternal[agris2].delta=" AND !@=!#";
+         quaerere.Tau='oMegA';quaerere.iyona=_mensa;sessionStorage.quaerere=JSON.stringify(quaerere);
+      $DB("DELETE FROM "+_mensa+" WHERE `"+agris1+"`=? AND `"+agris2+"`=?",[$(set).data('tribus'),j[x1][f]],"Deleted ",function(){
+         quaerere.eternal[agris1].alpha=$(set).data('tribus');quaerere.eternal[agris1].delta="!@=!#";
+         quaerere.eternal[agris2].alpha=j[x1][f];quaerere.eternal[agris2].delta=" AND !@=!#";
+         quaerere.Tau='oMegA';quaerere.iyona=_mensa;sessionStorage.quaerere=JSON.stringify(quaerere);
+         console.log(x1,quaerere,'quaerere');
+      });
+   }else{
+      $DB("SELECT id FROM "+_mensa+" WHERE `"+agris1+"`=? AND `"+agris2+"`=?",[$(set).data('tribus'),j[x1][f]],'',function(r2,j2){//cherche si il ya des duplication
+         if(!j2.rows.length){
+            quaerere.eternal[agris1]=$(set).data('tribus');quaerere.eternal[agris2]=j[x1][f];quaerere.Tau='Alpha';quaerere.iyona=_mensa;sessionStorage.quaerere=JSON.stringify(quaerere);
+            $DB("INSERT INTO "+_mensa+" (`"+agris1+"`,`"+agris2+"`,`creation`) VALUES (?,?,?)",[$(set).data('tribus'),j[x1][f],d]);
+         }
+      });
+   }//endif
+}
+//============================================================================//
+/**
+ * error login system for the worker
+ * @author fredtma
+ * @version 2.2
+ */
+function onError(e){
+   $('.db_notive').html(['ERROR: Line ', e.lineno, ' in ', e.filename, ': ', e.message].join(''));
+   console.log(['ERROR: Line ', e.lineno, ' in ', e.filename, ': ', e.message].join(''));
 }
 //============================================================================//
 /**

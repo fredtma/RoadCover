@@ -1,0 +1,31 @@
+{
+   "form": {
+      "file":"permission-probatio",
+      "field":{"clss":"form-horizontal","name":"permission","data-iota":"0"},
+      "fieldset":{"name":"admin-permissions","clss":"half-form"},
+      "legend":{"txt":"Permissions Setting"},
+      "button":{"submit_permission":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_permission":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
+   },
+   "mensa": "permissions",
+   "quaerere":{"precipio":"page,name ASC","ubi":"AND sub=-1"},
+   "fields": {
+      "page":{"icon":"icon-file","header":true,"place":true,"field":{"title":"Page","type":"local-list"},"items":{"mensa":"features","agrum":"feature","revertetur":"filename"}},
+      "name":{"field":{"required":"","type":"hidden"}},
+      "sub":{"field":{"required":"","type":"hidden","value":-1}},
+      "desc":{"complex":"textarea","title":"description","place":"Permissions Description","field":{"required":"","type":"text","rows":5,"clss":"text-area","maxlength":180}},
+      "default":{"title":"Default permissions","source":"custom","field":{"title":"Default permissions","type":"radio","autofocus":""},"items":{"Create":"Create","Edit":"Edit","Delete":"Delete","View":"View","Link":"Link","Report":"Report","Other":"Other"}}
+   },
+   "child":{
+      "permissions":{"icon":"icon-pencil ",
+                     "title":"View linked permissions",
+                     "options":{"type":"child-table"},
+                     "quaerere":{"ubi":"sub"},
+                     "global":{"complex":true,"contentEditable":true,"header":false},
+                     "fields":{
+                        "name":{"title":"","header":true},
+                        "desc":{"title":"Desription","header":true},
+                        "page":{"type":"hidden"},
+                        "sub":{"type":"hidden"}}}
+   },
+   "links":{"link_permissions_groups":["name","groups","permissions"],"link_permissions_users":["firstname||' '||lastname","users","permissions","username"]}
+}

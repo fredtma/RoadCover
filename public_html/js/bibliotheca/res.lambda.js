@@ -105,7 +105,8 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
       var div=creo({"clss":"btn-group "+_obj.key},"div");
       var innerClass=this.Obj.clss;
       this.setObject({"items":_obj.btn,"father":function(key,item){
-         btn=creo({"title":item.title,"id":key,"clss":innerClass},"button");
+         var tmp_clss=item.clss||'';
+         btn=creo({"title":item.title,"id":key,"clss":innerClass+' '+tmp_clss},"button");
          i=creo({"clss":item.icon},"i");btn.appendChild(i);div.appendChild(btn);
       }});
       this.placeObj(div);
@@ -132,6 +133,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
          },"mother":function(key,item){
             ul=creo({"clss":item.clss,"id":key},'ul');
             $.each(item.sub,function(index,val){
+               val.href=val.href=='#'?"javascript:void(0)":val.href;
                li=creo({'id':index},'li');
                a=creo({"href":val.href,"clss":val.clss},'a');
                i=creo({"clss":val.icon},'i');
