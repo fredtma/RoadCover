@@ -20,17 +20,18 @@
 function SET_FORM(_name,_class,_label){
    var DB = new SET_DB();//to enable db access
    var SET = this;
-   this.name;
+   this.patterns=JSON.parse(localStorage.EXEMPLAR);
+   eternal=eternalCall();
+   this.name=eternal.form.field.name;
    this.form;this.form2;
-   this.frmName;
-   this.frmID;
-   this.frmClass;
-   this.frmLabel;
+   this.frmName='frm_'+this.name;
+   this.frmID='#frm_'+this.name;
+   this.frmLabel=typeof eternal.form.label==="boolean"?eternal.form.label:true;
    this.Obj=[];
    this.defaultFields={
       "text":{"type":"text"},
       "email":{"type":"email"},
-      "password":{"type":"password","required":"","pattern":localStorage.PASSPATERN,"Title":"Password requires (UpperCase, LowerCase, Number/SpecialChar and min 8 Chars)"},
+      "password":{"type":"password","required":""},
       "url":{"type":"url","placeholder":"http://www.example.com"},
       "date":{"type":"date"},
       "datetime":{"type":"datetime-local"},
@@ -83,11 +84,7 @@ function SET_FORM(_name,_class,_label){
     */
    this.setAlpha=function(){
       var mainLabel, legend,fieldset,container;
-      eternal=eternalCall();
-      this.name=eternal.form.field.name;
       this.frmLabel=mainLabel=eternal.form.label?eternal.form.label:true;
-      this.frmName='frm_'+this.name;
-      this.frmID='#frm_'+this.name;
       $('#sideBot h3').html('<a href="javascript:void(0)">Add new '+this.name+'<i class="icon icon-color icon-plus addThis"></i></a>');
       //FORM
       this.form=eternal.form.field;
@@ -109,16 +106,13 @@ function SET_FORM(_name,_class,_label){
     * @param {integer} <var>_actum</var> the stage of the transaction
     * @returns {undefined}
     */
-   this.setBeta=function(_results,_actum,_iota,_unum){
+   this.setBeta=function(_results,_actum,_jesua,_unum){
       var $collapseElement=null;
       var len=_results.rows.length;
       var Name,navSection,len,addbtn,max,len,ref,row,rec,frm,frmName;var collapseName,collapse,collapseTo,collapse_head,collapse_content,headeName,ii,x,l,first;
       len=len||1;//this will display the record even when there is no record
-      eternal=eternal||eternalCall();
       var linkTable=this.linkTable;
-      this.name=Name=eternal.form.field.name;
-      this.frmName=frmName='frm_'+this.name;
-      this.frmID='#frm_'+this.name;
+      if(!getLicentia(this.name,'View')) {$('.db_notice').html("<strong class='text-error'>You do not have permission to view "+this.name+"</strong>");return false;}
       this.frmLabel=typeof eternal.form.label=="boolean"?eternal.form.label:true;;
       var isReadOnly=(typeof eternal.form.options !=="undefined")?eternal.form.options.readonly:false;
       if(typeof _results.rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_results);
@@ -137,7 +131,7 @@ function SET_FORM(_name,_class,_label){
          /*@note:$('footer').data('header') is set from the menu links
           * aliquam: from server or localhost
           * */
-         if (eternal.form.aliquam!==true&&$('footer').data('header')!==true){$('footer').data('header',false);}
+         if (eternal.form.aliquam!==true&&$('footer').data('header')!==false){$('footer').data('header',false);}
          if($('footer').data('header')===false){$('#sideBot h3').html(eternal.form.legend.txt);$('#tab-home section h2').text(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();}//lieu pour maitre le titre
          $(this.Obj.addTo).empty();//main content and side listing
          container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
@@ -149,77 +143,86 @@ function SET_FORM(_name,_class,_label){
          max=max||1;
          //LOOP
          for(rec=parseInt(sessionStorage.genesis);rec<len,rec<max;rec++){//loop record
-            if(typeof _results.rows.source!=="undefined"){row=_results[rec];headeName=fieldsDisplay('none',row,true);}
-            else if(_results.rows.length){row=_results.rows.item(rec);headeName=fieldsDisplay('none',row,true);}
-            else{row={'id':-1};headeName=['Type '+this.name+' name here']}
-            ref=row['name']||row['username']||false;
-            row['id']=row['id']||rec;
-            collapseName='#acc_'+this.name;
-            collapse=isReadOnly?'noCollapse':'collapse';
-            collapseTo=isReadOnly?'javascript:void(0)':'#collapse_'+this.name+rec;
-            collapse_head=$anima(collapseName,'div',{'id':'accGroup'+row['id'],'clss':'accordion-group'});
-            collapse_head.vita('div',{'clss':'accordion-heading','data-iota':row['id']},true)
-               .vita('a',{'clss':'betaRow','contenteditable':false,'data-toggle':collapse,'data-parent':collapseName,'href':collapseTo},true);//@todo: add save on element
-               $collapseElement=collapse_head.father;
-               l=headeName.length;for(x=0;x<l;x++)collapse_head.vita('span',{},false).child.innerHTML=headeName[x]+' ';
+            if(typeof _results.rows.source!=="undefined"){row=_results[rec];headeName=fieldsDisplay("none",row,true);}
+            else if(_results.rows.length){row=_results.rows.item(rec);headeName=fieldsDisplay("none",row,true);}
+            else{row={"id":-1,"jesua":"alpha"};headeName=["Type "+this.name+" name here"]}
+            ref=row["name"]||row["username"]||false;
+            row["id"]=row["id"]||rec;
+            row["jesua"]=row["jesua"]||rec;
+            collapseName="#acc_"+this.name;
+            collapse=isReadOnly?"noCollapse":"collapse";
+            collapseTo=isReadOnly?"javascript:void(0)":"#collapse_"+this.name+rec;
+            collapse_head=$anima(collapseName,"div",{"clss":"accordion-group class_"+row["jesua"],"data-jesua":row["jesua"]});
+            collapse_head.vita("div",{"clss":"accordion-heading","data-jesua":row["jesua"]},true)
+               .vita("a",{"clss":"betaRow","contenteditable":false,"data-toggle":collapse,"data-parent":collapseName,"href":collapseTo},true);//@todo: add save on element
+               $collapseElement=collapse_head.father;//heading row father
+               l=headeName.length;for(x=0;x<l;x++)collapse_head.vita("span",{},false).child.innerHTML=headeName[x]+" ";
              //icon holder
-             collapse_head.novo('#accGroup'+row['id']+' .accordion-heading','i',{'clss':'betaRight'});
+             collapse_head.novo(".class_"+row["jesua"]+" .accordion-heading","i",{"clss":"betaRight"});
              var father=collapse_head.father;
-            if(isReadOnly===false&&getLicentia(this.name,'Edit')){
-             collapse_head.vita('a',{'clss':'accordion-toggle','data-toggle':'collapse','data-parent':collapseName,'href':collapseTo},true)
+            if(isReadOnly===false&&getLicentia(this.name,"Edit")){
+             collapse_head.vita("a",{"clss":"accordion-toggle","data-toggle":"collapse","data-parent":collapseName,"href":collapseTo},true)
               //EDIT, quand le button et le lien sont frapper
-             .vita('i',{'clss':'icon icon-color icon-edit','title':'Edit '+headeName[0]});
+             .vita("i",{"clss":"icon icon-color icon-edit","title":"Edit "+headeName[0]});
               //FIRE on shown
-              $(collapseName).on('shown',function(){if(!$(this).data('toggle_shown')||$(this).data('toggle_shown')==0){$(this).data('toggle_shown',1); ii=$('.accordion-body.in').data('iota');DB.beta(3,ii);} });
-              $(collapseName).on('hidden',function(){$(this).data('toggle_shown',0); });
+              $(collapseName).on("shown",function(){if(!$(this).data("toggle_shown")||$(this).data("toggle_shown")==0){
+                 $(this).data("toggle_shown",1); ii=$(".accordion-body.in").data("jesua");DB.beta(3,ii);} });
+              $(collapseName).on("hidden",function(){$(this).data("toggle_shown",0); });
               //DELETE
-              if(getLicentia(this.name,'Delete')){
-               collapse_head.genesis('a',{'href':'javascript:void(0)','clss':'forIcon'},true)
-               .vita('i',{'clss':'icon icon-color icon-trash','title':'Delete '+headeName[0]}).child.onclick=function(){ii=$(this).parents('div').data('iota');DB.beta(0,ii);$(this).parents('.accordion-group').hide();};
+              if(getLicentia(this.name,"Delete")){
+               collapse_head.genesis("a",{"href":"javascript:void(0)","clss":"forIcon"},true)
+               .vita("i",{"clss":"icon icon-color icon-trash","title":"Delete "+headeName[0]}).child.onclick=function(){delRecord(this);}
               }//endif
             }else if(isReadOnly==="display"){
-               $(collapse_head.father).parents('div').data('code',row['code']);//@explain:set code of the table
-               //@event on SHOWN
-               $(collapseName).on('hidden',function(){$(this).data('toggle_shown',0); });
+               $(collapse_head.father).parents("div").data("code",row["code"]);//@explain:set code of the table
+               //@event on SHOWN @see script form
+               $(collapseName).on("hidden",function(){$(this).data("toggle_shown",0); });
             }else{//WHEN on read only do not collapse
                var temp=[];
-               $(collapse_head.father).parents('div').data('code',row['code']);//@check: i have change the div to 'div'
+               $(collapse_head.father).parents("div").data("code",row["code"]);//@check: i have change the div to "div"
                //click on the a link
                $collapseElement.onclick=function(){
-                  temp[0]=$(this).parents('div').data('code');temp[1]=eternal.mensa;$('footer').data('temp',temp);
-                  sideDisplay($(this).parents('div').data('code'), eternal.mensa);
+                  temp[0]=$(this).parents("div").data("code");temp[1]=eternal.mensa;$("footer").data("temp",temp);
+                  sideDisplay($(this).parents("div").data("code"), eternal.mensa);
                }//@see lib.voca.js
             }//endif read only
             collapse_head.father=father;//places the element to the level of the fother <i>
             //APPLY CHANGES TO ADD FUNCTION
             if(typeof eternal.links!="undefined") this.setLinks(eternal.links,collapse_head,headeName[0],ref);
             if(typeof eternal.children!="undefined") this.setChildren(eternal.children,collapse_head,collapse,collapseTo,collapseName);
-            collapse_content=$anima('#accGroup'+row['id'],'div',{'clss':'accordion-body collapse','id':'collapse_'+this.name+rec,'data-iota':row['id']});
-            collapse_content.vita('div',{'clss':'accordion-inner'},false);
+            collapse_content=$anima(".class_"+row["jesua"],"div",{"clss":"accordion-body collapse","id":"collapse_"+this.name+rec,"data-jesua":row["jesua"]});
+            collapse_content.vita("div",{"clss":"accordion-inner"},false);
          }//end for
-         this.callForm(_results,_iota);
+         this.callForm(_results,_jesua);
          if(typeof _unum=="number"){sessionStorage.genesis=0}
       }else if (_actum==3){
-         row=(_iota==-1||!_iota)?{}:_results.rows.item(0);
-         frm=document.getElementById(this.frmName);
-         resetForm(frm);
-         document.querySelector('.accordion-body.in .accordion-inner').appendChild(frm);
-         for (first in eternal.fields)break;
-         $('#'+first,frm).focus();
-         frm.style.display='block';
-         $(this.frmID+' #cancel_'+this.name)[0].value='Cancel';
-         $(this.frmID+' #cancel_'+this.name).click(function(){$(this).parents('.accordion-body.in').collapse('hide');});
+         row=(_jesua=="alpha"||!_jesua)?{}:_results.rows.item(0);
+         frm=document.getElementById(this.frmName);resetForm(frm);
+         //check and add editor. you need to chk it exist & remove it b4 you append the form
+         var callEditor=$('footer').data('lateCall');
+         if(callEditor){l=callEditor.length;for(x=0;x<l;x++){if(CKEDITOR.instances[callEditor[x]]){CKEDITOR.instances[callEditor[x]].destroy(true);}}}//endif
+         document.querySelector(".accordion-body.in .accordion-inner").appendChild(frm);
+         if(callEditor){l=callEditor.length;for(x=0;x<l;x++){var config={};config.removePlugins='savecontent';CKEDITOR.replace(callEditor[x],config);}}//endif
+         //get the first field to focus om
+         for (first in eternal.fields)break;$("#"+first,frm).focus();
+         frm.style.display="block";
+         $(this.frmID+" #cancel_"+this.name)[0].value="Cancel";
+         $(this.frmID+" #cancel_"+this.name).click(function(){$(this).parents(".accordion-body.in").collapse("hide");});
          //REFerence child table
-         if(eternal.child)this.setChild(_iota==-1?-2:_iota);
-         if((_iota==-1||!_iota)){
-            $(this.frmID).data('iota',0);
-            $(this.frmID)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+SET.name).button('loading');DB.beta(1);setTimeout(function(){$(SET.frmID+' #submit_'+SET.name).button('reset');}, 500); return false;}//make the form to become inserted
+         if(eternal.child)this.setChild(_jesua);
+         if((_jesua=="alpha"||!_jesua)){
+            $(this.frmID).data("jesua","alpha");
+            $(this.frmID)[0].onsubmit=function(e){e.preventDefault();$("#submit_"+SET.name).button("loading");DB.beta(1);setTimeout(function(){$(SET.frmID+" #submit_"+SET.name).button("reset");}, 500); return false;}//make the form to become inserted
+            if(!getLicentia(this.name,"Create")) $("#submit_"+SET.name).addClass("disabled");
          }else{
-            $(this.frmID).data('iota',row['id']);
-            fieldsDisplay('form',row);
-            $(this.frmID)[0].onsubmit=function(e){e.preventDefault();$('#submit_'+SET.name).button('loading');DB.beta(2,row['id']);setTimeout(function(){$(SET.frmID+' #submit_'+SET.name).button('reset');}, 500); return false;}//make the form to become update
+            $(this.frmID).data("jesua",row["jesua"]);
+            fieldsDisplay("form",row);
+            $(this.frmID)[0].onsubmit=function(e){e.preventDefault();$("#submit_"+SET.name).button("loading");DB.beta(2,row["jesua"]);setTimeout(function(){$(SET.frmID+" #submit_"+SET.name).button("reset");}, 500); return false;}//make the form to become update
+            if(!getLicentia(this.name,"Edit")) $("#submit_"+SET.name).addClass("disabled");
          }//endif
-         if(eternal.form.file)load_async('js/agito/'+eternal.form.file+'.js',false,'end',true);
+         if(eternal.form.file)load_async("js/agito/"+eternal.form.file+".js",false,"end",true);
+         var event = new Event('onShowForm');
+         document.querySelector(this.frmID).dispatchEvent(event);
       }
 //      this.setObject({"items":eternal,"father":function(_key,_field){}});
    }
@@ -231,12 +234,11 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.gammaTable=function(_rows,_child,_element,_unum,_legend,_foreign,_functions){
-      var addEle,len,headers,$table,r1,max,len,k,th,title,allHead,cls,colspan,row,rec,ref,tmp,iota,theContent;
+      var addEle,len,headers,$table,r1,max,len,k,th,title,allHead,cls,colspan,row,rec,ref,tmp,theContent;
       if('rows' in _rows && 'source' in _rows.rows){sessionStorage.activeRecord=JSON.stringify(_rows);}
       else if(typeof _rows.source!=="undefined"){sessionStorage.activeRecord=JSON.stringify(_rows);}
       len=_rows['length']||_rows.rows['length'];
-      eternal=eternalCall();
-      this.name=eternal.form.field.name;
+      if(getLicentia(this.name,'View')===false) {$('.db_notice').html("<strong class='text-error'>You do not have permission to view "+this.name+"</strong>");return false;}
       if(!_foreign)this.setNavigation(_rows,true,'navTable');
       if(!_child){
          if($('header').data('header'))$('#sideBot h3').html(eternal.form.legend.txt);
@@ -259,19 +261,21 @@ function SET_FORM(_name,_class,_label){
       max=max>len?len:max;//@fix:prevent the last index from occuring
       //si il'ya une recherche
       if(typeof _unum=="number"){sessionStorage.genesis=_unum;len=_unum+1;max=_unum+1;}
+      var editable=_functions;
+      if(getLicentia(this.name,'Edit')===false) editable = false;
       for(rec=parseInt(sessionStorage.genesis);rec<len,rec<max;rec++){
          row=_rows[rec];
          r1++;
          $table.father=document.querySelector('#table_'+this.name+' tbody');
-         $table.vita('tr',{'data-iota':row['id'],'clss':'row-'+row['id']},true).vita('td',{},false,r1);
+         $table.vita('tr',{'data-jesua':row['jesua'],'clss':'row-'+row['id']},true).vita('td',{},false,r1);
          for(k in headers){ if(!headers[k].header&&!allHead) continue;
-            $table.vita('td',{'contenteditable':_functions,'clss':'col_'+k},false,row[k]);
+            $table.vita('td',{'contenteditable':editable,'clss':'col_'+k},false,row[k]);
             $table.child.onfocus=function(){theContent=$(this).text();}
             $table.child.onblur=function(){if(theContent!=$(this).text())deltaNotitia(this);}
          }//endfor
          if(_functions){
             tmp=$table.vita('td',{},true).father;
-            $table.vita('a',{'href':'javascript:void(0)','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=function(){omegaNotitia(this,row['id']);}
+            if(getLicentia(this.name,'Delete')===true)$table.vita('a',{'href':'javascript:void(0)','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=function(){omegaNotitia(this,row['jesua']);}
             ref=row['name']||row['username']||false;
             $table.father=tmp;
             if(typeof eternal.links!="undefined") this.setLinks(eternal.links,$table,row[0],ref);
@@ -288,8 +292,8 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.newTableRow=function(_row,_child,_functions){
-      var headers,cls,allHead,$table,k,iota,theContent;
-      var father=document.querySelector('#table_'+this.name+' tbody');
+      var headers,cls,allHead,$table,k,theContent;
+      var father=document.querySelector('#table_'+this.name+' tbody');//avoir le pere du body
       var lastRow=parseInt(document.querySelector('.'+this.name+'Total').innerHTML)+1;lastRow=lastRow||1;
       document.querySelector('.'+this.name+'Total').innerHTML=lastRow;
       if(!_child){
@@ -299,7 +303,7 @@ function SET_FORM(_name,_class,_label){
          allHead=('global' in reference[_child]&&'header' in reference[_child].global)?reference[_child].global.header:true;
          headers=reference[_child].fields;cls='table-bordered table-child';
       }
-      $table=$anima(father,'tr',{'data-iota':0}).vita('td',{},false,lastRow);var tr=$table.father;
+      $table=$anima(father,'tr',{'data-jesua':0}).vita('td',{},false,lastRow);var tr=$table.father;
       for(k in headers){ if(!headers[k].header&&!allHead) continue;
          $table.father=tr;$table.vita('td',{'contenteditable':true,'clss':'col_'+k},false,_row[k]);
          $table.child.onfocus=function(){theContent=$(this).text();}
@@ -312,7 +316,7 @@ function SET_FORM(_name,_class,_label){
          $table.father=father;
          if(typeof eternal.links!="undefined") this.setLinks(eternal.links,$table,_row[0],ref);
       }//endif
-      if('sub' in reference[_child].fields)_row.sub=$(this.frmID).data('iota');//pour donner la valuer de referenc
+      if('sub' in reference[_child].fields)_row.sub=$(this.frmID).data('jesua');//pour donner la valuer de referenc
       alphaNotitia(_row,tr);
    }
    /*
@@ -324,8 +328,8 @@ function SET_FORM(_name,_class,_label){
    this.singleForm=function(_key,_field,_global){
       var global,theField,theName,legend,div,theLabel,label,placeHolder,fieldset,div1,tmpType,input,i,span,div2,container;
       global=_global!=0?_global:null;//global variable to give default value
-      theField=_field.field||_field;
-      theField.id=_key;
+      theField=SET.setField(_key,_field);
+//      theField=_field.field||_field;//@error:this has been disabled, re-enable if cause error
       theName=theField.name?theField.name:_key;
       container=SET.form2||SET.form;//to place in the second form.
       //FIELDSET
@@ -385,9 +389,9 @@ function SET_FORM(_name,_class,_label){
     * @param {integer} _iota the identification of the record
     * @returns {undefined}
     */
-   this.callForm=function(_results,_iota){
-      var row,mainLabel,theDefaults,theField,theName,formFields,theLabel,label,formControl,placeHolder,tmpType,input,formContent,hiddenField;
-      row=(_iota==-1||!_iota)?{}:_results.rows.item(0);//@todo:check that <var>row</var> is not used and remove it also change the function var
+   this.callForm=function(_results,_jesua){
+      var l,x,row,mainLabel,theDefaults,theField,theName,formFields,theLabel,label,formControl,placeHolder,tmpType,input,formContent,hiddenField;var lateCall=[];
+      row=(_jesua=="alpha"||!_jesua)?{}:_results.rows.item(0);//@todo:check that <var>row</var> is not used and remove it also change the function var
       this.frmLabel=mainLabel=eternal.form.label?eternal.form.label:true;
       theDefaults=this.defaultFields;
       //FORM
@@ -400,9 +404,9 @@ function SET_FORM(_name,_class,_label){
       formContent=$form.father;
       this.setObject({"items":eternal,"father":function(_key,_property){
             hiddenField='';
-            theField=_property.field||{};
-            theField.id=_key;
+            theField=SET.setField(_key,_property);
             theName=theField.name?theField.name:_key;
+            if(theField.type=='editor')lateCall.push(_key);
             if(theField.type=="hidden"){hiddenField='hiddenField';}
             //FIELDSET
             if(_property.fieldset){
@@ -412,6 +416,7 @@ function SET_FORM(_name,_class,_label){
             }else{
                formFields=$anima(formContent,'div',{"clss":"control-group "+SET.frmName+"_"+_key+" "+hiddenField});
             }
+//            var controlGroup=formFields.father;//holder of the group?
             //LABEL
             theLabel=_property.title?_property.title:theName;
             theLabel=aNumero(theLabel,true);
@@ -438,6 +443,21 @@ function SET_FORM(_name,_class,_label){
       });//end setObject
       formContent.parentNode.insertBefore(this.setButton(eternal.form.button), formContent.nextSibling);
       document.getElementById(this.frmName).style.display='none';
+      $('footer').data('lateCall',lateCall);
+   }
+   /*
+    * add validation and key fields to the current field
+    * @param {string} <var>_key</var> the id and key field of the field
+    * @param {object} <var>_prop</var> all the properties of the field
+    * @returns {object}
+    */
+   this.setField=function(_key,_prop){
+      var theField=_prop.field||{};
+      theField.id=_key;
+      var title=theField.title||_prop.title||'';//@todo::after performance check use @onblur validation
+      if(_prop.pattern){theField.pattern=this.patterns[_prop.pattern][0];theField.title=title+"\n"+this.patterns[_prop.pattern][1];}
+      else if(_prop.field.type=="password"){theField.pattern=this.patterns["password"][0];theField.title=title+"\n"+this.patterns["password"][1];}
+      return theField;
    }
    /*
     * function to link the selected table in a gerund
@@ -447,7 +467,7 @@ function SET_FORM(_name,_class,_label){
     * @param {integer} <var>_iota</var> groups iota
     * @returns {undefined}
     */
-   this.linkTable=function(_name,_mensa,_agrum,_ratio,_iota){
+   this.linkTable=function(_name,_mensa,_agrum,_ratio,_jesua){
       var agris1,agris2,quaerere,len,x,x1,row,$displayMensa
       eternal=eternal||eternalCall();
       var puerum=eternal.child||false;
@@ -461,12 +481,12 @@ function SET_FORM(_name,_class,_label){
          agris1=unus.slice(0,-1);//get the field remove the 's'
          agris2=duo.slice(0,-1);
          $('#sideBot h3').html('Associate '+agris2+' to a '+unus);
-         quaerere="SELECT a.id,"+_agrum+",a.`"+tribus+"`,b.`"+agris2+"` FROM `"+unus+"` a LEFT OUTER JOIN `"+_mensa+"` b ON b.`"+agris1+"`=a."+tribus+" AND b.`"+agris2+"`='"+_ratio+"' GROUP BY a.`id` ORDER BY "+_agrum;
+         quaerere="SELECT a.id,a.jesua,"+_agrum+",a.`"+tribus+"`,b.`"+agris2+"` FROM `"+unus+"` a LEFT OUTER JOIN `"+_mensa+"` b ON b.`"+agris1+"`=a."+tribus+" AND b.`"+agris2+"`='"+_ratio+"' GROUP BY a.`id` ORDER BY "+_agrum;
          $DB(quaerere,[],"Listing "+unus,function(results){
          len=results.rows.length;
             for(x=0;x<len;x++){
                row=results.rows.item(x);
-               $displayMensa=$anima('#displayMensa','li',{'data-iota':row['id']}).vita('a',{'href':'javascript:void(0)'},true,aNumero(row[_agrum],true)+' ').vita('i',{'clss':'icon icon-color icon-unlink'});
+               $displayMensa=$anima('#displayMensa','li',{'data-jesua':row['jesua']}).vita('a',{'href':'javascript:void(0)'},true,aNumero(row[_agrum],true)+' ').vita('i',{'clss':'icon icon-color icon-unlink'});
                $($displayMensa.child).data('tribus',row[tribus]);
                if(_ratio==row[agris2]){$($displayMensa.child).removeClass('icon-unlink').addClass('icon-link');$($displayMensa.child).parent().addClass('text-success');}
                $displayMensa.child.onclick=function(){
@@ -478,7 +498,7 @@ function SET_FORM(_name,_class,_label){
                      $DB("INSERT INTO "+_mensa+" (`"+agris1+"`,`"+agris2+"`,`creation`) VALUES (?,?,?)",[$(this).data('tribus'),_ratio,d],"Linked "+_name+" to "+row[_agrum]);
                      if(puerum){//pour donner toute les permission
                         var f=(duo=='users')?'user':'name';//la column de reference
-                        $DB("SELECT `"+f+"` FROM "+duo+" WHERE sub=?",[_iota],"Selecting children",function(r,j){//prend toutes les donner de priviledge
+                        $DB("SELECT `"+f+"` FROM "+duo+" WHERE sub=?",[_jesua],"Selecting children",function(r,j){//prend toutes les donner de priviledge
                            for(x1=0;x1<j.rows.length;x1++) savingGrace(x1,j,set,f,_mensa,agris1,agris2,d);
                         });//end quaerere
                      }//endif
@@ -490,7 +510,7 @@ function SET_FORM(_name,_class,_label){
                      $DB("DELETE FROM "+_mensa+" WHERE `"+agris1+"`=? AND `"+agris2+"`=?",[$(this).data('tribus'),_ratio],"unLinked "+_name+" to "+row[_agrum]);
                      if(puerum){//pour donner toute les permission
                         var f=(duo=='users')?'user':'name';//la column de reference
-                        $DB("SELECT `"+f+"` FROM "+duo+" WHERE sub=?",[_iota],"Selecting children",function(r,j){//prend toutes les donner de priviledge
+                        $DB("SELECT `"+f+"` FROM "+duo+" WHERE sub=?",[_jesua],"Selecting children",function(r,j){//prend toutes les donner de priviledge
                            for(x1=0;x1<j.rows.length;x1++) savingGrace(x1,j,set,f,_mensa,agris1,agris2,d,true);
                         });//end quaerere
                      }//endif
@@ -512,14 +532,16 @@ function SET_FORM(_name,_class,_label){
       tmp=_collapse_head.father;
       for(link in _children){
          theLink=eternal.links[link][1];
+         if(!getLicentia(this.name,'Link '+theLink)) continue;
          _collapse_head.father=tmp;
          _collapse_head.vita('a',{'href':'javascript:void(0)','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link #'+theLink});
          if(link!='reference'){
-            $(_collapse_head.child).data('ref',_ref);$(_collapse_head.child).data('head',_headKey);$(_collapse_head.child).data('link',link);$(_collapse_head.child).data('links',eternal.links[link]);
+            $(_collapse_head.child).data('ref',_ref);$(_collapse_head.child).data('head',_headKey);
+            $(_collapse_head.child).data('link',link);$(_collapse_head.child).data('links',eternal.links[link]);
             $(_collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
                $('.accordion-heading .icon-black,#table_'+SET.name+' .icon-black').removeClass('icon-black').addClass('icon-color');$(this).removeClass('icon-color').addClass('icon-black');
-               var iota=$(this).parents('div').data('iota')||$(this).parents('tr').data('iota');
-               SET.linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'),iota);
+               var jesua=$(this).parents('div').data('jesua')||$(this).parents('tr').data('jesua');
+               SET.linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'),jesua);
             });
          }else{//esle reference. LINK
             temp=[];
@@ -542,7 +564,9 @@ function SET_FORM(_name,_class,_label){
     */
    this.setChildren=function(_children,_collapse_head,_collapse,_collapseTo,_collapseName){
       var key,tmp;
+      var father=_collapse_head.father;
       for(key in _children){tmp=_children[key];
+         _collapse_head.father=father;
          _collapse_head.vita('a',{'clss':'forIcon','data-toggle':_collapse,'data-parent':_collapseName,'href':_collapseTo},true)
          .vita('i',{'clss':'memberIcon '+tmp.icon,'title':'Link '+tmp.title,'data-agilis':key});//@event:customer.js
       }//endfor
@@ -551,18 +575,18 @@ function SET_FORM(_name,_class,_label){
     * creates the parent->child form
     * @param {integer} <var>_iota</var> the parents IDref
     */
-   this.setChild=function(_iota){
+   this.setChild=function(_jesua){
       var childName;for(childName in eternal.child)break;var child=eternal.child[childName];
       var ubi=child.quaerere.ubi+"=?";
       var childFields=[];var field;
       for(field in child.fields){childFields.push(field);}
       childFields=childFields.join();
-      var opto="SELECT id,"+childFields+" FROM "+childName+" WHERE "+ubi;
+      var opto="SELECT id,"+childFields+",jesua FROM "+childName+" WHERE "+ubi;
       $(this.frmID+2).remove();
       var setEle=document.querySelector(this.frmID+' fieldset');
       var container=$anima(this.frmID,'fieldset',{'clss':'half-form formReader','id':this.frmName+2}).vita('legend',{},false,aNumero(child.title)).father;
       setEle.parentNode.insertBefore(container,setEle.nextSibling);//place the new fields set next to the old one
-      $DB(opto,[_iota],"Find child",function(r,j){
+      $DB(opto,[_jesua],"Find child",function(r,j){
          theForm.gammaTable(j,childName,SET.frmID+2,false,true,true,true);
       });
    }
@@ -716,7 +740,8 @@ function formInput(_key,_field,_items,_holder,_complex){
                });
             },updater:function(item){return getResults[item]||item;}
          });break;
-      case 'text': ele=creo(_field,'textarea');break;//@todo make the default a complex one
+      case 'editor': //load_async("js/libs/CKEditorMin/ckeditor.js",true,"end",false);//setTimeout(function(){CKEDITOR.replace(_field.id);},100);//mait un compteur, pour que la scripte charge
+      case 'text': ele=creo(_field,'textarea'); break;
       case 'select': ele=create_select (_key, true, _items, _field.clss);break;
       default: ele=creo(_field,theType); break;//@check: changed <var>theType</var> it use to be 'input', check that it does not affect other form item
    }
@@ -755,11 +780,11 @@ fieldsDisplay=function(_from,_source,_head,_reference){
             break;
          case 'p':
          case 'span':
-            if(_from==='form')$(frmID+' #'+key2).html(_source[key]);
+            if(_from==='form'&&_source[key])$(frmID+' #'+key2).html(_source[key]);
             else _return[c]=_source[key];
             break;
          default:
-            if(_from==='form')$(frmID+' #'+key2).val(_source[key]);
+            if(_from==='form'&&_source[key]){$(frmID+' #'+key2).val(_source[key]);if(key2=='password'&&document.getElementById('signum'))document.getElementById('signum').value=_source[key]}
             else if(_from==='list')_return[c]=$(frmID+' #'+key2).val();
             else _return[c]=_source[key2];
             break;

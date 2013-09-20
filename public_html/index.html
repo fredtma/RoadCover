@@ -2,8 +2,6 @@
 <html>
    <head>
       <title>Road Cover</title><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1">
-<!--      <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:700,400' rel='stylesheet' type='text/css'>
-      <link href='http://fonts.googleapis.com/css?family=Vollkorn:400italic,700italic' rel='stylesheet' type='text/css'>-->
       <link rel="stylesheet" href="css/bootstrap.min.css" /><link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
       <link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/icons.css" /><link rel="shortcut icon" href="img/fav.png" />
     <!--[if lt IE 9]>
@@ -37,7 +35,7 @@
       <section class="container-fluid">
          <section class="aside _box">
             <hgroup id="mainHead"><h1><!--ingenero--></h1><!--<h2>ingenero</h2>--></hgroup>
-            <aside id="sideTop"><h3>message notification</h3><progress id="progressBar" value="10"  max="100" ><span>100</span>%</progress><time datetime="2013-06-29"><!--ingenero--></time><div id="sideNotice" class="text-info helpfullLink" title="Notification system"  data-placement="right" data-content="Notification system, displays system notice, <br/>settings and options."></div></aside>
+            <aside id="sideTop"><h3>message notification</h3><progress id="progressBar" value="10"  max="100" ><span>100</span>%</progress><time datetime="2013-06-29"><!--ingenero--></time><div id="sideNotice" class="text-info"></div></aside>
             <aside id="sideBot"><h3>CRUD SYSTEM</h3><div id="sideGrid" ><ul class="nav-grid" id="displayMensa" data-mensa=""><!--ingenero--></ul></div></aside>
          </section><!--left aside-->
          <section id="body" class="body _box">
@@ -50,8 +48,8 @@
             <nav class="navbar-inner" id="navior">
                <span class="brand white" id="copyRight">&copy; 2013 RoadCover - All right reserved.</span>
                <!--ingenero-->
-               <form class="navbar-search pull-left dropup " id="frm_search"><input type="search" class="search-query helpfullLink" id="search_all" placeholder="Search" title="Search all function"  data-placement="top" data-content="Search for all the functions in the system.<br/>This search will allow you to access all the function and pages from the system."></form>
-               <span class='statusbar helpfullLink' id="statusbar" contenteditable="true" title="The System status"  data-placement="top" data-content="Displays if the system is online or not.<br/>Also displays if the application can be used offline ">Status:</span>
+               <form class="navbar-search pull-left dropup " id="frm_search"><input type="search" class="search-query" id="search_all" placeholder="Search" title="Search all function" ></form>
+               <span class='statusbar' id="statusbar" contenteditable="true" title="The System status">Status:</span>
             </nav>
          </section>
       </footer>
@@ -80,6 +78,7 @@
    <script type="text/javascript" src="js/bibliotheca/res.forma.js"></script>
    <script type="text/javascript" src="js/bibliotheca/res.notitia.js"></script>
    <script type="text/javascript" src="js/bibliotheca/lib.ima.js"></script>
+   <script src="js/libs/CKEditorMin/ckeditor.js" type="text/javascript"></script>
    <script type="text/javascript" src="js/agito/index.js"></script>
    <script type="text/javascript" src="js/bibliotheca/lib.voca.js" defer></script>
    <script type="text/javascript" src="js/agito/dashboard.js" async data-fons="true"></script>

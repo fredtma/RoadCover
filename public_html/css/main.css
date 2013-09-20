@@ -33,6 +33,7 @@ progress::-webkit-progress-value { background:#0063a6; }
 :-moz-full-screen .tohide {display: none; /* While in fullscreen, hide any children with class 'tohide' */}
 .purgare {*zoom: 1;clear:both;}.purgare:before,.purgare:after {display: table;line-height: 0;content: "";}.purgare:after {clear: both;}
 .none{display:none;}
+.popover{min-width:250px;}
 /******************************************************************************/
 /*header setting*/
 .navigator {font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background:#fff;margin-top: 10px;}
@@ -64,6 +65,9 @@ address {margin: 3px 0px;}
 #displayMensa .dl-horizontal {margin-right: 0.2em;}
 #displayMensa .dl-horizontal dt{width:40%}
 #displayMensa .dl-horizontal dd {margin-left: 40%;}
+.pager.small{padding: 0 6px;font-size: 10.5px;}
+.pager.small li>a{-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;}
+.pager.small ul{margin:0;}
 /******************************************************************************/
 /*body setting*/
 ._box
@@ -116,6 +120,8 @@ a.accordion-toggle{display:initial !important;padding: 4px 4px  !important;}
 .formReader,.formReader .controls span {line-height: 30px;text-transform: capitalize;}
 .half-form{width:48%;float:left;}
 .control-group.hiddenField{margin-bottom:0px;}
+/*.controls input:valid{color:green;}
+.controls input:invalid{color:red;}*/
 /*form {margin: -10px 0 20px;}*/
 /******************************************************************************/
 /*side bar*/

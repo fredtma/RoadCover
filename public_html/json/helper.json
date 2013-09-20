@@ -1,0 +1,20 @@
+{
+   "form": {
+      "field":{"clss":"form-horizontal","name":"helper","data-iota":"0"},
+      "fieldset":{"name":"admin-helpers"},
+
+      "legend":{"txt":"System content help page"},
+      "button":{"submit_helper":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_helper":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
+   },
+   "mensa": "pages",
+   "quaerere":{"precipio":"","ubi":"AND type='help'"},
+   "fields": {
+      "title":{"icon":"icon-bookmark","header":true,"place":"Helper title","field":{"title":"Title","required":"","autofocus":""}},
+      "content":{"complex":true,"title":"description","place":"Content text","field":{"required":"","type":"editor","rows":5,"clss":"text-area","maxlength":180}},
+      "selector":{"icon":"icon icon-black icon-book","place":"type the class or id","field":{"title":"Element Identifier","required":""}},
+      "option":{"icon":"icon icon-black icon-book-empty","place":"type the class or id","field":{"title":"Next Element","required":""}},
+      "position":{"field":{"title":"Position of popup","type":"radio"},"items":{"top":"top","bottom":"bottom","left":"left","right":"right"}},
+      "type":{"field":{"type":"hidden","value":"help"}},
+      "level":{"field":{"type":"hidden","value":"admin"}}
+   }
+}

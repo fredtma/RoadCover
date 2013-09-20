@@ -260,7 +260,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
       if(!localStorage.USER_NAME){
          this.loginForm();
       } else {
-         licentia(localStorage.USER_NAME);//si il'ya pas de session pour l'utilisateur
+         licentia();//si il'ya pas de session pour l'utilisateur
          $('#userName a').html(localStorage.USER_DETAILS);
          if(!localStorage.USER_ADMIN) viewAPI(false);
       }//end if
@@ -271,7 +271,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
       .novo('#userLogin','div',{'clss':'modal-body'}).vita('div',{'clss':'alert alert-info'},true)
          .vita('h4',{},false,'Login Details').vita('span')
          .novo('#userLogin .modal-body','form',{'clss':'form-signin','id':'loginForm','method':'post'}).vita('div',{'clss':'input-prepend fullWidth'},true).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-user'}).genesis('input',{'id':'email','type':'text','placeholder':'username or email','clss':'input-block-level','required':'','autofocus':true})
-         .novo('#userLogin .form-signin','div',{'clss':'input-prepend fullWidth'}).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-lock'}).genesis('input',{'id':'password','type':'password','clss':'input-block-level','required':'','pattern':localStorage.PASSPATERN,'placeholder':'password'})
+         .novo('#userLogin .form-signin','div',{'clss':'input-prepend fullWidth'}).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-lock'}).genesis('input',{'id':'password','type':'password','clss':'input-block-level','required':'','placeholder':'password'})
          .novo('#userLogin .form-signin','label',{'name':'remember','for':'remeberMe','clss':'checkbox inline'},'Remember me').vita('input',{'type':'checkbox','value':1,'id':'remeberMe'})
          .genesis('label',{'name':'remember','for':'fullscreen','clss':'checkbox inline'},true,'Run in fullscreen?').vita('input',{'type':'checkbox','value':1,'id':'fullscreen'})
       .novo('#userLogin','div',{'clss':'modal-footer'}).vita('button',{'clss':'btn btn-primary','form':'loginForm'},false,'Login');

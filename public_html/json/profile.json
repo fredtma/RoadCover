@@ -1,6 +1,6 @@
 {
    "form": {
-      "field":{"clss":"form-horizontal","name":"profile","data-iota":"0"},
+      "field":{"clss":"form-horizontal","name":"profile","data-jesua":"alpha"},
       "fieldset":{"name":"admin-profile"},
       "legend":{"txt":"Administrator Profile"},
       "button":{"submit_profile":{"value":"Save Changes","type":"submit","clss":"btn btn-primary","save":true},"cancel_profile":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
@@ -9,10 +9,12 @@
    "fields":{
       "username":{"valid":["unique"],"icon":"icon-user","place":true,"field":{"required":"","autofocus":""}},
       "password":{"icon":"icon-lock","field":{"type":"password","required":""}},
+      "signum":{"source":"custom","icon":"icon-lock","field":{"type":"password","required":"","title":"re-Password"}},
       "firstname":{"icon":"icon-tag","search":true,"header":true,"place":true,"field":{"required":""}},
       "lastname":{"icon":"icon-tags","search":true,"header":true,"place":true,"field":{"required":""}},
       "email":{"icon":"icon-envelope","place":true,"field":{"type":"email","required":""}},
-      "gender":{"field":{"type":"radio","required":""},"items":["","Male","Female"]}
+      "gender":{"field":{"type":"radio","required":""},"items":["","Male","Female"]},
+      "level":{"field":{"type":"hidden","required":"","value":"admin"}}
    },
    "links":{"link_users_groups":["name","groups","users"]}
 }

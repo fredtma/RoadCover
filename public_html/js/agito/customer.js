@@ -35,41 +35,41 @@ tmp={
       "cover":{"icon":"icon-download-alt ","title":"View customer's cover","global":{"complex":true,"type":"span"},"fields":{"Is Not Completed Time Constraint":{},"Is Not Completed Client Request":{},"Is FinanceOffered":{},"Accept No Short Term Cover":{},"Accept No Scratch And Dent":{},"Accept No Add Cover":{},"Accept No Deposit Cover":{},"Accept No Warranty":{},"Accept No Service Plan":{},"Accept No Maintenance Plan":{},"Accept No Credit Life":{},"Requires Service Plan":{},"Requires Warranty":{},"Amount Willing To Spend On Vaps":{}}}
    }
 }
-sessionStorage.setItem('active',JSON.stringify(tmp));
-eternal=tmp;temp=$('footer').data('temp');
-get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,'quaerere':temp},'','post','json',function(results){
+sessionStorage.setItem("active",JSON.stringify(tmp));
+eternal=tmp;temp=$("footer").data("temp");
+get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp},"","post","json",function(results){
    var collapseName,tmp;
    if(temp)sideDisplay(temp[0],temp[1]);
    theForm=new SET_FORM()._Set("#body article");
    theForm.setBeta(results);
-//   $('.memberIcon').tooltip();
+//   $(".memberIcon").tooltip();
    var Name=eternal.form.field.name;
-   var frmId='#frm_'+Name;
-   var frmName='frm_'+Name;
-   collapseName='#acc_'+Name;
-   $('.memberIcon').click(function(){
-      tmp=$(this).data('agilis');$(this).parents('.accordion-heading').data('activated',tmp);
-      tmp=$(this).parents('div').data('iota');$("#collapse_customer"+tmp).collapse('show');tmp=null;
-      if($('.accordion-body.in')[0]){
+   var frmId="#frm_"+Name;
+   var frmName="frm_"+Name;
+   collapseName="#acc_"+Name;
+   $(".memberIcon").click(function(){
+      tmp=$(this).data("agilis");$(this).parents(".accordion-heading").data("activated",tmp);
+      tmp=$(this).parents("div").data("jesua");$("#collapse_customer"+tmp).collapse("show");tmp=null;
+      if($(".accordion-body.in")[0]){
          onShow(false);
       }
    });
-   $('.betaRow').click(function(){tmp=$(this).parents('div').data('iota');$("#collapse_customer"+tmp).collapse('toggle');tmp=null;});//@row clicked collapse
-   $(frmId+' #close_'+Name).click(function(){$('.accordion-body.in').collapse('hide');});//@button CLOSE collapse
-   $(collapseName).on('shown',function(){//@onShown
-      if(!$(this).data('toggle_shown')||$(this).data('toggle_shown')==0){
-         $(this).data('toggle_shown',1);
+   $(".betaRow").click(function(){tmp=$(this).parents("div").data("jesua");$("#collapse_customer"+tmp).collapse("toggle");tmp=null;});//@row clicked collapse
+   $(frmId+" #close_"+Name).click(function(){$(".accordion-body.in").collapse("hide");});//@button CLOSE collapse
+   $(collapseName).on("shown",function(){//@onShown
+      if(!$(this).data("toggle_shown")||$(this).data("toggle_shown")==0){
+         $(this).data("toggle_shown",1);
          onShow(true);
       }//endif
    });//@onShown
-   $(collapseName).on('hidden',function(){$(this).data('toggle_shown',0); });//@onHidden
+   $(collapseName).on("hidden",function(){$(this).data("toggle_shown",0); });//@onHidden
    delete tmp, delete temp;
 });//@getAjax
 function onShow(on){
    var Name=eternal.form.field.name;
    var frmId='#frm_'+Name;
    var frmName='frm_'+Name;
-   var ii=$('.accordion-body.in').data('iota');var frm,active,code,reference,setEle,container,tmp;
+   var ii=$('.accordion-body.in').data('jesua');var frm,active,code,reference,setEle,container,tmp;
    if(on){
       frm=document.getElementById(frmName);
       resetForm(frm);
@@ -78,23 +78,24 @@ function onShow(on){
       fieldsDisplay('form',ii);
    }//endif
    //SET CHILD FORM
-   active=$('.accordion-heading[data-iota="'+ii+'"]').data('activated');
-   code=$('.accordion-heading[data-iota="'+ii+'"]').data('code');//@explain:get the code of the table it's like iota
+   active=$('.accordion-heading[data-jesua="'+ii+'"]').data('activated');
+   code=$('.accordion-heading[data-jesua="'+ii+'"]').data('code');//@explain:get the code of the table it's like jesua
+   //retirer la deuxieme form ici
+   if(!document.querySelector(frmId+2))container=$anima(frmId,"fieldset",{"clss":"half-form formReader","id":frmName+2}).father;
+   else container=document.querySelector(frmId+2);
+   $(container).empty();
    if(typeof active!=="undefined"){
-      get_ajax(localStorage.SITE_SERVICE,{'militia':eternal.mensa+'-'+active,iota:code},'','get','json',function(results){
+      get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa+"-"+active,iota:code},"","post","json",function(results){
          reference=eternal.children[active];
-         setEle=document.querySelector(frmId+' fieldset');
-         if(!document.querySelector(frmId+2))container=$anima(frmId,'fieldset',{'clss':'half-form formReader','id':frmName+2}).father;
-         else container=document.querySelector(frmId+2);
-         $(container).empty();
-         $anima(container,'legend',{},aNumero(eternal.children[active].title));
+         setEle=document.querySelector(frmId+" fieldset");
+         $anima(container,"legend",{},aNumero(eternal.children[active].title));
          setEle.parentNode.insertBefore(container,setEle.nextSibling);//place the new fields set next to the old one
          if(reference.global.complex=="table"){
             theForm.gammaTable(results,active,frmId+2);
          }else{//endif
             theForm.form2=container;//to place in the second form
             theForm.setObject({"items":reference,"father":theForm.singleForm});//end setObject
-            fieldsDisplay('form',results[0],false,active);
+            fieldsDisplay("form",results[0],false,active);
          }//endif
       });
    }//ednif

@@ -98,7 +98,7 @@ function findJSON(data){
    //DB SETUP
    var creoDB=new SET_DB();sessionStorage.removeItem('formTypes');
    switch(formTypes){
-      case 'alpha':var spicio=JSON.parse(localStorage.USER_NAME); creoDB.alpha(null,null,spicio.singularis);break;
+      case 'alpha':var spicio=JSON.parse(localStorage.USER_NAME); creoDB.alpha(null,null,spicio.jesua);break;
       case 'betaTable':get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa},'','post','json',function(results){theForm.setBeta(results,3);});break;
       default:creoDB.beta();break;
    }
@@ -125,14 +125,18 @@ onVituim=function(event, jqxhr,textStatus){
  * @return void
  */
 function saveData(){
-   var title= $('#page_title').text();var content= $('#page_content').html();var Tau= $('footer').data('Tau');var day= getToday();var iota=$("footer").data("iota");var tmp;
-   q={"eternal":{'blossom':{"alpha":iota,"delta":"!@=!#"},"title":title,"content":content,"date_modified":day,"level":"admin","type":"content"},"Tau":Tau,"iyona":"pages"};
+   var title=$('#page_title').text();var content=$('#page_content').html();var Tau=$('footer').data('Tau');
+   var day=getToday();var iota=$("footer").data("iota");var tmp;var jesua=md5(title+day);
+   var q={"eternal":{'blossom':{"alpha":iota,"delta":"!@=!#"},"title":title,"content":content,"modified":day,"creation":day,"jesua":jesua,"level":"admin","type":"content"},"Tau":Tau,"iyona":"pages"};
    sessionStorage.quaerere=JSON.stringify(q);
-   $DB("REPLACE INTO pages (id,title,content,date_modified,`level`,`type`) VALUES (?,?,?,?,?,?)",[iota,title,content,day,"admin","content"],"Setup page "+title,function(results){
+   var arr=[title,content,day,day,jesua,"admin","content"];
+   var quaerere="INSERT INTO pages (title,content,modified,creation,jesua,`level`,`type`) VALUES (?,?,?,?,?,?,?)";
+   if(iota){quaerere="UPDATE pages SET title=?,content=?,modified=?,`level`=?,`type`=? WHERE id=?";arr=[title,content,day,"admin","content",iota]}
+   $DB(quaerere,arr,"Setup page "+title,function(results){
       iota=iota||results.insertId;
       if(!$(".db_notice").data('toggle')||$(".db_notice").data('toggle')==0){$(".db_notice").data('toggle',1);tmp='text-success';}else {$(".db_notice").data('toggle',0);tmp='text-warning';}
       $(".db_notice").html("<span class='"+tmp+"'>The page "+title+", has been saved.</span>").animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
-      $("footer").data("iota",iota);$("footer").data("Tau","deLta");});tmp=null;
+      $("footer").data("iota",iota);$("footer").data("Tau","deLta");});
 }//end function send data to the server to update via ajax
 /******************************************************************************/
 /**
@@ -149,4 +153,3 @@ function saveData(){
  * @todo finish the function on this page
  * @uses file|element|class|variable|function|
  */
-

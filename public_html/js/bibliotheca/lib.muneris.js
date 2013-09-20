@@ -8,19 +8,33 @@ sessionStorage.runTime=new Date().getTime();
 localStorage.SITE_NAME="Road Cover";
 localStorage.SITE_DATE='fullDate';
 localStorage.SITE_TIME='mediumTime';
-localStorage.SITE_URL='http://localhost/RoadCover/public_html/';
-localStorage.SITE_SERVICE='https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php';
-localStorage.SITE_MILITIA='https://nedbankqa.jonti2.co.za/modules/DealerNet/notitia.php';
+localStorage.SITE_URL='http://197.96.139.19/';
+localStorage.SITE_SERVICE=localStorage.SITE_URL+'minister/inc/services.php';
+localStorage.SITE_MILITIA=localStorage.SITE_URL+'minister/inc/notitia.php';
 localStorage.MAIL_SUPPORT='support@roadcover.co.za';
 localStorage.DB;
 localStorage.DB_NAME='road_cover';
-localStorage.DB_VERSION='1.0';
+localStorage.DB_VERSION='2.95';
 localStorage.DB_DESC='The internal DB version';
 localStorage.DB_SIZE=15;
 localStorage.DB_LIMIT=15;
-localStorage.PASSPATERN='.{6,}';//(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$
+localStorage.EXEMPLAR=JSON.stringify({"username":["^[A-Za-z0-9_]{6,15}$","requires at least six alpha-numerique character"],
+"pass1":["((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,20})","requires complex phrase with upperCase, lowerCase, number and a minimum of 6 chars"],
+"pass2":["^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$","requires complex phrase with upperCase, lowerCase, number and a minimum of 6 chars"],
+"password":["(?=^.{6,}$)((?=.*[0-9])|(?=.*[^A-Za-z0-9]+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$","requires upperCase, lowerCase, number and a minimum of 6 chars"],
+"pass3":["^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$","requires upperCase, lowerCase, number and a minimum of 6 chars"],
+"fullDate":["(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))","follow the following date format (YYYY-MM-DD)"],
+"phone":["[\(]?[0-9]{3}[\)]?[\-|\ ]?[0-9]{3}[\-|\ ]?[0-9]{4}","follow the format of 011-222-3333"],
+"minMax":["[a-zA-Z0-9]{4,8}","requires at least four to eight character"],
+"number":["[-+]?[0-9]*[.,]?[0-9]+","requires a numberic value"],
+"url":["^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$","requires a valid URL"],
+"colour":["^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$","requires a valid colour in the form of (#ccc or #cccccc)"],
+"bool":["^1|0","requires a boolean value of 0 or 1"],
+"email":["^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$","the email address is not the right formated"],
+"single":["^[a-zA-Z0-9]","requires a single value"]})
 var db,hasNarro=false,roadCover,eternal,theForm,creoDB,iyona,iota,notitiaWorker;
 sessionStorage.removeItem('quaerere');//clean up
+sessionStorage.formValidation=hasFormValidation();
 //============================================================================//WORKERS
 //notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
 //notitiaWorker.postMessage({"novum":{"perm":1}});
@@ -114,9 +128,11 @@ $anima=function(section,ele,arr,txt,point){
  * @return void
  */
 function load_async(url,sync,position,fons){
-   var s,ele;
+   var s,ele,c;
    var script=document.createElement('script');
    s=document.querySelector('script[data-fons]');
+   c=document.querySelector('script[src="'+url+'"]');
+   if(c)return false;
    if(!position)ele=document.getElementsByTagName('head')[0];
    else if(position==='end')ele=document.getElementsByTagName('body')[0];
    if(s)ele.removeChild(s);
@@ -242,6 +258,7 @@ aNumero = function(the_str,transform)
  */
 function isOnline(_display){
    var myAppCache = window.applicationCache; var note;
+
    var msg=navigator.onLine?"Status: Working <strong class='text-success'>Online</strong>":"Status: Working <strong class='txt-error'>Offline</strong>";
    switch (myAppCache.status) {
       case myAppCache.UNCACHED:msg+=', CACHE::UNCACHED'; break;//status 0 no cache exist
@@ -258,6 +275,8 @@ function isOnline(_display){
       note+=window.sessionStorage?"<ouput id='notice2'>Session <strong class='text-success'>Storage</strong> enabled.</ouput>":"<ouput id='notice2'>No Session <strong class='text-error'>Storage</strong></ouput>";
       note+=window.Worker?"<ouput id='notice3'>Multy threading <strong class='text-success'>Worker</strong> enabled.</ouput>":"<ouput id='notice2'>No support for <strong class='text-error'>Multy threading </strong></ouput>";
       note+=window.openDatabase?"<ouput id='notice4'> <strong class='text-success'>WebSql</strong> enabled.</ouput>":"<ouput id='notice2'>No <strong class='text-error'>WebSql</strong></ouput>";
+      note+=window.WebSocket?"<ouput id='notice5'> <strong class='text-success'>WebSocket</strong> enabled.</ouput>":"<ouput id='notice2'>No <strong class='text-error'>WebSocket</strong></ouput>";
+      note+=window.history?"<ouput id='notice6'> <strong class='text-success'>History</strong> enabled.</ouput>":"<ouput id='notice2'><strong class='text-error'>History</strong> not available</ouput>";
       $('#sideNotice').append(note);
    }
 }
@@ -270,7 +289,7 @@ function isOnline(_display){
  * @param object <var>_frm</var> the object representing the form
  */
 function resetForm(_frm){
-   $(':input',_frm).not(':button, :submit, :reset, :hidden, :checkbox, :radio').val('');
+   $(':input',_frm).not(':button, :submit, :reset, :hidden, :checkbox, :radio').val('');$('textarea',_frm).val('');
    $('input[type=checkbox],input[type=radio]',_frm).prop('checked',false).prop('selected',false);
    $('button[type=button]',_frm).removeClass('active');
 }
@@ -294,17 +313,19 @@ eternalCall=function(){
  * @category json
  */
 loginValidation=function(){
-   var u,row;
+   var u,p,row;
    try{
-      u=$('#loginForm #email').val();p=$('#loginForm #password').val();
-      $DB("SELECT id,username,firstname||' '||lastname as name FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(_results){
+      u=$('#loginForm #email').val();p=md5($('#loginForm #password').val());
+      $DB("SELECT id,username,firstname||' '||lastname as name,jesua,level FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(_results){
          if(_results.rows.length){
-            row=_results.rows.item(0);
+            row=_results.rows.item(0);console.log(row['level'],"row['level']");
             sessionStorage.username=row['username'];localStorage.USER_DETAILS=row['name'];
-            if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=JSON.stringify({"operarius":row['username'],"singularis":row['id'],"nominis":row['name']});
-            if(row['id']==1||row['id']==4||row['level']=='supper'){localStorage.USER_ADMIN=true;viewAPI(true);} else viewAPI(false);
+            if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=JSON.stringify({"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']});
+            else sessionStorage.USER_NAME=JSON.stringify({"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']});
+            if(row['level']==='super'){localStorage.USER_ADMIN=true;viewAPI(true);} else viewAPI(false);
             $('#userName a').html(localStorage.USER_DETAILS); licentia(row['username']);
             $('#userLogin').modal('hide').remove();
+            get_ajax(localStorage.SITE_SERVICE,{"militia":"adde quemvis","quemvis":row['username']},"","post","json");
          }else{$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('Failed login attempt...')}
       });
    }catch(err){console.log('ERROR::'+err.message)}
@@ -482,11 +503,12 @@ function viewAPI(_viewing){if(!_viewing) $('.homeSet0,.setDisplay,.setSystem').h
  * @category permission, login
  * @param string <var>_nominis</var> the nominis of the user
  */
-function licentia(_nominis){
+function licentia(){
    var len,x,tmp,row;
+   var _nominis = (localStorage.USER_NAME)?JSON.parse(localStorage.USER_NAME):sessionStorage.USER_NAME;
    var quaerere="SELECT pu.`permission` as permission FROM link_permissions_users pu WHERE `user`=? UNION \
    SELECT pg.`permission` as permission FROM link_permissions_groups pg INNER JOIN link_users_groups ug ON ug.`group`=pg.`group` WHERE ug.user=?";
-   $DB(quaerere,[_nominis,_nominis],"Accessing permissions",function(_results){
+   $DB(quaerere,[_nominis.operarius,_nominis.operarius],"Accessing permissions",function(_results){
       len=_results.rows.length;tmp=[];
       for(x=0;x<len;x++){row=_results.rows.item(x);tmp[x]=row['permission'];}
       sessionStorage.licentia=JSON.stringify(tmp);
@@ -503,7 +525,7 @@ function getLicentia(_name,_perm){
    var name=_name+' '+_perm;
    var tmp=sessionStorage.licentia?JSON.parse(sessionStorage.licentia):[];
    if(localStorage.USER_ADMIN) return true;
-   if(tmp.indexOf(name)!=-1) return true;
+   if(tmp.indexOf(aNumero(name, true))!=-1) return true;
    return false;
 }
 //============================================================================//
@@ -524,15 +546,18 @@ function getLicentia(_name,_perm){
 function getPage(_page){
    var len,row,tmp,d;
    recHistory(_page,false,false,false,false,true);
-   $DB("SELECT id,title,content,date_modified FROM pages WHERE title=?",[_page],"Found page "+_page,function(results){
+   $DB("SELECT id,title,content,modified FROM pages WHERE title=?",[_page],"Found page "+_page,function(results){
       len=results.rows.length;row=[];
       if(len){row=results.rows.item(0);$('footer').data('Tau','deLta');$('footer').data('iota',row['id']);}
-      else {row['title']=_page;row['content']="Click here to add new content";row['date_modified']=getToday();$('footer').data('Tau','Alpha');$('footer').data('iota',null);}
-      $("#body article").empty();tmp=row['date_modified'];d=(tmp.search('0000-00-00')!=-1)?getToday():tmp;
+      else {row['title']=_page;row['content']="Click here to add new content";row['modified']=getToday();$('footer').data('Tau','Alpha');$('footer').data('iota',null);}
+      $("#body article").empty();tmp=row['modified'];d=(tmp.search('0000-00-00')!=-1)?getToday():tmp;
       var d1 = new Date(d);d=tmp=null;
       $anima("#body article","section").vita("header",{},true).vita("h1",{"id":"page_title","contenteditable":true},false,row['title']).vita('h3',{},true).vita("time",{"datetime":d1.format("isoDateTime")},false,'Last modified'+d1.format(localStorage.SITE_DATE));
       $anima("#body article","section",{"id":"page_content","contenteditable":true}).father.innerHTML=row['content'];
-      load_async("js/libs/CKEditorMin/ckeditor.js",false,'end',true);
+      load_async("js/libs/CKEditorMin/ckeditor.js",true,'end',false);
+      //@solve:prevents bug of CKEDITOR not existing.
+      if(typeof CKEDITOR!=="undefined")var titleEditor = CKEDITOR.inline(document.getElementById('page_title'));
+      if(typeof CKEDITOR!=="undefined")var pageEditor = CKEDITOR.inline(document.getElementById('page_content'));
    });
 }
 //============================================================================//
@@ -587,8 +612,6 @@ function searchUpdate(item){
       var manus=JSON.parse(getResults.manus);
       if(manus.form=="alpha")sessionStorage.formTypes="alpha";
    }
-//   console.log(_set,'_set',document.querySelector(_set));
-//   console.log(getResults,'getResults');
    activateMenu(_mensa,_mensula,_set,_script,_tab);
    return item;
 }
@@ -668,9 +691,42 @@ function recHistory(_mensa,_mensula,_script,_tab,_formType,_page){
  * @return void
  * @todo retrieve data from the db.
  */
-helpfullLink=function(){
-   if(!$('.btnHelp').data('toggle')||$('.btnHelp').data('toggle')==0){$('.btnHelp i').removeClass('icon-white');$('.helpfullLink').popover({"html":true,"trigger":"click"});$('.helpfullLink').popover('show');$('.btnHelp').data('toggle',1);}
-   else {$('.btnHelp i').addClass('icon-white');$('.helpfullLink').popover('destroy');$('.btnHelp').data('toggle',0);}
+helpfullLink=function(_now,_curr){
+   var alpha=$("#nav-main .active").attr("id");var encore='';
+   var openForm=document.querySelector(".accordion-body.in form");
+   if(openForm)alpha="form";
+   if(typeof _now==="object"){
+      switch(alpha){case "nav_dealers":case "nav_salesman":case "nav_customers":case "nav_insurance":_now=".pagination";break;
+         case "form":_now=openForm.id.search(/#/ig)!=-1?openForm.id:'#'+openForm.id;encore=' legend';break;
+         case "nav_system":_now=".setSystem";break;default:_now="#notice6";break;}//end switch
+   }//endif
+   console.log(alpha,'tab',_now,"/",_curr,$(_now),'/',$(_now)[0]);
+   if(_curr)$(_curr).popover('destroy');
+   $DB("SELECT title,content,option,position FROM pages WHERE selector=?",[_now],"",function(r,j){
+      _now+=encore;
+      if(j.rows.length){
+         var row=j[0];var content=row['content'];var title=row['title'];var next=row['option'];var pos=row['position'];
+         var link="<div class='pager small'><ul><li class='previous'><a href='javascript:void(0)' onclick='javascript:$(\""+_now+"\").popover(\"destroy\")' >Close</a></li>";
+         if(next!=='none')link+="<li class='next'><a href='javascript:void(0)' onclick='helpfullLink(\""+next+"\",\""+_now+"\")' >Next »</a></li></ul></div>";
+         content=content+link;
+         $(_now).first().popover({"html":true,"trigger":"click","title":title,"content":content,"placement":pos});$(_now).popover('show');
+      }
+   });
+}
+//============================================================================//
+/**
+ * closes one helper and opens the next
+ * @author fredtma
+ * @version 3.6
+ * @category references
+ * @param object <var>_now</var> the current helper
+ * @param object <var>_next</var> the next hint object
+ */
+helpfullNext=function(_now,_next){
+   var next="<br/><a href='javascript:void(0)' class='helpNext' onclick='helpfullNext(\'\')' >Next >></a>";
+   var content=$(_next).data('content')+next;
+   $(_now).popover('destroy');
+   $(_next).popover({"html":true,"trigger":"click","content":content});$(_next).popover('show');
 }
 //============================================================================//
 /**
@@ -717,6 +773,34 @@ function savingGrace(x1,j,set,f,_mensa,agris1,agris2,d,del){
 function onError(e){
    $('.db_notive').html(['ERROR: Line ', e.lineno, ' in ', e.filename, ': ', e.message].join(''));
    console.log(['ERROR: Line ', e.lineno, ' in ', e.filename, ': ', e.message].join(''));
+}
+//============================================================================//
+/**
+ * check if the browser supports html5 validation
+ * @author fredtma
+ * @version 2.1
+ * @category validation,form
+ * @return bool
+ */
+function hasFormValidation() {
+    return (typeof document.createElement( 'input' ).checkValidity == 'function');
+};
+//============================================================================//
+/**
+ * set to check the client's DB to the current DB
+ * The function will query the server and ask all the changes made since the users current DB
+ * @author fredtma
+ * @version 1.7
+ * @category verision control
+ * @param {real} <var>cur</var> the current version of the db
+ * @param {object} <var>rev</var> the object containing the version and revision of the new version
+ */
+function version_db(cur,rev,trans){
+   get_ajax(localStorage.SITE_SERVICE,{"militia":"verto","cur":cur,"ver":rev.ver,"revision":rev.revision},"","post","json",function(content){
+      console.log(content,"/\\",typeof content,"||\/",trans);
+      db.transaction(function(trans){trans.executeSql("INSERT INTO version_db (ver)VALUES(?)",[rev.ver]);});
+      if(typeof content==="object")SET_DB(content);
+   });
 }
 //============================================================================//
 /**
