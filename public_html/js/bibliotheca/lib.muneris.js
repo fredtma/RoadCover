@@ -137,9 +137,10 @@ function load_async(url,sync,position,fons){
    else if(position==='end')ele=document.getElementsByTagName('body')[0];
    if(s)ele.removeChild(s);
    if (sync !== false) script.async = true;
-   script.src  = url;script.type="text/javascript";
+   script.src  = url;//script.type="text/javascript";
    if(fons){script.setAttribute('data-fons',fons);}
    ele.appendChild(script);
+   return true;
 //   head.parentNode.insertBefore(script, head);
 }
 //============================================================================//
@@ -319,7 +320,7 @@ loginValidation=function(){
       $DB("SELECT id,username,firstname||' '||lastname as name,jesua,level FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(_results){
          if(_results.rows.length){
             row=_results.rows.item(0);console.log(row['level'],"row['level']");
-            sessionStorage.username=row['username'];localStorage.USER_DETAILS=row['name'];
+            localStorage.USER_DETAILS=row['name'];
             if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=JSON.stringify({"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']});
             else sessionStorage.USER_NAME=JSON.stringify({"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']});
             if(row['level']==='super'){localStorage.USER_ADMIN=true;viewAPI(true);} else viewAPI(false);
@@ -353,14 +354,15 @@ loginOUT=function(){
  * @category refresh, clean, safety
  */
 refreshLook=function(){
-   history.go(0);
 //   console.log(history.length);
 //   console.log(history.state);
 //   console.log(history);
-   var tmp=sessionStorage.username;
+   var tmp=sessionStorage.USER_NAME;
    $('.search-all').val('');$('footer').removeData();
-   sessionStorage.clear();sessionStorage.runTime=0;sessionStorage.startTime=new Date().getTime();sessionStorage.username=tmp;sessionStorage.genesis=0;
-   console.log('history:...');
+   sessionStorage.clear();tmp=JSON.parse(tmp);
+   sessionStorage.USER_NAME=JSON.stringify(tmp);
+   sessionStorage.runTime=0;sessionStorage.startTime=new Date().getTime();sessionStorage.genesis=0;
+   console.log('history:...');history.go(0);
 }
 //============================================================================//
 /**
@@ -635,14 +637,14 @@ function newSection(){
  * function to activate the dashboard blocks and links of the navTab
  */
 function activateMenu(_mensa,_mensula,_set,_script,_tab,_formType){
-   _mensula=_mensula||_mensa;
+   _mensula=_mensula||_mensa;var value=true;//the return value if it was passed successfully or not
 //   console.log(_mensa,'_mensa',history.state);
    var iota=$(_set).data('iota');var narro={};
    if(_formType)sessionStorage.formTypes=_formType;
 //   console.log(_mensa,_mensula,_script,'[FORM]',_tab,_formType,sessionStorage.formTypes,'[this is it]',_set,'----------------------',$(_set)[0]);
    recHistory(_mensa,_mensula,_script,_tab,_formType);
    if(!_script)$.getJSON("json/"+_mensa+".json",findJSON).fail(onVituim);
-   else load_async("js/agito/"+_mensa+".js",true,'end',true);
+   else value=load_async("js/agito/"+_mensa+".js",true,'end',true);
    if(_mensa=='salesman')_mensula='salesman';//ce si cest pour les sales seulment
    if(!_tab){
       $(_set).tab('show');
@@ -655,6 +657,7 @@ function activateMenu(_mensa,_mensula,_set,_script,_tab,_formType){
    }//change de nom pour les button, pour avoir access aux menu des dealer & des salesman
    if(_mensa=='salesman')_mensula='salesmen';
    if(iota){sideDisplay(iota,_mensula);}//fair apparaitre la table si une existance de parametre iota exists.
+   return value;//currently only for the script
 }
 //============================================================================//
 /**

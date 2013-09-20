@@ -59,7 +59,7 @@ $('.btnUser,.profileList').click(function(){activateMenu("profile","home","#link
 $('.profileView,#userName').click(function(){activateMenu("profile","home","#link_home",false,false,"alpha");})
 $('.btnGroup').click(function(){activateMenu("group","home","#link_home");});
 $('.system4,#btnSysPermission').click(function(){activateMenu("permission","system","#link_system")});
-$('.btnDashboard').click(function(){activateMenu("dashboard","home","#link_home",true);});
+$('.btnDashboard').click(function(){if(!activateMenu("dashboard","home","#link_home",true)){theDashboard();}});//when the script is already loaded call the function
 $('.system1,#btnSysClient').click(function(){activateMenu("client","system","#link_system");});
 $('#btnHelper').click(function(){activateMenu("helper","system","#link_system");});
 $('#link_customers').click(function(){activateMenu("customer","customers","#link_customers",true);});

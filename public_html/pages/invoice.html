@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Road Cover</title>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="../css/bootstrap.min.css" /><link rel="stylesheet" href="../css/bootstrap-responsive.min.css" />
+      <link rel="stylesheet" href="../css/main.css" /><link rel="stylesheet" href="../css/icons.css" /><link rel="shortcut icon" href="../img/fav.png" />
+      <style>
+         legend{padding-left: 15px;font-size:2em;margin-bottom:0px;border-bottom:0px;}
+         .invH{border-bottom:1px solid #bce8f1;display:table}
+         .invHead1,.invHead2{background-color:#d9edf7;display:table-cell;height:7em;width:20%;border:none;vertical-align: baseline;}
+         .invHead2{background-color:#3a87ad;width:80%;text-align: right;vertical-align: top;}
+         .invHead1 blockquote {vertical-align: bottom;}
+         dl{margin-bottom:0px;}.dl-horizontal dt {float: left;width:25%;}.dl-horizontal dd {margin-left: 35%;}
+         blockquote small {margin-top:1em;} blockquote{border-left: 5px solid #bce8f1;}
+         ul.inline2{list-style-type: disc; width:auto;color:#bce8f1;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);margin: 0.2em}
+/*         ul.inline2:first-child{margin-left:2em;}
+         ul.inline2:last-child{margin-right:2em;}*/
+         ul.inline2>li {list-style-type: disc; width:auto;display:inline-block;}
+         ul.inline2>li {list-style-type: disc;display: list-item;white-space: nowrap;float: right;margin-right: 2em;}
+         ul.inline2>li:first-child {margin-right: 0.1em;}
+         .invHead2 h4 {color:#d9edf7;font-size:2em;padding-right:0.1em;}
+         ul.pager{margin:0em;border-bottom: 1px solid #ddd;}
+         .pager li>a{-webkit-border-radius: 2px;-moz-border-radius: 2px;border-radius: 2px;border:none;}
+         .pager li>a:first-child{border-right: 1px solid #ddd;}
+         .pager li>a:last-child{border-left: 1px solid #ddd;}
+         .invTop{background-color:#d9edf7;font-weight:bold;display:table;width:100%;}
+         .invTop span{width:15%;display:table-cell;padding:0.2em;}
+         .invTop span:nth-child(1),.invTop span:nth-child(2),.invTop span:nth-child(3){width:20%}
+         .invTop span:last-child{width:10%;}
+         .invMid{display:table;width:100%;}
+         .invMid span{width:15%;display:table-cell;padding:0.5em 0.2em;border-bottom:0px solid #d9edf7;}
+         .invMid span:nth-child(1),.invMid span:nth-child(2),.invMid span:nth-child(3){width:20%}
+         .invMid span:nth-child(4){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
+         .invMid span:last-child{width:10%;background-color:#d9edf7;border-left:1px solid #d9edf7;}
+         .invBot{display:table;width:100%;}
+         .invBot span{width:15%;display:table-cell;padding:0.5em 0.2em;border-bottom:1px solid #d9edf7;border-top:1px solid #d9edf7;}
+         .invBot span:nth-child(1),.invBot span:nth-child(2),.invBot span:nth-child(3){width:20%}
+         .invBot span:nth-child(4){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
+         .invBot span:nth-child(5){background-color:#d9edf7;border-left:1px solid #d9edf7;}
+         .invBot span:last-child{width:10%;background-color:#d9edf7;border-left:1px solid #d9edf7;}
+         .invNote{-webkit-border-radius: 0px;-moz-border-radius: 0px;border-radius: 0px;display:table;width:100%;padding:1em 0em;}
+         .form-horizontal .form-actions.invNote{padding-left:0em;}.well{background-color:#fff;}
+         .blueWell{background-color:#3a87ad; color:#d9edf7;padding-left:3em !important;}.blueWell li{float:left;margin-left:2em;}
+         .noteCell:first-child{border-right: 1px solid #ececec;padding-left:3em;min-height: 15em;}
+         .approveSection{border-bottom:solid 1px #ececec;margin: 0.5em 0 0 0.5em;}
+/*        legend{padding-left: 15px;font-size:3em;margin-bottom:0px;border-bottom:0px;}
+         .invH{border-bottom:1px solid #c09853;display:table}
+         .invHead1,.invHead2{background-color:#fcf8e3;display:table-cell;height:7em;width:20%;border:none;vertical-align: bottom;}
+         .invHead2{background-color:#c09853;width:80%;text-align: right}
+         .invHead1 blockquote {vertical-align: bottom;}
+         dl{margin-bottom:0px;}.dl-horizontal dt {float: left;width:25%;}.dl-horizontal dd {margin-left: 35%;}
+         blockquote small {margin-top:1em;}
+         ul.inline2{list-style-type: disc; width:auto;}
+         ul.inline2>li {list-style-type: disc; width:auto;display:inline-block;}
+         ul.inline2>li {list-style-type: disc;display: list-item;white-space: nowrap;float: right;margin-right: 2em;}
+         ul.inline2>li:first-child {margin-right: 0.1em;}
+         .invHead2 h4 {color:#fcf8e3;font-size:2em;padding-right:0.1em;}         */
+      </style>
+   </head>
+   <body>
+      <section class="container-fluid">
+         <section id="body" class="body _box">
+            <article class="totalView">
+               <form class="form-horizontal" id="form-user" >
+                  <fieldset name="fieldset-minimum">
+                     <legend>Invoice Details</legend>
+                     <div class="page-header invHead"><h2>RoadCover <small class="dealerName">Name of the dealer</small></h2></div>
+                     <article class="subBody">
+                        <section class="invH clearfix">
+                           <div class="invHead1">
+                              <blockquote>
+                                <dl class="dl-horizontal">
+                                   <dt>Account no:</dt><dd id="accountNo">0909 450 7079</dd>
+                                   <dt>Dealer no:</dt><dd id="dealerNo">9079</dd>
+                                   <dt>Invoice no:</dt><dd id="invNo">779-007</dd>
+                                   <dt>Reg NO:</dt><dd id="regNo">7A9OE7</dd>
+                                </dl>
+                                <small><time datetime="2013-06-29" id="fromTo">Friday, September 20, 2013 9:59:33 AM</time></small>
+                              </blockquote>
+                           </div>
+                           <div class="invHead2">
+                              <h4 class="dealerName">FORD AND MAZDA CULEMBORG</h4>
+                              <address>
+                              <ul class="inline2 clearfix"><li>CATALINA STR 27</li><li>Gauteng</li><li>KEMPTON PARK</li><li>1619</li></ul>
+                              <ul class="inline2 clearfix"><li>P.O. BOX 1833</li><li>KEMPTON PARK</li><li>1619</li></ul>
+                              <ul class="inline2 clearfix"><li>(011)222 3333</li><li>(012) 123 4567</li><li>072 500 700</li></ul>
+                              </address>
+                           </div>
+                        </section>
+                        <section>
+                           <ul class="pager"><li class="previous"><a href="#">&larr; Older</a></li><li class="next"><a href="#">Newer &rarr;</a></li></ul>
+                        </section>
+                        <section class="invB">
+                           <div class="invTop"><span>Sales Person</span><span>Customer</span><span>Collection</span><span>Date</span><span>Period</span><span>Amount</span></div>
+                           <div class="invMid"><span>Sales Agent1</span><span>Name1 Surname1</span><span>Financed</span><span>22/04/2013 03:07:17 PM</span><span>48Months</span><span>R 950.00</span></div>
+                           <div class="invMid"><span>Sales Agent2</span><span>Name2 Surname2</span><span>Financed</span><span>23/04/2013 03:07:17 PM</span><span>48Months</span><span>R 950.00</span></div>
+                           <div class="invMid"><span>Sales Agent3</span><span>Name3 Surname3</span><span>Financed</span><span>24/04/2013 03:07:17 PM</span><span>48Months</span><span>R 950.00</span></div>
+                           <div class="invMid"><span>Sales Agent4</span><span>Name4 Surname4</span><span>Financed</span><span>26/04/2013 03:07:17 PM</span><span>48Months</span><span>R 950.00</span></div>
+                           <div class="invBot"><span></span><span></span><span></span><span></span><span>VAT(14%)</span><span>R 1 950.00</span></div>
+                           <div class="invBot"><span></span><span></span><span></span><span></span><span>Grand Total</span><span>R 6 950.00</span></div>
+                        </section>
+                     </article>
+                  </fieldset>
+                  <div class="form-actions well well-small invNote row-fluid">
+                     <div class="noteCell span6">
+                        <h5>PAYMENT TERMS</h5>
+                        To be made payable to First name, Last name
+
+                        <h5>ADDRESS</h5>
+                        123 Main Street • Boulder, CO • 80026
+                     </div>
+                     <div class="noteCell span6">
+                        <div class="row-fluid"><h5 class="span2">APPROVED BY</h5><div class="span9 approveSection" contenteditable="true" id="approver"></div></div>
+                        <div class="row-fluid"><h5 class="span2">NAME</h5><div class="span9 approveSection" contenteditable="true" id="approverName"></div></div>
+                        <div class="row-fluid"><h5 class="span2">FOR</h5><div class="span9 approveSection" contenteditable="true" ></div></div>
+                        <div class="row-fluid"><h5 class="span2">DATE</h5><div class="span9 approveSection" contenteditable="true"></div></div>
+                     </div>
+                  </div>
+                  <div class="form-actions well well-small blueWell">
+                     <span class="pull-left">ROAD<strong class="white">COVER</strong></span> <ul><li>(011)222 3333</li><li>(011)222 44444</li><li>(072)222 3333</li><li>support@roadcover.co.za</li><li>www.roadcover.co.za</li></ul>
+                  </div>
+                  <div class="form-actions well well-small">
+                     <button type="submit" class="btn btn-primary">Submit Invoice</button>
+                     <button type="button" class="btn">Send Invoice</button>
+                  </div>
+               </form>
+            </article><!--container-->
+         </section>
+      </section>
+   </body>
+</html>
