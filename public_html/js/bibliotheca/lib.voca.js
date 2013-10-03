@@ -38,6 +38,9 @@ addRecord=function(){
 }
 edtRecord=function(){var ii;ii=$(this).parents('div').data('iota');DB.beta(3,ii);$('.activeContent').removeClass('activeContent');$(this).parents('.accordion-group').find('.accordion-inner').addClass('activeContent');}
 delRecord=function(set){var ii;var DB=new SET_DB();ii=$(set).parents('div').data('jesua');if(ii!="alpha")DB.beta(0,ii);$(set).parents('.accordion-group').hide();}
+/*
+ * used to the records through the store record stored in the sessionStorage.activeRecord
+ */
 function navig(set){
    if($(set).parents('li').hasClass('disabled')) return false;
    var page=parseInt($(set).data('goto'))-1;
@@ -46,6 +49,9 @@ function navig(set){
    if(typeof eternal.form.ortus==="undefined"){creoDB=new SET_DB();creoDB.beta();}
    else if(eternal.form.ortus=="server"){theForm=new SET_FORM()._Set("#body article");theForm.setBeta(JSON.parse(sessionStorage.activeRecord));}
 }
+/*
+ * used to the records through the store record stored in the sessionStorage.activeRecord
+ */
 function navigTable(set){
    if($(set).parents('li').hasClass('disabled')) return false;
    var page=parseInt($(set).data('goto'))-1;//fait attention les page prev & next, il faut pas faire la subtraction
@@ -61,10 +67,10 @@ $('.btnGroup').click(function(){activateMenu("group","home","#link_home");});
 $('.system4,#btnSysPermission').click(function(){activateMenu("permission","system","#link_system")});
 $('.btnDashboard').click(function(){if(!activateMenu("dashboard","home","#link_home",true)){theDashboard();}});//when the script is already loaded call the function
 $('.system1,#btnSysClient').click(function(){activateMenu("client","system","#link_system");});
-$('#btnHelper').click(function(){activateMenu("helper","system","#link_system");});
+$('#btnHelper,.system3').click(function(){activateMenu("helper","system","#link_system");});
 $('#link_customers').click(function(){activateMenu("customer","customers","#link_customers",true);});
 $('#link_insurance').click(function(){activateMenu("member","insurance","#link_insurance",true);});
-$('#btnFeatures').click(function(){activateMenu('feature',false,false,false,true);});
+$('#btnFeatures,.system2').click(function(){activateMenu('feature',false,false,false,true);});
 $('#footContact').click(function(){getPage('Contact us')});
 $('#footHelp').click(function(){getPage('Help?')});
 $('#footAbout').click(function(){getPage('About us')});
@@ -73,4 +79,4 @@ $('.btnFullScreen,#fullscreen').click(function(){if(!$(this).data('toggle')||$(t
 $('#userOut,#profileOff').click(loginOUT);
 $('.icon-refresh').click(refreshLook);//@todo:add HTML5 history API
 $(".btnHelp").click(helpfullLink);
-$('#btnTest').click(function(){activateMenu("permission-probatio","home","#link_home");});
+$('#btnTest').click(resetGenesis);

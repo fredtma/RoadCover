@@ -9,7 +9,7 @@
    "fields":{
       "username":{"valid":["unique"],"icon":"icon-user","place":true,"field":{"required":"","autofocus":""}},
       "password":{"icon":"icon-lock","field":{"type":"password","required":""}},
-      "signum":{"source":"custom","icon":"icon-lock","field":{"type":"password","required":"","title":"re-Password"}},
+      "signum":{"source":"custom","icon":"icon-lock","title":"re-Password","field":{"type":"password","required":"","title":"re-Password"}},
       "firstname":{"icon":"icon-tag","search":true,"header":true,"place":true,"field":{"required":""}},
       "lastname":{"icon":"icon-tags","search":true,"header":true,"place":true,"field":{"required":""}},
       "email":{"icon":"icon-envelope","place":true,"field":{"type":"email","required":""}},

@@ -8,13 +8,14 @@ sessionStorage.runTime=new Date().getTime();
 localStorage.SITE_NAME="Road Cover";
 localStorage.SITE_DATE='fullDate';
 localStorage.SITE_TIME='mediumTime';
+localStorage.SITE_MONTH=09;
 localStorage.SITE_URL='http://197.96.139.19/';
 localStorage.SITE_SERVICE=localStorage.SITE_URL+'minister/inc/services.php';
 localStorage.SITE_MILITIA=localStorage.SITE_URL+'minister/inc/notitia.php';
 localStorage.MAIL_SUPPORT='support@roadcover.co.za';
 localStorage.DB;
 localStorage.DB_NAME='road_cover';
-localStorage.DB_VERSION='2.95';
+localStorage.DB_VERSION='2.96';
 localStorage.DB_DESC='The internal DB version';
 localStorage.DB_SIZE=15;
 localStorage.DB_LIMIT=15;
@@ -36,8 +37,12 @@ var db,hasNarro=false,roadCover,eternal,theForm,creoDB,iyona,iota,notitiaWorker;
 sessionStorage.removeItem('quaerere');//clean up
 sessionStorage.formValidation=hasFormValidation();
 //============================================================================//WORKERS
-//notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
-//notitiaWorker.postMessage({"novum":{"perm":1}});
+if(window.Worker&&localStorage.USER_NAME){
+   notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
+   (function(procus){var moli=screen.height*screen.width;
+      if(procus){notitiaWorker.postMessage({"procus":procus.singularis,"moli":moli});}
+   })(JSON.parse(localStorage.USER_NAME));
+}
 //============================================================================//
 /**
  * similar to jquery creates an DOM element
@@ -90,8 +95,9 @@ creo=function (arr, ele, txt)
  */
 $anima=function(section,ele,arr,txt,point){
    var Node;
+   Node=(typeof(section)=='string')?document.querySelector(section):section;
    this.creo=creo;
-   this.father=this.creo(arr,ele,txt);
+   this.father=ele?this.creo(arr,ele,txt):Node;
    this.vita=function(ele,arr,parent,txt,point){
       this.child=this.creo(arr,ele,txt);
       if(!point)this.father.appendChild(this.child);
@@ -111,10 +117,10 @@ $anima=function(section,ele,arr,txt,point){
       Node.appendChild(this.father);
       return this;
    }
-   Node=(typeof(section)=='string')?document.querySelector(section):section;
+
    if(point=='first')Node.insertBefore(this.father,Node.firstChild); //Node.insertBefore(this.father, Node.firstChild);
    else if(point=='next')Node.parentNode.insertBefore(this.father,Node.nextSibiling);
-   else Node.appendChild(this.father);
+   else if(ele)Node.appendChild(this.father);
    return this;
 };
 //============================================================================//
@@ -243,6 +249,19 @@ aNumero = function(the_str,transform)
    return the_str;
 }
 //============================================================================//
+/*
+ * display the message notification
+ * @param {string} <var>msg</var> the message to display
+ * @param {bool} <var>animation</var> enable animation
+ * @returns void
+ */
+function notice(msg,animation,text){
+   if(!msg)$(".db_notice").empty();
+   msg=text==2?"<strong class='text-success'>"+msg+"</strong>":text==1?"<span class='text-success'>"+msg+"</span>":(text==0)?"<span class='text-error'>"+msg+"</span>":msg;
+   if(animation)$(".db_notice").html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+   else $(".db_notice").html(msg);
+}
+//============================================================================//
 /**
  * used to measure script execution time
  *
@@ -319,7 +338,7 @@ loginValidation=function(){
       u=$('#loginForm #email').val();p=md5($('#loginForm #password').val());
       $DB("SELECT id,username,firstname||' '||lastname as name,jesua,level FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(_results){
          if(_results.rows.length){
-            row=_results.rows.item(0);console.log(row['level'],"row['level']");
+            row=_results.rows.item(0);
             localStorage.USER_DETAILS=row['name'];
             if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=JSON.stringify({"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']});
             else sessionStorage.USER_NAME=JSON.stringify({"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']});
@@ -343,7 +362,7 @@ loginValidation=function(){
 loginOUT=function(){
    roadCover.loginForm();
    $('#userLogin .alert-info').find('span').append('You have successfully logout.<br/>Enter your username and password below if you wish to login again');
-   refreshLook();sessionStorage.removeItem('username');localStorage.removeItem('USER_ADMIN');localStorage.removeItem('USER_NAME');localStorage.removeItem('USER_DETAILS');
+   refreshLook();localStorage.removeItem('USER_ADMIN');localStorage.removeItem('USER_NAME');localStorage.removeItem('USER_DETAILS');
 }
 //============================================================================//
 /**
@@ -357,12 +376,24 @@ refreshLook=function(){
 //   console.log(history.length);
 //   console.log(history.state);
 //   console.log(history);
-   var tmp=sessionStorage.USER_NAME;
+   var tmp=sessionStorage.USER_NAME||"{}";
+   notice();
    $('.search-all').val('');$('footer').removeData();
-   sessionStorage.clear();tmp=JSON.parse(tmp);
+   sessionStorage.clear();
+   tmp=JSON.parse(tmp);
    sessionStorage.USER_NAME=JSON.stringify(tmp);
    sessionStorage.runTime=0;sessionStorage.startTime=new Date().getTime();sessionStorage.genesis=0;
    console.log('history:...');history.go(0);
+}
+//============================================================================//
+/*
+ * this function will reset the whole system
+ * @returns void
+ */
+resetGenesis=function(){
+   localStorage.removeItem("DB");
+   SET_DB();
+   loginOUT();
 }
 //============================================================================//
 /**
@@ -507,7 +538,7 @@ function viewAPI(_viewing){if(!_viewing) $('.homeSet0,.setDisplay,.setSystem').h
  */
 function licentia(){
    var len,x,tmp,row;
-   var _nominis = (localStorage.USER_NAME)?JSON.parse(localStorage.USER_NAME):sessionStorage.USER_NAME;
+   var _nominis = (localStorage.USER_NAME)?JSON.parse(localStorage.USER_NAME):JSON.parse(sessionStorage.USER_NAME);
    var quaerere="SELECT pu.`permission` as permission FROM link_permissions_users pu WHERE `user`=? UNION \
    SELECT pg.`permission` as permission FROM link_permissions_groups pg INNER JOIN link_users_groups ug ON ug.`group`=pg.`group` WHERE ug.user=?";
    $DB(quaerere,[_nominis.operarius,_nominis.operarius],"Accessing permissions",function(_results){
@@ -627,7 +658,7 @@ function searchUpdate(item){
  * @return void
  */
 function newSection(){
-   $('#newItem').remove();$('.pagination').remove();$('#verbum').empty();
+   $('#newItem').remove();$('.pagination').remove();$('#verbum').empty();$('.headRow').empty();
    $('.search-all').val('').prop('disabled',true);
    $('#link_home').tab('show');
    sessionStorage.genesis=0;//reset each time ur on dashboard
@@ -638,12 +669,13 @@ function newSection(){
  */
 function activateMenu(_mensa,_mensula,_set,_script,_tab,_formType){
    _mensula=_mensula||_mensa;var value=true;//the return value if it was passed successfully or not
-//   console.log(_mensa,'_mensa',history.state);
+   $('.body article').removeClass('totalView');//remove the class that is placed by the cera's
    var iota=$(_set).data('iota');var narro={};
    if(_formType)sessionStorage.formTypes=_formType;
 //   console.log(_mensa,_mensula,_script,'[FORM]',_tab,_formType,sessionStorage.formTypes,'[this is it]',_set,'----------------------',$(_set)[0]);
    recHistory(_mensa,_mensula,_script,_tab,_formType);
    if(!_script)$.getJSON("json/"+_mensa+".json",findJSON).fail(onVituim);
+   else if(_script==="cera")get_ajax("/cera/"+_mensa+".html","",".body article");
    else value=load_async("js/agito/"+_mensa+".js",true,'end',true);
    if(_mensa=='salesman')_mensula='salesman';//ce si cest pour les sales seulment
    if(!_tab){

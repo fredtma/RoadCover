@@ -13,29 +13,44 @@ include('muneris.php');
 $LIMIT=500;
 $pre='roadCover_';
 if($_GET&&iyona_adm())$_POST=array_merge($_GET,$_POST);#@todo: remove this it's a debug purpose
-
+iyona_log($_POST,false);
+$select['getClients']  = $select['clients'] = "SELECT id,company,code,about,email,modified,creation,jesua FROM {$pre}clients";
+$select['getDealer']   = $select['dealers'] = "SELECT name,code,modified,creation,jesua FROM {$pre}dealers;";
+$select['getFeatures'] = $select['features'] = "SELECT id,feature,description,category,filename,manus,tab,modified,creation,jesua FROM {$pre}features;";
+$select['getGroups']   = $select['groups'] = "SELECT id,name,`desc`,modified,creation,jesua FROM {$pre}groups";
+$select['getUG']       = $select['link_users_groups'] = "SELECT id,`user`,`group` FROM {$pre}link_users_groups";
+$select['getPU']       = $select['link_permissions_users'] = "SELECT id,`permission`,`user` FROM {$pre}link_permissions_users";
+$select['getPG']       = $select['link_permissions_groups'] = "SELECT id,`permission`,`group` FROM {$pre}link_permissions_groups";
+$select['getPages']    = $select['pages'] = "SELECT id,page_ref,title,content,`level`,`type`,modified,creation,jesua,`selector`,`option`,`position` FROM {$pre}pages";
+$select['getPerm']     = $select['permissions'] = "SELECT id,name,`desc`,`page`,`enable`,`sub`,modified,creation,jesua FROM {$pre}permissions";
+$select['getSaleman']  = $select['salesmen'] = "SELECT firstname,lastname,code,modified,creation,jesua FROM {$pre}salesmen;";
+$select['getUsers']    = $select['users'] = "SELECT id,username,password,firstname,lastname,email,gender,`level`,modified,creation,jesua FROM {$pre}users";
 switch($_POST['militia']){
 #==============================================================================#
-   case 'getUG': echo json_encode(array_result("SELECT id,`user`,`group` FROM {$pre}link_users_groups"));break;
-   case 'getPU': echo json_encode(array_result("SELECT id,`permission`,`user` FROM {$pre}link_permissions_users"));break;
-   case 'getPG': echo json_encode(array_result("SELECT id,`permission`,`group` FROM {$pre}link_permissions_groups"));break;
-   case 'getPerm': echo json_encode(array_result("SELECT id,name,`desc`,`page`,`enable`,`sub`,modified,creation,jesua FROM {$pre}permissions"));break;
-   case 'getPages': echo json_encode(array_result("SELECT id,page_ref,title,content,`level`,`type`,modified,creation,jesua,`selector`,`option`,`position` FROM {$pre}pages"));break;
-   case 'getGroups': echo json_encode(array_result("SELECT id,name,`desc`,modified,creation,jesua FROM {$pre}groups"));break;
-   case 'getUsers': echo json_encode(array_result("SELECT id,username,password,firstname,lastname,email,gender,`level`,modified,creation,jesua FROM {$pre}users"));break;
-   case 'getClients': echo json_encode(array_result("SELECT id,company,code,about,email,modified,creation,jesua FROM {$pre}clients"));break;
-   case 'getFeatures': echo json_encode(array_result("SELECT id,feature,description,category,filename,manus,tab,modified,creation,jesua FROM {$pre}features;"));break;
-   case 'getDealer': echo json_encode(array_result("SELECT Id,Name,Uid FROM road_Intermediary;"));break;
-   case 'getSaleman': echo json_encode(array_result("SELECT Id,FullNames,Surname,Uid,date_updated FROM road_FandI;"));break;
+   case 'getClients':
+   case 'getDealer':
+   case 'getFeatures':
+   case 'getGroups':
+   case 'getUG':
+   case 'getPU':
+   case 'getPG':
+   case 'getPages':
+   case 'getPerm':
+   case 'getSaleman':
+   case 'getUsers': echo json_encode(array_result($select[$_POST['militia']]));break;
 #==============================================================================#
    case 'dealers':
    case 'salesmen':
    case 'members':
-      if($_POST['quaerere']):
-         $srch="WHERE";
-         if($_POST['quaerere'][1]=='dealers'):$srch.=" dealer.Id={$db->qstr($_POST['quaerere'][0])}";
-         elseif($_POST['quaerere'][1]=='salesmen'):$srch.=" agent.Id={$db->qstr($_POST['quaerere'][0])}";
+      $y=$_POST['luna'][0]?$_POST['luna'][0]:date("Y");
+      $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
+      $srch="WHERE (MONTH(STR_TO_DATE(trans.DateCreated,'%d/%m/%Y %h:%i:%s %p'))={$db->qstr($m)} AND YEAR(STR_TO_DATE(trans.DateCreated,'%d/%m/%Y %h:%i:%s %p'))={$db->qstr($y)})";
+      if($_POST['quaerere']):$srch.=" AND ";
+         if($_POST['quaerere'][1]=='dealers'):$srch.="dealer.Id={$db->qstr($_POST['quaerere'][0])}";
+         elseif($_POST['quaerere'][1]=='salesmen'):$srch.="agent.Id={$db->qstr($_POST['quaerere'][0])}";
          endif;
+         $y=$_POST['luna'][0]?$_POST['luna'][0]:date("Y");
+         $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
       endif;
       $sql=<<<IYONA
 SELECT trans.Id,dealer.Name as Dealer,
@@ -46,15 +61,42 @@ LEFT JOIN road_FandI agent on agent.`Id`=trans.FandI
 INNER JOIN road_Holder member on member.Id=trans.Holder
 INNER JOIN road_QuoteTransactions quot on quot.`transaction`=trans.`Id`
 INNER JOIN road_Quote_Agreement agrement on agrement.`Id`=quot.Agreement
-$srch group by quot.`transaction`;
+$srch group by quot.`transaction` LIMIT $LIMIT;
 IYONA;
-      echo json_encode(array_result($sql,true));
+      iyona_log($sql);echo json_encode(array_result($sql,true));
       break;
 #==============================================================================#
    case 'dealer-display':
    case 'dealers-display':
-      $rows['address']=array_result("select * from road_Addresses a where a.holder={$db->qstr($_POST['iota'])}");
-      $rows['company']=array_result("select a.IsInsurer, a.FSBNumber,a.RegistrationNumber as 'Vat Number', Name from road_RelatedStakeholders a where a.Id={$db->qstr($_POST['iota'])}");
+      $rows['address']=array_result("select * from road_Addresses a where a.holder={$db->qstr($_POST['iota'])}",true);
+      $rows['company']=array_result("select a.IsInsurer, a.FSBNumber,a.RegistrationNumber as 'Vat Number', Name from road_RelatedStakeholders a where a.Id={$db->qstr($_POST['iota'])}",true);
+      echo json_encode($rows);break;
+#==============================================================================#
+   case 'cautionem-dealer':
+      $rows['address']=array_result("SELECT * FROM road_Addresses a WHERE a.holder={$db->qstr($_POST['iota'])} GROUP BY Uid ORDER BY `Type`",true);
+      $rows['company']=array_result("SELECT * FROM {$pre}dealers a WHERE a.code={$db->qstr($_POST['iota'])}",true);
+      $sql=<<<IYONA
+SELECT concat(agent.FullNames,' ',agent.Surname) as Salesman, concat(member.FullNames,' ',member.Surname) as Fullname,member.IdentificationNumber as IDno,
+quot.Period_cd as Period,quot.CollectionMethod_cd as CollectionMethod, quot.TotalAmount, quot.DateModified, sum(quot.TotalAmount) Total
+FROM road_Transactions trans
+LEFT JOIN road_Intermediary dealer on dealer.`Id`=trans.Intermediary
+LEFT JOIN road_FandI agent on agent.`Id`=trans.FandI
+INNER JOIN road_Holder member on member.Id=trans.Holder
+INNER JOIN road_QuoteTransactions quot on quot.`transaction`=trans.`Id`
+WHERE dealer.Id={$db->qstr($_POST['iota'])}
+AND (MONTH(STR_TO_DATE(quot.DateCreated,'%d/%m/%Y %h:%i:%s %p'))={$db->qstr($_POST['m'])} AND YEAR(STR_TO_DATE(quot.DateCreated,'%d/%m/%Y %h:%i:%s %p'))={$db->qstr($_POST['y'])})
+GROUP BY quot.`transaction` ORDER BY agent.Surname,member.Surname,quot.DateModified ASC
+IYONA;
+      $rows['customers']=array_result($sql,true);
+      $sql=<<<IYONA
+SELECT CONCAT(firstname,' ',lastname) as approver,invoice_number,account,dealer,i.creation,i.modified,due_date,`desc`,`status`,i.jesua
+FROM {$pre}invoices i
+LEFT JOIN {$pre}users u ON u.id=i.approver
+WHERE dealer={$db->qstr($_POST['iota'])}
+AND inv_month={$db->qstr($_POST['m'])} AND inv_year={$db->qstr($_POST['y'])}
+IYONA;
+      $rows['invoices']=array_result($sql,true);
+      $rows['filename']=export2pastel($rows,$_POST['iota'],$_POST['m'],$_POST['y']);
       echo json_encode($rows);break;
 #==============================================================================#
    case 'salesman-display':
@@ -64,10 +106,12 @@ IYONA;
       echo json_encode($rows);break;
 #==============================================================================#
    case 'customers':
-      if($_POST['quaerere']):
-         $srch="WHERE";
-         if($_POST['quaerere'][1]=='dealers'):$srch.=" trans.Intermediary={$db->qstr($_POST['quaerere'][0])}";
-         elseif($_POST['quaerere'][1]=='salesmen'):$srch.=" trans.FandI={$db->qstr($_POST['quaerere'][0])}";
+      $y=$_POST['luna'][0]?$_POST['luna'][0]:date("Y");
+      $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
+      $srch="WHERE (MONTH(STR_TO_DATE(trans.DateCreated,'%d/%m/%Y %h:%i:%s %p'))={$db->qstr($m)} AND YEAR(STR_TO_DATE(trans.DateCreated,'%d/%m/%Y %h:%i:%s %p'))={$db->qstr($y)})";
+      if($_POST['quaerere']):$srch.=" AND ";
+         if($_POST['quaerere'][1]=='dealers'):$srch.="trans.Intermediary={$db->qstr($_POST['quaerere'][0])}";
+         elseif($_POST['quaerere'][1]=='salesmen'):$srch.="trans.FandI={$db->qstr($_POST['quaerere'][0])}";
          endif;
       endif;
       $sql=<<<IYONA
@@ -75,6 +119,7 @@ SELECT member.Id as code,trans.DateCreated,concat(FullNames,' ',Surname) as Full
 FROM road_Transactions trans INNER JOIN road_Holder member on member.Id=trans.Holder
 $srch GROUP BY IDno ORDER BY DateCreated ASC LIMIT $LIMIT;
 IYONA;
+      iyona_log($sql);
       $rows=array_result($sql);echo json_encode($rows);break;
 #==============================================================================#CUSTOMER BRIEF
    case 'customers-brief':
@@ -186,11 +231,46 @@ IYONA;
       $rs=$db->Execute($sql);iyona_message($rs,$sql);
       break;
 #==============================================================================#
+   case 'ipse':
+      $device  = md5($_SERVER['HTTP_USER_AGENT'].$_POST['moli']);
+      $sql  = <<<IYONA
+      SELECT mensa,jesua,trans,a.creation
+      FROM {$pre}versioning a
+      LEFT JOIN {$pre}version_control b ON b.ver=a.id AND b.user={$db->qstr($_POST['ipse'])}
+      WHERE b.ver IS NULL OR (b.ver IS NOT NULL AND b.device!='$device')
+      GROUP BY a.trans, a.jesua ORDER BY a.id
+IYONA;
+      $db->SetFetchMode(ADODB_FETCH_ASSOC);
+      $rs=$db->Execute($sql);iyona_message($rs,$sql);
+      iyona_log($sql."\r\n<br/>".$db->ErrorMsg());
+      if ($rs->_numOfRows>0)
+      {
+         while (!$rs->EOF) {
+            extract($rs->fields);
+            $table=str_replace($pre,'',$mensa);
+            $sql= $select[$table]." WHERE jesua='$jesua'";
+            $rs2=$db->Execute($sql);
+            iyona_log($sql."\r\n<br/>".$db->ErrorMsg());
+            iyona_log($select);
+            if ($rs2->_numOfRows>0)
+            {
+               $cnt=0;$mensa=str_replace($pre,'',$mensa);
+               while (!$rs2->EOF) {$control[$mensa][$creation][$trans]=$rs2->fields;$cnt++;$rs2->MoveNext();}//end while of $rs
+            }//end if of $rs1
+            $rs->MoveNext();
+         }//end while of $rs
+         echo json_encode($control);
+      }//end if of $rs
+      break;
+#==============================================================================#
 }//end switch
+iyona_log($_sql);
+#==============================================================================##==============================================================================#
+#==============================================================================##==============================================================================#
 function array_result($_sql,$_assoc=false){
    global $db;
    if($_assoc)$db->SetFetchMode(ADODB_FETCH_ASSOC);
-   $rs = $db->Execute($_sql);iyona_message($rs,$_sql,1);#iyona($_sql);
+   $rs = $db->Execute($_sql);iyona_message($rs,$_sql);iyona_log($_sql);
    if ($rs->_numOfRows>0)
    {
       $cnt=0;
@@ -200,4 +280,83 @@ function array_result($_sql,$_assoc=false){
    $row['rows']['source']='generated';
    return $row;
 }
+#==============================================================================#
+function export2pastel($_rows,$_iota,$_m,$_y){
+   $deb        =false;
+   $filename   =SITE_DWLD."invoices/invoice{$_iota}_{$_y}{$_m}.csv";
+   $address    =$_rows['address'];
+   $company    =$_rows['company'][0];
+   $customers  =$_rows['customers'];
+   $invoices   =$_rows['invoices'][0];
+   foreach ($address as $adrss) {
+      if($adrss["Type"]=="Dns.Sh.AddressBook.PhysicalAddress"){
+         $street=$adrss['StreetNumber']." ".$adrss['StreetName'];$suburb=$adrss['Suburb'];$city=$adrss['City'];$province=$adrss['Province_cd'];$code=$adrss['Code'];
+      }else if($adrss["Type"]=="Dns.Sh.AddressBook.PostalAddress"){
+         $street=$street?$street:$adrss['StreetNumber']." ".$adrss['StreetName'];$suburb=$suburb?$suburb:$adrss['Suburb'];$city=$city?$city:$adrss['City'];$province=$province?$province:$adrss['Province_cd'];$code=$code?$code:$adrss['Code'];
+      }else if($adrss["Type"]=="Dns.Sh.AddressBook.MobileNumber"){$cell="({$adrss["AreaCode"]}) {$adrss["Number"]}";
+      }else if($adrss["Type"]=="Dns.Sh.AddressBook.FixedLineNumber"){$tel="({$adrss["AreaCode"]}) {$adrss["Number"]}";
+      }else if($adrss["Type"]=="Dns.Sh.AddressBook.EmailAddress"){$email="{$adrss["Address"]}";}
+   }//end for
+   $invNo=$invoices['invoice_number'];
+   $accNo=($deb)?"ABB029":$company['account'];
+   $date =($deb)?"27/05/2013":date("d/m/Y",strtotime($invoices['due_date']));
+   $head=<<<IYONA
+"Header","$invNo"," ","Y","$accNo",7,"$date"," ","N",0," "," "," ","$street","$suburb","$city","$province","$code"," ",0,"{$invoices['creation']}","$cell","$tel","$email",1," "," ",""," "\r\n
+IYONA;
+   foreach($customers as $key => $cust){
+      $tax     =round((float)$cust['TotalAmount'],2);
+      $no_tax  =round((float)$tax/1.14,2);
+      $code    =($deb)?"ACC/LOC":$cust["CollectionMethod"];#JHB
+      $store   ="JHB";
+      $product =$cust["_48Months"];
+      $d       =$cust["DateModified"]?"[{$cust["DateModified"]}]":"";
+      $desc    ="{$cust["Salesman"]}:{$cust["Fullname"]} $d";
+      $details.=<<<IYONA
+"Detail",0,1,$no_tax,$tax," ",1,3,0,"$code","$product",4,"     ","$store"\r\n"Detail",0,1,0,0," ",0,3,0,"'","$desc",7,"",""\r\n"Detail",0,1,0,0," ",0,3,0,"'"," ",7," "," "\r\n
+IYONA;
+   }//foreach cust
+   file_put_contents($filename, $head.$details);
+   return str_replace(SITE_PUBLIC,SITE_URL,$filename);
+}
+#==============================================================================#
+/* ON UPDATE dealers/salesmen table.
+DELETE FROM roadCover_salesmen;
+
+INSERT INTO roadCover_salesmen (dealer,firstname,lastname,code,idno,modified,creation,jesua)
+SELECT dealer,FullNames,Surname,Id,IdentificationNumber,date_updated,NOW(),Uid FROM road_FandI;
+
+DELETE FROM roadCover_dealers;
+
+INSERT INTO roadCover_dealers (name,code,modified,creation,jesua,account,registration_number,vat_registration,is_insured,fsb_number)
+SELECT Name,Id,NOW(),date_updated,Uid,null,null,VatRegistrationNumber,null,null FROM road_Intermediary;
+
+UPDATE roadCover_dealers a
+LEFT JOIN road_RelatedStakeholders b ON b.Id=a.code
+SET a.registration_number=b.RegistrationNumber, a.vat_registration=b.VatRegistrationNumber,
+a.is_insured=if(b.IsInsurer='false',false,true),a.fsb_number=b.FSBNumber;
+
+UPDATE roadCover_dealers SET account='IMPHD' WHERE name = 'HONDA EAST RAND';
+UPDATE roadCover_dealers SET account='IMPTY2' WHERE name = 'IMPERIAL TOYOTA KEMPTON PARK';
+UPDATE roadCover_dealers SET account='IMPTY4' WHERE name = 'IMPERIAL TOYOTA STRIJDOMPARK';
+UPDATE roadCover_dealers SET account='IMPNS4' WHERE name = 'IMPERIAL NISSAN PAROW';
+UPDATE roadCover_dealers SET account='IMPBM1' WHERE name = 'KIMBERLEY MULTIFRANCHISE';
+UPDATE roadCover_dealers SET account='IMPGM1' WHERE name = 'GM BLOEMFONTEIN';
+UPDATE roadCover_dealers SET account='IMP08' WHERE name = 'FORD AND MAZDA CULEMBORG';
+UPDATE roadCover_dealers SET account='IMP06' WHERE name = 'FORD AND MAZDA DIEP RIVER';
+UPDATE roadCover_dealers SET account='IMP01' WHERE name = 'FORD AND MAZDA KEMPTON PARK';
+UPDATE roadCover_dealers SET account='IMP02' WHERE name = 'FORD AND MAZDA KROONSTAD NEW';
+UPDATE roadCover_dealers SET account='IMP03' WHERE name = 'FORD AND MAZDA PAARDEN EILAND';
+UPDATE roadCover_dealers SET account='IMPLS1' WHERE name = 'AUDI CENTRE FOURWAYS';
+UPDATE roadCover_dealers SET account='IMPLS3' WHERE name = 'LINDSAY SAKER HYDE PARK (VW)';
+UPDATE roadCover_dealers SET account='IMPHD2' WHERE name = 'HONDA WESTRAND 1';
+UPDATE roadCover_dealers SET account='IMPHD2' WHERE name = 'HONDA WESTRAND 1';
+UPDATE roadCover_dealers SET account='IMPTY1' WHERE name = 'IMPERIAL TOYOTA BEDFORDVIEW';
+UPDATE roadCover_dealers SET account='IMPTY3' WHERE name = 'IMPERIAL TOYOTA PARKTOWN 1';
+UPDATE roadCover_dealers SET account='IMPNS1' WHERE name = 'IMPERIAL NISSAN EAST RAND';
+UPDATE roadCover_dealers SET account='IMPA01' WHERE name = 'AUDI CENTRE AIRPORT';
+UPDATE roadCover_dealers SET account='IMPBM5' WHERE name = 'VAAL RIDGE AUTO (BMW)';
+UPDATE roadCover_dealers SET account='IMPGM3' WHERE name = 'GM GERMISTON';
+UPDATE roadCover_dealers SET account='IMPGM6' WHERE name = 'GM ISANDO';
+UPDATE roadCover_dealers SET account='IMP07' WHERE name = 'AUTO NICHE BLOEMFONTEIN';
+ */
 ?>

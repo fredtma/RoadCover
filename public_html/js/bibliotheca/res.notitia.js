@@ -34,7 +34,10 @@ function SET_DB(_reset){
             var j=$DB2JSON(results);
             if(msg)$('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
             if(Tau){
-               this.basilia={"eternal":res,"Tau":Tau,"iyona":iyona};
+               var procus=localStorage.USER_NAME?JSON.parse(localStorage.USER_NAME):JSON.parse(sessionStorage.USER_NAME);
+               var moli=screen.height*screen.width;
+               console.log(moli,"/",screen.height,"/",screen.width);
+               this.basilia={"eternal":res,"Tau":Tau,"iyona":iyona,"procus":procus.singularis,"moli":moli};
                get_ajax(localStorage.SITE_MILITIA,this.basilia,'','post','json',function(j){console.log(j,'Online');$('#sys_msg').html(j.msg) });Tau=false;
             }
             if(callback)callback(results);
@@ -74,6 +77,7 @@ function SET_DB(_reset){
             alpha=alpha||val;//la premiere donner pour cree une donner pour jesua
             if(_actum!=3&&typeof _actum!=="undefined"&&_actum){
                if(SET.sanatio(val,field,properties)===false){quaerere=[];return false;}
+               if(properties.field.type=='password'&&(_actum==2||_actum==1)){val=md5($(form+' #'+field).val())}
                params.push(val);res[field]=val;set.push("?");
             }
             quaerere.push('`'+field+'`');
@@ -220,7 +224,7 @@ function SET_DB(_reset){
                   setTimeout(function(){$("#submit_"+SET.name).button("reset");}, 800);
                }//make the form to become update
                $(SET.frmID+" #cancel_"+SET.name).val("Close...");//@todo
-               $("."+iota+" .betaRow").empty();console.log(nameList,'nameList');
+               $("."+iota+" .betaRow").empty();
                $(".class_"+iota+" .betaRow").empty();//enlever tous les donner passer.
                s=$anima(".class_"+iota+" .betaRow","span",{},nameList[0]);
                l=nameList.length;for(x=1;x<l;x++)s.genesis("span",{},true,nameList[x]);
@@ -424,56 +428,24 @@ function SET_DB(_reset){
       if(_option.pages)this.creoAgito("CREATE INDEX pages_type ON pages(`type`)",[],"index pages_type");
       if(_option.pages)this.creoAgito("CREATE INDEX pages_selector ON pages(`selector`)",[],"index pages_selector");
       if(_option.pages)this.creoAgito("CREATE INDEX pages_jesua ON pages(jesua)",[],"index pages_jesua");
-      if(_option.users){
-         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getUsers',type:"POST",dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;v.gender=v.gender=='Male'?'1':'2';$DB("INSERT INTO users (id,username,password,firstname,lastname,email,gender,`level`,modified,creation,jesua) VALUES (?,?,?,?,?,?,?,?,?,?,?)",[v.id,v.username,v.password,v.firstname,v.lastname,v.email,v.gender,v.level,v.modified,v.creation,v.jesua],"added user "+v.firstname)})
-         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-      if(_option.client){
-         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getClients',type:"POST",dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;v.gender=v.gender=='Male'?1:2;$DB("INSERT INTO clients (id,company,code,about,email,modified,creation,jesua) VALUES (?,?,?,?,?,?,?,?)",[v.id,v.company,v.code,v.about,v.email,v.modified,v.creation,v.jesua],"added "+v.company)})
-         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-      if(_option.groups){
-         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getGroups',type:"POST",dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO groups (id,`name`,`desc`,modified,creation,jesua) VALUES (?,?,?,?,?,?)",[v.id,v.name,v.desc,v.modified,v.creation,v.jesua],"added group "+v.name)})
-         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-      if(_option.perm){
-         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPerm',type:"POST",dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO permissions (id,name,`desc`,`page`,`enable`,`sub`,modified,creation,jesua) VALUES (?,?,?,?,?,?,?,?,?)",[v.id,v.name,v.desc,v.page,v.enable,v.sub,v.modified,v.creation,v.jesua],"added permission "+v.name)})
-         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-      if(_option.ug){
-         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getUG',type:"POST",dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_users_groups (id,`user`,`group`) VALUES (?,?,?)",[v.id,v.user,v.group],"added user+group "+v.name)})
-         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-      if(_option.pu){
-         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPU',type:"POST",dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_users (id,`permission`,`user`) VALUES (?,?,?)",[v.id,v.permission,v.user],"added permission+group "+v.name)})
-         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-      if(_option.pg){
-         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPG',type:"POST",dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO link_permissions_groups (id,`permission`,`group`) VALUES (?,?,?)",[v.id,v.permission,v.group],"added permission+group "+v.name)})
-         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-      if(_option.dealer){
-         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getDealer',type:"POST",dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;
-            $DB("INSERT INTO dealers (name,code,modified,creation,jesua) VALUES (?,?,datetime('now','localtime'),datetime('now','localtime'),?)",[v.Name,v.Id,v.Uid],"added dealer "+v)});
-         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
+
+      if(_option.client){this.novaNotitia("clients","getClients",["id","company","code","about","email","modified","creation","jesua"]);}//endif
+      if(_option.features){this.novaNotitia("features","getFeatures",["id","feature","description","category","filename","manus","tab","creation","modified","creation","jesua"]);}//endif
+      if(_option.groups){this.novaNotitia("groups","getGroups",["id","name","desc","modified","creation","jesua"]);}//endif
+      if(_option.ug){this.novaNotitia("link_users_groups","getUG",["id","user","group"])}//endif
+      if(_option.pu){this.novaNotitia("link_permissions_users","getPU",["id","permission","user"])}//endif
+      if(_option.pg){this.novaNotitia("link_permissions_groups","getPG",["id","permission","group"])}//endif
+      if(_option.pages){this.novaNotitia("pages","getPages",["id","page_ref","title","content","level","type","modified","creation","jesua","selector","option","position"]);}//endif
+      if(_option.perm){this.novaNotitia("permissions","getPerm",["id","name","desc","page","enable","sub","modified","creation","jesua"])}//endif
+      if(_option.users){this.novaNotitia("users","getUsers",["id","username","password","firstname","lastname","email","gender","level","modified","creation","jesua"]);}//endif
+      if(_option.dealer){this.novaNotitia("dealers","getDealer",["name","code","modified","creation","jesua"]);
          $DB("SELECT name,code FROM dealers LIMIT 3",[],"",function(r,j){n='dealers';N=aNumero(n,true);$('#drop_'+n).empty();$('.'+n+'List').empty();$.each(j,function(i,v){if(i=='rows') return true;$anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' oneDealer','data-iota':v[1]},false,aNumero(v[0],true));$anima('#tab-customers .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'oneDealer','data-iota':v[1]},false,aNumero(v[0],true));$anima('#tab-insurance .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'oneDealer','data-iota':v[1]},false,aNumero(v[0],true));});$anima('#drop_'+n,'li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));$anima('#tab-customers .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));$anima('#tab-insurance .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));$('#drop_'+n+' .allDealer,#drop_'+n+' .oneDealer').click(function(){if($(this).hasClass('oneDealer'))$('footer').data('header',true);/*this is for a bug fix. menu links are supposed to display header from the function and not from the form beta */activateMenu('dealer','dealers',this);sessionStorage.genesis=0;});$('#tab-customers .allDealer,#tab-customers .oneDealer').click(function(){activateMenu('customer','customers',this,true,'dealers');sessionStorage.genesis=0;});$('#tab-insurance .allDealer,#tab-insurance .oneDealer').click(function(){activateMenu('member','insurance',this,true,'dealers');sessionStorage.genesis=0;});});
       }//endif
-      if(_option.salesman){
-         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getSaleman',type:"POST",dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;
-            $DB("INSERT INTO salesmen (firstname,lastname,code,modified,creation,jesua) VALUES (?,?,?,datetime('now','localtime'),datetime('now','localtime'),?)",[v.FullNames,v.Surname,v.Id,v.Uid],"added salesman "+v.FullNames)});
-         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
+      if(_option.salesman){this.novaNotitia("salesmen","getSaleman",["firstname","lastname","code","modified","creation","jesua"]);
          $DB("SELECT firstname||' '||lastname,code FROM salesmen LIMIT 3",[],"",function(r,j){n='salesman';N=aNumero(n,true);$('#drop_'+n).empty();$('.'+n+'List').empty();$.each(j,function(i,v){if(i=='rows') return true;$anima('#drop_'+n,'li',{}).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':n+i+' one'+N,'data-iota':v[1]},false,aNumero(v[0],true));$anima('#tab-customers .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true));$anima('#tab-insurance .'+n+'List','li',{}).vita('a',{'href':'#'+n+i,'clss':'one'+N,'data-iota':v[1]},false,aNumero(v[0],true));});$anima('#drop_'+n,'li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'data-toggle':'tab','href':'#tab-'+n,'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));$anima('#tab-customers .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));$anima('#tab-insurance .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));$('#drop_'+n+' .allSalesman,#drop_'+n+' .oneSalesman').click(function(){if($(this).hasClass('oneSalesman'))$('footer').data('header',true);activateMenu('salesman','salesmen',this);sessionStorage.genesis=0;});$('#tab-customers .allSalesman,#tab-customers .oneSalesman').click(function(){activateMenu('customer','customers',this,true,'salesmen');sessionStorage.genesis=0;});$('#tab-insurance .allSalesman,#tab-insurance .oneSalesman').click(function(){activateMenu('member','insurance',this,true,'salesmen');sessionStorage.genesis=0;});});
       }//endif
-      if(_option.pages){
-         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getPages',type:"POST",dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO pages (id,page_ref,title,content,`level`,`type`,modified,creation,jesua,`selector`,`option`,`position`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",[v.id,v.page_ref,v.title,v.content,v.level,v.type,v.modified,v.creation,v.jesua,v.selector,v.option,v.position],"added page "+v.title)})
-         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
-      if(_option.features){
-         $.ajax({url:'https://nedbankqa.jonti2.co.za/modules/DealerNet/services.php?militia=getFeatures',type:"POST",dataType:'json',success:function(json){
-            $.each(json,function(i,v){if(i==='rows')return true;$DB("INSERT INTO features (id,feature,description,category,filename,manus,tab,creation,modified,creation,jesua) VALUES (?,?,?,?,?,?,?,?,?,?,?)",[v.id,v.feature,v.description,v.category,v.filename,v.manus,v.tab,v.creation,v.modified,v.creation,v.jesua],"added page "+v.feature)})
-         }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});}//endif
+
+
    }//endfunction
    /*
     * validation of db fields
@@ -484,7 +456,7 @@ function SET_DB(_reset){
     *
     * */
    this.sanatio=function(_val,_field,_properties){
-      var ele=$(this.frmID+' #'+_field)[0];
+      var ele=$(this.frmID+' #'+_field)[0]||$('.'+this.frmName+'_'+_field+' .btn-group')[0];
       var type=_properties.field.type;
       var err=creo({"clss":"help-block error-block"},'span');
       var title=_properties.field.title||_properties.title||'';
@@ -503,6 +475,29 @@ function SET_DB(_reset){
       else if(type=="password"&&$('#signum').val()&&_val!==$('#signum').val()){msg=title+' passwords do not match';omega=false;}
       if(omega===false){ele.parentNode.insertBefore(err, ele.nextSibling);err.innerHTML=msg;$('#sideNotice .db_notice').html('<div class="text-error">'+msg+'</div>');$('.control-group.'+this.frmName+'_'+_field).addClass('error');}
       return omega;
+   }
+   /*
+    * short hand insert for data insert
+    * @param {string} _mensa le nom de la table a utiliser
+    * @param {string} _comamnd le mot qui vas etre passer comme un parametre
+    * @param {array} _fields l'object qui contient les donner
+    * @returns void
+    */
+   this.novaNotitia=function(_mensa,_comand,_fields){
+      var fields='',values=[],sql;var x,l,f=[],n=[];
+      $.ajax({url:localStorage.SITE_SERVICE,data:{militia:_comand},type:"POST",dataType:'json',success:function(json){
+         l=_fields.length;
+         for(x=0;x<l;x++){f.push('?');n.push('`'+_fields[x]+'`');}
+         $.each(json,function(i,v){
+            if(i==='rows')return true;
+            l=_fields.length;
+            for(x=0;x<l;x++){values.push(v[_fields[x]]);}
+            if(_comand=="getUsers")v.gender=v.gender=='Male'?'1':'2';
+            fields+=fields==''?"SELECT "+f.join():" UNION SELECT "+f.join();
+         });
+         sql="INSERT INTO "+_mensa+" ("+n.join()+") "+fields;
+         $DB(sql,values,"added "+_mensa);
+      }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
    }
 //$DB("update permissions set sub=17 where id in (1,2,3)");
 
@@ -537,7 +532,7 @@ $DB=function(quaerere,params,msg,callback,reading){
    if(!db)db=window.openDatabase(localStorage.DB_NAME,'',localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024,function(){console.log('create a new DB')});
    if(db.version!=localStorage.DB_VERSION&&!$("footer").data("db version")){
       ver.ver=localStorage.DB_VERSION;
-      ver.revision={};
+      ver.revision={dealer:1};
       db.changeVersion(db.version,localStorage.DB_VERSION,function(trans){version_db(db.version,ver,trans)},function(e){console.log(e.message)},function(e){console.log('PASSED');});
       localStorage.DB=JSON.stringify(db);$("footer").data("db version",1);
    }
@@ -549,8 +544,9 @@ $DB=function(quaerere,params,msg,callback,reading){
             var j=$DB2JSON(results);
             if(sessionStorage.quaerere){
                tmp=JSON.parse(sessionStorage.quaerere);
+               var procus=localStorage.USER_NAME?JSON.parse(localStorage.USER_NAME):JSON.parse(sessionStorage.USER_NAME);var moli=screen.height*screen.width;
                res=tmp.eternal;Tau=tmp.Tau;iyona=tmp.iyona;
-               get_ajax(localStorage.SITE_MILITIA,{"eternal":res,"Tau":Tau,"iyona":iyona},'','post','json',function(j){console.log(j,'Online');$('#sys_msg').html(j.msg) });
+               get_ajax(localStorage.SITE_MILITIA,{"eternal":res,"Tau":Tau,"iyona":iyona,"procus":procus.singularis,"moli":moli},'','post','json',function(j){console.log(j,'Online');$('#sys_msg').html(j.msg) });
                sessionStorage.removeItem('quaerere');Tau=false;
             }
             if(msg)$('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});

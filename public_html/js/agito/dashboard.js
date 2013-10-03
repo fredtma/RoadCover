@@ -18,6 +18,7 @@
       $welcome.novo('#dashboard','div',{clss:'row-fluid'});
       $welcome.vita('div',{clss:'span4 alert alert-info dash-module getCustomers',"href":"#tab-customers"},true).vita('h4',{},true,' Customers').vita('i',{'clss':'icon-user icon-white'},false,'','first').novo('#dashboard .getCustomers','p',{},'Customer content text');
       $welcome.novo('#dashboard .row-fluid:nth-child(3)','div',{clss:'span4 alert alert-info dash-module getInsurance',"href":"#tab-insurance"}).vita('h4',{},true,' Insurance').vita('i',{'clss':'icon-folder-open icon-white'},false,'','first').novo('#dashboard .getInsurance','p',{},'Insurance content text');
+      $welcome.novo('#dashboard .row-fluid:nth-child(3)','div',{clss:'span4 alert alert-info dash-module getInvoices',"href":"#tab-dealers"}).vita('h4',{},true,' Invoices').vita('i',{'clss':'icon-folder-close icon-white'},false,'','first').novo('#dashboard .getInvoices','p',{},'Invoice content text');
       $welcome.novo('#dashboard','div',{clss:'row-fluid'});
 
       //@fix: prevents the btn home click from loosing the events attached and the dashboard blocks
@@ -29,6 +30,7 @@
       $('.getSalesman').click(function(){activateMenu('salesman','salesmen',this);});
       $('.getCustomers').click(function(){activateMenu('customer','customers',this,true);});
       $('.getInsurance').click(function(){activateMenu('member','insurance',this,true);});
+      $('.getInvoices').click(function(){activateMenu('invoice','dealers',this,"cera");});
       delete $welcome;
    }
 })();

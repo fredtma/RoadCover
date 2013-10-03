@@ -3,7 +3,7 @@
       "file":"",
       "field":{"clss":"form-horizontal","name":"feature","data-iota":"0"},
       "fieldset":{"name":"admin-features"},
-      "legend":{"txt":"features Setting"},
+      "legend":{"txt":"Features Setting"},
       "label":true,
       "button":{"submit_feature":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_feature":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}},
       "ortus":"local"

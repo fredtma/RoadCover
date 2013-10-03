@@ -259,7 +259,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
    this.userLogin=function(){
       if(!localStorage.USER_NAME){
          this.loginForm();
-      } else {
+      } else {//@todo: verify the use of this
          licentia();//si il'ya pas de session pour l'utilisateur
          $('#userName a').html(localStorage.USER_DETAILS);
          if(!localStorage.USER_ADMIN) viewAPI(false);

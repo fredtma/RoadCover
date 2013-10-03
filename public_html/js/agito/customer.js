@@ -37,32 +37,11 @@ tmp={
 }
 sessionStorage.setItem("active",JSON.stringify(tmp));
 eternal=tmp;temp=$("footer").data("temp");
-get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp},"","post","json",function(results){
-   var collapseName,tmp;
-   if(temp)sideDisplay(temp[0],temp[1]);
-   theForm=new SET_FORM()._Set("#body article");
-   theForm.setBeta(results);
-//   $(".memberIcon").tooltip();
-   var Name=eternal.form.field.name;
-   var frmId="#frm_"+Name;
-   var frmName="frm_"+Name;
-   collapseName="#acc_"+Name;
-   $(".memberIcon").click(function(){
-      tmp=$(this).data("agilis");$(this).parents(".accordion-heading").data("activated",tmp);
-      tmp=$(this).parents("div").data("jesua");$("#collapse_customer"+tmp).collapse("show");tmp=null;
-      if($(".accordion-body.in")[0]){
-         onShow(false);
-      }
-   });
-   $(".betaRow").click(function(){tmp=$(this).parents("div").data("jesua");$("#collapse_customer"+tmp).collapse("toggle");tmp=null;});//@row clicked collapse
-   $(frmId+" #close_"+Name).click(function(){$(".accordion-body.in").collapse("hide");});//@button CLOSE collapse
-   $(collapseName).on("shown",function(){//@onShown
-      if(!$(this).data("toggle_shown")||$(this).data("toggle_shown")==0){
-         $(this).data("toggle_shown",1);
-         onShow(true);
-      }//endif
-   });//@onShown
-   $(collapseName).on("hidden",function(){$(this).data("toggle_shown",0); });//@onHidden
+get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:localStorage.SITE_MONTH}},"","post","json",function(results){
+   if(typeof temp==="undefined")temp=[0,"dealers"];
+   sideDisplay(temp[0],temp[1]);
+   var y=new Date().getFullYear(); var d=new Date(y,localStorage.SITE_MONTH-1,1).getMonth();$("#betaCustomer h2").append("<small> ___Month of "+dateFormat.i18n.monthNames[d+12]+"</small>");
+   theForm=new SET_FORM()._Set("#body article");theForm.setBeta(results);reDraw();
    delete tmp, delete temp;
 });//@getAjax
 function onShow(on){
@@ -101,3 +80,36 @@ function onShow(on){
    }//ednif
    tmp=code=null;
 }
+reDraw=function(){
+   var collapseName,tmp;
+   var Name=eternal.form.field.name;
+   var frmId="#frm_"+Name;
+   var frmName="frm_"+Name;
+   collapseName="#acc_"+Name;
+   $(".memberIcon").click(function(){
+      tmp=$(this).data("agilis");$(this).parents(".accordion-heading").data("activated",tmp);
+      tmp=$(this).parents("div").data("jesua");$("#collapse_customer"+tmp).collapse("show");tmp=null;
+      if($(".accordion-body.in")[0]){
+         onShow(false);
+      }
+   });
+   $(".betaRow").click(function(){tmp=$(this).parents("div").data("jesua");$("#collapse_customer"+tmp).collapse("toggle");tmp=null;});//@row clicked collapse
+   $(frmId+" #close_"+Name).click(function(){$(".accordion-body.in").collapse("hide");});//@button CLOSE collapse
+   $(collapseName).on("shown",function(){//@onShown
+      if(!$(this).data("toggle_shown")||$(this).data("toggle_shown")==0){
+         $(this).data("toggle_shown",1);
+         onShow(true);
+      }//endif
+   });//@onShown
+   $(collapseName).on("hidden",function(){$(this).data("toggle_shown",0); });//@onHidden
+}
+
+$("#btnSubMonthList li").click(function(){//@explain:when the month list is selected, the function is repeated
+   var m=this.id;var temp=$('footer').data('temp');
+   get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:m}},'','post','json',function(_rows){
+      if(typeof temp==="undefined")temp=[0,"dealers"];
+      sideDisplay(temp[0],temp[1]);
+      var y=new Date().getFullYear(); var d=new Date(y,m-1,1).getMonth();$("#betaCustomer h2").append("<small> for the month of "+dateFormat.i18n.monthNames[d+12]+"</small>");
+      theForm=new SET_FORM()._Set("#body article");theForm.setBeta(_rows);reDraw();
+   });
+});

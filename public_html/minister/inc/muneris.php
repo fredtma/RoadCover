@@ -12,15 +12,18 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 ini_set('display_errors', '1');
 if(substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) ob_start("ob_gzhandler"); else ob_start();
 define("SITE_ROOT","/wwwroot/roadcover/");
-define("SITE_PUBLIC",SITE_ROOT."/public_html/");
-define("SITE_MINISTER",SITE_ROOT."/minister/");
+define("SITE_PUBLIC",SITE_ROOT."public_html/");
+define("SITE_MINISTER",SITE_ROOT."minister/");
+define("SITE_PUB_MINISTER",SITE_PUBLIC."minister/");
 define("SITE_URL","http://197.96.139.19/");
+define("SITE_DWLD",SITE_PUB_MINISTER."downloads/");
 include(SITE_MINISTER.'adodb5/adodb.inc.php');
 $db = ADONewConnection('mysql');
 $db->PConnect("localhost","xpandit", "Success2013", "roadcover");
 sanitize($_GET);
 sanitize($_POST);
 session_start();
+if($_POST['cimica'])$_GET['iyona']=$_POST['cimico'];
 #==============================================================================#
 #FUNCTIONS
 #==============================================================================#
@@ -64,39 +67,49 @@ function sanitize(&$__theValue)
  *
  * @author fredtma
  * @version 1.2
- * @param mixed $__var is the variable to be displayed
- * @param bool $__adm is the variable set to display admin message
- * @param bool $__stop is the variable that will end an execution
- * @param bool $__write will write onto the disk
- * @param bool $__write will append the written file data
+ * @param mixed <var>$__var</var> is the variable to be displayed
+ * @param bool <var>$__adm</var> is the variable set to display admin message
+ * @param bool <var>$__stop</var> is the variable that will end an execution
+ * @param bool <var>$__many</var> option to include more than one value
  * @return string|array in an echo statment
  */
-function iyona ($__var, $__adm=false, $__stop=false, $__write=false, $__append=false)
+function iyona ($__var, $__adm=false, $__stop=false, $__many=false)
 {
-   if (!$__write)
+   if ($__adm) $__adm = !iyona_adm($__adm);
+   if (!$__adm)
    {
-      if ($__adm) $__adm = !iyona_adm($__adm);
-      if (!$__adm)
-      {
-         echo "<pre>\n";
-         if (is_array($__var)) {var_dump($__var);reset($__var);}
-         else var_dump ($__var);
-         if ($__stop) exit;
-         echo "</pre>\n";
-      }
-   }//end if
-   else
-   {
-      $filename = SITE_ROOT.'/tmp/temp_log.html';
-      if (is_writable($filename))
-      {
-         $__var = '<pre>'.date('Y/m/d H:i:s').' :: '.$_GET['p'].' :: --'.print_r($__var,true).'</pre>';
-         if ($__append) file_put_contents($filename, $__var,FILE_APPEND);
-         else if (!$__append) file_put_contents($filename, $__var);
-      } else if (iyona_adm()) { echo "File is not writen";} //end if
-   }//end if
+      echo "<pre>\n";
+      if (is_array($__var)) {foreach($__var as $var) var_dump($var);reset($__var);}
+      else var_dump ($__var);
+      if ($__stop) exit;
+      echo "</pre>\n";
+   }
 }//end function
 #==============================================================================#
+/**
+ * write on the system log the value of variables
+ * @author fredtma
+ * @version 5.9
+ * @category debug, log
+ * @param mixed <var>$__var</var> contains single or an array of variable to be checked
+ * @param bool <var>$__append</var> option to append to the file or not
+ * @param bool <var>$__many</var> option to include more than one value
+ * @see iyona()
+ * @return void
+ */
+function iyona_log($__var,$__append=true,$__many=false)
+{
+   $filename = SITE_DWLD.'logs/temp_log.html';
+   if (is_writable($filename))
+   {
+      if (!$__many)$__var = '<pre>'.date('Y/m/d H:i:s')." ::\r\n".print_r($__var,true).'</pre>';
+      else foreach($__var as $var) $__var .= '<pre>'.date('Y/m/d H:i:s')." ::\r\n".print_r($var,true).'</pre>';
+      if ($__append) file_put_contents($filename, $__var,FILE_APPEND);
+      else if (!$__append) file_put_contents($filename, $__var);
+   }//endif
+}//end function
+#==============================================================================#
+
 /**
  * verify if the adminstrator with the user if <var>$_SESSION['access']->adm_login[id]<var> is true
  * @author fredtma

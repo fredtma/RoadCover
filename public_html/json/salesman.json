@@ -4,7 +4,7 @@
       "options":{"readonly":true,"type":"gamma"},
       "field":{"clss":"form-horizontal","name":"salesman","data-iota":"0"},
       "fieldset":{"name":"admin-salesmans"},
-      "legend":{"txt":"salesmans' page"},
+      "legend":{"txt":"Salesmans' page"},
       "button":{"submit_salesman":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_salesman":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
    },
    "mensa": "salesmen",

@@ -10,5 +10,5 @@
       "name":{"valid":["unique"],"search":true,"icon":"icon icon-black icon-users","header":true,"place":true,"field":{"required":"","title":"Group name","autofocus":""}},
       "desc":{"complex":"textarea","title":"description","place":"Group Description","field":{"required":"","type":"text","rows":5,"clss":"text-area","maxlength":180}}
    },
-   "links":{"link_users_groups":["firstname||' '||lastname","users","groups","username"],"link_permissions_groups":["name","permissions","groups"]}
+   "links":{"link_users_groups":["firstname||' '||lastname","users","groups","username"]}
 }

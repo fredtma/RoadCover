@@ -21,11 +21,12 @@ header('Content-Type: application/json');
 //header('Access-Control-Allow-Origin: *');
 include('muneris.php');
 #==============================================================================#
-if($_GET)$_POST=array_merge($_GET,$_POST);#@todo: remove this it's a debug purpose
+if($_GET&&iyona_adm())$_POST=array_merge($_GET,$_POST);
+iyona_log($_POST,false);
 $table         = $_POST['iyona'];
-$preffix       = 'roadCover_';
+$pre           = 'roadCover_';
 $transaction   = $_POST['Tau'];
-$list_of_tables= array('users','groups','link_users_groups','permissions','link_permissions_groups','link_permissions_users','clients','contacts','address','dealers','salesmen','pages','features');
+$list_of_tables= array('users','groups','link_users_groups','permissions','link_permissions_groups','link_permissions_users','clients','contacts','address','dealers','salesmen','pages','features','invoices');
 if (!in_array($table, $list_of_tables)) {echo '{"err":" This is an invalid request for '.$table.' "}';exit;}
 $where         = 'WHERE ';
 
@@ -40,6 +41,7 @@ foreach($_POST['eternal'] as $key => $column)
    }//end chk if field sub value is an array
    else   {$val = $column; }//end else not an array
    $key      = $key=='blossom'?'jesua':$key;
+   if($key==="jesua")$jesua=$val;
    $fields  .= "`$key`, ";
    $answer  .= $db->qstr($val).', ';
    $set     .= ($key=='jesua')?"":"`$key`=".$db->qstr($val).', ';#ne pas modifier, l'identification jesua
@@ -48,7 +50,9 @@ foreach($_POST['eternal'] as $key => $column)
 $fields  = rtrim($fields,', ');
 $answer  = rtrim($answer,', ');
 $set     = rtrim($set,', ');
-$table   = $preffix.$table;
+$table   = $pre.$table;
+
+if($_POST['consuetudinem']) run_consuetudinem($_POST['consuetudinem']);
 switch($transaction)
 {
    case 'oMegA' :
@@ -77,7 +81,6 @@ switch($transaction)
    }
    default : $sql = "SELECT $fields FROM $table $where";break;
 }//end switch of transaction
-
 $rs      = $db->Execute($sql);
 $err     = $db->ErrorMsg();
 $the_id  = $db->Insert_ID();
@@ -90,9 +93,20 @@ if (!$rs)
 else if ($rs)
 {
    $sql  = trim(str_replace("\'",'',$sql));#str_replace("\t"," ",valueCheck($sql, 'input'));
-   echo '{"msg":"'.$msg.'","iota":"'.$the_id.'","transaction":"'.$transaction.'","ayana":"'.$table.'","trnsc":"'.$trnsc.'","sql":"'.$sql.'"'.$more.'}';
+   echo '{"msg":"'.$msg.'","iota":"'.$the_id.'","transaction":"'.$transaction.'","trnsc":"'.$trnsc.'","sql":"'.$sql.'"'.$more.'}';
 }//end else succesfull db query
+iyona_log($sql."\r\n<br/>".$db->ErrorMsg());
 $db->CompleteTrans();
+#===============================================================================#
+if($_POST['procus']):
+   $device  = md5($_SERVER['HTTP_USER_AGENT'].$_POST['moli']);
+   $version = "INSERT INTO {$pre}versioning(`user`,`trans`,`mensa`,`creation`,`jesua`,device,content)VALUES({$db->qstr($_POST['procus'])},'$transaction','$table',NOW(),{$db->qstr($jesua)},{$db->qstr($device)},{$db->qstr($_SERVER['HTTP_USER_AGENT'].'-'.$_POST['moli'])})";
+   $rs=$db->Execute($version);
+   iyona_log($version."\r\n<br/>".$db->ErrorMsg());
+   $sql="INSERT INTO {$pre}version_control (ver,user,device,creation)VALUE({$db->Insert_ID()},{$db->qstr($_POST['procus'])},'$device',now())";
+   $rs=$db->Execute($sql);
+   iyona_log($sql."\r\n<br/>".$db->ErrorMsg());
+endif;
 #===============================================================================#
 function opt_column($_name='', $_restrict="!@=!#", $_like=false) {
    global $db;
@@ -105,5 +119,20 @@ function opt_column($_name='', $_restrict="!@=!#", $_like=false) {
    $_restrict= str_replace("!#", $value, $_restrict);
    return $_restrict;
 }//end function to have a where function
+#===============================================================================#
+/*
+ * runs a consuetudinem/custom function
+ */
+function run_consuetudinem($_consuetudinem){
+   global $pre,$db;
+   switch($_consuetudinem){
+      case "dealers-account":
+         $sql="UPDATE {$pre}dealers SET account={$db->qstr($_POST['eternal']['account'])} WHERE code={$db->qstr($_POST['eternal']['dealer'])}";
+         $rs=$db->Execute($sql);iyona_message($rs,$sql);
+         $sql="UPDATE road_Intermediary SET account={$db->qstr($_POST['eternal']['account'])} WHERE Id={$db->qstr($_POST['eternal']['dealer'])}";
+         $rs=$db->Execute($sql);iyona_message($rs,$sql);
+         break;
+   }
+}
 #===============================================================================#
 ?>

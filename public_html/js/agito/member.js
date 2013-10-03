@@ -28,12 +28,20 @@ tmp={
 }
 sessionStorage.setItem('active',JSON.stringify(tmp));
 eternal=tmp;temp=$('footer').data('temp');
-get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp},'','post','json',function(_rows){
+get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:localStorage.SITE_MONTH}},'','post','json',function(_rows){
    if(typeof temp==="undefined")temp=[0,"dealers"];
    sideDisplay(temp[0],temp[1]);
-   theForm = new SET_FORM();
-   theForm._Set("#body article");
-   theForm.gammaTable(_rows);
+   var y=new Date().getFullYear(); var d=new Date(y,localStorage.SITE_MONTH-1,1).getMonth();$("#betaInsurance h2").append("<small> ___Month of "+dateFormat.i18n.monthNames[d+12]+"</small>");
+   theForm = new SET_FORM();theForm._Set("#body article");theForm.gammaTable(_rows);
    delete temp;delete tmp;
 });
+$("#btnSubMonthList2 li").click(function(){//@explain:when the month list is selected, the function is repeated
+      var m=this.id;var temp=$('footer').data('temp');
+      get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:m}},'','post','json',function(_rows){
+         if(typeof temp==="undefined")temp=[0,"dealers"];
+         sideDisplay(temp[0],temp[1]);
+         var y=new Date().getFullYear(); var d=new Date(y,m-1,1).getMonth();$("#betaInsurance h2").append("<small> for the month of "+dateFormat.i18n.monthNames[d+12]+"</small>");
+         theForm = new SET_FORM();theForm._Set("#body article");theForm.gammaTable(_rows);
+      });
+   });
 //@todo add to the menu the three most recents

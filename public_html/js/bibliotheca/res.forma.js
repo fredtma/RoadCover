@@ -113,9 +113,9 @@ function SET_FORM(_name,_class,_label){
       len=len||1;//this will display the record even when there is no record
       var linkTable=this.linkTable;
       if(!getLicentia(this.name,'View')) {$('.db_notice').html("<strong class='text-error'>You do not have permission to view "+this.name+"</strong>");return false;}
-      this.frmLabel=typeof eternal.form.label=="boolean"?eternal.form.label:true;;
+      this.frmLabel=typeof eternal.form.label=="boolean"?eternal.form.label:true;
       var isReadOnly=(typeof eternal.form.options !=="undefined")?eternal.form.options.readonly:false;
-      if(typeof _results.rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_results);
+      if(typeof _results.rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_results);//change la donner seaulment quand ce náit pas une cherche
       else this.setActiveRecord(_results,len);//maitre ce si quand la source et du system interne
       navSection=eternal.form.navigation!==true?false:eternal.form.navigation;
       this.setNavigation(_results,navSection);
@@ -132,7 +132,7 @@ function SET_FORM(_name,_class,_label){
           * aliquam: from server or localhost
           * */
          if (eternal.form.aliquam!==true&&$('footer').data('header')!==false){$('footer').data('header',false);}
-         if($('footer').data('header')===false){$('#sideBot h3').html(eternal.form.legend.txt);$('#tab-home section h2').text(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();}//lieu pour maitre le titre
+         if($('footer').data('header')===false){$('#sideBot h3').html(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();}//lieu pour maitre le titre
          $(this.Obj.addTo).empty();//main content and side listing
          container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
          if(sessionStorage.genesis=="NaN")sessionStorage.genesis=0;
@@ -143,6 +143,7 @@ function SET_FORM(_name,_class,_label){
          max=max||1;
          //LOOP
          for(rec=parseInt(sessionStorage.genesis);rec<len,rec<max;rec++){//loop record
+//            console.log(_results,"/",_results.rows,"/",rec,"/",sessionStorage.genesis);
             if(typeof _results.rows.source!=="undefined"){row=_results[rec];headeName=fieldsDisplay("none",row,true);}
             else if(_results.rows.length){row=_results.rows.item(rec);headeName=fieldsDisplay("none",row,true);}
             else{row={"id":-1,"jesua":"alpha"};headeName=["Type "+this.name+" name here"]}
@@ -456,7 +457,8 @@ function SET_FORM(_name,_class,_label){
       theField.id=_key;
       var title=theField.title||_prop.title||'';//@todo::after performance check use @onblur validation
       if(_prop.pattern){theField.pattern=this.patterns[_prop.pattern][0];theField.title=title+"\n"+this.patterns[_prop.pattern][1];}
-      else if(_prop.field.type=="password"){theField.pattern=this.patterns["password"][0];theField.title=title+"\n"+this.patterns["password"][1];}
+      else if("field"in _prop&&"type"in _prop.field&&_prop.field.type=="password")
+      {theField.pattern=this.patterns["password"][0];theField.title=title+"\n"+this.patterns["password"][1];}
       return theField;
    }
    /*
@@ -600,30 +602,44 @@ function SET_FORM(_name,_class,_label){
       var len,x,srch,found,y,row,c,f,examiner,value,pages,pagination;
       $('.pagination').remove();
       if(sessionStorage.activePage!=this.name){sessionStorage.genesis=0;sessionStorage.activePage=this.name;}//@alert:ne pas maitre deux form avec le meme nom.
-      len=_results.length||_results.rows.length;
-      srch=[];c=0;examiner=[];
-      for(f in eternal.fields){if(eternal.fields[f].search){srch[c]=f;c++;}}//trouve les lieux qui on la cherche
-      for(x=0;x<len;x++){found='';for(y=0;y<c;y++){row=_results[x]||_results.rows.item(x);found+=row[srch[y]]+'$ ';}examiner[x]=found;}
-      $('input[name=s]').each(function(i){//@fix:this has to be set as below for each search has it own typeahead.
-         if(typeof $(this).data('typeahead')!=="undefined")$(this).data('typeahead').source=examiner;
-      });
-      $('input[name=s]').val('').prop('disabled',false).typeahead({source:examiner,minLength:3,
-         highlighter:function(item){var regex = /\$(.+)/;return item.replace(regex,"<span class='none'>$1</span>");},
-         updater:function(item){
-         value=examiner.indexOf(item);
-         theForm = new SET_FORM()._Set("#body article");
-         if(eternal.form.options&&eternal.form.options.type=="betaTable")theForm.gammaTable(JSON.parse(sessionStorage.activeRecord),false,false,value);
-         else theForm.setBeta(JSON.parse(sessionStorage.activeRecord),false,false,value);
-         return item.replace(/\$(.+)/,'');
-      }});
+      len=_results.length||_results.rows.length;$('input[name=s]').val('');
+      if(len>1){//parce que si cest un seul retour de base, cela c'est pour une recherche trouver
+         srch=[];c=0;examiner=[];
+         for(f in eternal.fields){if(eternal.fields[f].search){srch[c]=f;c++;}}//trouve les lieux qui on la cherche
+         for(x=0;x<len;x++){found='';for(y=0;y<c;y++){row=_results[x]||_results.rows.item(x);found+=row[srch[y]]+'$ ';}examiner[x]=found;}//pour maitre se que on a trouver dans le variable examiner
+         $('input[name=s]').each(function(i){//@fix:this has to be set as below for each search has it own typeahead.
+            if(typeof $(this).data('typeahead')!=="undefined")$(this).data('typeahead').source=examiner;
+         });
+         //@fix:this resolve the issue of moving pages. it use to store the var `examiner` of prev page
+         $("footer").data("examiner",examiner);
+         //@fix: this is a fix to store the original records before the search
+         //the activeSearch will store the records that have more than one row
+         //this is done once, only upon the form being displayed
+         sessionStorage.activeSearch=sessionStorage.activeRecord;
+         $('input[name=s]').val('').prop('disabled',false).typeahead({source:examiner,minLength:3,
+            highlighter:function(item){var regex = /\$(.+)/;return item.replace(regex,"<span class='none'>$1</span>");},
+            updater:function(item){
+               var examiner=$("footer").data("examiner");
+               value=examiner.indexOf(item);
+               theForm = new SET_FORM()._Set("#body article");
+               var activeSearch=JSON.parse(sessionStorage.activeSearch);
+               if(eternal.form.options&&eternal.form.options.type=="betaTable")theForm.gammaTable(activeSearch,false,false,value);
+               else theForm.setBeta(activeSearch,false,false,value);
+               if(typeof reDraw ==="function")setTimeout(reDraw,100);//use on reDraw the search result. necessary on some form e.g. customer
+               return item.replace(/\$(.+)/,'');
+         }});
+      }//endIF
       _class=!_class?'navig':_class;
       if(len>localStorage.DB_LIMIT){
+         $(".recCount").remove();//@fix: pour ne pas avoir des duplication
          pages=Math.ceil(len/localStorage.DB_LIMIT);
+         var recTotal=creo({"clss":"pull-right recCount"},"a","Record:"+(sessionStorage.genesis)+"-"+parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT)+" of "+len);
          if(!_pos){
-            pagination=roadCover._Set({"next":"#tab-home section .homeSet2"}).pagiNation({"clss1":"pagination pull-right","clss2":_class,"pages":pages,"total":len,"link":"#"+this.name}).cloneNode(true);
-            $('#tab-system section').append(pagination);
+            pagination=roadCover._Set({"next":"#tab-home section .homeSet2"}).pagiNation({"clss1":"pagination","clss2":_class,"pages":pages,"total":len,"link":"#"+this.name}).cloneNode(true);
+            $('#tab-system .pagNav').append(pagination);$('#tab-system .secondRow').append(recTotal);
          }else{
-            roadCover._Set(".tab-pane.active section").pagiNation({"clss1":"pagination pull-right","clss2":_class,"pages":pages,"total":len,"link":"#"+this.name});
+            roadCover._Set(".tab-pane.active .pagNav").pagiNation({"clss1":"pagination","clss2":_class,"pages":pages,"total":len,"link":"#"+this.name});
+            $('.tab-pane.active .secondRow').append(recTotal);
          }
       }
       if(_class=="navig")$('.navig a').click(function(){navig(this)});
@@ -764,6 +780,7 @@ fieldsDisplay=function(_from,_source,_head,_reference){
    if(_reference)frmID=frmID+2;
    var c=0;
    var _return=[];
+   console.log(typeof _source, "_source");
    if(typeof _source==="number"){tmp=JSON.parse(sessionStorage.activeRecord);_source=tmp[_source];}
    $.each(f,function(key,property){
       key2=key.replace(/\s/ig,'');//removes spaces
@@ -784,6 +801,7 @@ fieldsDisplay=function(_from,_source,_head,_reference){
             else _return[c]=_source[key];
             break;
          default:
+//            console.log(c,"/",key2,"/",_return[c],"/",_source[key2],"/",_return,_source);
             if(_from==='form'&&_source[key]){$(frmID+' #'+key2).val(_source[key]);if(key2=='password'&&document.getElementById('signum'))document.getElementById('signum').value=_source[key]}
             else if(_from==='list')_return[c]=$(frmID+' #'+key2).val();
             else _return[c]=_source[key2];

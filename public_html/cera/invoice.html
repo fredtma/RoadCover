@@ -1,0 +1,273 @@
+<!--      <link rel="stylesheet" href="../css/bootstrap.min.css" /><link rel="stylesheet" href="../css/bootstrap-responsive.min.css" />
+      <link rel="stylesheet" href="../css/main.css" /><link rel="stylesheet" href="../css/icons.css" /><link rel="shortcut icon" href="../img/fav.png" />-->
+      <style>
+         #body .page-section h1 {padding: 0.4em 0 0 0.2em;margin: 0.2em 0 0 0.2em;}
+         .page-section .label {display:block;-webkit-border-radius: 0px;-moz-border-radius: 0px;border-radius: 0px;color:#fff;font-weight: normal;}
+         legend{padding-left: 15px;font-size:2em;margin-bottom:0px;border-bottom:0px;}
+         .invH{border-bottom:1px solid #bce8f1;display:table}
+         .invHead1,.invHead2{background-color:#d9edf7;display:table-cell;height:7em;width:20%;border:none;vertical-align: baseline;}
+         .invHead2{background-color:#3a87ad;width:80%;text-align: right;vertical-align: top;}
+         .invHead1 blockquote {vertical-align: bottom;}
+         dl{margin-bottom:0px;}.dl-horizontal dt {float: left;width:25%;}.dl-horizontal dd {margin-left: 35%;}
+         blockquote small {margin-top:1em;} blockquote{border-left: 5px solid #bce8f1;}
+         ul.inline2{list-style-type: disc; width:auto;color:#bce8f1;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);margin: 0.2em}
+/*         ul.inline2:first-child{margin-left:2em;}
+         ul.inline2:last-child{margin-right:2em;}*/
+         ul.inline2>li {list-style-type: disc; width:auto;display:inline-block;}
+         ul.inline2>li {list-style-type: disc;display: list-item;white-space: nowrap;float: right;margin-right: 2em;}
+         ul.inline2>li:first-child {margin-right: 0.1em;}
+         .invHead2 h4 {color:#d9edf7;font-size:2em;padding-right:0.1em;}
+         ul.pager{margin:0em;border-bottom: 1px solid #ddd;}
+         .pager li>a{-webkit-border-radius: 2px;-moz-border-radius: 2px;border-radius: 2px;border:none;}
+         .pager li>a:first-child{border-right: 1px solid #ddd;}
+         .pager li>a:last-child{border-left: 1px solid #ddd;}
+         .invTop{background-color:#d9edf7;font-weight:bold;display:table;width:100%;}
+         .invTop span,.invMid span,.invBot span{width:10%;display:table-cell;padding:0.3em;border:0px solid red}
+         .invTop span:nth-child(1),.invTop span:nth-child(2),.invTop span:nth-child(3),.invTop span:nth-child(5),
+         .invMid span:nth-child(1),.invMid span:nth-child(2),.invMid span:nth-child(3),.invMid span:nth-child(5),
+         .invBot span:nth-child(1),.invBot span:nth-child(2),.invBot span:nth-child(3),.invBot span:nth-child(5) {width:15%}
+         .invMid,.invBot{display:table;width:100%;}
+         .invMid span:nth-child(5){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
+         .invTop span:last-child,.invMid span:last-child,.invBot span:last-child{width:10%;background-color:#d9edf7;border-left:1px solid #d9edf7;}
+         .invCust{border-bottom:1px solid #d9edf7;}
+         .invBot span{border-bottom:1px solid #d9edf7;}
+         .invBot span:nth-child(5){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
+         .invBot span:nth-child(6){background-color:#d9edf7;border-left:1px solid #d9edf7;}
+         .invNote{-webkit-border-radius: 0px;-moz-border-radius: 0px;border-radius: 0px;display:table;width:100%;padding:1em 0em;}
+         .form-horizontal .form-actions.invNote{padding-left:0em;}.well{background-color:#fff;}
+         .blueWell{background-color:#3a87ad; color:#d9edf7;padding-left:3em !important;}.blueWell li{float:left;margin-left:2em;}
+         .noteCell:first-child{border-right: 1px solid #ececec;padding-left:3em;min-height: 15em;}
+         .approveSection{border-bottom:solid 1px #ececec;margin: 0.5em 0 0 0.5em;}
+         select.seamless,input.seamless{background:none;-webkit-box-shadow: none;-moz-box-shadow: none;box-shadow:none;
+         -webkit-box-shadow: none;-moz-box-shadow: none;box-shadow: none;-webkit-transition: none;-moz-transition: none;-o-transition: none;transition: none;
+         height:20px;width:auto;padding:1px;-webkit-border-radius: 0px;-moz-border-radius: 0px;border-radius: 0px;margin:0.2em 0;border:none;color:#999;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);}
+         #invDue{width:90%;}
+         .help-block.text-success,.help-block.text-error{font-weight:bold;color:#468847;}.help-block.text-error{font-weight:bold;color:#ff0000;}
+         #dwld_invoice{display:none;font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;padding:0.4em;}
+/*        legend{padding-left: 15px;font-size:3em;margin-bottom:0px;border-bottom:0px;}
+         .invH{border-bottom:1px solid #c09853;display:table}
+         .invHead1,.invHead2{background-color:#fcf8e3;display:table-cell;height:7em;width:20%;border:none;vertical-align: bottom;}
+         .invHead2{background-color:#c09853;width:80%;text-align: right}
+         .invHead1 blockquote {vertical-align: bottom;}
+         dl{margin-bottom:0px;}.dl-horizontal dt {float: left;width:25%;}.dl-horizontal dd {margin-left: 35%;}
+         blockquote small {margin-top:1em;}
+         ul.inline2{list-style-type: disc; width:auto;}
+         ul.inline2>li {list-style-type: disc; width:auto;display:inline-block;}
+         ul.inline2>li {list-style-type: disc;display: list-item;white-space: nowrap;float: right;margin-right: 2em;}
+         ul.inline2>li:first-child {margin-right: 0.1em;}
+         .invHead2 h4 {color:#fcf8e3;font-size:2em;padding-right:0.1em;}         */
+      </style>
+      <link rel="stylesheet" href="css/datepicker.css" />
+      <section class="page-section">
+         <h1>Invoice Details</h1><span id="jesua"></span>
+         <div class="page-header invHead"><h2>RoadCover <small class="dealerName">Name of the dealer</small></h2></div>
+         <article class="subBody">
+            <section class="invH clearfix">
+               <div class="invHead1">
+                  <blockquote>
+                    <dl class="dl-horizontal">
+                       <dt>Account no:</dt><dd id="accountNo" contenteditable="true"><!--ingenero--></dd><dt>Dealer no:</dt><dd id="dealerNo"><!--ingenero--></dd><dt>Invoice no:</dt><dd id="invNo" contenteditable="true"><!--ingenero--></dd><dt>Reg NO:</dt><dd id="regNo" contenteditable="true"><!--ingenero--></dd>
+                    </dl>
+                    <small><time datetime="2013-04-01" id="fromTo">Month of April 2013</time></small>
+                  </blockquote>
+               </div>
+               <div class="invHead2">
+                  <h4 class="dealerName">FORD AND MAZDA CULEMBORG</h4>
+                  <address><!--ingenero--></address>
+               </div>
+            </section>
+            <section>
+               <ul class="pager">
+                  <li class="previous" id="navBack"><a href="javascript:void(0)">&larr; Older</a></li>
+                  <li>
+                     <select name="monthList" id="monthList" class="seamless">
+                        <option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April *</option><option value="05">May *</option><option value="06">June *</option><option value="07">July *</option><option value="08">August *</option><option value="09" selected>September *</option><option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                     </select >
+                  </li>
+                  <li class="next"  id="navForward"><a href="javascript:void(0)">Newer &rarr;</a></li>
+               </ul>
+            </section>
+            <section class="invB">
+               <div class="invTop"><span>Sales Person</span><span>Customer</span><span>IDno</span><span>Collection</span><span>Date</span><span>Period</span><span>Amount</span></div>
+               <div class="invCust"><!--ingenero--></div>
+<!--               <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span>Total</span><span id="invTot">ingenero</span></div>
+               <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span>VAT(14%)</span><span id="invVat">ingenero</span></div>-->
+               <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span>Total (inc VAT%)</span><span id="invAll"><!--ingenero--></span></div>
+            </section>
+         </article>
+         <div class="form-actions well well-small invNote row-fluid">
+            <div class="noteCell span6">
+               <h5>PAYMENT TERMS</h5>
+               To be made payable to First name, Last name
+
+               <h5>ADDRESS</h5>
+               123 Main Street • Boulder, CO • 80026
+            </div>
+            <div class="noteCell span6">
+               <div class="row-fluid"><h5 class="span2">APPROVED BY</h5><div id="invApp" class="span9 approveSection" contenteditable="true" id="approver"></div></div>
+               <div class="row-fluid"><h5 class="span2">DESC</h5><div id="invDesc" class="span9 approveSection" contenteditable="true" ></div></div>
+               <div class="row-fluid"><h5 class="span2">DUE DATE</h5><div class="span9 approveSection" ><input id="invDue" readonly class="seamless" /></div></div>
+            </div>
+         </div>
+         <div class="form-actions well well-small blueWell">
+            <span class="pull-left">ROAD<strong class="white">COVER</strong></span> <ul><li>(011)222 3333</li><li>(011)222 44444</li><li>(072)222 3333</li><li>support@roadcover.co.za</li><li>www.roadcover.co.za</li></ul>
+         </div>
+         <div class="form-actions well well-small">
+            <button type="button" id="submit_invoice" class="btn btn-primary">Submit Invoice</button>
+            <a target="_blank" id="dwld_invoice" class="btn btn-info" href="javascript:void(0)">Download Invoice</a>
+            <button type="button" id="send_invoice" class="btn">Send Invoice</button>
+            <span class="help-block"></span>
+            <div>&nbsp;</div>
+         </div>
+      </section>
+   <script src="../js/libs/bootstrap-datepicker.js"></script>
+   <script type="text/javascript">
+      $('.body article').addClass('totalView');
+      $DB("SELECT code FROM dealers ORDER BY name",[],"",function(r,j){
+         var x,l,row,codes=[];
+         if(j.rows.length){
+            l=j.rows.length;sessionStorage.genesis=0;
+            for(x=0;x<l;x++)codes[x]=j[x]["code"];$('footer').data('pagination',codes);
+            getInvoice(codes[0]);
+         }//endifrows
+         $(".next").click(function(){
+            var codes=$("footer").data("pagination");
+            sessionStorage.genesis++;
+            if(codes[sessionStorage.genesis])getInvoice(codes[sessionStorage.genesis]); else {sessionStorage.genesis--;notice("<span class='text-success'>You have reached the last dealer.</span>");};
+         });
+         $(".previous").click(function(){
+            var codes=$("footer").data("pagination");
+            sessionStorage.genesis--;
+            if(codes[sessionStorage.genesis])getInvoice(codes[sessionStorage.genesis]); else {sessionStorage.genesis=0;notice("<span class='text-success'>You have reached the first dealer.</span>");};
+         });
+      });
+      function getInvoice(inv){
+         var x,l,row,$addrss,$cust,val,father,amount,total=0,vat,all,d=new Date(),y=d.getFullYear(),missing=false;
+         var m=$("#monthList").val();
+         var lastDay=new Date(y,m,0).getDate();var dateFrom=new Date(y+'/'+m+'/01').format(localStorage.SITE_DATE);var dateTo=new Date(y+'/'+m+'/'+lastDay).format(localStorage.SITE_DATE);
+         $("#fromTo").html(dateFrom+' To '+dateTo);
+         get_ajax(localStorage.SITE_SERVICE,{"militia":"cautionem-dealer","iota":inv,"m":m,"y":y},"","post","json",function(jData){
+            var address=false,customers=false,invoices=false;
+            if("company" in jData&&"rows" in jData.company&&"length" in jData.company.rows&&jData.company.rows.length>=1);else return false;
+            if("address" in jData&&"rows" in jData.address&&"length" in jData.address.rows&&jData.address.rows.length>=1) address=jData.address;
+            if("customers" in jData&&"rows" in jData.customers&&"length" in jData.customers.rows&&jData.customers.rows.length>=1) customers=jData.customers;
+            if("invoices" in jData&&"rows" in jData.invoices&&"length" in jData.invoices.rows&&jData.invoices.rows.length>=1) invoices=jData.invoices;
+            //COMPANY DETAILS
+            $('.dealerName').html(jData.company[0].name);
+            if(jData.company[0].account)$('#accountNo').html(jData.company[0].account).removeClass('label label-info');else {$('#accountNo').html('Missing account').addClass('label label-info');missing=true;}
+            if(jData.company[0].code)$('#dealerNo').html(jData.company[0].code).removeClass('label label-info');else {$('#dealerNo').html('Missing Code').addClass('label label-info');missing=true;}
+            if(jData.company[0].registration_number)$('#regNo').html(jData.company[0].registration_number).removeClass('label label-info');else {$('#regNo').html('Missing Registration').addClass('label label-info');missing=true;}
+            //ADDRESS DETAILS
+            $(".invHead2 address").empty();
+            if(address){
+               l=address.rows.length;
+               $addrss=$anima(".invHead2 address","ul",{"clss":"inline2 clearfix"});
+               for(x=0;x<l;x++){
+                  row=address[x];
+                  if(row['Type']=='Dns.Sh.AddressBook.PhysicalAddress'||row['Type']=='Dns.Sh.AddressBook.PostalAddress'){
+                     $addrss=$anima(".invHead2 address","ul",{"clss":"inline2 clearfix"});
+                     if(row['Code'])$addrss.vita("li",{},false,row['Code']);
+                     if(row['City'])$addrss.vita("li",{},false,row['City']);
+                     if(row['Suburb'])$addrss.vita("li",{},false,row['Suburb']);
+                     if(row['Province_cd'])$addrss.vita("li",{},false,row['Province_cd']);
+                     if(row['StreetName'])$addrss.vita("li",{},false,row['StreetNumber']+' '+row['StreetName']);
+                     if(row['UnitNumber'])$addrss.vita("li",{},false,row['UnitNumber']);
+                     if(row['UnitName'])$addrss.vita("li",{},false,row['UnitName']);
+                     if(row['Line2'])$addrss.vita("li",{},false,row['Line2']);
+                     if(row['Line1'])$addrss.vita("li",{},false,row['Line1']);
+                  }
+                  else {val=row['Number']?'('+row['AreaCode']+') '+row['Number']:row['Address'];if(val)$addrss.vita("li",{},false,val);}
+               }//end for each address
+            }//if address
+            //CUTOMERS DETAILS
+            $(".invCust").empty();$("#invTot").empty();$("#invVat").empty();$("#invAll").empty();
+            if(customers){
+               l=customers.rows.length;
+               $cust=$anima(".invCust");
+               father=$cust.father;
+               for(x=0;x<l;x++){
+                  row=customers[x];
+                  $cust.father=father;
+                  amount=parseFloat(row["TotalAmount"]);
+                  total+=amount;
+                  $cust.vita("div",{"clss":"invMid"},true).vita("span",{},false,row["Salesman"]).vita("span",{},false,row["Fullname"]).vita("span",{},false,row["IDno"]).vita("span",{},false,row["CollectionMethod"]).vita("span",{},false,row["DateModified"]).vita("span",{},false,row["Period"]).vita("span",{},false,'R '+amount);
+               }//for customers
+//               vat=Math.round(total/100*14);all=total+vat;
+//               $("#invTot").html('R '+total);
+//               $("#invVat").html('R '+vat);
+               $("#invAll").html('R '+total);
+            }//if customers
+            //INVOICES DETAILS
+            $('#invNo').html('Missing Invoice').addClass('label label-info').prop("contenteditable",true);
+            $('#invApp').html('');$('#invDesc').html('');$('#invDue').val('');
+            $("#jesua").data("jesua",0);$("#submit_invoice").html("Submit Invoice");$(".help-block").html('');
+            if(invoices){
+               row=invoices[0];
+               $("#jesua").data("jesua",row["jesua"]);$("#submit_invoice").html("Update Invoice");
+               $('#invNo').html(row['invoice_number']).removeClass('label label-info');
+               $('#invApp').html(row['approver']);$('#invDesc').html(row['desc']);$('#invDue').val(row['due_date']);
+            }else{missing=true;}//if invoices
+            //FILENAME
+            $("#dwld_invoice").hide();
+            if("filename" in jData&&missing===false)$("#dwld_invoice").show().attr("href",jData.filename);
+         });//call dealers details
+      }//end function getInvoice
+      $("#submit_invoice").click(function(){
+         var approver=(localStorage.USER_NAME)?JSON.parse(localStorage.USER_NAME):JSON.parse(sessionStorage.USER_NAME);
+         var res={};var d=new Date();var missing=false;
+         var accNo=$("#accountNo").html();
+         var deaNo=$("#dealerNo").html();
+         var invNo=$("#invNo").html();
+         if(!accNo||accNo.search(/missing/i)!=-1)missing='account number';
+         if(!deaNo||deaNo.search(/missing/i)!=-1)missing='dealer\'s number';
+         if(!invNo||invNo.search(/missing/i)!=-1)missing='invoice number';
+         if(missing){$(".help-block").html("Please check that the following field have been entered `"+missing+"`.").addClass("text-error"); notice("Missing "+missing,1,0); return false;}
+         var r=Math.floor((Math.random()*100)+1);notice();
+         var jesua=$("#jesua").data("jesua");
+         var Tau=jesua?"deLta":"Alpha";
+         res.inv_month=$("#monthList").val();
+         res.inv_year=d.getFullYear();
+         d=d.format('isoDateTime');
+         res.account=$("#accountNo").html();
+         res.dealer=$("#dealerNo").html();
+         res.invoice_number=$("#invNo").html();
+         if(!jesua){
+            res.creation=d;
+            res.jesua=md5(res.dealer+d+r);}
+         else res.jesua={"alpha":jesua,"delta":"!@=!#"}
+         res.modified=d;
+         res.desc=$("#invDesc").html();
+         var tmp_date=$("#invDue").val();
+         if(tmp_date)res.due_date=new Date(tmp_date).format('isoDateTime')
+         else res.due_date=new Date().format('isoDateTime');//@todo:add calendar.
+//         res.sub_total=$("#invTot").html();res.sub_total=res.sub_total.replace("R ","");
+         res.total=$("#invAll").html();res.total=res.total.replace("R ","");
+         res.status="submited";
+         res.quantity=$(".invMid").length;
+         res.approver=approver.singularis;
+         var eternal={"eternal":res,"iyona":"invoices","Tau":Tau,"consuetudinem":"dealers-account","procus":false};
+         get_ajax(localStorage.SITE_MILITIA,eternal,'','post','json',function(notitia){
+            console.log(notitia,'Online');
+            if(notitia.trnsc=="1"){
+               $("#jesua").data("jesua",res.jesua);$("#submit_invoice").html("Update Invoice");
+               $(".invHead1 dd").removeClass("label label-info");$(".help-block").html("The invoice has been successfully saved.<br/>You can now export the invoice.").removeClass("text-error").addClass("text-success");
+            }else if(notitia.trnsc=="2"){
+               $(".invHead1 dd").removeClass("label label-info");$(".help-block").html("The invoice has been successfully updated.<br/>You can now export the invoice.").removeClass("text-error").addClass("text-success");
+            }else{
+               $(".help-block").html("An error occured while trying to update the invoice.").removeClass("text-success").addClass("text-error");
+            }
+            if(notitia.trnsc=="2"||notitia.trnsc=="1"){
+               var d=new Date(),y=d.getFullYear();var m=$("#monthList").val();
+               var deal=$("#dealerNo").html();
+               get_ajax(localStorage.SITE_SERVICE,{"militia":"cautionem-dealer","iota":deal,"m":m,"y":y},"","post","json",function(jData){
+                  console.log(jData,"jData");
+                  if("filename" in jData)$("#dwld_invoice").show().attr("href",jData.filename);
+               });
+            }//endif
+         });//end get_ajax
+      });
+      $("#monthList").change(function(){
+         var deal=$("#dealerNo").html();if(deal)getInvoice(deal);
+      });
+      $(document).ready(function(){$("#invDue").datepicker({format: "dd-mm-yyyy",autoclose: true});});
+   </script>
