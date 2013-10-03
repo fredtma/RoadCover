@@ -53,7 +53,7 @@ switch($_POST['militia']){
          $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
       endif;
       $sql=<<<IYONA
-SELECT trans.Id,dealer.Name as Dealer,
+SELECT trans.Id,dealer.Name as Dealer, trans.Status,
 concat(agent.FullNames,' ',agent.Surname) as Salesman, concat(member.FullNames,' ',member.Surname) as Fullname,member.IdentificationNumber as IDno,agrement.Name,quot.Period_cd as Period,quot.CollectionMethod_cd as CollectionMethod,quot.TotalAmount, quot.DateModified
 FROM road_Transactions trans
 LEFT JOIN road_Intermediary dealer on dealer.`Id`=trans.Intermediary
@@ -119,7 +119,6 @@ SELECT member.Id as code,trans.DateCreated,concat(FullNames,' ',Surname) as Full
 FROM road_Transactions trans INNER JOIN road_Holder member on member.Id=trans.Holder
 $srch GROUP BY IDno ORDER BY DateCreated ASC LIMIT $LIMIT;
 IYONA;
-      iyona_log($sql);
       $rows=array_result($sql);echo json_encode($rows);break;
 #==============================================================================#CUSTOMER BRIEF
    case 'customers-brief':
@@ -320,7 +319,7 @@ IYONA;
 }
 #==============================================================================#
 /* ON UPDATE dealers/salesmen table.
-DELETE FROM roadCover_salesmen;
+TRUNCATE roadCover_salesmen;
 
 INSERT INTO roadCover_salesmen (dealer,firstname,lastname,code,idno,modified,creation,jesua)
 SELECT dealer,FullNames,Surname,Id,IdentificationNumber,date_updated,NOW(),Uid FROM road_FandI;
@@ -358,5 +357,7 @@ UPDATE roadCover_dealers SET account='IMPBM5' WHERE name = 'VAAL RIDGE AUTO (BMW
 UPDATE roadCover_dealers SET account='IMPGM3' WHERE name = 'GM GERMISTON';
 UPDATE roadCover_dealers SET account='IMPGM6' WHERE name = 'GM ISANDO';
 UPDATE roadCover_dealers SET account='IMP07' WHERE name = 'AUTO NICHE BLOEMFONTEIN';
+
+ UPDATE road_Transactions SET DateCreated=STR_TO_DATE(DateCreated,'%d/%m/%Y %h:%i:%s %p'),DateModified=STR_TO_DATE(DateModified,'%d/%m/%Y %h:%i:%s %p');
  */
 ?>
