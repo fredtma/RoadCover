@@ -12,5 +12,9 @@
       "name":{"valid":["unique"],"search":true,"icon":"icon icon-black icon-users","header":true,"place":true,"field":{"required":"","autofocus":""}},
       "code":{"valid":["unique"],"icon":"icon icon-black icon-users","title":"dealer's code","place":true,"field":{"required":""}}
    },
-   "links":{"reference":["js/agito/member.js","insurance"]}
+   "links":{
+         "reference":true,
+         "customers":{"file":"js/agito/customer.js","icons":"icon-user"},
+         "insurance":{"file":"js/agito/member.js","icons":"icon-folder-open"}
+      }
 }

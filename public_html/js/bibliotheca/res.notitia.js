@@ -532,7 +532,7 @@ $DB=function(quaerere,params,msg,callback,reading){
    if(!db)db=window.openDatabase(localStorage.DB_NAME,'',localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024,function(){console.log('create a new DB')});
    if(db.version!=localStorage.DB_VERSION&&!$("footer").data("db version")){
       ver.ver=localStorage.DB_VERSION;
-      ver.revision={dealer:1};
+      ver.revision={};
       db.changeVersion(db.version,localStorage.DB_VERSION,function(trans){version_db(db.version,ver,trans)},function(e){console.log(e.message)},function(e){console.log('PASSED');});
       localStorage.DB=JSON.stringify(db);$("footer").data("db version",1);
    }

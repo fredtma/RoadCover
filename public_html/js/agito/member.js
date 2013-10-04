@@ -15,10 +15,12 @@ tmp={
    "mensa": "members",
    "quaerere":{"scopo":""},
    "fields": {
+      "Id":{"header":true,"title":"Deal Number"},
       "Dealer":{"header":true},
+      "Status":{"header":true},
       "Salesman":{"header":true},
       "Fullname":{"header":true,"search":true},
-      "Name":{"header":true},
+      "Name":{"header":true, "title":"Agreement"},
       "Period":{"header":true},
       "CollectionMethod":{"header":true,"title":"Collection Method"},
       "TotalAmount":{"header":true,"title":"Total Amount"},

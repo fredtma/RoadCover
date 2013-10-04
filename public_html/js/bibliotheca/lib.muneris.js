@@ -15,7 +15,7 @@ localStorage.SITE_MILITIA=localStorage.SITE_URL+'minister/inc/notitia.php';
 localStorage.MAIL_SUPPORT='support@roadcover.co.za';
 localStorage.DB;
 localStorage.DB_NAME='road_cover';
-localStorage.DB_VERSION='2.96';
+localStorage.DB_VERSION='2.98';
 localStorage.DB_DESC='The internal DB version';
 localStorage.DB_SIZE=15;
 localStorage.DB_LIMIT=15;
@@ -141,7 +141,8 @@ function load_async(url,sync,position,fons){
    if(c)return false;
    if(!position)ele=document.getElementsByTagName('head')[0];
    else if(position==='end')ele=document.getElementsByTagName('body')[0];
-   if(s)ele.removeChild(s);
+   
+   if(s)$(s).remove();//ele.removeChild(s);
    if (sync !== false) script.async = true;
    script.src  = url;//script.type="text/javascript";
    if(fons){script.setAttribute('data-fons',fons);}

@@ -530,14 +530,19 @@ function SET_FORM(_name,_class,_label){
     * @returns none
     */
    this.setLinks=function(_children,_collapse_head,_headKey,_ref){
-      var link,theLink,temp,tmp;
+      var link,theLink,temp,tmp,reference;
       tmp=_collapse_head.father;
       for(link in _children){
-         theLink=eternal.links[link][1];
+         reference=reference||link;//the value received from the custom json file, will store the first value
+         if(_children[link]===true)continue;//because the first field is an option field
+         if($.isArray(eternal.links[link]))theLink=eternal.links[link][1];
+         else if(typeof eternal.links[link]==="object")theLink=link;
+         console.log(_children[link],"/",reference,"/",theLink);
          if(!getLicentia(this.name,'Link '+theLink)) continue;
          _collapse_head.father=tmp;
-         _collapse_head.vita('a',{'href':'javascript:void(0)','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-link','title':'Link #'+theLink});
-         if(link!='reference'){
+         var icon=eternal.links[link]['icons']||'icon icon-color icon-link';
+         _collapse_head.vita('a',{'href':'javascript:void(0)','clss':'forIcon'},true).vita('i',{'clss':icon,'title':'Link '+theLink});
+         if(reference!='reference'){
             $(_collapse_head.child).data('ref',_ref);$(_collapse_head.child).data('head',_headKey);
             $(_collapse_head.child).data('link',link);$(_collapse_head.child).data('links',eternal.links[link]);
             $(_collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
@@ -550,7 +555,7 @@ function SET_FORM(_name,_class,_label){
             $(_collapse_head.child).click(function(){
                temp[0]=$(this).parents('div').data('code');temp[1]=eternal.mensa;$('footer').data('temp',temp);
                $('#nav-main #link_'+theLink).tab('show');$(".navLinks").removeClass('active');$("#nav_"+theLink).addClass('active');//maitre que le menu puisse ce fair voir
-               load_async(eternal.links[link][0],true,'end',true);
+               load_async(eternal.links[link]["file"],true,'end',true);
             });
          }//endif
       }//endfor links
@@ -633,7 +638,8 @@ function SET_FORM(_name,_class,_label){
       if(len>localStorage.DB_LIMIT){
          $(".recCount").remove();//@fix: pour ne pas avoir des duplication
          pages=Math.ceil(len/localStorage.DB_LIMIT);
-         var recTotal=creo({"clss":"pull-right recCount"},"a","Record:"+(sessionStorage.genesis)+"-"+parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT)+" of "+len);
+         var pageMax=parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT);
+         var recTotal=creo({"clss":"pull-right recCount"},"a","Record:"+(sessionStorage.genesis)+"-"+pageMax+" of "+len);
          if(!_pos){
             pagination=roadCover._Set({"next":"#tab-home section .homeSet2"}).pagiNation({"clss1":"pagination","clss2":_class,"pages":pages,"total":len,"link":"#"+this.name}).cloneNode(true);
             $('#tab-system .pagNav').append(pagination);$('#tab-system .secondRow').append(recTotal);
@@ -780,7 +786,6 @@ fieldsDisplay=function(_from,_source,_head,_reference){
    if(_reference)frmID=frmID+2;
    var c=0;
    var _return=[];
-   console.log(typeof _source, "_source");
    if(typeof _source==="number"){tmp=JSON.parse(sessionStorage.activeRecord);_source=tmp[_source];}
    $.each(f,function(key,property){
       key2=key.replace(/\s/ig,'');//removes spaces

@@ -44,7 +44,7 @@ switch($_POST['militia']){
    case 'members':
       $y=$_POST['luna'][0]?$_POST['luna'][0]:date("Y");
       $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
-      $srch="WHERE (MONTH(STR_TO_DATE(trans.DateCreated,'%d/%m/%Y %h:%i:%s %p'))={$db->qstr($m)} AND YEAR(STR_TO_DATE(trans.DateCreated,'%d/%m/%Y %h:%i:%s %p'))={$db->qstr($y)})";
+      $srch="WHERE (MONTH(STR_TO_DATE(trans.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($m)} AND YEAR(STR_TO_DATE(trans.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($y)})";
       if($_POST['quaerere']):$srch.=" AND ";
          if($_POST['quaerere'][1]=='dealers'):$srch.="dealer.Id={$db->qstr($_POST['quaerere'][0])}";
          elseif($_POST['quaerere'][1]=='salesmen'):$srch.="agent.Id={$db->qstr($_POST['quaerere'][0])}";
@@ -84,7 +84,7 @@ LEFT JOIN road_FandI agent on agent.`Id`=trans.FandI
 INNER JOIN road_Holder member on member.Id=trans.Holder
 INNER JOIN road_QuoteTransactions quot on quot.`transaction`=trans.`Id`
 WHERE dealer.Id={$db->qstr($_POST['iota'])}
-AND (MONTH(STR_TO_DATE(quot.DateCreated,'%d/%m/%Y %h:%i:%s %p'))={$db->qstr($_POST['m'])} AND YEAR(STR_TO_DATE(quot.DateCreated,'%d/%m/%Y %h:%i:%s %p'))={$db->qstr($_POST['y'])})
+AND (MONTH(STR_TO_DATE(quot.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($_POST['m'])} AND YEAR(STR_TO_DATE(quot.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($_POST['y'])})
 GROUP BY quot.`transaction` ORDER BY agent.Surname,member.Surname,quot.DateModified ASC
 IYONA;
       $rows['customers']=array_result($sql,true);
@@ -108,7 +108,7 @@ IYONA;
    case 'customers':
       $y=$_POST['luna'][0]?$_POST['luna'][0]:date("Y");
       $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
-      $srch="WHERE (MONTH(STR_TO_DATE(trans.DateCreated,'%d/%m/%Y %h:%i:%s %p'))={$db->qstr($m)} AND YEAR(STR_TO_DATE(trans.DateCreated,'%d/%m/%Y %h:%i:%s %p'))={$db->qstr($y)})";
+      $srch="WHERE (MONTH(STR_TO_DATE(trans.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($m)} AND YEAR(STR_TO_DATE(trans.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($y)})";
       if($_POST['quaerere']):$srch.=" AND ";
          if($_POST['quaerere'][1]=='dealers'):$srch.="trans.Intermediary={$db->qstr($_POST['quaerere'][0])}";
          elseif($_POST['quaerere'][1]=='salesmen'):$srch.="trans.FandI={$db->qstr($_POST['quaerere'][0])}";
@@ -359,5 +359,6 @@ UPDATE roadCover_dealers SET account='IMPGM6' WHERE name = 'GM ISANDO';
 UPDATE roadCover_dealers SET account='IMP07' WHERE name = 'AUTO NICHE BLOEMFONTEIN';
 
  UPDATE road_Transactions SET DateCreated=STR_TO_DATE(DateCreated,'%d/%m/%Y %h:%i:%s %p'),DateModified=STR_TO_DATE(DateModified,'%d/%m/%Y %h:%i:%s %p');
+ UPDATE road_QuoteTransactions SET DateCreated=STR_TO_DATE(DateCreated,'%d/%m/%Y %h:%i:%s %p'),DateModified=STR_TO_DATE(DateModified,'%d/%m/%Y %h:%i:%s %p');
  */
 ?>

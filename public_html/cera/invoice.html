@@ -23,16 +23,17 @@
          .pager li>a:last-child{border-left: 1px solid #ddd;}
          .invTop{background-color:#d9edf7;font-weight:bold;display:table;width:100%;}
          .invTop span,.invMid span,.invBot span{width:10%;display:table-cell;padding:0.3em;border:0px solid red}
-         .invTop span:nth-child(1),.invTop span:nth-child(2),.invTop span:nth-child(3),.invTop span:nth-child(5),
-         .invMid span:nth-child(1),.invMid span:nth-child(2),.invMid span:nth-child(3),.invMid span:nth-child(5),
-         .invBot span:nth-child(1),.invBot span:nth-child(2),.invBot span:nth-child(3),.invBot span:nth-child(5) {width:15%}
+         .invTop span:nth-child(1),.invMid span:nth-child(1),.invBot span:nth-child(1){width:2%;}
+         .invTop span:nth-child(3),.invTop span:nth-child(4),.invTop span:nth-child(6),
+         .invMid span:nth-child(3),.invMid span:nth-child(4),.invMid span:nth-child(6),
+         .invBot span:nth-child(3),.invBot span:nth-child(4),.invBot span:nth-child(6) {width:15%}
          .invMid,.invBot{display:table;width:100%;}
-         .invMid span:nth-child(5){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
+         .invMid span:nth-child(6){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
          .invTop span:last-child,.invMid span:last-child,.invBot span:last-child{width:10%;background-color:#d9edf7;border-left:1px solid #d9edf7;}
          .invCust{border-bottom:1px solid #d9edf7;}
          .invBot span{border-bottom:1px solid #d9edf7;}
-         .invBot span:nth-child(5){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
-         .invBot span:nth-child(6){background-color:#d9edf7;border-left:1px solid #d9edf7;}
+         .invBot span:nth-child(6){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
+         .invBot span:nth-child(7){background-color:#d9edf7;border-left:1px solid #d9edf7;}
          .invNote{-webkit-border-radius: 0px;-moz-border-radius: 0px;border-radius: 0px;display:table;width:100%;padding:1em 0em;}
          .form-horizontal .form-actions.invNote{padding-left:0em;}.well{background-color:#fff;}
          .blueWell{background-color:#3a87ad; color:#d9edf7;padding-left:3em !important;}.blueWell li{float:left;margin-left:2em;}
@@ -88,10 +89,10 @@
                </ul>
             </section>
             <section class="invB">
-               <div class="invTop"><span>Sales Person</span><span>Customer</span><span>IDno</span><span>Collection</span><span>Date</span><span>Period</span><span>Amount</span></div>
+               <div class="invTop"><span>No</span><span>Sales Person</span><span>Customer</span><span>IDno</span><span>Collection</span><span>Date</span><span>Period</span><span>Amount</span></div>
                <div class="invCust"><!--ingenero--></div>
-<!--               <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span>Total</span><span id="invTot">ingenero</span></div>
-               <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span>VAT(14%)</span><span id="invVat">ingenero</span></div>-->
+<!--               <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span></span><span>Total</span><span id="invTot">ingenero</span></div>
+               <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span></span><span>VAT(14%)</span><span id="invVat">ingenero</span></div>-->
                <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span>Total (inc VAT%)</span><span id="invAll"><!--ingenero--></span></div>
             </section>
          </article>
@@ -190,7 +191,7 @@
                   $cust.father=father;
                   amount=parseFloat(row["TotalAmount"]);
                   total+=amount;
-                  $cust.vita("div",{"clss":"invMid"},true).vita("span",{},false,row["Salesman"]).vita("span",{},false,row["Fullname"]).vita("span",{},false,row["IDno"]).vita("span",{},false,row["CollectionMethod"]).vita("span",{},false,row["DateModified"]).vita("span",{},false,row["Period"]).vita("span",{},false,'R '+amount);
+                  $cust.vita("div",{"clss":"invMid"},true).vita("span",{},false,x+1).vita("span",{},false,row["Salesman"]).vita("span",{},false,row["Fullname"]).vita("span",{},false,row["IDno"]).vita("span",{},false,row["CollectionMethod"]).vita("span",{},false,row["DateModified"]).vita("span",{},false,row["Period"]).vita("span",{},false,'R '+amount);
                }//for customers
 //               vat=Math.round(total/100*14);all=total+vat;
 //               $("#invTot").html('R '+total);

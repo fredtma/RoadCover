@@ -80,3 +80,4 @@ $('#userOut,#profileOff').click(loginOUT);
 $('.icon-refresh').click(refreshLook);//@todo:add HTML5 history API
 $(".btnHelp").click(helpfullLink);
 $('#btnTest').click(resetGenesis);
+$("#btnSysReport").click(function(){var win=window.open("http://197.96.139.19/reports/","_blank");win.focus();});
