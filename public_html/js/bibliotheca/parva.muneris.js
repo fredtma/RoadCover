@@ -19,23 +19,23 @@ function $DB(_quaerere,params,_msg,callback,reading,_eternal){
    if(!reading){
       db.transaction(function(trans){
          trans.executeSql(_quaerere,params,function(trans,results){
-            var j=$DB2JSON(results);
+            var j=$DB2JSON(results);_msg=_msg||"Successf quaerere";
             if(_eternal){//@todo:eternal function
-               res=_eternal.eternal;Tau=_eternal.Tau;var iyona=_eternal.iyona;
-               get_ajax(SITE_MILITIA,{"eternal":res,"Tau":Tau,"iyona":iyona},'','post','json',function(j){});
+               aSync(SITE_MILITIA,_eternal,function(j){});
             }
-            if(callback)callback(results,j);
+            if(typeof callback==="function")callback(results,j);
+            iyona(_quaerere,params,_msg);
          },function(_trans,_error){
-            _msg=_msg+"::"+_error.message;
+            _msg=_msg+":-:"+_error.message;iyona(_msg,_quaerere,params);
          });
       });
    } else {
       db.readTransaction(function(trans){
          trans.executeSql(_quaerere,params,function(trans,results){
             var j=$DB2JSON(results);
-            if(callback)callback(results,j);
+            if(callback)callback(results,j);iyona(_quaerere,params,_msg);
          },function(_trans,_error){
-            _msg=_msg+"::"+_error.message;
+            _msg=_msg+":--:"+_error.message;iyona(_msg,_quaerere,params);
          });
       });
    }
@@ -61,7 +61,7 @@ function $DB2JSON(_results,_type){
  }
 //============================================================================//
 function aSync(options,data,callback){//www, var, object, method, format, call_success
-   var settings={"method":"post","format":"json"};
+   var settings={"method":"post","format":"json"},params;
 
    if(typeof options === "object")for(var att in options)settings[att]=options[att];
    else {settings.www=options;settings.var=data;settings.callback=callback;}
@@ -71,13 +71,15 @@ function aSync(options,data,callback){//www, var, object, method, format, call_s
    xhr.open(settings.method,settings.www,true);
    xhr.onreadystatechange=function(e){
       if(this.readyState==4 && this.status==200){
-         var response=this.response;
+         var response=this.response||"{}";//@fix:empty object so as to not cause an error
+         if(typeof response==="string"&&settings.format==="json")response=JSON.parse(response);//wen setting responseType to json does not work
          if(typeof settings.callback==="function")settings.callback(response);
       }
    }
    if(settings.var&&typeof settings.var==="object") {
-      var params=new FormData();
-      for (var key in settings.var)params.append(key,settings.var[key]);
+//      var params=new FormData();for (var key in settings.var)params.append(key,settings.var[key]);
+      xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      params=JSON.stringify(settings.var);
    }else{
       params=settings.var;
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');

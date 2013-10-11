@@ -15,6 +15,7 @@
    "links":{
          "reference":true,
          "customers":{"file":"js/agito/customer.js","icons":"icon-user"},
-         "insurance":{"file":"js/agito/member.js","icons":"icon-folder-open"}
+         "insurance":{"file":"js/agito/member.js","icons":"icon-folder-open"},
+         "invoice":{"cera":"dealers","icons":"icon-folder-close"}
       }
 }

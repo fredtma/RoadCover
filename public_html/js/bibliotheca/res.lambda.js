@@ -118,7 +118,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
     * @returns {object} the html content of the object
     */
    this.btnDropDown=function(_obj){
-      var ul,li,a,txt,i,dataToggle;
+      var ul,li,a,txt,i,dataToggle,theTXT,iota;
       var div=creo({"clss":"btn-group"},"div");
       this.setObject({
          "items":_obj,
@@ -128,14 +128,15 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
             i=creo({"clss":item.icon},"i");
             txt=document.createTextNode(' '+item.txt);
             /*rest the element i and the text when the item is a caret*/
-            if(item.caret) {i=creo({"clss":"caret"},'span');txt=document.createTextNode('');}
-            a.appendChild(i);a.appendChild(txt);div.appendChild(a);
+            if(item.caret) {i=creo({"clss":"caret"},'span');theTXT=document.createTextNode('');}
+            else {theTXT=creo({'clss':'theTXT'},'span');theTXT.appendChild(txt);}//to add a wraper around the text content
+            a.appendChild(i);a.appendChild(theTXT);div.appendChild(a);
          },"mother":function(key,item){
             ul=creo({"clss":item.clss,"id":key},'ul');
             $.each(item.sub,function(index,val){
                val.href=val.href=='#'?"javascript:void(0)":val.href;
-               li=creo({'id':index},'li');
-               a=creo({"href":val.href,"clss":val.clss},'a');
+               li=creo({'id':index},'li');val.clss=val.clss||'';iota=val.iota||'';
+               a=creo({"href":val.href,"clss":val.clss,"data-iota":iota},'a');
                i=creo({"clss":val.icon},'i');
                txt=document.createTextNode(' '+val.txt);
                if(val.divider){li.className="divider";txt=document.createTextNode('');i=creo({},'i');}
@@ -206,6 +207,24 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
       this.placeObj(div);
       return div;
    }/*end function*/
+   this.searchForm=function(_obj){
+      _obj=_obj||{form:{"name":"srchAllCust"},text:{},btn:{}};
+      _obj.form.clss=_obj.form.clss||'pull-right';
+      _obj.btn.clss=_obj.btn.clss||'';
+      _obj.text.name=_obj.text.name||'txtSrchCust';
+      _obj.text.clss=_obj.text.clss||'';
+      _obj.text.place=_obj.text.place||'Search All';
+      _obj.btn.name=_obj.btn.name||'btnSrchCust';
+      _obj.btn.type=_obj.btn.type||'button';
+      _obj.btn.txt=_obj.btn.txt||'Customers';
+      var $form=creo({"name":_obj.form.name,"id":_obj.form.name,"clss":"form-search frmReduced "+_obj.form.clss},"form");
+      $anima($form)
+         .vita("div",{"clss":"input-append"},true)
+         .vita("input",{"type":"text","clss":"input-medium search-query "+_obj.text.clss,"id":_obj.text.name,"name":_obj.text.name,"placeholder":_obj.text.place})
+         .vita("button",{"type":_obj.btn.type,"clss":"btn "+_obj.btn.clss,"id":_obj.btn.name,"name":_obj.btn.name},false,_obj.btn.txt);
+      console.log($form,"$form",$form);
+      this.placeObj($form);return $form;
+   }
    /*
     * Creates a three level/element menu
     * @param {object} <var>_obj</var> holds the three classes of the holders and the sets of items for the pagination
@@ -261,8 +280,8 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
          this.loginForm();
       } else {//@todo: verify the use of this
          licentia();//si il'ya pas de session pour l'utilisateur
-         $('#userName a').html(localStorage.USER_DETAILS);
-         if(!localStorage.USER_ADMIN) viewAPI(false);
+         $('#userName a').html(impetroUser().nominis);
+         if(!sessionStorage.USER_ADMIN) viewAPI(false);
       }//end if
    }//end function
    this.loginForm=function(){

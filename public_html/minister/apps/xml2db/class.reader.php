@@ -44,13 +44,15 @@ class FILL_DB  {
          if (true):
             $QuotedValues     = count($items->QuotedValues->children());
             $QuoteResultItems = count($items->QuoteResultItems->children());
+            $dateCreated         = date('Y-m-d h:i:s',strtotime($items->DateCreated));
+            $dateModified        = date('Y-m-d h:i:s',strtotime($items->DateModified));
             $Agremeent        = $items->Agreement->Offering->Id;
             $transaction      = $items->Agreement->Tx['Id'];
             $sql = <<<IYONA
 REPLACE INTO {$this->append_table}QuoteTransactions (Id, Uid, Ver, Agreement, Duration, DateModified, Status, StartDate, EndDate,
 IsValid, CollectionType_cd, Period_cd, CollectionMethod_cd, TotalAmount, QuotingModuleInfo, DateCreated, QuotedValues, QuoteResultItems, transaction )
-VALUES ('$items->Id', '$items->Uid', '$items->Ver', '$Agremeent', '$items->Duration', '$items->DateModified', '$items->Status', '$items->StartDate', '$items->EndDate',
-'$items->IsValid', '$items->CollectionType_cd', '$items->Period_cd', '$items->CollectionMethod_cd', '$items->TotalAmount', '$items->QuotingModuleInfo', '$items->DateCreated',
+VALUES ('$items->Id', '$items->Uid', '$items->Ver', '$Agremeent', '$items->Duration', $dateModified, '$items->Status', '$items->StartDate', '$items->EndDate',
+'$items->IsValid', '$items->CollectionType_cd', '$items->Period_cd', '$items->CollectionMethod_cd', '$items->TotalAmount', '$items->QuotingModuleInfo', $dateCreated,
  $QuotedValues, $QuoteResultItems, $transaction)
 IYONA;
             if(!$this->test_mode){$rs = $db->Execute($sql);iyona_message($rs,$sql);}
@@ -73,6 +75,8 @@ IYONA;
             $Holder              = $items->Holder->Id;
             $Intermediary        = $items->Intermediary->Id;
             $Fandi               = $items->FandI->Id;
+            $dateCreated         = date('Y-m-d h:i:s',strtotime($items->DateCreated));
+            $dateModified        = date('Y-m-d h:i:s',strtotime($items->DateModified));
             $SysUser             = count($items->SysUser);
             $RelatedStakeholders = count($items->RelatedStakeholders->children());
             $TxItems             = count($items->TxItems->children());
@@ -84,7 +88,7 @@ IYONA;
             $sql = <<<IYONA
 REPLACE INTO {$this->append_table}Transactions (Id, Uid, Ver, Status, WorkflowInstanceId, Comments, DateCreated, DateModified, DealType_cd, ExternalReferenceNumber, ChangeHistory,
 NotTakenUpReason_cd, NotTakenUpDescription,Holder, Intermediary, FandI, SysUser, RelatedStakeholders, TxItems, TxCategoryDetails, TxShDetails, TxItemsDetails, Agreements, CategorySelections )
-VALUES ('$items->Id', '$items->Uid', '$items->Ver', '$items->Status', '$items->WorkflowInstanceId', '$items->Comments', '$items->DateCreated', '$items->DateModified', '$items->DealType_cd',
+VALUES ('$items->Id', '$items->Uid', '$items->Ver', '$items->Status', '$items->WorkflowInstanceId', '$items->Comments', $dateCreated, $dateModified, '$items->DealType_cd',
 '$items->ExternalReferenceNumber', '$items->ChangeHistory', '$items->NotTakenUpReason_cd', '$items->NotTakenUpDescription', $Holder, $Intermediary, $Fandi, $SysUser, $RelatedStakeholders, $TxItems, $TxCategoryDetails, $TxShDetails, $TxItemsDetails, $Agreements, $CategorySelections)
 IYONA;
 //            if(!$this->test_mode){$rs = $db->Execute($sql);iyona_message($rs,$sql);}
@@ -134,7 +138,7 @@ IYONA;
          endforeach;
          $this->insert_node($items->Intermediary,'Intermediary',$fields['Intermediary'],'{}', array('transaction'=>$items->Id,'dealer'=>$Intermediary));
          $this->insert_node($items->FandI,'FandI',$fields['FandI'],'{}', array('transaction'=>$items->Id));
-         $this->insert_node($items->RelatedStakeholders->{'Dns.Bts.TxStakeholder'},'RelatedStakeholders',$fields['Related'],'{}', array('ref'=>array('Parent','Id'),'Type'=>array('Sh','Type')));
+         $this->insert_node($items->RelatedStakeholders->{'Dns.Bts.TxStakeholder'},'RelatedStakeholders',$fields['Related'],'{}', array('ref'=>array('Parent','Id'),'Type'=>array('Sh','Type'),'transaction'=>$items->Id));
          $this->insert_node($items->TxItems->{'Dns.Bts.TxItem'},'TxItems',$fields['TxItems'],'{}', array('Type'=>array('Item', 'Type'),'transaction'=>$items->Id,'holder'=>$Holder));
          $this->insert_node($items->TxCategoryDetail->{'Dns.Bts.TxFinanceCategoryDetail'},'TxFinanceCategoryDetail',$fields['TxFinance'],'{}', array('transaction'=>$items->Id));
          $this->insert_node($items->TxCategoryDetail->{'Dns.Bts.TxCollectionCategoryDetail'},'TxCollectionCategoryDetail',$fields['TxCollection'],'{}', array('BankBranch'=>array('BankBranch','Id'),'transaction'=>$items->Id));

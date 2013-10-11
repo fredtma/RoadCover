@@ -104,7 +104,9 @@ function iyona_log($__var,$__append=true,$__many=false)
    {
       if (!$__many)$__var = '<pre>'.date('Y/m/d H:i:s')." ::\r\n".print_r($__var,true).'</pre>';
       else foreach($__var as $var) $__var .= '<pre>'.date('Y/m/d H:i:s')." ::\r\n".print_r($var,true).'</pre>';
-      if ($__append) file_put_contents($filename, $__var,FILE_APPEND);
+      if ($__append) {
+         $old_content=file_get_contents($filename);file_put_contents($filename, $__var.PHP_EOL.$old_content);
+      }
       else if (!$__append) file_put_contents($filename, $__var);
    }//endif
 }//end function

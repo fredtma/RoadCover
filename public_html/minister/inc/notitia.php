@@ -22,11 +22,12 @@ header('Content-Type: application/json');
 include('muneris.php');
 #==============================================================================#
 if($_GET&&iyona_adm())$_POST=array_merge($_GET,$_POST);
-iyona_log($_POST,false);
+iyona_log("#==============================================================================#",true);
+iyona_log($_POST);
 $table         = $_POST['iyona'];
 $pre           = 'roadCover_';
 $transaction   = $_POST['Tau'];
-$list_of_tables= array('users','groups','link_users_groups','permissions','link_permissions_groups','link_permissions_users','clients','contacts','address','dealers','salesmen','pages','features','invoices');
+$list_of_tables= array('users','groups','link_users_groups','permissions','link_permissions_groups','link_permissions_users','clients','contacts','address','dealers','salesmen','pages','features','invoices','version_control');
 if (!in_array($table, $list_of_tables)) {echo '{"err":" This is an invalid request for '.$table.' "}';exit;}
 $where         = 'WHERE ';
 
@@ -42,6 +43,7 @@ foreach($_POST['eternal'] as $key => $column)
    else   {$val = $column; }//end else not an array
    $key      = $key=='blossom'?'jesua':$key;
    if($key==="jesua")$jesua=$val;
+   if($key=='DEVICE'&&$table=="version_control")$val = md5($_SERVER['HTTP_USER_AGENT'].$val);//when the device is sent from a js script
    $fields  .= "`$key`, ";
    $answer  .= $db->qstr($val).', ';
    $set     .= ($key=='jesua')?"":"`$key`=".$db->qstr($val).', ';#ne pas modifier, l'identification jesua
@@ -95,11 +97,12 @@ else if ($rs)
    $sql  = trim(str_replace("\'",'',$sql));#str_replace("\t"," ",valueCheck($sql, 'input'));
    echo '{"msg":"'.$msg.'","iota":"'.$the_id.'","transaction":"'.$transaction.'","trnsc":"'.$trnsc.'","sql":"'.$sql.'"'.$more.'}';
 }//end else succesfull db query
-iyona_log($sql."\r\n<br/>".$db->ErrorMsg());
+iyona_log($sql."\r\n<br/>$msg");
 $db->CompleteTrans();
 #===============================================================================#
 if($_POST['procus']):
    $device  = md5($_SERVER['HTTP_USER_AGENT'].$_POST['moli']);
+   $jesua   =($jesua)?$jesua:(($the_id)?$the_id:$column['delta']);#jesua,inserted ID||ID
    $version = "INSERT INTO {$pre}versioning(`user`,`trans`,`mensa`,`creation`,`jesua`,device,content)VALUES({$db->qstr($_POST['procus'])},'$transaction','$table',NOW(),{$db->qstr($jesua)},{$db->qstr($device)},{$db->qstr($_SERVER['HTTP_USER_AGENT'].'-'.$_POST['moli'])})";
    $rs=$db->Execute($version);
    iyona_log($version."\r\n<br/>".$db->ErrorMsg());

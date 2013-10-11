@@ -141,7 +141,7 @@ function load_async(url,sync,position,fons){
    if(c)return false;
    if(!position)ele=document.getElementsByTagName('head')[0];
    else if(position==='end')ele=document.getElementsByTagName('body')[0];
-   
+
    if(s)$(s).remove();//ele.removeChild(s);
    if (sync !== false) script.async = true;
    script.src  = url;//script.type="text/javascript";
@@ -340,17 +340,29 @@ loginValidation=function(){
       $DB("SELECT id,username,firstname||' '||lastname as name,jesua,level FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(_results){
          if(_results.rows.length){
             row=_results.rows.item(0);
-            localStorage.USER_DETAILS=row['name'];
-            if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=JSON.stringify({"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']});
-            else sessionStorage.USER_NAME=JSON.stringify({"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']});
-            if(row['level']==='super'){localStorage.USER_ADMIN=true;viewAPI(true);} else viewAPI(false);
-            $('#userName a').html(localStorage.USER_DETAILS); licentia(row['username']);
+            var USER_NAME={"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']};
+            if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=JSON.stringify(USER_NAME);
+            else sessionStorage.USER_NAME=JSON.stringify(USER_NAME);
+            if(row['level']==='super'){sessionStorage.USER_ADMIN=1;viewAPI(true);} else {viewAPI(false);sessionStorage.removeItem('USER_ADMIN');}
+            $('#userName a').html(impetroUser().nominis);
             $('#userLogin').modal('hide').remove();
             get_ajax(localStorage.SITE_SERVICE,{"militia":"adde quemvis","quemvis":row['username']},"","post","json");
+            if(window.Worker){
+               notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
+               (function(procus){var moli=screen.height*screen.width;
+                  if(procus){notitiaWorker.postMessage({"procus":procus.singularis,"moli":moli});readWorker()}
+               })(USER_NAME);
+            }
+            setTimeout(function(){licentia(row['username']);},500);//retarder l'autorisation,de sorte que la nouvelle autorisation peut etre ajoute
          }else{$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('Failed login attempt...')}
       });
    }catch(err){console.log('ERROR::'+err.message)}
    return false;
+}
+//============================================================================//
+impetroUser=function(){
+   var USER_NAME=localStorage.USER_NAME?JSON.parse(localStorage.USER_NAME):JSON.parse(sessionStorage.USER_NAME);
+   return USER_NAME;
 }
 //============================================================================//
 /**
@@ -363,7 +375,7 @@ loginValidation=function(){
 loginOUT=function(){
    roadCover.loginForm();
    $('#userLogin .alert-info').find('span').append('You have successfully logout.<br/>Enter your username and password below if you wish to login again');
-   refreshLook();localStorage.removeItem('USER_ADMIN');localStorage.removeItem('USER_NAME');localStorage.removeItem('USER_DETAILS');
+   refreshLook(true);localStorage.removeItem('USER_ADMIN');localStorage.removeItem('USER_NAME');
 }
 //============================================================================//
 /**
@@ -373,16 +385,16 @@ loginOUT=function(){
  * @version 3.4
  * @category refresh, clean, safety
  */
-refreshLook=function(){
+refreshLook=function(removeall){
 //   console.log(history.length);
 //   console.log(history.state);
 //   console.log(history);
    var tmp=sessionStorage.USER_NAME||"{}";
    notice();
-   $('.search-all').val('');$('footer').removeData();
-   sessionStorage.clear();
+   $('.search-all').val('');$('footer').removeData();$('#displayMensa').removeData();
+   sessionStorage.clear();if(!removeall){
    tmp=JSON.parse(tmp);
-   sessionStorage.USER_NAME=JSON.stringify(tmp);
+   sessionStorage.USER_NAME=JSON.stringify(tmp);}
    sessionStorage.runTime=0;sessionStorage.startTime=new Date().getTime();sessionStorage.genesis=0;
    console.log('history:...');history.go(0);
 }
@@ -392,9 +404,10 @@ refreshLook=function(){
  * @returns void
  */
 resetGenesis=function(){
+   if(confirm("Please note this will re-sync the entire system")){
    localStorage.removeItem("DB");
    SET_DB();
-   loginOUT();
+   loginOUT();}
 }
 //============================================================================//
 /**
@@ -439,21 +452,22 @@ sideDisplay=function(_iota,_mensa){
    }
    $('footer').data('header',true);console.log($('footer').data('display'),'Header set');
    if(_iota==0){
-      $('#sideBot h3').html("Viewing all Current Members");$('.headRow').html(eternal.form.legend.txt);return true;//pour arreter le system de continuer
+      $('#displayMensa').removeData();$('#displayMensa').empty();$('#sideBot h3').html("Viewing all Current Members");$('.headRow').html(eternal.form.legend.txt);return true;//pour arreter le system de continuer
    }
    $('footer').data('display',[_iota,_mensa]);console.log(_iota,_mensa,display,'cherche a partir des donner',$('footer').data('display'));
    switch(_mensa){
       case 'dealers':
          get_ajax(localStorage.SITE_SERVICE,{"militia":_mensa+"-display",iota:_iota},null,'post','json',function(_results){
             //change la list du menu et du button avec les dernier donner
-            $("#drop_"+_mensa+" .oneDealer").last().parent().remove();$("#tab-customers .dealersList .oneDealer").last().parent().remove();$("#tab-insurance .dealersList .oneDealer").last().parent().remove();
-            $anima("#drop_"+_mensa,"li",{},false,'first').vita("a",{"data-toggle":"tab","href":"#tab-"+_mensa,"clss":"oneDealer","data-iota":_iota},false,aNumero(_results.company[0].Name,true)).child.onclick=function(){activateMenu('dealer','dealers',this)}
-            $anima("#tab-customers .dealersList ","li",{},false,'first').vita("a",{"clss":"oneDealer","data-iota":_iota},false,aNumero(_results.company[0].Name,true)).child.onclick=function(){activateMenu('customer','customers',this,true,'dealers')}
-            $anima("#tab-insurance .dealersList ","li",{},false,'first').vita("a",{"clss":"oneDealer","data-iota":_iota},false,aNumero(_results.company[0].Name,true)).child.onclick=function(){activateMenu('member','insurance',this,true,'dealers')}
-            $('#displayMensa').empty();
-            if(typeof _results.company[0]!="undefined"&&_results.company[0]!=null)$('#sideBot h3').html(aNumero(_results.company[0].Name,true)+' details');
+            //@removed: feature
+//            $("#drop_"+_mensa+" .oneDealer").last().parent().remove();$("#tab-customers .dealersList .oneDealer").last().parent().remove();$("#tab-insurance .dealersList .oneDealer").last().parent().remove();
+//            $anima("#drop_"+_mensa,"li",{},false,'first').vita("a",{"data-toggle":"tab","href":"#tab-"+_mensa,"clss":"oneDealer","data-iota":_iota},false,aNumero(_results.company[0].Name,true)).child.onclick=function(){activateMenu('dealer','dealers',this)}
+//            $anima("#tab-customers .dealersList ","li",{},false,'first').vita("a",{"clss":"oneDealer","data-iota":_iota},false,aNumero(_results.company[0].Name,true)).child.onclick=function(){activateMenu('customer','customers',this,true,'dealers')}
+//            $anima("#tab-insurance .dealersList ","li",{},false,'first').vita("a",{"clss":"oneDealer","data-iota":_iota},false,aNumero(_results.company[0].Name,true)).child.onclick=function(){activateMenu('member','insurance',this,true,'dealers')}
+            $('#displayMensa').empty();$('#displayMensa').removeData();//empty the sidetitle display
+            if(typeof _results.company[0]!="undefined"&&typeof _results.company[0]!="undefined")$('#sideBot h3').html(aNumero(_results.company[0].Name,true)+' details');
             else if(eternal.mensa==="members")$('#sideBot h3').html("Current Members");
-            title=(typeof _results.company[0]!="undefined"&&_results.company[0]!=null)?"Customers under "+_results.company[0].Name:eternal.form.legend.txt;
+            title=(typeof _results.company[0]!="undefined"&&typeof _results.company[0]!="undefined")?"Customers under "+_results.company[0].Name:eternal.form.legend.txt;
             $('.headRow').html(title);
             var $sideDisplay=$anima('#displayMensa','dl',{"clss":"dl-horizontal","id":"displayList","itemtype":"http://schema.org/LocalBusiness","itemscope":""});
             for(key in _results.address){
@@ -482,17 +496,17 @@ sideDisplay=function(_iota,_mensa){
       case 'salesmen':
          get_ajax(localStorage.SITE_SERVICE,{"militia":"salesman-display",iota:_iota},null,'post','json',function(_results){
             //change la list du menu et du button avec les dernier donner
-            $("#drop_salesman"+" .oneSalesman").last().parent().remove();$("#tab-customers .salesmanList .oneSalesman").last().parent().remove();$("#tab-insurance .salesmanList .oneSalesman").last().parent().remove();
-            $anima("#drop_salesman","li",{},false,'first').vita("a",{"data-toggle":"tab","href":"#tab-salesman","clss":"oneSalesman","data-iota":_iota},false,aNumero(_results.agent[0].FullNames+' '+_results.agent[0].Surname,true)).child.onclick=function(){activateMenu('salesman','salesmen',this)};
-            $anima("#tab-customers .salesmanList ","li",{},false,'first').vita("a",{"clss":"oneSalesman","data-iota":_iota},false,aNumero(_results.agent[0].FullNames+' '+_results.agent[0].Surname,true)).child.onclick=function(){activateMenu('customer','customers',this,true,'salesmen')}
-            $anima("#tab-insurance .salesmanList ","li",{},false,'first').vita("a",{"clss":"oneSalesman","data-iota":_iota},false,aNumero(_results.agent[0].FullNames+' '+_results.agent[0].Surname,true)).child.onclick=function(){activateMenu('member','insurance',this,true,'salesmen')}
-            $('#displayMensa').empty();
-            if(typeof _results.agent!="undefined"&&_results.agent!=null)$('#sideBot h3').html(aNumero(_results.agent[0].FullNames+' '+_results.agent[0].Surname,true)+' details');
+//            $("#drop_salesman"+" .oneSalesman").last().parent().remove();$("#tab-customers .salesmanList .oneSalesman").last().parent().remove();$("#tab-insurance .salesmanList .oneSalesman").last().parent().remove();
+//            $anima("#drop_salesman","li",{},false,'first').vita("a",{"data-toggle":"tab","href":"#tab-salesman","clss":"oneSalesman","data-iota":_iota},false,aNumero(_results.agent[0].FullNames+' '+_results.agent[0].Surname,true)).child.onclick=function(){activateMenu('salesman','salesmen',this)};
+//            $anima("#tab-customers .salesmanList ","li",{},false,'first').vita("a",{"clss":"oneSalesman","data-iota":_iota},false,aNumero(_results.agent[0].FullNames+' '+_results.agent[0].Surname,true)).child.onclick=function(){activateMenu('customer','customers',this,true,'salesmen')}
+//            $anima("#tab-insurance .salesmanList ","li",{},false,'first').vita("a",{"clss":"oneSalesman","data-iota":_iota},false,aNumero(_results.agent[0].FullNames+' '+_results.agent[0].Surname,true)).child.onclick=function(){activateMenu('member','insurance',this,true,'salesmen')}
+            $('#displayMensa').empty();$('#displayMensa').removeData();
+            if(typeof _results.agent!="undefined"&&typeof _results.agent[0]!="undefined")$('#sideBot h3').html(aNumero(_results.agent[0].FullNames+' '+_results.agent[0].Surname,true)+' details');
             else if(eternal.mensa==="members")$('#sideBot h3').html("Current Members");
-            title=(typeof _results.agent!="undefined"&&_results.agent!=null)?"Customers under "+_results.agent[0].FullNames+' '+_results.agent[0].Surname:eternal.form.legend.txt;
+            title=(typeof _results.agent!="undefined"&&typeof _results.agent[0]!="undefined")?"Customers under "+_results.agent[0].FullNames+' '+_results.agent[0].Surname:eternal.form.legend.txt;
             $('.headRow').html(title);
             var $sideDisplay=$anima('#displayMensa','dl',{"clss":"dl-horizontal","id":"displayList","itemtype":"http://schema.org/Person","itemscope":""});
-            $sideDisplay.novo('#displayList','dt',{},'ID').genesis('dd',{},false,_results.agent[0].IdentificationNumber);
+            if(typeof _results.agent[0]!="undefined")$sideDisplay.novo('#displayList','dt',{},'ID').genesis('dd',{},false,_results.agent[0].IdentificationNumber);
             for(key in _results.address){
                switch(_results.address[key].Type){
                   case 'Dns.Sh.AddressBook.EmailAddress':if(_results.address[key].Address)$sideDisplay.novo('#displayList','dt',{},'Email').genesis('dd',{'itemprop':'email'},false).child.innerHTML="<a href='mailto:"+_results.address[key].Address+"' target='_blank'>"+_results.address[key].Address+"</a>"; break;
@@ -558,8 +572,8 @@ function licentia(){
 function getLicentia(_name,_perm){
    var name=_name+' '+_perm;
    var tmp=sessionStorage.licentia?JSON.parse(sessionStorage.licentia):[];
-   if(localStorage.USER_ADMIN) return true;
-   if(tmp.indexOf(aNumero(name, true))!=-1) return true;
+   if(sessionStorage.USER_ADMIN) return true;
+   if(tmp.indexOf(aNumero(name, true))!=-1||tmp.indexOf(name)!=-1) return true;
    return false;
 }
 //============================================================================//
@@ -660,7 +674,7 @@ function searchUpdate(item){
  */
 function newSection(){
    $('#newItem').remove();$('.pagination').remove();$('#verbum').empty();$('.headRow').empty();
-   $('.search-all').val('').prop('disabled',true);
+   $('.search-all').val('').prop('disabled',true);$('#displayMensa').empty();
    $('#link_home').tab('show');
    sessionStorage.genesis=0;//reset each time ur on dashboard
 }
@@ -672,12 +686,16 @@ function activateMenu(_mensa,_mensula,_set,_script,_tab,_formType){
    _mensula=_mensula||_mensa;var value=true;//the return value if it was passed successfully or not
    $('.body article').removeClass('totalView');//remove the class that is placed by the cera's
    var iota=$(_set).data('iota');var narro={};
-   if(_formType)sessionStorage.formTypes=_formType;
-//   console.log(_mensa,_mensula,_script,'[FORM]',_tab,_formType,sessionStorage.formTypes,'[this is it]',_set,'----------------------',$(_set)[0]);
+   if(_formType)sessionStorage.formTypes=_formType;//used to change from beta to alpha display
+//   console.log(_mensa,_mensula,_script,'[FORM]',_tab,_formType,sessionStorage.formTypes,'[this is it]',_set,'----------------------',$(_set)[0],"/");
    recHistory(_mensa,_mensula,_script,_tab,_formType);
    if(!_script)$.getJSON("json/"+_mensa+".json",findJSON).fail(onVituim);
    else if(_script==="cera")get_ajax("/cera/"+_mensa+".html","",".body article");
-   else value=load_async("js/agito/"+_mensa+".js",true,'end',true);
+   else {
+      value=load_async("js/agito/"+_mensa+".js",true,'end',true);
+      if(value===false&&typeof agitoScript==="function"){
+         $("footer").data("temp",[iota,_tab]);//@fix:this will initiate a value, when changing via dropdown @only dealer&saleman
+         agitoScript();}}//@explain:ce program et appeler une deuxiem foi avec agitoScript() qui et standard
    if(_mensa=='salesman')_mensula='salesman';//ce si cest pour les sales seulment
    if(!_tab){
       $(_set).tab('show');
@@ -837,6 +855,28 @@ function version_db(cur,rev,trans){
       db.transaction(function(trans){trans.executeSql("INSERT INTO version_db (ver)VALUES(?)",[rev.ver]);});
       if(typeof content==="object")SET_DB(content);
    });
+}
+//============================================================================//
+/**
+ * used to measure script execution time
+ *
+ * It will verify all the variable sent to the function
+ * @author fredtma
+ * @version 0.5
+ * @category iyona
+ * @gloabl aboject $db
+ * @param array $__theValue is the variable taken in to clean <var>$__theValue</var>
+ * @see get_rich_custom_fields(), $iyona
+ * @return void|bool
+ * @todo finish the function on this page
+ * @uses file|element|class|variable|function|
+ */
+function readWorker(){
+   notitiaWorker.addEventListener('message',function(e){
+      console.log('Worker on Notitia:', e.data);
+      if(e.data=="licentia")licentia();
+   },false);
+   notitiaWorker.addEventListener('error',onError,false)
 }
 //============================================================================//
 /**

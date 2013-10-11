@@ -98,7 +98,7 @@ function findJSON(data){
    //DB SETUP
    var creoDB=new SET_DB();sessionStorage.removeItem('formTypes');
    switch(formTypes){
-      case 'alpha':var spicio=JSON.parse(localStorage.USER_NAME); creoDB.alpha(null,null,spicio.jesua);break;
+      case 'alpha':var spicio=localStorage.USER_NAME?JSON.parse(localStorage.USER_NAME):JSON.parse(sessionStorage.USER_NAME); creoDB.alpha(null,null,spicio.jesua);break;
       case 'betaTable':get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa},'','post','json',function(results){theForm.setBeta(results,3);});break;
       default:creoDB.beta();break;
    }
@@ -138,6 +138,32 @@ function saveData(){
       $(".db_notice").html("<span class='"+tmp+"'>The page "+title+", has been saved.</span>").animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
       $("footer").data("iota",iota);$("footer").data("Tau","deLta");});
 }//end function send data to the server to update via ajax
+/******************************************************************************/
+/**
+ * Get an item from the DB
+ *
+ * @author fredtma
+ * @version 3.5
+ * @category DB
+ * @param string <var>mensa</var> the name of the table to get
+ * @param string <var>type</var> the type of list to return
+ */
+function impetroDB(_mensa,_type,_ele){
+   var cnt=0,menuDealers={};
+   if(_mensa=='dealers'){
+      $DB("SELECT name,code FROM dealers ",[],"",function(r,j){
+         $.each(j,function(i,row){if(i=='rows') return true;cnt++;
+            switch(_type){
+               case'list':menuDealers["dealer_"+row['code']]={"href":"javascript:void(0)","clss":"oneDealer","iota":row['code'],"txt":row['name']};break;
+            }
+         });
+         menuDealers=roadCover.btnDropDown({"btnDealer3":{"clss":"btn btn-info seamless non_procer","href":"javascript:void(0)","icon":"icon-book","txt":"All Dealers"},"btnDealerCaret":{"clss":"btn btn-info dropdown-toggle seamless non_procer","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubDealersList3":{"clss":"dropdown-menu dealersList","sub":menuDealers}});
+         $(_ele).append(menuDealers);
+         $(".dropdown-menu a").click(function(){var parent=$(this).parents(".btn-group"),val=$(this).html();$(".theTXT",parent[0]).html(val);});
+         $("#btnSubDealersList3 a").click(function(){var deal=$(this).data('iota');if(deal)getInvoice(deal);});
+      });//end dealer DB
+   }//endif
+}
 /******************************************************************************/
 /**
  * used to measure script execution time

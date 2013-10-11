@@ -85,6 +85,7 @@ function SET_FORM(_name,_class,_label){
    this.setAlpha=function(){
       var mainLabel, legend,fieldset,container;
       this.frmLabel=mainLabel=eternal.form.label?eternal.form.label:true;
+      if(!getLicentia(this.name,'View')) {$('.db_notice').html("<strong class='text-error'>You do not have permission to view "+this.name+"</strong>");return false;}
       $('#sideBot h3').html('<a href="javascript:void(0)">Add new '+this.name+'<i class="icon icon-color icon-plus addThis"></i></a>');
       //FORM
       this.form=eternal.form.field;
@@ -132,8 +133,9 @@ function SET_FORM(_name,_class,_label){
           * aliquam: from server or localhost
           * */
          if (eternal.form.aliquam!==true&&$('footer').data('header')!==false){$('footer').data('header',false);}
-         if($('footer').data('header')===false){$('#sideBot h3').html(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();}//lieu pour maitre le titre
+         if($('footer').data('header')===false){$('#sideBot h3').html(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();$('#displayMensa').removeData();}//lieu pour maitre le titre
          $(this.Obj.addTo).empty();//main content and side listing
+         $(".body article").append(creo({"clss":"ya_procer"},'h2',eternal.form.legend.txt));//add the title which can only be seen on print
          container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
          if(sessionStorage.genesis=="NaN")sessionStorage.genesis=0;
          max=(parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT));
@@ -250,6 +252,7 @@ function SET_FORM(_name,_class,_label){
          addEle=_element;headers=reference[_child].fields;cls='table-bordered table-child';
       }
       if(!_legend)$(addEle).empty();
+      $(".body article").append(creo({"clss":"ya_procer"},'h2',eternal.form.legend.txt));//add the title which can only be seen on print
       $table=$anima(addEle,'table',{'id':'table_'+this.name,'clss':'table table-striped table-hover '+cls}).vita('thead',{},true);
       $table.vita('tr',{},true).vita('th',{},false,'#');colspan=0;
       for(k in headers){colspan++;
@@ -479,7 +482,7 @@ function SET_FORM(_name,_class,_label){
       _agrum=_agrum[0];
       if(!$('#displayMensa').data('listed')||$('#displayMensa').data('listed')!=unus+_ratio){
          $('#displayMensa').data('listed',unus+_ratio);
-         $('#displayMensa').empty();
+         $('#displayMensa').empty();$('#displayMensa').removeData();
          agris1=unus.slice(0,-1);//get the field remove the 's'
          agris2=duo.slice(0,-1);
          $('#sideBot h3').html('Associate '+agris2+' to a '+unus);
@@ -530,14 +533,13 @@ function SET_FORM(_name,_class,_label){
     * @returns none
     */
    this.setLinks=function(_children,_collapse_head,_headKey,_ref){
-      var link,theLink,temp,tmp,reference;
+      var link,theLink,temp,tmp,reference,file,loadAgito;
       tmp=_collapse_head.father;
       for(link in _children){
          reference=reference||link;//the value received from the custom json file, will store the first value
          if(_children[link]===true)continue;//because the first field is an option field
          if($.isArray(eternal.links[link]))theLink=eternal.links[link][1];
          else if(typeof eternal.links[link]==="object")theLink=link;
-         console.log(_children[link],"/",reference,"/",theLink);
          if(!getLicentia(this.name,'Link '+theLink)) continue;
          _collapse_head.father=tmp;
          var icon=eternal.links[link]['icons']||'icon icon-color icon-link';
@@ -552,11 +554,22 @@ function SET_FORM(_name,_class,_label){
             });
          }else{//esle reference. LINK
             temp=[];
-            $(_collapse_head.child).click(function(){
+            file=eternal.links[link]["file"]||eternal.links[link]["cera"];
+            loadAgito=(eternal.links[link]["file"])?"script":(eternal.links[link]["cera"])?"cera":"json";
+            $(_collapse_head.child).data('loadAgito',loadAgito);
+            $(_collapse_head.child).data('file',file);
+            $(_collapse_head.child).data('theLink',theLink);
+            _collapse_head.child.onclick=function(){
+               var theLink=$(this).data('theLink');var file=$(this).data('file');var loadAgito=$(this).data("loadAgito");
                temp[0]=$(this).parents('div').data('code');temp[1]=eternal.mensa;$('footer').data('temp',temp);
                $('#nav-main #link_'+theLink).tab('show');$(".navLinks").removeClass('active');$("#nav_"+theLink).addClass('active');//maitre que le menu puisse ce fair voir
-               load_async(eternal.links[link]["file"],true,'end',true);
-            });
+               if(loadAgito=="script"){
+                  var scriptValue=load_async(file,true,'end',true);
+                  if(scriptValue===false&&typeof agitoScript==="function")agitoScript();
+               }else if (loadAgito=="cera") {
+                  activateMenu(theLink,file,this,"cera");
+               }
+            };
          }//endif
       }//endfor links
    }
@@ -790,7 +803,7 @@ fieldsDisplay=function(_from,_source,_head,_reference){
    $.each(f,function(key,property){
       key2=key.replace(/\s/ig,'');//removes spaces
       if(_reference) type=property.type||eternal.children[_reference].global.type;
-      else type=property.field.type||property.complex;
+      else type=(property.field&&property.field.type)?property.field.type:(property.complex)?property.complex:'';
       if(_head && !property.header) return true;
       switch(type){
          case 'radio':

@@ -13,7 +13,8 @@ include('muneris.php');
 $LIMIT=500;
 $pre='roadCover_';
 if($_GET&&iyona_adm())$_POST=array_merge($_GET,$_POST);#@todo: remove this it's a debug purpose
-iyona_log($_POST,false);
+iyona_log("#==============================================================================#",true);
+iyona_log($_POST);
 $select['getClients']  = $select['clients'] = "SELECT id,company,code,about,email,modified,creation,jesua FROM {$pre}clients";
 $select['getDealer']   = $select['dealers'] = "SELECT name,code,modified,creation,jesua FROM {$pre}dealers;";
 $select['getFeatures'] = $select['features'] = "SELECT id,feature,description,category,filename,manus,tab,modified,creation,jesua FROM {$pre}features;";
@@ -53,14 +54,16 @@ switch($_POST['militia']){
          $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
       endif;
       $sql=<<<IYONA
-SELECT trans.Id,dealer.Name as Dealer, trans.Status,
-concat(agent.FullNames,' ',agent.Surname) as Salesman, concat(member.FullNames,' ',member.Surname) as Fullname,member.IdentificationNumber as IDno,agrement.Name,quot.Period_cd as Period,quot.CollectionMethod_cd as CollectionMethod,quot.TotalAmount, quot.DateModified
+SELECT trans.Id,dealer.Name as Dealer, agree.Status,
+concat(agent.FullNames,' ',agent.Surname) as Salesman, concat(member.FullNames,' ',member.Surname) as Fullname,member.IdentificationNumber as IDno,
+agrement.Name,quot.Period_cd as Period,quot.CollectionMethod_cd as CollectionMethod,quot.TotalAmount, quot.DateModified
 FROM road_Transactions trans
-LEFT JOIN road_Intermediary dealer on dealer.`Id`=trans.Intermediary
-LEFT JOIN road_FandI agent on agent.`Id`=trans.FandI
-INNER JOIN road_Holder member on member.Id=trans.Holder
-INNER JOIN road_QuoteTransactions quot on quot.`transaction`=trans.`Id`
-INNER JOIN road_Quote_Agreement agrement on agrement.`Id`=quot.Agreement
+LEFT JOIN road_Intermediary dealer ON dealer.`Id`=trans.Intermediary
+LEFT JOIN road_FandI agent ON agent.`Id`=trans.FandI
+LEFT JOIN road_Agreements agree ON agree.transaction=trans.Id
+INNER JOIN road_Holder member ON member.Id=trans.Holder
+INNER JOIN road_QuoteTransactions quot ON quot.`transaction`=trans.`Id`
+INNER JOIN road_Quote_Agreement agrement ON agrement.`Id`=quot.Agreement
 $srch group by quot.`transaction` LIMIT $LIMIT;
 IYONA;
       iyona_log($sql);echo json_encode(array_result($sql,true));
@@ -76,7 +79,7 @@ IYONA;
       $rows['address']=array_result("SELECT * FROM road_Addresses a WHERE a.holder={$db->qstr($_POST['iota'])} GROUP BY Uid ORDER BY `Type`",true);
       $rows['company']=array_result("SELECT * FROM {$pre}dealers a WHERE a.code={$db->qstr($_POST['iota'])}",true);
       $sql=<<<IYONA
-SELECT concat(agent.FullNames,' ',agent.Surname) as Salesman, concat(member.FullNames,' ',member.Surname) as Fullname,member.IdentificationNumber as IDno,
+SELECT concat(agent.FullNames,' ',agent.Surname) as Salesman, concat(member.FullNames,' ',member.Surname) as Fullname,member.IdentificationNumber as IDno, trans.Id as Deal,
 quot.Period_cd as Period,quot.CollectionMethod_cd as CollectionMethod, quot.TotalAmount, quot.DateModified, sum(quot.TotalAmount) Total
 FROM road_Transactions trans
 LEFT JOIN road_Intermediary dealer on dealer.`Id`=trans.Intermediary
@@ -115,9 +118,20 @@ IYONA;
          endif;
       endif;
       $sql=<<<IYONA
-SELECT member.Id as code,trans.DateCreated,concat(FullNames,' ',Surname) as Fullnames,IdentificationNumber as IDno,Race_cd Race,Nationality_cd Nationality,Gender_cd Gender,Title_cd Title,EthnicGroup_cd EthnicGroup
+SELECT member.Id as code,trans.DateCreated,concat(FullNames,' ',Surname) as Fullnames,IdentificationNumber as IDno,Race_cd Race,Nationality_cd Nationality,
+Gender_cd Gender,Title_cd Title,EthnicGroup_cd EthnicGroup,trans.Id as "transaction"
 FROM road_Transactions trans INNER JOIN road_Holder member on member.Id=trans.Holder
 $srch GROUP BY IDno ORDER BY DateCreated ASC LIMIT $LIMIT;
+IYONA;
+      $rows=array_result($sql);echo json_encode($rows);break;
+#==============================================================================#CUSTOMER ALL
+   case 'impetro omnia':
+      $srch=$db->qstr($_POST['quaerere'].'%');
+      $sql=<<<IYONA
+SELECT member.Id as code,trans.DateCreated,concat(FullNames,' ',Surname) as Fullnames,IdentificationNumber as IDno,Race_cd Race,Nationality_cd Nationality,
+Gender_cd Gender,Title_cd Title,EthnicGroup_cd EthnicGroup,trans.Id as "transaction"
+FROM road_Transactions trans INNER JOIN road_Holder member on member.Id=trans.Holder
+WHERE m.FullNames LIKE $srch OR m.IdentificationNumber LIKE $srch OR t.Id LIKE $srch;
 IYONA;
       $rows=array_result($sql);echo json_encode($rows);break;
 #==============================================================================#CUSTOMER BRIEF
@@ -202,14 +216,33 @@ INNER JOIN road_Transactions ON road_Transactions.Id=road_TxNeedsAnalysisCategor
 WHERE road_Transactions.Holder={$db->qstr($_POST['iota'])};
 IYONA;
       $rows=array_result($sql);echo json_encode($rows);break;
+   #==============================================================================#CUSTOMER QUOTE
+   case 'customers-quote':
+      $sql=<<<IYONA
+SELECT quot.DateCreated,quot.`Status`,quot.IsValid,quot.Period_cd,quot.CollectionType_cd,quot.CollectionType_cd,quot.TotalAmount
+,res.PremiumType_cd,res.CurrentAmount as "Current Amount",res.IsActive,res.isPartOfMainPremium,FORMAT(res.Amount,2),res.Description,res.SubCode as "Sub Code"
+FROM road_QuoteTransactions quot
+INNER JOIN road_Transactions trans ON trans.Id=quot.transaction
+LEFT JOIN road_QuoteResultItems res ON res.QuoteResult=quot.Id
+WHERE trans.Holder={$db->qstr($_POST['iota'])};
+IYONA;
+      $sql=<<<IYONA
+SELECT
+res.PremiumType_cd,FORMAT(res.CurrentAmount,2) as "Current Amount",res.IsActive,res.isPartOfMainPremium,FORMAT(res.Amount,2)as Amount,res.Description,res.SubCode as "Sub Code"
+FROM road_QuoteResultItems res
+INNER JOIN road_Transactions trans ON trans.Id=res.transaction
+WHERE trans.Holder={$db->qstr($_POST['iota'])}
+GROUP BY res.PremiumType_cd;
+IYONA;
+      $rows=array_result($sql);echo json_encode($rows);break;
 #==============================================================================#
 #FUNCTIONS
-#==============================================================================#
+#==============================================================================#count the login count
    case 'adde quemvis':
       $sql="UPDATE {$pre}users SET last_seen=NOW(), log_count=log_count+1 WHERE username={$db->qstr($_POST['quemvis'])} LIMIT 1";
       $rs=$db->Execute($sql);iyona_message($rs,$sql);
       break;
-#==============================================================================#
+#==============================================================================#get all the db version
    case 'verto':
       if(empty($_POST['ver'])||!is_float((float)$_POST['ver'])) {return false;}
       if(is_array($_POST['revision']))$_POST['revision']=json_encode($_POST['revision']);
@@ -229,14 +262,15 @@ IYONA;
       }//end if of $rs
       $rs=$db->Execute($sql);iyona_message($rs,$sql);
       break;
-#==============================================================================#
+#==============================================================================#get the db changes
    case 'ipse':
+      #find updates unseen updates for the user, on diferent device and devices not for that user
       $device  = md5($_SERVER['HTTP_USER_AGENT'].$_POST['moli']);
       $sql  = <<<IYONA
-      SELECT mensa,jesua,trans,a.creation
+      SELECT mensa,jesua,trans,a.creation,a.id as ver
       FROM {$pre}versioning a
-      LEFT JOIN {$pre}version_control b ON b.ver=a.id AND b.user={$db->qstr($_POST['ipse'])}
-      WHERE b.ver IS NULL OR (b.ver IS NOT NULL AND b.device!='$device')
+      LEFT JOIN {$pre}version_control b ON b.ver=a.id AND b.user={$db->qstr($_POST['ipse'])} AND b.device='$device'
+      WHERE b.ver IS NULL OR (b.ver IS NOT NULL AND b.device!='$device' )
       GROUP BY a.trans, a.jesua ORDER BY a.id
 IYONA;
       $db->SetFetchMode(ADODB_FETCH_ASSOC);
@@ -247,14 +281,14 @@ IYONA;
          while (!$rs->EOF) {
             extract($rs->fields);
             $table=str_replace($pre,'',$mensa);
-            $sql= $select[$table]." WHERE jesua='$jesua'";
+            $sql= (strlen($jesua)>10)?$select[$table]." WHERE jesua='$jesua'":$select[$table]." WHERE id='$jesua'";
             $rs2=$db->Execute($sql);
             iyona_log($sql."\r\n<br/>".$db->ErrorMsg());
-            iyona_log($select);
             if ($rs2->_numOfRows>0)
             {
                $cnt=0;$mensa=str_replace($pre,'',$mensa);
-               while (!$rs2->EOF) {$control[$mensa][$creation][$trans]=$rs2->fields;$cnt++;$rs2->MoveNext();}//end while of $rs
+               $trans=($trans=="oMegA")?0:(($trans=="Alpha")?1:2);
+               while (!$rs2->EOF) {$control[$mensa][$ver][$trans]=$rs2->fields;$cnt++;$rs2->MoveNext();}//end while of $rs @explain:user creation date so that the order of the object may be according
             }//end if of $rs1
             $rs->MoveNext();
          }//end while of $rs

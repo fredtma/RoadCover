@@ -30,7 +30,7 @@ addRecord=function(){
             $(collapse_head.child).click(function(){//@note: watchout for toggle, u"ll hv to click twist if u come back to an other toggle.
                $(".accordion-heading .icon-black").removeClass("icon-black").addClass("icon-color");$(this).removeClass("icon-color").addClass("icon-black");
                if($(this).data("ref")!=0)linkTable($(this).data("head"), $(this).data("link"),$(this).data("links"),$(this).data("ref"));
-               else $("#displayMensa").empty();
+               else {$("#displayMensa").empty();$('#displayMensa').removeData();}
             });
          }
    collapse_content=$anima(".class_"+jesua,"div",{"clss":"accordion-body collapse","id":"collapse_"+name+r,"data-jesua":"alpha"});
@@ -61,15 +61,17 @@ function navigTable(set){
    theForm.gammaTable(JSON.parse(sessionStorage.activeRecord));
 }
 //=============================================================================//
+$('#link_dealers').click(function(){activateMenu('dealer','dealers',this);});
+$('#link_salesman').click(function(){activateMenu('salesman','salesmen',this);});
+$('#link_customers').click(function(){activateMenu("customer","customers","#link_customers",true);});
+$('#link_insurance').click(function(){activateMenu("member","insurance","#link_insurance",true);});
 $('.btnUser,.profileList').click(function(){activateMenu("profile","home","#link_home");});
-$('.profileView,#userName').click(function(){activateMenu("profile","home","#link_home",false,false,"alpha");})
+$('.profileView,#userName').click(function(){activateMenu("profile","home","#link_home",false,false,"alpha");});
 $('.btnGroup').click(function(){activateMenu("group","home","#link_home");});
 $('.system4,#btnSysPermission').click(function(){activateMenu("permission","system","#link_system")});
 $('.btnDashboard').click(function(){if(!activateMenu("dashboard","home","#link_home",true)){theDashboard();}});//when the script is already loaded call the function
 $('.system1,#btnSysClient').click(function(){activateMenu("client","system","#link_system");});
 $('#btnHelper,.system3').click(function(){activateMenu("helper","system","#link_system");});
-$('#link_customers').click(function(){activateMenu("customer","customers","#link_customers",true);});
-$('#link_insurance').click(function(){activateMenu("member","insurance","#link_insurance",true);});
 $('#btnFeatures,.system2').click(function(){activateMenu('feature',false,false,false,true);});
 $('#footContact').click(function(){getPage('Contact us')});
 $('#footHelp').click(function(){getPage('Help?')});
@@ -80,4 +82,5 @@ $('#userOut,#profileOff').click(loginOUT);
 $('.icon-refresh').click(refreshLook);//@todo:add HTML5 history API
 $(".btnHelp").click(helpfullLink);
 $('#btnTest').click(resetGenesis);
-$("#btnSysReport").click(function(){var win=window.open("http://197.96.139.19/reports/","_blank");win.focus();});
+$("#btnSysReport").click(function(){var win=window.open(localStorage.SITE_URL+"reports/","_blank");win.focus();});
+$(".printPage").click(function(){window.print();});
