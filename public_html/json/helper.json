@@ -7,7 +7,7 @@
       "button":{"submit_helper":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},"cancel_helper":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
    },
    "mensa": "pages",
-   "quaerere":{"precipio":"","ubi":"AND type='help'"},
+   "quaerere":{"precipio":"title","ubi":"AND type='help'"},
    "fields": {
       "title":{"icon":"icon-bookmark","header":true,"place":"Helper title","field":{"title":"Title","required":"","autofocus":""}},
       "content":{"complex":true,"title":"description","place":"Content text","field":{"required":"","type":"editor","rows":5,"clss":"text-area","maxlength":180}},

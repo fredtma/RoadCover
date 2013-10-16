@@ -71,6 +71,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
       var ul=creo({"clss":"nav nav-tabs"},"ul");/*the first element created ul, for the list*/
       this.setObject({"items":_obj,/*the menu is passed as the first obj*/
          "father":function(key,item){/*the parent will be the second obj and a function*/
+            if(item.licentia&&getLicentia(item.licentia,"View")===false)return true;
             mainMenu.push(key);
             cl=item.clss?item.clss:'';
             txt=document.createTextNode(' '+item.txt);
@@ -87,6 +88,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
             a.appendChild(b);li.appendChild(a);
             ul2=creo({"clss":"dropdown-menu",'id':'drop_'+key},"ul");
             $.each(item.sub,function(index,val){
+               if(getLicentia(item.licentia[index],"View")===false)return true;
                li2=creo({},"li");a2=creo({"data-toggle":"tab","href":"#tab-"+key,"clss":key+index},"a");txt=document.createTextNode(val);
                if(val=='hr'){li2.className="divider";txt=document.createTextNode('')}
                a2.appendChild(txt);li2.appendChild(a2);ul2.appendChild(li2);
@@ -105,6 +107,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
       var div=creo({"clss":"btn-group "+_obj.key},"div");
       var innerClass=this.Obj.clss;
       this.setObject({"items":_obj.btn,"father":function(key,item){
+         if(item.lecentia&&!getLicentia(item.lecentia,"View")) return true;
          var tmp_clss=item.clss||'';
          btn=creo({"title":item.title,"id":key,"clss":innerClass+' '+tmp_clss},"button");
          i=creo({"clss":item.icon},"i");btn.appendChild(i);div.appendChild(btn);
@@ -124,7 +127,8 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
          "items":_obj,
          "father":function(key,item){
             dataToggle=item['data-toggle']?item['data-toggle']:'nono';
-            a=creo({"data-toggle":dataToggle,"id":dataToggle,"clss":item.clss,"href":item.href},"a");
+            iota=item.iota||"0";
+            a=creo({"data-toggle":dataToggle,"id":dataToggle,"clss":item.clss,"href":item.href,"data-iota":iota},"a");
             i=creo({"clss":item.icon},"i");
             txt=document.createTextNode(' '+item.txt);
             /*rest the element i and the text when the item is a caret*/
@@ -222,7 +226,6 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
          .vita("div",{"clss":"input-append"},true)
          .vita("input",{"type":"text","clss":"input-medium search-query "+_obj.text.clss,"id":_obj.text.name,"name":_obj.text.name,"placeholder":_obj.text.place})
          .vita("button",{"type":_obj.btn.type,"clss":"btn "+_obj.btn.clss,"id":_obj.btn.name,"name":_obj.btn.name},false,_obj.btn.txt);
-      console.log($form,"$form",$form);
       this.placeObj($form);return $form;
    }
    /*

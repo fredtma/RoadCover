@@ -35,7 +35,7 @@ progress::-webkit-progress-value { background:#0063a6; }
 .purgare {*zoom: 1;clear:both;}.purgare:before,.purgare:after {display: table;line-height: 0;content: "";}.purgare:after {clear: both;}
 .omega{*zoom: 1;clear:both;}
 .none{display:none;}
-.popover{min-width:250px;}.ya_procer,#body .ya_procer{display:none;}
+.popover{min-width:300px;font-style: normal;}.ya_procer,#body .ya_procer{display:none;}
 /******************************************************************************/
 /*header setting*/
 .navigator {font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background:#fff;margin-top: 10px;}
@@ -44,7 +44,7 @@ address {margin: 3px 0px;}
 .explain {font-size:0.9em; font-weight: 400; font-style:italic; text-align: left; padding:0;}
 .logo figure img,.logo figure figcaption{float: right;}
 .logo figure img:after,.logo figure figcaption:after{clear: both;content: "";}
-.logo figure {margin: 0px 2em;}
+.logo figure {margin: 0px 1em;}
 .pagination {margin:0px 0px;}
 .pagination .disabled li > span,.pagination .disabled li > a,.pagination .disabled li > a:hover,.pagination .disabled li > a:focus {  color: #999999;  cursor: default;  background-color: transparent;}
 .nav {margin-bottom:0px;}

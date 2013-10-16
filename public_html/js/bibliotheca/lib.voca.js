@@ -3,13 +3,14 @@
  * @see jquery|bootstrap.min|lib.muneris|res.lambda|res.forma|res.notitia|lib.ima.js
  */
 addRecord=function(){
-   var link,collapse_content;
-   var name=eternal.form.field.name;
+   var link,collapse_content,theLink,icon;
+   var name=eternal.form.field.name,tmp;
    var d=new Date().format("isoDateTime");
    var jesua=md5("alpha"+d);
    var r="_new"+Math.floor((Math.random()*100)+1);
    var collapseTo="#collapse_"+name+r;
    var collapse_head=$anima("#acc_"+name,"div",{"clss":"accordion-group class_"+jesua,"data-jesua":jesua},"","first");
+   tmp=collapse_head.father;
    collapse_head.vita("div",{"clss":"accordion-heading","data-jesua":"alpha"},true)
       .vita("a",{"clss":"betaRow","contenteditable":false,"data-toggle":"collapse","data-parent":"#acc_"+name,"href":collapseTo},true);
       var $collapseElement=collapse_head.father;//heading row father
@@ -23,13 +24,18 @@ addRecord=function(){
          .vita("i",{"clss":"icon icon-color icon-trash"}).child.onclick=function(){delRecord(this)};
          for(link in eternal.links){
             collapse_head.father=father;//places the element to the level of the fother <i>
+            theLink=eternal.links[link][1];
             //leave icon black, until insert, value will change
-            collapse_head.vita("a",{"href":"javascript:void(0)","clss":"forIcon"},true).vita("i",{"clss":"icon icon-black icon-link","title":"Link "+eternal.links[link][1]});
+            if(!getLicentia(name,'Link '+theLink)) continue;
+//            collapse_head.father=tmp;
+            icon=eternal.links[link]['icons']||'icon icon-color icon-link';
+            collapse_head.vita("a",{"href":"javascript:void(0)","clss":"forIcon"},true).vita("i",{"clss":icon,"title":"Link "+theLink});
             $(collapse_head.child).data("ref",0);$(collapse_head.child).data("head",0);//@todo:add the function after the insert has been done
             $(collapse_head.child).data("link",link);$(collapse_head.child).data("links",eternal.links[link]);
             $(collapse_head.child).click(function(){//@note: watchout for toggle, u"ll hv to click twist if u come back to an other toggle.
                $(".accordion-heading .icon-black").removeClass("icon-black").addClass("icon-color");$(this).removeClass("icon-color").addClass("icon-black");
-               if($(this).data("ref")!=0)linkTable($(this).data("head"), $(this).data("link"),$(this).data("links"),$(this).data("ref"));
+               var jesua=$(this).parents('div').data('jesua')||$(this).parents('tr').data('jesua');
+               if($(this).data("ref")!=0)theForm.linkTable($(this).data("head"), $(this).data("link"),$(this).data("links"),$(this).data("ref"),jesua);
                else {$("#displayMensa").empty();$('#displayMensa').removeData();}
             });
          }
@@ -84,3 +90,4 @@ $(".btnHelp").click(helpfullLink);
 $('#btnTest').click(resetGenesis);
 $("#btnSysReport").click(function(){var win=window.open(localStorage.SITE_URL+"reports/","_blank");win.focus();});
 $(".printPage").click(function(){window.print();});
+$("#btnSrchCust").click(quaerereCustomer);$("#srchAllCust").submit(quaerereCustomer);

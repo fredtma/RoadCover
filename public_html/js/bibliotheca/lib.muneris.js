@@ -257,7 +257,7 @@ aNumero = function(the_str,transform)
  * @returns void
  */
 function notice(msg,animation,text){
-   if(!msg)$(".db_notice").empty();
+   if(!msg){$(".db_notice").empty();$(".sys_msg").empty();}
    msg=text==2?"<strong class='text-success'>"+msg+"</strong>":text==1?"<span class='text-success'>"+msg+"</span>":(text==0)?"<span class='text-error'>"+msg+"</span>":msg;
    if(animation)$(".db_notice").html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
    else $(".db_notice").html(msg);
@@ -338,25 +338,35 @@ loginValidation=function(){
    try{
       u=$('#loginForm #email').val();p=md5($('#loginForm #password').val());
       $DB("SELECT id,username,firstname||' '||lastname as name,jesua,level FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(_results){
-         if(_results.rows.length){
-            row=_results.rows.item(0);
-            var USER_NAME={"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']};
-            if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=JSON.stringify(USER_NAME);
-            else sessionStorage.USER_NAME=JSON.stringify(USER_NAME);
-            if(row['level']==='super'){sessionStorage.USER_ADMIN=1;viewAPI(true);} else {viewAPI(false);sessionStorage.removeItem('USER_ADMIN');}
-            $('#userName a').html(impetroUser().nominis);
-            $('#userLogin').modal('hide').remove();
-            get_ajax(localStorage.SITE_SERVICE,{"militia":"adde quemvis","quemvis":row['username']},"","post","json");
-            if(window.Worker){
-               notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
-               (function(procus){var moli=screen.height*screen.width;
-                  if(procus){notitiaWorker.postMessage({"procus":procus.singularis,"moli":moli});readWorker()}
-               })(USER_NAME);
-            }
-            setTimeout(function(){licentia(row['username']);},500);//retarder l'autorisation,de sorte que la nouvelle autorisation peut etre ajoute
-         }else{$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('Failed login attempt...')}
+         if(!_results.rows.length||true){
+            get_ajax(localStorage.SITE_SERVICE,{"militia":"aliquis","p":p,"u":u},"","post","json",function(results){console.log(results,"results");
+               if(results.rows.length){console.log();
+                  this.checkAliquis(results,true);
+               }else{$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('Failed login attempt...');}
+            })
+         }else if(_results.rows.length){
+            this.checkAliquis(_results);
+         }else{$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('Failed login attempt...');}
       });
    }catch(err){console.log('ERROR::'+err.message)}
+   //-------------------------------------------------------------------------//
+   this.checkAliquis=function(_results,_from){
+      row=_from?_results[0]:_results.rows.item(0);
+      var USER_NAME={"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']};
+      if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=JSON.stringify(USER_NAME);
+      else sessionStorage.USER_NAME=JSON.stringify(USER_NAME);
+      if(row['level']==='super'){sessionStorage.USER_ADMIN=1;viewAPI(true);} else {viewAPI(false);sessionStorage.removeItem('USER_ADMIN');}
+      $('#userName a').html(impetroUser().nominis);
+      $('#userLogin').modal('hide').remove();
+      get_ajax(localStorage.SITE_SERVICE,{"militia":"adde quemvis","quemvis":row['username']},"","post","json");
+      if(window.Worker){
+         notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
+         (function(procus){var moli=screen.height*screen.width;
+            if(procus){notitiaWorker.postMessage({"procus":procus.singularis,"moli":moli});readWorker()}
+         })(USER_NAME);
+      }
+      setTimeout(function(){licentia(row['username']);},500);//retarder l'autorisation,de sorte que la nouvelle autorisation peut etre ajoute
+   }
    return false;
 }
 //============================================================================//
@@ -396,6 +406,7 @@ refreshLook=function(removeall){
    tmp=JSON.parse(tmp);
    sessionStorage.USER_NAME=JSON.stringify(tmp);}
    sessionStorage.runTime=0;sessionStorage.startTime=new Date().getTime();sessionStorage.genesis=0;
+   licentia();
    console.log('history:...');history.go(0);
 }
 //============================================================================//
@@ -542,7 +553,7 @@ sideDisplay=function(_iota,_mensa){
  * @return void
  * @todo add all the permission options
  */
-function viewAPI(_viewing){if(!_viewing) $('.homeSet0,.setDisplay,.setSystem').hide();else $('.homeSet0,.setDisplay,.setSystem').show();}
+function viewAPI(_viewing){if(!_viewing) $('.homeSet0,.setDisplay').hide();else $('.homeSet0,.setDisplay').show();}
 //============================================================================//
 /**
  * gets the permissions of the user. Note permission are static
@@ -552,13 +563,13 @@ function viewAPI(_viewing){if(!_viewing) $('.homeSet0,.setDisplay,.setSystem').h
  * @param string <var>_nominis</var> the nominis of the user
  */
 function licentia(){
-   var len,x,tmp,row;
+   var len,x,tmp,row,val;
    var _nominis = (localStorage.USER_NAME)?JSON.parse(localStorage.USER_NAME):JSON.parse(sessionStorage.USER_NAME);
    var quaerere="SELECT pu.`permission` as permission FROM link_permissions_users pu WHERE `user`=? UNION \
    SELECT pg.`permission` as permission FROM link_permissions_groups pg INNER JOIN link_users_groups ug ON ug.`group`=pg.`group` WHERE ug.user=?";
    $DB(quaerere,[_nominis.operarius,_nominis.operarius],"Accessing permissions",function(_results){
-      len=_results.rows.length;tmp=[];
-      for(x=0;x<len;x++){row=_results.rows.item(x);tmp[x]=row['permission'];}
+      len=_results.rows.length;tmp={};
+      for(x=0;x<len;x++){row=_results.rows.item(x);val=row['permission'];tmp[val.toLowerCase()]=x;}
       sessionStorage.licentia=JSON.stringify(tmp);
    });
 }
@@ -569,11 +580,20 @@ function licentia(){
  * @param {string} <var>_perm</var> the suffix of the permission
  * @returns Boolean
  */
-function getLicentia(_name,_perm){
-   var name=_name+' '+_perm;
+function getLicentia(_name,_perm,_msg){
+   var name1=_name;
+   if(_name===true)return _name;
+   if(name1.indexOf('s')!=-1)var name2=name1.replace(/s$/,""); else name2=name1+'s';
+   name1=name1+' '+_perm;name2=name2+' '+_perm;
    var tmp=sessionStorage.licentia?JSON.parse(sessionStorage.licentia):[];
    if(sessionStorage.USER_ADMIN) return true;
-   if(tmp.indexOf(aNumero(name, true))!=-1||tmp.indexOf(name)!=-1) return true;
+   name1=name1.toLowerCase();name2=name2.toLowerCase();
+//   console.log(tmp,"/",name1,"/",name2,tmp[name1]);
+   if(tmp[name1]||tmp[name2])return true;
+   if(_msg){
+      _msg="<strong class='text-error'>You do not have permission to view "+_name+"</strong>";
+      $("#body article").html("<ul class='breadcrumb'><li>"+_msg+"<br/>Please contact the adminstrator to access this page.</li></ul>");
+      notice(_msg,true,0);}
    return false;
 }
 //============================================================================//
@@ -593,19 +613,21 @@ function getLicentia(_name,_perm){
  */
 function getPage(_page){
    var len,row,tmp,d;
+   if(getLicentia("Pages","View")===false){notice("<strong class='text-error'>You do not have permission to view the content pages</strong>",true,0);return false;}
    recHistory(_page,false,false,false,false,true);
    $DB("SELECT id,title,content,modified FROM pages WHERE title=?",[_page],"Found page "+_page,function(results){
       len=results.rows.length;row=[];
       if(len){row=results.rows.item(0);$('footer').data('Tau','deLta');$('footer').data('iota',row['id']);}
       else {row['title']=_page;row['content']="Click here to add new content";row['modified']=getToday();$('footer').data('Tau','Alpha');$('footer').data('iota',null);}
       $("#body article").empty();tmp=row['modified'];d=(tmp.search('0000-00-00')!=-1)?getToday():tmp;
-      var d1 = new Date(d);d=tmp=null;
-      $anima("#body article","section").vita("header",{},true).vita("h1",{"id":"page_title","contenteditable":true},false,row['title']).vita('h3',{},true).vita("time",{"datetime":d1.format("isoDateTime")},false,'Last modified'+d1.format(localStorage.SITE_DATE));
-      $anima("#body article","section",{"id":"page_content","contenteditable":true}).father.innerHTML=row['content'];
-      load_async("js/libs/CKEditorMin/ckeditor.js",true,'end',false);
+      var d1 = new Date(d);d=null;tmp=null;
+      var contentEditable=getLicentia("Pages","Edit");
+      $anima("#body article","section").vita("header",{},true).vita("h1",{"id":"page_title","contenteditable":contentEditable},false,row['title']).vita('h3',{},true).vita("time",{"datetime":d1.format("isoDateTime")},false,'Last modified'+d1.format(localStorage.SITE_DATE));
+      $anima("#body article","section",{"id":"page_content","contenteditable":contentEditable}).father.innerHTML=row['content'];
+      load_async("js/libs/CKEditorCus/ckeditor.js",true,'end',false);
       //@solve:prevents bug of CKEDITOR not existing.
-      if(typeof CKEDITOR!=="undefined")var titleEditor = CKEDITOR.inline(document.getElementById('page_title'));
-      if(typeof CKEDITOR!=="undefined")var pageEditor = CKEDITOR.inline(document.getElementById('page_content'));
+      if(typeof CKEDITOR!=="undefined"&&contentEditable){var titleEditor = CKEDITOR.inline(document.getElementById('page_title'));
+      var pageEditor = CKEDITOR.inline(document.getElementById('page_content'));}
    });
 }
 //============================================================================//
@@ -683,6 +705,7 @@ function newSection(){
  * function to activate the dashboard blocks and links of the navTab
  */
 function activateMenu(_mensa,_mensula,_set,_script,_tab,_formType){
+   notice();//empty the msg notification
    _mensula=_mensula||_mensa;var value=true;//the return value if it was passed successfully or not
    $('.body article').removeClass('totalView');//remove the class that is placed by the cera's
    var iota=$(_set).data('iota');var narro={};
@@ -746,23 +769,25 @@ function recHistory(_mensa,_mensula,_script,_tab,_formType,_page){
  * @todo retrieve data from the db.
  */
 helpfullLink=function(_now,_curr){
-   var alpha=$("#nav-main .active").attr("id");var encore='';
+   var alpha=$("#nav-main .active").attr("id");var encore='',def;
    var openForm=document.querySelector(".accordion-body.in form");
    if(openForm)alpha="form";
    if(typeof _now==="object"){
-      switch(alpha){case "nav_dealers":case "nav_salesman":case "nav_customers":case "nav_insurance":_now=".pagination";break;
+      switch(alpha){
+         case "nav_dealers":case "nav_salesman":case "nav_customers":case "nav_insurance":_now="#"+alpha;break;
          case "form":_now=openForm.id.search(/#/ig)!=-1?openForm.id:'#'+openForm.id;encore=' legend';break;
          case "nav_system":_now=".setSystem";break;default:_now="#notice6";break;}//end switch
    }//endif
-   console.log(alpha,'tab',_now,"/",_curr,$(_now),'/',$(_now)[0]);
+//   console.log(alpha,'tab',_now,"/",_curr,$(_now),'/',$(_now)[0]);
    if(_curr)$(_curr).popover('destroy');
    $DB("SELECT title,content,option,position FROM pages WHERE selector=?",[_now],"",function(r,j){
       _now+=encore;
       if(j.rows.length){
          var row=j[0];var content=row['content'];var title=row['title'];var next=row['option'];var pos=row['position'];
          var link="<div class='pager small'><ul><li class='previous'><a href='javascript:void(0)' onclick='javascript:$(\""+_now+"\").popover(\"destroy\")' >Close</a></li>";
-         if(next!=='none')link+="<li class='next'><a href='javascript:void(0)' onclick='helpfullLink(\""+next+"\",\""+_now+"\")' >Next »</a></li></ul></div>";
-         content=content+link;
+         if(next!=='none'&&!def)link+="<li class='next'><a href='javascript:void(0)' onclick='helpfullLink(\""+next+"\",\""+_now+"\")' >Next »</a></li></ul></div>";
+         else if(def)link+="<li class='next'><a href='javascript:void(0)' onclick='helpfullLink(\""+def+"\",\""+_now+"\")' >Next »</a></li></ul></div>";
+         content=content+link;var len=$(_now).length;if(len>1)_now=$(_now)[0];
          $(_now).first().popover({"html":true,"trigger":"click","title":title,"content":content,"placement":pos});$(_now).popover('show');
       }
    });
@@ -877,6 +902,23 @@ function readWorker(){
       if(e.data=="licentia")licentia();
    },false);
    notitiaWorker.addEventListener('error',onError,false)
+}
+//============================================================================//
+/**
+ * the search all customer function
+ * @version 5.2
+ * @category search
+ * @return void
+ */
+quaerereCustomer=function(e){
+   e.preventDefault();
+   var val=$("#txtSrchCust").val();
+   get_ajax(localStorage.SITE_SERVICE,{"militia":"impetro omnia","quaerere":val},"","post","json",function(result){
+      if(!result.rows.length){$("#txtSrchCust").val("No result for:"+val).select();return false;}
+      theForm = new SET_FORM()._Set("#body article");theForm.setBeta(result,false,false);
+      sessionStorage.genesis=0;if(typeof reDraw ==="function")setTimeout(reDraw,100);//use on reDraw the search result. necessary on some form e.g. customer
+   });
+   return false;
 }
 //============================================================================//
 /**

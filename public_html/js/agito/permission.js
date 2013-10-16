@@ -8,12 +8,11 @@ onShowForm=function(){
       if(found){$('.frm_permission_default').show();}
    },100)});
 };
-//$("#acc_"+eternal.form.field.name).on("shown",function(){onShowForm();});onShowForm();
 onShowForm();
-document.querySelector('#frm_permission').addEventListener("onShowForm",onShowForm,false);
-$('.frm_permission_default button').click(function(){
-   var n = $('#page').val()+' '+$(this).val();
-   var d = 'Permission to '+$(this).val()+' '+$('#page').val();
-   if(!$(this).data('toggle')||$(this).data('toggle')==0){$(this).data('toggle',1);theForm.newTableRow({"name":n,"desc":d,"page":n},'permissions',true);}
-   else{$(this).data('toggle',0);$(this).removeClass('active');}
-});
+   $('.frm_permission_default button').click(function(){//@note: moving the function in onShowForm() will make the function execute x2
+      var n = $('#page').val()+' '+$(this).val();
+      var d = 'Permission to '+$(this).val()+' '+$('#page').val();
+      var set=this;
+      if(!$(this).data('toggle')||$(this).data('toggle')==0){$(this).data('toggle',1);theForm.newTableRow({"name":n,"desc":d,"page":n},'permissions',true);}
+      else{$(this).data('toggle',0);setTimeout(function(){$(set).removeClass('active').blur();},500);}
+   });

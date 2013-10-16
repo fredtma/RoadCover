@@ -26,7 +26,7 @@ self.addEventListener('message',function(e){
                $DB(actum,params,"Synced "+mensa,function(result,j){
                   switch(mensa){
                      case'link_permissions_groups':
-                     case'link_permissions_users':WORK.postMessage('licentia');break;
+                     case'link_permissions_users':WORK.postMessage('licentia');break;//run the permission function
                   }
                },false,eternal);
             }//for ver

@@ -22,7 +22,7 @@ header('Content-Type: application/json');
 include('muneris.php');
 #==============================================================================#
 if($_GET&&iyona_adm())$_POST=array_merge($_GET,$_POST);
-iyona_log("#==============================================================================#",true);
+iyona_log("#==============================================================================#NOTITIA",true);
 iyona_log($_POST);
 $table         = $_POST['iyona'];
 $pre           = 'roadCover_';

@@ -20,13 +20,12 @@ function $DB(_quaerere,params,_msg,callback,reading,_eternal){
       db.transaction(function(trans){
          trans.executeSql(_quaerere,params,function(trans,results){
             var j=$DB2JSON(results);_msg=_msg||"Successf quaerere";
-            if(_eternal){//@todo:eternal function
-               aSync(SITE_MILITIA,_eternal,function(j){});
-            }
+            if(_eternal){aSync(SITE_MILITIA,_eternal,function(j){});}
             if(typeof callback==="function")callback(results,j);
             iyona(_quaerere,params,_msg);
          },function(_trans,_error){
-            _msg=_msg+":-:"+_error.message;iyona(_msg,_quaerere,params);
+            _msg=_msg+":-:"+_error.message;iyona(_quaerere,params,_msg);
+            if(_eternal&&_msg.indexOf('constraint failed')!=-1){aSync(SITE_MILITIA,_eternal,function(j){});}//update the version, when the error is a constrain
          });
       });
    } else {
@@ -35,7 +34,7 @@ function $DB(_quaerere,params,_msg,callback,reading,_eternal){
             var j=$DB2JSON(results);
             if(callback)callback(results,j);iyona(_quaerere,params,_msg);
          },function(_trans,_error){
-            _msg=_msg+":--:"+_error.message;iyona(_msg,_quaerere,params);
+            _msg=_msg+":--:"+_error.message;iyona(_quaerere,params,_msg);
          });
       });
    }
@@ -62,7 +61,6 @@ function $DB2JSON(_results,_type){
 //============================================================================//
 function aSync(options,data,callback){//www, var, object, method, format, call_success
    var settings={"method":"post","format":"json"},params;
-
    if(typeof options === "object")for(var att in options)settings[att]=options[att];
    else {settings.www=options;settings.var=data;settings.callback=callback;}
 

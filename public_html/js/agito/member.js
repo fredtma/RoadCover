@@ -30,7 +30,7 @@ agitoScript=function(){
       }
    }
    sessionStorage.setItem('active',JSON.stringify(tmp));
-   eternal=tmp;temp=$('footer').data('temp');
+   eternal=tmp;temp=$('footer').data('temp');console.log(temp,"temp");
    get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:localStorage.SITE_MONTH}},'','post','json',function(_rows){
       if(typeof temp==="undefined")temp=[0,"dealers"];
       sideDisplay(temp[0],temp[1]);

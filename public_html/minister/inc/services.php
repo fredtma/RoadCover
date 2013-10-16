@@ -10,8 +10,9 @@ ini_set('max_execution_time', 60*60*24);
 header('Content-Type: application/json');
 //header('Access-Control-Allow-Origin: *');
 include('muneris.php');
-$LIMIT=500;
+$LIMIT=5000;
 $pre='roadCover_';
+$menber_name="if(member.Surname!='',CONCAT(member.FullNames,' ',member.Surname),CONCAT('[Company]: ',member.Name)) as Fullname";
 if($_GET&&iyona_adm())$_POST=array_merge($_GET,$_POST);#@todo: remove this it's a debug purpose
 iyona_log("#==============================================================================#",true);
 iyona_log($_POST);
@@ -46,7 +47,7 @@ switch($_POST['militia']){
       $y=$_POST['luna'][0]?$_POST['luna'][0]:date("Y");
       $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
       $srch="WHERE (MONTH(STR_TO_DATE(trans.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($m)} AND YEAR(STR_TO_DATE(trans.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($y)})";
-      if($_POST['quaerere']):$srch.=" AND ";
+      if($_POST['quaerere'] && $_POST['quaerere'][0]!=0):$srch.=" AND ";
          if($_POST['quaerere'][1]=='dealers'):$srch.="dealer.Id={$db->qstr($_POST['quaerere'][0])}";
          elseif($_POST['quaerere'][1]=='salesmen'):$srch.="agent.Id={$db->qstr($_POST['quaerere'][0])}";
          endif;
@@ -55,7 +56,7 @@ switch($_POST['militia']){
       endif;
       $sql=<<<IYONA
 SELECT trans.Id,dealer.Name as Dealer, agree.Status,
-concat(agent.FullNames,' ',agent.Surname) as Salesman, concat(member.FullNames,' ',member.Surname) as Fullname,member.IdentificationNumber as IDno,
+CONCAT(agent.FullNames,' ',agent.Surname) as Salesman, $menber_name,member.IdentificationNumber as IDno,
 agrement.Name,quot.Period_cd as Period,quot.CollectionMethod_cd as CollectionMethod,quot.TotalAmount, quot.DateModified
 FROM road_Transactions trans
 LEFT JOIN road_Intermediary dealer ON dealer.`Id`=trans.Intermediary
@@ -64,7 +65,7 @@ LEFT JOIN road_Agreements agree ON agree.transaction=trans.Id
 INNER JOIN road_Holder member ON member.Id=trans.Holder
 INNER JOIN road_QuoteTransactions quot ON quot.`transaction`=trans.`Id`
 INNER JOIN road_Quote_Agreement agrement ON agrement.`Id`=quot.Agreement
-$srch group by quot.`transaction` LIMIT $LIMIT;
+$srch group by quot.`transaction` ORDER BY agent.Surname,member.Surname,quot.DateModified ASC LIMIT $LIMIT;
 IYONA;
       iyona_log($sql);echo json_encode(array_result($sql,true));
       break;
@@ -79,7 +80,7 @@ IYONA;
       $rows['address']=array_result("SELECT * FROM road_Addresses a WHERE a.holder={$db->qstr($_POST['iota'])} GROUP BY Uid ORDER BY `Type`",true);
       $rows['company']=array_result("SELECT * FROM {$pre}dealers a WHERE a.code={$db->qstr($_POST['iota'])}",true);
       $sql=<<<IYONA
-SELECT concat(agent.FullNames,' ',agent.Surname) as Salesman, concat(member.FullNames,' ',member.Surname) as Fullname,member.IdentificationNumber as IDno, trans.Id as Deal,
+SELECT CONCAT(agent.FullNames,' ',agent.Surname) as Salesman, $menber_name,member.IdentificationNumber as IDno, trans.Id as Deal,
 quot.Period_cd as Period,quot.CollectionMethod_cd as CollectionMethod, quot.TotalAmount, quot.DateModified, sum(quot.TotalAmount) Total
 FROM road_Transactions trans
 LEFT JOIN road_Intermediary dealer on dealer.`Id`=trans.Intermediary
@@ -118,22 +119,24 @@ IYONA;
          endif;
       endif;
       $sql=<<<IYONA
-SELECT member.Id as code,trans.DateCreated,concat(FullNames,' ',Surname) as Fullnames,IdentificationNumber as IDno,Race_cd Race,Nationality_cd Nationality,
+SELECT member.Id as code,trans.DateCreated,$menber_name,IdentificationNumber as IDno,Race_cd Race,Nationality_cd Nationality,
 Gender_cd Gender,Title_cd Title,EthnicGroup_cd EthnicGroup,trans.Id as "transaction"
-FROM road_Transactions trans INNER JOIN road_Holder member on member.Id=trans.Holder
+FROM road_Transactions trans
+INNER JOIN road_Holder member on member.Id=trans.Holder
 $srch GROUP BY IDno ORDER BY DateCreated ASC LIMIT $LIMIT;
 IYONA;
-      $rows=array_result($sql);echo json_encode($rows);break;
+      $rows=array_result($sql,true);echo json_encode($rows);break;
 #==============================================================================#CUSTOMER ALL
    case 'impetro omnia':
       $srch=$db->qstr($_POST['quaerere'].'%');
       $sql=<<<IYONA
-SELECT member.Id as code,trans.DateCreated,concat(FullNames,' ',Surname) as Fullnames,IdentificationNumber as IDno,Race_cd Race,Nationality_cd Nationality,
+SELECT member.Id as code,trans.DateCreated,$menber_name,IdentificationNumber as IDno,Race_cd Race,Nationality_cd Nationality,
 Gender_cd Gender,Title_cd Title,EthnicGroup_cd EthnicGroup,trans.Id as "transaction"
-FROM road_Transactions trans INNER JOIN road_Holder member on member.Id=trans.Holder
-WHERE m.FullNames LIKE $srch OR m.IdentificationNumber LIKE $srch OR t.Id LIKE $srch;
+FROM road_Transactions trans
+INNER JOIN road_Holder member on member.Id=trans.Holder
+WHERE member.Name LIKE $srch OR member.IdentificationNumber LIKE $srch OR trans.Id LIKE $srch;
 IYONA;
-      $rows=array_result($sql);echo json_encode($rows);break;
+      $rows=array_result($sql,true);echo json_encode($rows);break;
 #==============================================================================#CUSTOMER BRIEF
    case 'customers-brief':
       $sql=<<<IYONA
@@ -237,6 +240,12 @@ IYONA;
       $rows=array_result($sql);echo json_encode($rows);break;
 #==============================================================================#
 #FUNCTIONS
+#==============================================================================#LOGIN USER
+   case 'aliquis':
+      $p=$db->qstr($_POST['p']);$u=$db->qstr($_POST['u']);
+      $sql="SELECT id,username,CONCAT(firstname,' ',lastname) as name,jesua,level FROM {$pre}users WHERE password=$p AND (email=$u OR username=$u)";
+      $rows=array_result($sql);echo json_encode($rows);break;
+      break;
 #==============================================================================#count the login count
    case 'adde quemvis':
       $sql="UPDATE {$pre}users SET last_seen=NOW(), log_count=log_count+1 WHERE username={$db->qstr($_POST['quemvis'])} LIMIT 1";
@@ -289,6 +298,8 @@ IYONA;
                $cnt=0;$mensa=str_replace($pre,'',$mensa);
                $trans=($trans=="oMegA")?0:(($trans=="Alpha")?1:2);
                while (!$rs2->EOF) {$control[$mensa][$ver][$trans]=$rs2->fields;$cnt++;$rs2->MoveNext();}//end while of $rs @explain:user creation date so that the order of the object may be according
+            }else{//when not found delete it completely, it is no longer necessary to keep it in the version table.
+               $db->Execute("DELETE FROM {$pre}versioning WHERE jesua='$jesua'");
             }//end if of $rs1
             $rs->MoveNext();
          }//end while of $rs

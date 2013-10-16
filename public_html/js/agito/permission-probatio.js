@@ -4,7 +4,7 @@ if($('#frm_permission').data('jesua'))$('.frm_permission_default').show();
 $('#frm_permission').submit(function(){setTimeout(function(){
    if($('#frm_permission').data('jesua')){$('.frm_permission_default').show();}
 },100)});
-
+console.log('onShowForm fired');
 $('.frm_permission_default button').click(function(){
    var n = $('#page').val()+' '+$(this).val();
    var d = 'Permission to '+$(this).val()+' '+$('#page').val();

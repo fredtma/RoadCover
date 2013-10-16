@@ -55,7 +55,7 @@ VALUES ('$items->Id', '$items->Uid', '$items->Ver', '$Agremeent', '$items->Durat
 '$items->IsValid', '$items->CollectionType_cd', '$items->Period_cd', '$items->CollectionMethod_cd', '$items->TotalAmount', '$items->QuotingModuleInfo', $dateCreated,
  $QuotedValues, $QuoteResultItems, $transaction)
 IYONA;
-            if(!$this->test_mode){$rs = $db->Execute($sql);iyona_message($rs,$sql);}
+            if(!$this->test_mode){$rs = $db->Execute($sql);iyona_message($rs,$sql,1);}
             else if($this->test_mode===true)_iyona($sql);
          endif;
          $fields['Agreement']    = '{"Offering":["Id","Ver","Uid","Name","Description","Category_Id","IsActive","IsConfigured","CertificateType","Params","ExtendedProperty_cd","DefaultQuotingModule"],"1":"Status","2":"DateModified","3":"StartDate","4":"EndDate","5":"ExternalReferenceNo"}';
@@ -91,11 +91,11 @@ NotTakenUpReason_cd, NotTakenUpDescription,Holder, Intermediary, FandI, SysUser,
 VALUES ('$items->Id', '$items->Uid', '$items->Ver', '$items->Status', '$items->WorkflowInstanceId', '$items->Comments', $dateCreated, $dateModified, '$items->DealType_cd',
 '$items->ExternalReferenceNumber', '$items->ChangeHistory', '$items->NotTakenUpReason_cd', '$items->NotTakenUpDescription', $Holder, $Intermediary, $Fandi, $SysUser, $RelatedStakeholders, $TxItems, $TxCategoryDetails, $TxShDetails, $TxItemsDetails, $Agreements, $CategorySelections)
 IYONA;
-//            if(!$this->test_mode){$rs = $db->Execute($sql);iyona_message($rs,$sql);}
-//            else if($this->test_mode===true)_iyona($sql);
+            if(!$this->test_mode){$rs = $db->Execute($sql);iyona_message($rs,$sql,1);}
+            else if($this->test_mode===true)_iyona($sql);
 
          endif;
-         $fields['Holder']       = '["Id","Ver","Uid","CountryOfOrigin_cd","EthnicGroup_cd","Initials","Surname","FullNames","PreferredName","MaidenName","IdentificationNumber","Title_cd","Gender_cd","Nationality_cd","BirthDate","Race_cd"]';
+         $fields['Holder']       = '["Id","Ver","Uid","CountryOfOrigin_cd","EthnicGroup_cd","Initials","Surname","FullNames","PreferredName","MaidenName","IdentificationNumber","Title_cd","Gender_cd","Nationality_cd","BirthDate","Race_cd","RegistrationNumber","IsVatRegistered","VatRegistrationNumber","TradingAs","IsActive","CompanyType_cd","Name"]';
          $fields['Addresses']    = '{"Address":["Id","Ver","Uid","CountryCode","AreaCode","Number","Address","ContractType_cd","Line1","Line2","UnitName","UnitNumber","StreetName","StreetNumber","Province_cd","Suburb","City","Code","AddressStatus"]}';
          $fields['Intermediary'] = '["Id","Uid","Name","TradingAs","VatRegistrationNumber","CompanyName"]';
          $fields['FandI']        = '["Id","Uid","Name","FullNames","Surname","IdentificationNumber"]';
@@ -103,7 +103,7 @@ IYONA;
 /*
 //         $fields['Related'][1]['Sh']['Addresses']['Dns.Sh.ShAddress'][] = 'Addresses';
 //         $fields['Related'][1]['Sh']['Addresses']['Dns.Sh.ShAddress'][] = '{"Address":["Id","Ver","Uid","CountryCode","AreaCode","Number","Address","ContractType_cd","Line1","Line2","UnitName","UnitNumber","StreetName","StreetNumber","Province_cd","Suburb","City","Code","AddressStatus"]}';
- */
+*/
          $fields['TxItems']      = '{"Item":["Id","Uid","Ver","MotorVehicleType","HasRunflat","EngineNumber","FirstRegistrationDate","HasImmobiliser","MM_Code","RegistrationNumber","VINNumber","Year","ItemType_cd","Description"]}';
          $fields['TxFinance']    = '["Id","Uid","Ver","ApplicationType_cd","PurchasePurpose_cd","CustomerType_cd","RequestedInterestRate","PaymentFrequency_cd","ContractPeriod","RateType_cd","RequestedResidual","RequestedResidualPercentage","FinanceHouse_cd"]';
          $fields['TxCollection'] = '{"Account":["Id","Uid","Ver","AccountHolder","AccountType_cd","BankAccountNo","BankAccountHolderName"],"1":"frequency_cd","2":"paymentmethod_cd","3":"FirstDebitDate","4":"MonthlyDebitDay"}';
@@ -131,7 +131,7 @@ IYONA;
          $fields['CatSelections']= '["Id","Uid","Ver","Status"]';
 
          $children['Holder']     = '["Addresses"]';
-         $this->insert_node($items->Holder,'Holder',$fields['Holder'],$children['Holder'], array('transaction'=>$items->Id));
+         $this->insert_node($items->Holder,'Holder',$fields['Holder'],$children['Holder'], array('Type'=>array("Holder","Type"), 'transaction'=>$items->Id));
          $this->insert_node($items->Holder->Addresses->{'Dns.Sh.ShAddress'},'Addresses',$fields['Addresses'],'{}', array('Type'=> array("Address","Type"),'holder'=>array("Sh","Id") ));
          foreach($items->RelatedStakeholders->{'Dns.Bts.TxStakeholder'} as $adr):
             $this->insert_node($adr->Sh->Addresses->{'Dns.Sh.ShAddress'},'Addresses',$fields['Addresses'],'{}', array('Type'=> array("Address","Type"),'holder'=>array("Sh","Id") ));
@@ -224,12 +224,13 @@ IYONA;
 							$SET = rtrim($SET,",\n");
 							$sql = "INSERT INTO {$this->append_table}$_table \n$SET";
 						else:
-							$children   = implode("','",$children);
+                     $children   = array_map("qstr",$children);
+                     $children   = implode(",",$children);
 							$fields     = implode('`,`',$fields);
-							$sql        = "REPLACE INTO {$this->append_table}$_table (`$fields`) \n VALUES ('$children')";
+							$sql        = "REPLACE INTO {$this->append_table}$_table (`$fields`) \n VALUES ($children)";
 						endif;
                   #if ($_table=='jobs_new') _iyona($sql."\n#=====================================================#$cnt\n",1);
-                  if(!$this->test_mode)$rs         = $db->Execute($sql);
+                  if(!$this->test_mode)$rs = $db->Execute($sql);
                   else if ($this->test_mode==$_table) _iyona($sql);
                   else if ($this->test_mode===true) _iyona($sql);
                   iyona_message($rs,$sql,1);
@@ -275,4 +276,11 @@ IYONA;
 
    }//end function
 }//end class
+#==============================================================================#
+function qstr($arr)
+{
+   global $db;return $db->qstr($arr);
+}//end function
+#==============================================================================#
+
 ?>

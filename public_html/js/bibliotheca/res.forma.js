@@ -85,7 +85,7 @@ function SET_FORM(_name,_class,_label){
    this.setAlpha=function(){
       var mainLabel, legend,fieldset,container;
       this.frmLabel=mainLabel=eternal.form.label?eternal.form.label:true;
-      if(!getLicentia(this.name,'View')) {$('.db_notice').html("<strong class='text-error'>You do not have permission to view "+this.name+"</strong>");return false;}
+      if(!getLicentia(this.name,'View',true)) return false;
       $('#sideBot h3').html('<a href="javascript:void(0)">Add new '+this.name+'<i class="icon icon-color icon-plus addThis"></i></a>');
       //FORM
       this.form=eternal.form.field;
@@ -113,7 +113,7 @@ function SET_FORM(_name,_class,_label){
       var Name,navSection,len,addbtn,max,len,ref,row,rec,frm,frmName;var collapseName,collapse,collapseTo,collapse_head,collapse_content,headeName,ii,x,l,first;
       len=len||1;//this will display the record even when there is no record
       var linkTable=this.linkTable;
-      if(!getLicentia(this.name,'View')) {$('.db_notice').html("<strong class='text-error'>You do not have permission to view "+this.name+"</strong>");return false;}
+      if(!getLicentia(this.name,'View',true)) return false;
       this.frmLabel=typeof eternal.form.label=="boolean"?eternal.form.label:true;
       var isReadOnly=(typeof eternal.form.options !=="undefined")?eternal.form.options.readonly:false;
       if(typeof _results.rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_results);//change la donner seaulment quand ce náit pas une cherche
@@ -123,11 +123,11 @@ function SET_FORM(_name,_class,_label){
       if(!_actum){
          roadCover._Set({"next":".tab-pane.active .libHelp"});
          //@todo fix the header title
-         if(!document.getElementById('newItem')&&isReadOnly===false&&getLicentia(this.name,'Create')){
-            addbtn=roadCover._Set({"next":".tab-pane.active .homeSet2,.tab-pane.active .setClient"}).btnCreation("button",{"id":"newItem","name":"btnNew"+this.name,"clss":"btn btn-primary","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
-            addbtn.onclick=addRecord;//function call
+         if(!$('.btnNew').length&&isReadOnly===false&&getLicentia(this.name,'Create')){
+            addbtn=roadCover._Set({"next":".homeSet2,.setClient"}).btnCreation("button",{"id":"newItem","name":"btnNew"+this.name,"clss":"btn btn-primary btnNew","title":"Create a new "+this.name}," New "+this.name,"icon-plus icon-white");
+            $('.btnNew').click(addRecord);//function call
          }else if (isReadOnly===false&&getLicentia(this.name,'Create')){
-            $('#newItem').attr("name","btnNew"+this.name).attr("title","Create a new "+this.name).html(" <i class='icon-plus icon-white'></i> New "+this.name);
+            $('.btnNew').attr("name","btnNew"+this.name).attr("title","Create a new "+this.name).html(" <i class='icon-plus icon-white'></i> New "+this.name);
          }
          /*@note:$('footer').data('header') is set from the menu links
           * aliquam: from server or localhost
@@ -223,9 +223,11 @@ function SET_FORM(_name,_class,_label){
             $(this.frmID)[0].onsubmit=function(e){e.preventDefault();$("#submit_"+SET.name).button("loading");DB.beta(2,row["jesua"]);setTimeout(function(){$(SET.frmID+" #submit_"+SET.name).button("reset");}, 500); return false;}//make the form to become update
             if(!getLicentia(this.name,"Edit")) $("#submit_"+SET.name).addClass("disabled");
          }//endif
-         if(eternal.form.file)load_async("js/agito/"+eternal.form.file+".js",false,"end",true);
-         var event = new Event('onShowForm');
-         document.querySelector(this.frmID).dispatchEvent(event);
+         if(eternal.form.file){var agitoScript=load_async("js/agito/"+eternal.form.file+".js",false,"end",true);
+            if(agitoScript===false&&typeof onShowForm==="function"){
+               var event = new Event('onShowForm');
+               document.querySelector(this.frmID).addEventListener("onShowForm",onShowForm,false);
+               document.querySelector(this.frmID).dispatchEvent(event);}}
       }
 //      this.setObject({"items":eternal,"father":function(_key,_field){}});
    }
@@ -279,7 +281,7 @@ function SET_FORM(_name,_class,_label){
          }//endfor
          if(_functions){
             tmp=$table.vita('td',{},true).father;
-            if(getLicentia(this.name,'Delete')===true)$table.vita('a',{'href':'javascript:void(0)','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=function(){omegaNotitia(this,row['jesua']);}
+            if(getLicentia(this.name,'Delete')===true)$table.vita('a',{'href':'javascript:void(0)','clss':'forIcon'},true).vita('i',{'clss':'icon icon-color icon-trash'}).child.onclick=function(){omegaNotitia(this);}
             ref=row['name']||row['username']||false;
             $table.father=tmp;
             if(typeof eternal.links!="undefined") this.setLinks(eternal.links,$table,row[0],ref);
@@ -296,7 +298,7 @@ function SET_FORM(_name,_class,_label){
     * @returns {undefined}
     */
    this.newTableRow=function(_row,_child,_functions){
-      var headers,cls,allHead,$table,k,theContent;
+      var headers,cls,allHead,$table,k,theContent,val;
       var father=document.querySelector('#table_'+this.name+' tbody');//avoir le pere du body
       var lastRow=parseInt(document.querySelector('.'+this.name+'Total').innerHTML)+1;lastRow=lastRow||1;
       document.querySelector('.'+this.name+'Total').innerHTML=lastRow;
@@ -311,7 +313,9 @@ function SET_FORM(_name,_class,_label){
       for(k in headers){ if(!headers[k].header&&!allHead) continue;
          $table.father=tr;$table.vita('td',{'contenteditable':true,'clss':'col_'+k},false,_row[k]);
          $table.child.onfocus=function(){theContent=$(this).text();}
-         $table.child.onblur=function(){if(theContent!=$(this).text())deltaNotitia(this);}
+         $table.child.onblur=function(){if(theContent!=$(this).text())deltaNotitia(this);
+            //place the new text in the icon data, so that link will be assosiated with the new link
+            val=$(this).text(); $('.icon-link',tr).each(function(i){$(this).data('ref',val).data('head',ref); console.log($(this)[0],"||",$(this).data('ref'),$(this).data('head')); } );}
       }//endfor
       if(_functions){
          father=$table.vita('td',{},true).father;
@@ -550,6 +554,7 @@ function SET_FORM(_name,_class,_label){
             $(_collapse_head.child).click(function(){//@note: watchout for toggle, u'll hv to click twist if u come back to an other toggle.
                $('.accordion-heading .icon-black,#table_'+SET.name+' .icon-black').removeClass('icon-black').addClass('icon-color');$(this).removeClass('icon-color').addClass('icon-black');
                var jesua=$(this).parents('div').data('jesua')||$(this).parents('tr').data('jesua');
+               console.log($(this).data('ref'),"//",$(this).data('head'));
                SET.linkTable($(this).data('head'), $(this).data('link'),$(this).data('links'),$(this).data('ref'),jesua);
             });
          }else{//esle reference. LINK
@@ -775,7 +780,7 @@ function formInput(_key,_field,_items,_holder,_complex){
                });
             },updater:function(item){return getResults[item]||item;}
          });break;
-      case 'editor': //load_async("js/libs/CKEditorMin/ckeditor.js",true,"end",false);//setTimeout(function(){CKEDITOR.replace(_field.id);},100);//mait un compteur, pour que la scripte charge
+      case 'editor': //load_async("js/libs/CKEditorCus/ckeditor.js",true,"end",false);//setTimeout(function(){CKEDITOR.replace(_field.id);},100);//mait un compteur, pour que la scripte charge
       case 'text': ele=creo(_field,'textarea'); break;
       case 'select': ele=create_select (_key, true, _items, _field.clss);break;
       default: ele=creo(_field,theType); break;//@check: changed <var>theType</var> it use to be 'input', check that it does not affect other form item
@@ -809,7 +814,7 @@ fieldsDisplay=function(_from,_source,_head,_reference){
          case 'radio':
          case 'bool':
          case 'check':
-            if(_from==='form')$(frmID+' [name^='+key2+']').each(function(){if($(this).prop('value')==_source[key])$(this).addClass('active').prop('checked',true);else $(this).removeClass('active').prop('checked',false);});
+            if(_from==='form')$(frmID+' [name^='+key2+']').each(function(){if($(this).val()==_source[key]||$(this).text()==_source[key])$(this).addClass('active').prop('checked',true);else $(this).removeClass('active').prop('checked',false);});
             else if(_from==='list')$(frmID+' [name^='+key2+']').each(function(){if($(this).prop('checked')||$(this).hasClass('active'))_return[c]=$(this).addClass('active').prop('value');});
             else _return[c]=_source[key2];
             break;

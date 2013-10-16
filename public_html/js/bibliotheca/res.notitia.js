@@ -322,7 +322,7 @@ function SET_DB(_reset){
                   if (typeof _Tau== "undefined"||_Tau===false){
                      l = omega.length;for (x = 0; x < l; x++)$DB(omega[x], [row['name']], "Ref deleted "+row['name']+" from:" + _iyona);
                      //========================================================//deletes child permissions and
-                     if(delta){
+                     if(delta&&_iyona=="permissions"){
                         $DB("SELECT id,name,jesua FROM "+_iyona+" WHERE sub=?",[_jesua],'',function(r,j){
                            if(j.rows.length){
                               l2=j.rows.length;
@@ -674,9 +674,9 @@ function alphaNotitia(_row,_tr){
  * @param object <var>_set</var> the element cliented
  * @param integer <var>_iota</var>
  */
-function omegaNotitia(_set,_jesua){
+function omegaNotitia(_set){
    var name=eternal.form.field.name;
-   var jesua=_jesua||$(_set).parents('tr').data('jesua');
+   var jesua=$(_set).parents('tr').data('jesua');
    $(_set).parents('tr').hide();var msg = " Record removed ";
    var quaerere={"eternal":{"blossom":{"alpha":jesua,"delta":"!@=!#"}},"iyona":eternal.mensa,"Tau":"oMegA"};sessionStorage.quaerere=JSON.stringify(quaerere);
    $DB("DELETE FROM "+eternal.mensa+" WHERE jesua=?",[jesua],msg,function(){
