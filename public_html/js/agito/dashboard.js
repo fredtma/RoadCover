@@ -3,9 +3,10 @@
  */
 (theDashboard=function(){
    newSection();//rest #body, button, pagination
-   if(history.state&&history.state.path=='dashboard')hasNarro=false;
-   if(!sessionStorage.narro)hasNarro=false;
-   //console.log('consolidates',hasNarro,history.state,sessionStorage.narro);
+   if(history.state&&history.state.path=='dashboard')hasNarro=false;//quand l'histoire contient le dashbaord
+   if(!sessionStorage.narro)hasNarro=false;//quand il ya pas d'histoire, coure le dashboard.
+   if(!impetroUser().nominis)hasNarro=true;//mais si, l'utilizateur n'ai pas enregistre ne coure pas le dashboard
+//   console.log('consolidates',hasNarro,history.state,sessionStorage.narro);
    if(hasNarro===false){
       $welcome=$anima('#body article','div',{'id':'dashboard'}).vita('div',{clss:'row-fluid'},true);
       $welcome.vita('div',{clss:'span4 alert alert-info dash-module getUser',"href":"#tab-home"},true).vita('h4',{},true,' Administrators ').vita('i',{'clss':'icon-user icon-white'},false,'','first').novo('#dashboard .getUser','p',{},'users content text');

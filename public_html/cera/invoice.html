@@ -24,16 +24,15 @@
          .invTop{background-color:#d9edf7;font-weight:bold;display:table;width:100%;}
          .invTop span,.invMid span,.invBot span{width:10%;display:table-cell;padding:0.3em;border:0px solid red}
          .invTop span:nth-child(1),.invMid span:nth-child(1),.invBot span:nth-child(1){width:2%;}
-         .invTop span:nth-child(3),.invTop span:nth-child(4),.invTop span:nth-child(6),
-         .invMid span:nth-child(3),.invMid span:nth-child(4),.invMid span:nth-child(6),
-         .invBot span:nth-child(3),.invBot span:nth-child(4),.invBot span:nth-child(6) {width:15%}
+         .invTop span:nth-child(2),.invMid span:nth-child(2),.invBot span:nth-child(2) {width:5%}
+         .invTop span:nth-child(4),.invMid span:nth-child(4),.invBot span:nth-child(4) {width:23%}
          .invMid,.invBot{display:table;width:100%;}
-         .invMid span:nth-child(6){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
+         .invMid span:nth-child(8){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
          .invTop span:last-child,.invMid span:last-child,.invBot span:last-child{width:10%;background-color:#d9edf7;border-left:1px solid #d9edf7;}
          .invCust{border-bottom:1px solid #d9edf7;}
          .invBot span{border-bottom:1px solid #d9edf7;}
-         .invBot span:nth-child(6){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
-         .invBot span:nth-child(7){background-color:#d9edf7;border-left:1px solid #d9edf7;}
+         .invBot span:nth-child(8){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
+         .invBot span:nth-child(9){background-color:#d9edf7;border-left:1px solid #d9edf7;}
          .invNote{-webkit-border-radius: 0px;-moz-border-radius: 0px;border-radius: 0px;display:table;width:100%;padding:1em 0em;}
          .form-horizontal .form-actions.invNote{padding-left:0em;}.well{background-color:#fff;}
          .blueWell{background-color:#3a87ad; color:#d9edf7;padding-left:3em !important;}.blueWell li{float:left;margin-left:2em;}
@@ -91,11 +90,11 @@
                </ul>
             </section>
             <section class="invB">
-               <div class="invTop"><span>No</span><span>Sales Person</span><span>Customer</span><span>Deal No</span><span>IDno</span><span>Date</span><span>Period</span><span>Amount</span></div>
+               <div class="invTop"><span>No</span><span>Deal No</span><span>Sales Person</span><span>Customer</span><span>IDno / RegNumber</span><span>Date</span><span>Period</span><span>Commission</span><span>Total Premium</span><span>Amount</span></div>
                <div class="invCust"><!--ingenero--></div>
 <!--               <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span></span><span>Total</span><span id="invTot">ingenero</span></div>
                <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span></span><span>VAT(14%)</span><span id="invVat">ingenero</span></div>-->
-               <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span></span><span>Total (inc VAT%)</span><span id="invAll"><!--ingenero--></span></div>
+               <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span>Total (inc VAT%)</span><span id="invAll"><!--ingenero--></span></div>
             </section>
          </article>
          <div class="form-actions well well-small invNote row-fluid">
@@ -126,12 +125,12 @@
    <script type="text/javascript">
       $('.body article').addClass('totalView');
       $DB("SELECT code FROM dealers ORDER BY name",[],"",function(r,j){
-         var x,l,row,codes=[];
+         var x,l,row,codes=[],defaultDealer=1771;
          if(j.rows.length){
             l=j.rows.length;sessionStorage.genesis=0;
             for(x=0;x<l;x++)codes[x]=j[x]["code"];$('footer').data('pagination',codes);
-            var dealerTemp=$('footer').data('temp');console.log(dealerTemp,"dealerTemp");
-            if(!dealerTemp||typeof dealerTemp==="undefined")getInvoice(codes[0]);
+            var dealerTemp=$('footer').data('temp');//quand un dealer et selectioner apartir d'une autre intervention mais garger dans le pied
+            if(!dealerTemp||typeof dealerTemp==="undefined")getInvoice(defaultDealer);
             else if(dealerTemp&&dealerTemp[0])getInvoice(dealerTemp[0]);
          }//endifrows
          $(".next").click(function(){
@@ -151,6 +150,7 @@
          var m=$("#monthList").val()||localStorage.SITE_MONTH;
          var lastDay=new Date(y,m,0).getDate();var dateFrom=new Date(y+'/'+m+'/01').format(localStorage.SITE_DATE);var dateTo=new Date(y+'/'+m+'/'+lastDay).format(localStorage.SITE_DATE);
          $("#fromTo").html(dateFrom+' To '+dateTo);
+         $anima(".invCust","div",{"clss":"progress progress-striped active","id":"ok"}).vita("div",{"clss":"bar","style":"width:100%"},false,"Loading...");
          get_ajax(localStorage.SITE_SERVICE,{"militia":"cautionem-dealer","iota":inv,"m":m,"y":y},"","post","json",function(jData){
             var address=false,customers=false,invoices=false;
             if("company" in jData&&"rows" in jData.company&&"length" in jData.company.rows&&jData.company.rows.length>=1);else return false;
@@ -187,15 +187,18 @@
             //CUTOMERS DETAILS
             $(".invCust").empty();$("#invTot").empty();$("#invVat").empty();$("#invAll").empty();
             if(customers){
+               var premium,commission;
                l=customers.rows.length;
                $cust=$anima(".invCust");
                father=$cust.father;
                for(x=0;x<l;x++){
                   row=customers[x];
                   $cust.father=father;
-                  amount=parseFloat(row["TotalAmount"]);
+                  premium=parseFloat(row["TotalAmount"]);
+                  commission=parseFloat(row["Commission"]);
+                  amount=premium-commission;
                   total+=amount;
-                  $cust.vita("div",{"clss":"invMid"},true).vita("span",{},false,x+1).vita("span",{},false,row["Salesman"]).vita("span",{},false,row["Fullname"]).vita("span",{},false,row["Deal"]).vita("span",{},false,row["IDno"]).vita("span",{},false,row["DateModified"]).vita("span",{},false,row["Period"]).vita("span",{},false,'R '+amount);
+                  $cust.vita("div",{"clss":"invMid"},true).vita("span",{},false,x+1).vita("span",{},false,row["Deal"]).vita("span",{},false,row["Salesman"]).vita("span",{},false,row["Fullname"]).vita("span",{},false,row["IDno"]).vita("span",{},false,row["DateCreated"]).vita("span",{},false,row["Period"]).vita("span",{},false,'R '+commission).vita("span",{},false,'R '+premium).vita("span",{},false,'R '+amount);
                }//for customers
 //               vat=Math.round(total/100*14);all=total+vat;
 //               $("#invTot").html('R '+total);

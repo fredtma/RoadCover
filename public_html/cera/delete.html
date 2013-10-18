@@ -1,0 +1,20 @@
+<script>
+   txt="res.PremiumType_cd,FORMAT(res.CurrentAmount,2) as "Current Amount",res.IsActive,res.isPartOfMainPremium,FORMAT(res.Amount,2)as Amount,res.Description,res.SubCode as "Sub Code"
+FROM road_QuoteResultItems res
+INNER JOIN road_Transactions trans ON trans.Id=res.transaction
+WHERE trans.Holder='2240541'
+GROUP BY res.PremiumType_cd;
+
+SELECT CONCAT(agent.FullNames,' ',agent.Surname) as Salesman,
+if(member.Surname!='',CONCAT(member.FullNames,' ',member.Surname),CONCAT('[Company]: ',member.Name)) as Fullname,
+if(member.IdentificationNumber!='',member.IdentificationNumber,member.RegistrationNumber) as IDno,
+trans.Id as Deal,quot.Period_cd as Period, quot.TotalAmount, quot.DateModified, sum(quot.TotalAmount) Total
+FROM road_Transactions trans
+LEFT JOIN road_Intermediary dealer on dealer.`Id`=trans.Intermediary
+LEFT JOIN road_FandI agent on agent.`Id`=trans.FandI
+INNER JOIN road_Holder member on member.Id=trans.Holder
+INNER JOIN road_QuoteTransactions quot on quot.`transaction`=trans.`Id`
+WHERE dealer.Id='1771'
+AND (MONTH(STR_TO_DATE(quot.DateCreated,'%Y-%m-%d %h:%i:%s %p'))='9' AND YEAR(STR_TO_DATE(quot.DateCreated,'%Y-%m-%d %h:%i:%s %p'))='2013')
+GROUP BY quot.`transaction` ORDER BY agent.Surname,member.Surname,quot.DateModified ASC;";
+</script>

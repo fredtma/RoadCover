@@ -18,7 +18,7 @@ agitoScript=function(){
       "quaerere":{"scopo":"","ubi":true,"finis":10},
       "fields": {
          "Title":{"complex":"span","field":{"clss":"formReader"}},
-         "Fullnames":{"header":true,"search":true,"complex":"span","title":"Customer name","field":{"clss":"formReader"}},
+         "Fullname":{"header":true,"search":true,"complex":"span","title":"Customer name","field":{"clss":"formReader"}},
          "Race":{"complex":"span","field":{"clss":"formReader"}},
          "Gender":{"complex":"span","field":{"clss":"formReader"}},
          "Nationality":{"complex":"span","field":{"clss":"formReader"}},

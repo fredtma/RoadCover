@@ -46,7 +46,7 @@ switch($_POST['militia']){
    case 'members':
       $y=$_POST['luna'][0]?$_POST['luna'][0]:date("Y");
       $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
-      $srch="WHERE (MONTH(STR_TO_DATE(trans.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($m)} AND YEAR(STR_TO_DATE(trans.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($y)})";
+      $srch="WHERE (MONTH(trans.DateCreated)={$db->qstr($m)} AND YEAR(trans.DateCreated)={$db->qstr($y)})";
       if($_POST['quaerere'] && $_POST['quaerere'][0]!=0):$srch.=" AND ";
          if($_POST['quaerere'][1]=='dealers'):$srch.="dealer.Id={$db->qstr($_POST['quaerere'][0])}";
          elseif($_POST['quaerere'][1]=='salesmen'):$srch.="agent.Id={$db->qstr($_POST['quaerere'][0])}";
@@ -55,9 +55,9 @@ switch($_POST['militia']){
          $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
       endif;
       $sql=<<<IYONA
-SELECT trans.Id,dealer.Name as Dealer, agree.Status,
-CONCAT(agent.FullNames,' ',agent.Surname) as Salesman, $menber_name,member.IdentificationNumber as IDno,
-agrement.Name,quot.Period_cd as Period,quot.CollectionMethod_cd as CollectionMethod,quot.TotalAmount, quot.DateModified
+SELECT agree.Id,dealer.Name as Dealer, agree.Status,
+CONCAT(agent.FullNames,' ',agent.Surname) as Salesman, $menber_name,if(member.IdentificationNumber!='',member.IdentificationNumber,member.RegistrationNumber) as IDno,
+agrement.Name,quot.Period_cd as Period,quot.CollectionMethod_cd as CollectionMethod,quot.TotalAmount, quot.DateCreated
 FROM road_Transactions trans
 LEFT JOIN road_Intermediary dealer ON dealer.`Id`=trans.Intermediary
 LEFT JOIN road_FandI agent ON agent.`Id`=trans.FandI
@@ -67,7 +67,7 @@ INNER JOIN road_QuoteTransactions quot ON quot.`transaction`=trans.`Id`
 INNER JOIN road_Quote_Agreement agrement ON agrement.`Id`=quot.Agreement
 $srch group by quot.`transaction` ORDER BY agent.Surname,member.Surname,quot.DateModified ASC LIMIT $LIMIT;
 IYONA;
-      iyona_log($sql);echo json_encode(array_result($sql,true));
+      echo json_encode(array_result($sql,true));
       break;
 #==============================================================================#
    case 'dealer-display':
@@ -80,16 +80,18 @@ IYONA;
       $rows['address']=array_result("SELECT * FROM road_Addresses a WHERE a.holder={$db->qstr($_POST['iota'])} GROUP BY Uid ORDER BY `Type`",true);
       $rows['company']=array_result("SELECT * FROM {$pre}dealers a WHERE a.code={$db->qstr($_POST['iota'])}",true);
       $sql=<<<IYONA
-SELECT CONCAT(agent.FullNames,' ',agent.Surname) as Salesman, $menber_name,member.IdentificationNumber as IDno, trans.Id as Deal,
-quot.Period_cd as Period,quot.CollectionMethod_cd as CollectionMethod, quot.TotalAmount, quot.DateModified, sum(quot.TotalAmount) Total
+SELECT CONCAT(agent.FullNames,' ',agent.Surname) AS Salesman, $menber_name,
+if(member.IdentificationNumber!='',member.IdentificationNumber,member.RegistrationNumber) AS IDno,
+agree.Id AS Deal, quot.TotalAmount, trans.DateCreated,quot.Period_cd  AS Period,res.Amount as Commission
 FROM road_Transactions trans
-LEFT JOIN road_Intermediary dealer on dealer.`Id`=trans.Intermediary
+INNER JOIN road_Agreements agree ON agree.`transaction`=trans.Id
 LEFT JOIN road_FandI agent on agent.`Id`=trans.FandI
 INNER JOIN road_Holder member on member.Id=trans.Holder
 INNER JOIN road_QuoteTransactions quot on quot.`transaction`=trans.`Id`
-WHERE dealer.Id={$db->qstr($_POST['iota'])}
-AND (MONTH(STR_TO_DATE(quot.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($_POST['m'])} AND YEAR(STR_TO_DATE(quot.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($_POST['y'])})
-GROUP BY quot.`transaction` ORDER BY agent.Surname,member.Surname,quot.DateModified ASC
+LEFT JOIN road_QuoteResultItems res ON res.QuoteResult=quot.Id AND res.PremiumType_cd='Commission'
+WHERE trans.Intermediary={$db->qstr($_POST['iota'])}
+AND MONTH(trans.DateCreated)={$db->qstr($_POST['m'])} AND YEAR(trans.DateCreated)={$db->qstr($_POST['y'])}
+GROUP BY quot.`transaction` ORDER BY agent.Surname,member.Surname ASC;
 IYONA;
       $rows['customers']=array_result($sql,true);
       $sql=<<<IYONA
@@ -112,16 +114,17 @@ IYONA;
    case 'customers':
       $y=$_POST['luna'][0]?$_POST['luna'][0]:date("Y");
       $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
-      $srch="WHERE (MONTH(STR_TO_DATE(trans.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($m)} AND YEAR(STR_TO_DATE(trans.DateCreated,'%Y-%m-%d %h:%i:%s %p'))={$db->qstr($y)})";
+      $srch="WHERE (MONTH(trans.DateCreated)={$db->qstr($m)} AND YEAR(trans.DateCreated)={$db->qstr($y)})";
       if($_POST['quaerere']):$srch.=" AND ";
          if($_POST['quaerere'][1]=='dealers'):$srch.="trans.Intermediary={$db->qstr($_POST['quaerere'][0])}";
          elseif($_POST['quaerere'][1]=='salesmen'):$srch.="trans.FandI={$db->qstr($_POST['quaerere'][0])}";
          endif;
       endif;
       $sql=<<<IYONA
-SELECT member.Id as code,trans.DateCreated,$menber_name,IdentificationNumber as IDno,Race_cd Race,Nationality_cd Nationality,
-Gender_cd Gender,Title_cd Title,EthnicGroup_cd EthnicGroup,trans.Id as "transaction"
+SELECT member.Id as code,trans.DateCreated,$menber_name,if(member.IdentificationNumber!='',member.IdentificationNumber,member.RegistrationNumber) as IDno,Race_cd Race,Nationality_cd Nationality,
+Gender_cd Gender,Title_cd Title,EthnicGroup_cd EthnicGroup,agree.Id as "transaction"
 FROM road_Transactions trans
+INNER JOIN road_Agreements agree ON agree.`transaction`=trans.Id
 INNER JOIN road_Holder member on member.Id=trans.Holder
 $srch GROUP BY IDno ORDER BY DateCreated ASC LIMIT $LIMIT;
 IYONA;
@@ -130,17 +133,18 @@ IYONA;
    case 'impetro omnia':
       $srch=$db->qstr($_POST['quaerere'].'%');
       $sql=<<<IYONA
-SELECT member.Id as code,trans.DateCreated,$menber_name,IdentificationNumber as IDno,Race_cd Race,Nationality_cd Nationality,
+SELECT member.Id as code,trans.DateCreated,$menber_name,if(member.IdentificationNumber!='',member.IdentificationNumber,member.RegistrationNumber) as IDno,Race_cd Race,Nationality_cd Nationality,
 Gender_cd Gender,Title_cd Title,EthnicGroup_cd EthnicGroup,trans.Id as "transaction"
 FROM road_Transactions trans
 INNER JOIN road_Holder member on member.Id=trans.Holder
-WHERE member.Name LIKE $srch OR member.IdentificationNumber LIKE $srch OR trans.Id LIKE $srch;
+INNER JOIN road_Agreements agree ON agree.`transaction`=trans.Id
+WHERE member.Surname LIKE $srch OR member.Name LIKE $srch OR member.IdentificationNumber LIKE $srch OR agree.Id LIKE $srch;
 IYONA;
       $rows=array_result($sql,true);echo json_encode($rows);break;
 #==============================================================================#CUSTOMER BRIEF
    case 'customers-brief':
       $sql=<<<IYONA
-SELECT RegistrationNumber,car.Description,FirstDebitDate,MonthlyDebitDay,FORMAT(Deposit,2)Deposit,FORMAT(PrincipalDebt,2)PrincipalDebt,
+SELECT car.RegistrationNumber,car.Description,FirstDebitDate,MonthlyDebitDay,FORMAT(Deposit,2)Deposit,FORMAT(PrincipalDebt,2)PrincipalDebt,
 FORMAT(sale1.FinancedAmount,2) as 'FSPFees',
 FORMAT(sale2.FinancedAmount,2) as 'HandlinFees',
 FORMAT(sale3.FinancedAmount,2) as 'ServiceAndDelivery',
@@ -244,13 +248,37 @@ IYONA;
    case 'aliquis':
       $p=$db->qstr($_POST['p']);$u=$db->qstr($_POST['u']);
       $sql="SELECT id,username,CONCAT(firstname,' ',lastname) as name,jesua,level FROM {$pre}users WHERE password=$p AND (email=$u OR username=$u)";
-      $rows=array_result($sql);echo json_encode($rows);break;
-      break;
-#==============================================================================#count the login count
-   case 'adde quemvis':
+      $rows['aliquis']=array_result($sql);
+      #----------------------update count--------------------------#
       $sql="UPDATE {$pre}users SET last_seen=NOW(), log_count=log_count+1 WHERE username={$db->qstr($_POST['quemvis'])} LIMIT 1";
       $rs=$db->Execute($sql);iyona_message($rs,$sql);
+      #-----------------------licentia-----------------------------#
+      $sql=<<<IYONA
+      (SELECT pu.`permission` as permission FROM {$pre}link_permissions_users pu WHERE `user`=$u) UNION
+      (SELECT pg.`permission` as permission FROM {$pre}link_permissions_groups pg INNER JOIN {$pre}link_users_groups ug ON ug.`group`=pg.`group` WHERE ug.user=$u)
+       ORDER BY permission;
+IYONA;
+      $rs=$db->Execute($sql);iyona_log($sql."\r\n<br/>".$db->ErrorMsg());
+      if ($rs->_numOfRows>0&&$rows['aliquis']['rows']['length'])
+      {
+         while (!$rs->EOF) {extract($rs->fields);$rows['licentia'][strtolower($permission)]=++$cnt;$rs->MoveNext();}//end while of $rs
+      }//end if of $rs
+      echo json_encode($rows);break;
       break;
+#==============================================================================#PERMISSION CHECK
+   case 'licentia':
+      $licentia=$db->qstr($_POST['licentia']);
+      $sql=<<<IYONA
+      (SELECT pu.`permission` as permission FROM {$pre}link_permissions_users pu WHERE `user`=$licentia) UNION
+      (SELECT pg.`permission` as permission FROM {$pre}link_permissions_groups pg INNER JOIN {$pre}link_users_groups ug ON ug.`group`=pg.`group` WHERE ug.user=$licentia)
+       ORDER BY permission;
+IYONA;
+      $rs=$db->Execute($sql);iyona_log($sql."\r\n<br/>".$db->ErrorMsg());
+      if ($rs->_numOfRows>0)
+      {
+         while (!$rs->EOF) {extract($rs->fields);$rows[strtolower($permission)]=++$cnt;$rs->MoveNext();}//end while of $rs
+      }//end if of $rs
+      echo json_encode($rows);break;
 #==============================================================================#get all the db version
    case 'verto':
       if(empty($_POST['ver'])||!is_float((float)$_POST['ver'])) {return false;}
@@ -310,6 +338,7 @@ IYONA;
 }//end switch
 iyona_log($_sql);
 #==============================================================================##==============================================================================#
+# OUTTER FUNCTION
 #==============================================================================##==============================================================================#
 function array_result($_sql,$_assoc=false){
    global $db;
@@ -348,12 +377,14 @@ function export2pastel($_rows,$_iota,$_m,$_y){
 "Header","$invNo"," ","Y","$accNo",7,"$date"," ","N",0," "," "," ","$street","$suburb","$city","$province","$code"," ",0,"{$invoices['creation']}","$cell","$tel","$email",1," "," ",""," "\r\n
 IYONA;
    foreach($customers as $key => $cust){
-      $tax     =round((float)$cust['TotalAmount'],2);
+      $premium =round((float)$cust['TotalAmount'],2);
+      $com     =round((float)$cust['Commission'],2);
+      $tax     =$premium-$com;
       $no_tax  =round((float)$tax/1.14,2);
       $code    =($deb)?"ACC/LOC":$cust["CollectionMethod"];#JHB
       $store   ="JHB";
-      $product =$cust["_48Months"];
-      $d       =$cust["DateModified"]?"[{$cust["DateModified"]}]":"";
+      $product =$cust["Period"];
+      $d       =$cust["DateCreated"]?"[{$cust["DateCreated"]}]":"";
       $desc    ="{$cust["Salesman"]}:{$cust["Fullname"]} $d";
       $details.=<<<IYONA
 "Detail",0,1,$no_tax,$tax," ",1,3,0,"$code","$product",4,"     ","$store"\r\n"Detail",0,1,0,0," ",0,3,0,"'","$desc",7,"",""\r\n"Detail",0,1,0,0," ",0,3,0,"'"," ",7," "," "\r\n

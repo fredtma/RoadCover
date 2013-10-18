@@ -25,7 +25,7 @@ agitoScript=function(){
          "Period":{"header":true},
          "CollectionMethod":{"header":true,"title":"Collection Method"},
          "TotalAmount":{"header":true,"title":"Total Amount"},
-         "DateModified":{"header":true,"title":"Date Modified"},
+         "DateCreated":{"header":true,"title":"Date Created"},
          "IDno":{"header":false,"search":"Fullname"}
       }
    }

@@ -33,16 +33,9 @@ localStorage.EXEMPLAR=JSON.stringify({"username":["^[A-Za-z0-9_]{6,15}$","requir
 "bool":["^1|0","requires a boolean value of 0 or 1"],
 "email":["^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$","the email address is not the right formated"],
 "single":["^[a-zA-Z0-9]","requires a single value"]})
-var db,hasNarro=false,roadCover,eternal,theForm,creoDB,iyona,iota,notitiaWorker;
+var db,hasNarro=false,roadCover,eternal,theForm,creoDB,iyona,iota;
 sessionStorage.removeItem('quaerere');//clean up
-sessionStorage.formValidation=hasFormValidation();
-//============================================================================//WORKERS
-if(window.Worker&&localStorage.USER_NAME){
-   notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
-   (function(procus){var moli=screen.height*screen.width;
-      if(procus){notitiaWorker.postMessage({"procus":procus.singularis,"moli":moli});}
-   })(JSON.parse(localStorage.USER_NAME));
-}
+sessionStorage.formValidation=hasFormValidation();//regard si le browser peut fair les validation HTML5
 //============================================================================//
 /**
  * similar to jquery creates an DOM element
@@ -98,6 +91,7 @@ $anima=function(section,ele,arr,txt,point){
    Node=(typeof(section)=='string')?document.querySelector(section):section;
    this.creo=creo;
    this.father=ele?this.creo(arr,ele,txt):Node;
+   if(section==".invCust")console.log(document.querySelector(section),"/",this.father);
    this.vita=function(ele,arr,parent,txt,point){
       this.child=this.creo(arr,ele,txt);
       if(!point)this.father.appendChild(this.child);
@@ -149,6 +143,23 @@ function load_async(url,sync,position,fons){
    ele.appendChild(script);
    return true;
 //   head.parentNode.insertBefore(script, head);
+}
+//============================================================================//
+/**
+ * increase the progress bar, this is base on the number of task
+ * @author fredtma
+ * @version 0.4
+ * @category progress, status
+ * @param string <var>_msg</var> a msg to display where it is from
+ * @param bool <var>_reset</var> whether to reset the progressbar to 0
+ * @return void
+ * @todo add the manifest field
+ */
+profectus=function(_msg,_reset){
+   if(_reset){$("#progressBar").val(0).data("tasks",0);$("#progressBar span").html(0)}
+   var process=8;var tasks=$("#progressBar").data("tasks")||1;var progress=Math.round(((tasks/process)*100),2);
+//   console.log(_msg,"/",progress,"/",tasks,"/",process);
+   $("#progressBar").data("tasks",tasks+1);$("#progressBar").val(progress);$("#progressBar span").html(progress);
 }
 //============================================================================//
 /**
@@ -337,41 +348,35 @@ loginValidation=function(){
    var u,p,row;
    try{
       u=$('#loginForm #email').val();p=md5($('#loginForm #password').val());
-      $DB("SELECT id,username,firstname||' '||lastname as name,jesua,level FROM users WHERE password=? AND (email=? OR username=?)",[p,u,u],"Attempt Login",function(_results){
-         if(!_results.rows.length||true){
-            get_ajax(localStorage.SITE_SERVICE,{"militia":"aliquis","p":p,"u":u},"","post","json",function(results){console.log(results,"results");
-               if(results.rows.length){console.log();
-                  this.checkAliquis(results,true);
-               }else{$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('Failed login attempt...');}
-            })
-         }else if(_results.rows.length){
-            this.checkAliquis(_results);
+      get_ajax(localStorage.SITE_SERVICE,{"militia":"aliquis","p":p,"u":u},"","post","json",function(results){
+         if(results.aliquis.rows.length&&results.licentia){
+            this.checkAliquis(results,true);
          }else{$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('Failed login attempt...');}
       });
    }catch(err){console.log('ERROR::'+err.message)}
    //-------------------------------------------------------------------------//
    this.checkAliquis=function(_results,_from){
-      row=_from?_results[0]:_results.rows.item(0);
+      row=_from?_results.aliquis[0]:_results.rows.item(0);
       var USER_NAME={"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']};
       if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=JSON.stringify(USER_NAME);
-      else sessionStorage.USER_NAME=JSON.stringify(USER_NAME);
+      else sessionStorage.USER_NAME=JSON.stringify(USER_NAME);//@todo:make user_admin part of user_name
       if(row['level']==='super'){sessionStorage.USER_ADMIN=1;viewAPI(true);} else {viewAPI(false);sessionStorage.removeItem('USER_ADMIN');}
       $('#userName a').html(impetroUser().nominis);
       $('#userLogin').modal('hide').remove();
-      get_ajax(localStorage.SITE_SERVICE,{"militia":"adde quemvis","quemvis":row['username']},"","post","json");
+      sessionStorage.licentia=JSON.stringify(_results.licentia);
+      theDashboard();hauriret();
       if(window.Worker){
-         notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
+         var notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
          (function(procus){var moli=screen.height*screen.width;
-            if(procus){notitiaWorker.postMessage({"procus":procus.singularis,"moli":moli});readWorker()}
+            if(procus){notitiaWorker.postMessage({"procus":procus.singularis,"moli":moli});readWorker(notitiaWorker)}
          })(USER_NAME);
       }
-      setTimeout(function(){licentia(row['username']);},500);//retarder l'autorisation,de sorte que la nouvelle autorisation peut etre ajoute
    }
    return false;
 }
 //============================================================================//
 impetroUser=function(){
-   var USER_NAME=localStorage.USER_NAME?JSON.parse(localStorage.USER_NAME):JSON.parse(sessionStorage.USER_NAME);
+   var USER_NAME=localStorage.USER_NAME?JSON.parse(localStorage.USER_NAME):(sessionStorage.USER_NAME)?JSON.parse(sessionStorage.USER_NAME):{};
    return USER_NAME;
 }
 //============================================================================//
@@ -385,7 +390,7 @@ impetroUser=function(){
 loginOUT=function(){
    roadCover.loginForm();
    $('#userLogin .alert-info').find('span').append('You have successfully logout.<br/>Enter your username and password below if you wish to login again');
-   refreshLook(true);localStorage.removeItem('USER_ADMIN');localStorage.removeItem('USER_NAME');
+   localStorage.removeItem('USER_ADMIN');localStorage.removeItem('USER_NAME');refreshLook(true);
 }
 //============================================================================//
 /**
@@ -557,21 +562,33 @@ function viewAPI(_viewing){if(!_viewing) $('.homeSet0,.setDisplay').hide();else 
 //============================================================================//
 /**
  * gets the permissions of the user. Note permission are static
+ * @param {bool} <var>_live</var> get it from the live server
+ * @param {bool} <var>_drawn</var> redraw the dashboard and page
  * @author fredtma
  * @version 3.1
  * @category permission, login
  * @param string <var>_nominis</var> the nominis of the user
  */
-function licentia(){
+function licentia(_live,_draw){
    var len,x,tmp,row,val;
-   var _nominis = (localStorage.USER_NAME)?JSON.parse(localStorage.USER_NAME):JSON.parse(sessionStorage.USER_NAME);
-   var quaerere="SELECT pu.`permission` as permission FROM link_permissions_users pu WHERE `user`=? UNION \
-   SELECT pg.`permission` as permission FROM link_permissions_groups pg INNER JOIN link_users_groups ug ON ug.`group`=pg.`group` WHERE ug.user=?";
-   $DB(quaerere,[_nominis.operarius,_nominis.operarius],"Accessing permissions",function(_results){
-      len=_results.rows.length;tmp={};
-      for(x=0;x<len;x++){row=_results.rows.item(x);val=row['permission'];tmp[val.toLowerCase()]=x;}
-      sessionStorage.licentia=JSON.stringify(tmp);
-   });
+   var _nominis = impetroUser();
+   console.log(_live,"/",navigator.onLine,"/",_draw);
+   if(_live&&navigator.onLine){
+      get_ajax(localStorage.SITE_SERVICE,{"militia":"licentia","licentia":_nominis.operarius},'',"post","json",function(_results){
+//         console.log(_results,"_results",sessionStorage.licentia);
+         if(_results){
+            sessionStorage.licentia=JSON.stringify(_results);if(_draw){theDashboard();hauriret();}
+         }//endif
+      });
+   }else{
+      var quaerere="SELECT pu.`permission` as permission FROM link_permissions_users pu WHERE `user`=? UNION \
+      SELECT pg.`permission` as permission FROM link_permissions_groups pg INNER JOIN link_users_groups ug ON ug.`group`=pg.`group` WHERE ug.user=?";
+      $DB(quaerere,[_nominis.operarius,_nominis.operarius],"Accessing permissions",function(_results){
+         len=_results.rows.length;tmp={};
+         for(x=0;x<len;x++){row=_results.rows.item(x);val=row['permission'];tmp[val.toLowerCase()]=x;}
+         sessionStorage.licentia=JSON.stringify(tmp);if(_draw){theDashboard();hauriret();}
+      });
+   }//endif
 }
 //============================================================================//
 /*
@@ -585,7 +602,7 @@ function getLicentia(_name,_perm,_msg){
    if(_name===true)return _name;
    if(name1.indexOf('s')!=-1)var name2=name1.replace(/s$/,""); else name2=name1+'s';
    name1=name1+' '+_perm;name2=name2+' '+_perm;
-   var tmp=sessionStorage.licentia?JSON.parse(sessionStorage.licentia):[];
+   var tmp=sessionStorage.licentia?JSON.parse(sessionStorage.licentia):{};
    if(sessionStorage.USER_ADMIN) return true;
    name1=name1.toLowerCase();name2=name2.toLowerCase();
 //   console.log(tmp,"/",name1,"/",name2,tmp[name1]);
@@ -896,7 +913,7 @@ function version_db(cur,rev,trans){
  * @todo finish the function on this page
  * @uses file|element|class|variable|function|
  */
-function readWorker(){
+function readWorker(notitiaWorker){
    notitiaWorker.addEventListener('message',function(e){
       console.log('Worker on Notitia:', e.data);
       if(e.data=="licentia")licentia();
@@ -937,4 +954,5 @@ quaerereCustomer=function(e){
  */
 isOnline(true);
 setInterval(isOnline,50000);//5min
+profectus("@first to run in lib.numeris");
 //$('#progressBar').hide();
