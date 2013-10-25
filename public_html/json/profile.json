@@ -8,8 +8,9 @@
    "mensa":"users",
    "fields":{
       "username":{"valid":["unique"],"icon":"icon-user","place":true,"field":{"required":"","autofocus":""}},
-      "password":{"icon":"icon-lock","field":{"type":"password","required":""}},
-      "signum":{"source":"custom","icon":"icon-lock","title":"re-Password","field":{"type":"password","required":"","title":"re-Password"}},
+      "password":{"icon":"icon-lock","field":{"type":"password","required":"new"}},
+      "signum":{"source":"custom","icon":"icon-lock","title":"re-Password","field":{"type":"password","required":"new","title":"re-Password"}},
+      "view_password":{"source":"custom","complex":true,"title":"Change Password","clss":"linkField","field":{"href":"javascript:void(0)","type":"link","clss":"showField","title":"This will display the password for you to reset your password"}},
       "firstname":{"icon":"icon-tag","search":true,"header":true,"place":true,"field":{"required":""}},
       "lastname":{"icon":"icon-tags","search":true,"header":true,"place":true,"field":{"required":""}},
       "email":{"icon":"icon-envelope","place":true,"field":{"type":"email","required":""}},

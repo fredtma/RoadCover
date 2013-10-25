@@ -71,16 +71,18 @@ function SET_DB(_reset){
       if(_actum!==0){
          $('.control-group.error').removeClass('error');$('.error-block').remove();
          $.each(eternal.fields,function(field,properties){
-            if(properties.source=='custom') return true;//skip the custom field
+//            if(properties.source=='custom') return true;//skip the custom field
             if(properties.field.type=='editor'&&(_actum==2||_actum==1)){val=CKEDITOR.instances[field].getData();}
             else val=$(form+' #'+field).val()||$(form+' [name^='+field+']:checked').val()||$(form+' .active[name^='+field+']').val()||properties.field.value;//field,check,active
             alpha=alpha||val;//la premiere donner pour cree une donner pour jesua
             if(_actum!=3&&typeof _actum!=="undefined"&&_actum){
-               if(SET.sanatio(val,field,properties)===false){quaerere=[];return false;}
-               if(properties.field.type=='password'&&(_actum==2||_actum==1)){val=md5($(form+' #'+field).val())}
-               params.push(val);res[field]=val;set.push("?");
+               if(SET.sanatio(val,field,properties,_actum)===false){quaerere=[];return false;}
+               if(properties.field.type=='password'&&val&&(_actum==2||_actum==1)){val=md5($(form+' #'+field).val())}
+               if(val&&properties.source!='custom'){params.push(val);res[field]=val;set.push("?");quaerere.push('`'+field+'`');}
+            } else if(properties.source!='custom') {
+               quaerere.push('`'+field+'`');
             }
-            quaerere.push('`'+field+'`');
+
          });
          if(quaerere.length==0)return false;//pas de donner trouver, surment une erreur de value
       }//endif_actum!=0
@@ -141,10 +143,11 @@ function SET_DB(_reset){
          var $display;
 //         jesua=results.insertId?results.insertId:$(form).data('jesua');
          len=results.rows.length;
-         console.log(results.rows,"/",iyona,"/",display.data('mensa'));
+//         console.log(results.rows,"/",iyona,"/",display.data('mensa'));
          //ASIDE
          if(display.data('mensa')!=iyona){
             display.data('mensa',iyona);//prevent this to fill with the same data table list
+            newSection();
             for(x=0;x<len;x++){
                name='';
                row=results.rows.item(x);
@@ -161,7 +164,6 @@ function SET_DB(_reset){
                $(SET.frmID+' #'+first).focus();$(SET.frmID).data('jesua',0);
                $(SET.frmID+' #submit_'+SET.name)[0].onclick=function(e){e.preventDefault();$('#submit_'+SET.name).button('loading');SET.alpha(1);setTimeout(function(){$(SET.frmID+' #submit_'+SET.name).button('reset');}, 500); return false; };
             });//endEvent
-            newSection();
             theForm.setAlpha();
             SET.alpha(3,_spicio);
          }//enf if
@@ -234,7 +236,7 @@ function SET_DB(_reset){
                $(SET.frmID+" #cancel_"+SET.name).val("Close...");//@todo
                nameList="";
                nameList=SET.fieldDisplay("list",null,true);
-               $("."+_jesua+" .betaRow span").each(function(i,v){$(v).html(nameList[i])});
+               $(".class_"+_jesua+" .betaRow span").each(function(i,v){$(v).html(nameList[i])});
                break;
             case 3:
             default://select all
@@ -261,7 +263,7 @@ function SET_DB(_reset){
             case 'radio':
             case 'bool':
             case 'check':
-               if(_from==='form')$(SET.frmID+' [name^='+key+']').each(function(){if($(this).prop('value')==_source[key])$(this).addClass('active').prop('checked',true);else $(this).removeClass('active').prop('checked',false);});
+               if(_from==='form')$(SET.frmID+' [name^='+key+']').each(function(){if($(this).prop('value')==_source[key]||$(this).text()==_source[key])$(this).addClass('active').prop('checked',true);else $(this).removeClass('active').prop('checked',false);});
                else if(_from==='list')$(SET.frmID+' [name^='+key+']').each(function(){if($(this).prop('checked')||$(this).hasClass('active'))_return[c]=$(this).prop('value');});
                else _return[c]=_source[key];
                break;
@@ -270,6 +272,7 @@ function SET_DB(_reset){
                if(_from==='form'&&_source[key])$(SET.frmID+' #'+key).val(_source[key]);
                else _return[c]=_source[key];
                break;
+            case 'password':$(SET.frmID+' #'+key).prop("required",false);$(SET.frmID+' #signum').prop("required",false);break;
             default:
                if(_from==='form'&&_source[key]){$(SET.frmID+' #'+key).val(_source[key]);if(key=='password'&&document.getElementById('signum'))document.getElementById('signum').value=_source[key]}
                else if(_from==='list')_return[c]=$(SET.frmID+' #'+key).val();
@@ -456,13 +459,14 @@ function SET_DB(_reset){
     * @returns {bool}
     *
     * */
-   this.sanatio=function(_val,_field,_properties){
+   this.sanatio=function(_val,_field,_properties,_actum){
       var ele=$(this.frmID+' #'+_field)[0]||$('.'+this.frmName+'_'+_field+' .btn-group')[0];
       var type=_properties.field.type;
       var err=creo({"clss":"help-block error-block"},'span');
       var title=_properties.field.title||_properties.title||'';
-      var omega=true;var msg;
-      if(!_val&&"required" in _properties.field) {msg='Missing `'+_field+'`';omega=false;}
+      var omega=true;var msg;console.log(title,"title",_val,"/",$('#signum').val());
+      if(!_val&&_properties.field.required=="new"&&_actum==2);//seulment avec avec une nouvelle donner
+      else if(!_val&&"required" in _properties.field) {msg='Missing `'+_field+'`';omega=false;}
       else if (!sessionStorage.formValidation){
          if(_properties.pattern&&_val.search(this.patterns[_properties.pattern][0])==-1){msg=title+', '+this.patterns[_properties.pattern][1];omega=false;}
          else if(_properties.field.pattern&&_val.search(_properties.field.pattern)==-1){msg=title+', missing a requirment';omega=false;}
@@ -473,7 +477,7 @@ function SET_DB(_reset){
          else if(type=="date"&&_val.search(this.patterns["fullDate"][0])==-1){msg=title+', '+this.patterns["fullDate"][1];omega=false;}
       }
       else if(type=="password"&&_val.search(this.patterns["password"][0])==-1){msg=title+', '+this.patterns["password"][1];omega=false;}
-      else if(type=="password"&&$('#signum').val()&&_val!==$('#signum').val()){msg=title+' passwords do not match';omega=false;}
+      if(type=="password"&&$('#signum').length&&_val&&_val!==$('#signum').val()){msg=title+' passwords do not match';omega=false;}
       if(omega===false){ele.parentNode.insertBefore(err, ele.nextSibling);err.innerHTML=msg;$('#sideNotice .db_notice').html('<div class="text-error">'+msg+'</div>');$('.control-group.'+this.frmName+'_'+_field).addClass('error');}
       return omega;
    }
@@ -530,6 +534,7 @@ function SET_DB(_reset){
  */
 $DB=function(quaerere,params,msg,callback,reading){
    var tmp,res,Tau;var ver={};
+   if(quaerere=="SELECT code FROM dealers ORDER BY name")var kk=true;
    if(!db)db=window.openDatabase(localStorage.DB_NAME,'',localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024,function(){console.log('create a new DB')});
    if(db.version!=localStorage.DB_VERSION&&!$("footer").data("db version")){
       ver.ver=localStorage.DB_VERSION;

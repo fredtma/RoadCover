@@ -9,7 +9,7 @@
    "mensa": "pages",
    "quaerere":{"precipio":"title","ubi":"AND type='help'"},
    "fields": {
-      "title":{"icon":"icon-bookmark","header":true,"place":"Helper title","field":{"title":"Title","required":"","autofocus":""}},
+      "title":{"icon":"icon-bookmark","header":true,"place":"Helper title","search":true,"field":{"title":"Title","required":"","autofocus":""}},
       "content":{"complex":true,"title":"description","place":"Content text","field":{"required":"","type":"editor","rows":5,"clss":"text-area","maxlength":180}},
       "selector":{"icon":"icon icon-black icon-book","place":"type the class or id","field":{"title":"Element Identifier","required":""}},
       "option":{"icon":"icon icon-black icon-book-empty","place":"type the class or id","field":{"title":"Next Element","required":""}},

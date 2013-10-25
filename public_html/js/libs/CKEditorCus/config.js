@@ -26,6 +26,7 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'about' }
 	];
    config.extraPlugins = 'savecontent';
+   config.removePlugins='save,autosave,sourcedialog';
 	// Remove some buttons, provided by the standard plugins, which we don't
 	// need to have in the Standard(s) toolbar.
 	config.removeButtons = 'Underline,Subscript,Superscript';

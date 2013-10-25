@@ -1,12 +1,15 @@
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
+ * @see:res.forma 204, this script is no longer needed.
  */
-var editor;
+
 $(document).ready(function(){
 //   if(CKEDITOR.instances['content']);
 //   CKEDITOR.instances['content'].destroy(true);
 });
+(function(){
+   var editor;
    var Name=eternal.form.field.name;
    var collapseName="#acc_"+Name;
    var config={};
@@ -18,7 +21,7 @@ $(document).ready(function(){
    $(collapseName).on("hidden",function(){
       editor.destroy();editor=null;
    });
-
+})();
 
 
 

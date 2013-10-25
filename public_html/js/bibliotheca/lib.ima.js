@@ -157,10 +157,15 @@ function impetroDB(_mensa,_type,_ele){
                case'list':menuDealers["dealer_"+row['code']]={"href":"javascript:void(0)","clss":"oneDealer","iota":row['code'],"txt":row['name']};break;
             }
          });
-         menuDealers=roadCover.btnDropDown({"btnDealer3":{"clss":"btn btn-info seamless non_procer","href":"javascript:void(0)","icon":"icon-book","txt":"All Dealers"},"btnDealerCaret":{"clss":"btn btn-info dropdown-toggle seamless non_procer","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubDealersList3":{"clss":"dropdown-menu dealersList","sub":menuDealers}});
+         menuDealers=roadCover.btnDropDown({"btnDealer3":{"clss":"btn btn-info seamless non_procer allDealerInv","href":"javascript:void(0)","icon":"icon-book","txt":"All Dealers"},"btnDealerCaret":{"clss":"btn btn-info dropdown-toggle seamless non_procer","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubDealersList3":{"clss":"dropdown-menu dealersList","sub":menuDealers}});
          $(_ele).append(menuDealers);
-         $(".dropdown-menu a").click(function(){var parent=$(this).parents(".btn-group"),val=$(this).html();$(".theTXT",parent[0]).html(val);});
-         $("#btnSubDealersList3 a").click(function(){var deal=$(this).data('iota');if(deal)getInvoice(deal);});
+         var dealerTemp=$('footer').data('temp'),defaultDealer=1771;;
+         if(dealerTemp&&dealerTemp[0])$(".allDealerInv .theTXT").text($("#btnSubDealersList3 a[data-iota="+dealerTemp[0]+"]").text());
+         else $(".allDealerInv .theTXT").text($("#btnSubDealersList3 a[data-iota="+defaultDealer+"]").text());
+         $(_ele+" #btnSubDealersList3 a").click(function(){
+            var parent=$(this).parents(".btn-group"),val=$(this).text(),iota=$(this).data("iota");$(".theTXT",parent[0]).html(val);
+            var selection={"month":$("#monthList").val(),"dealers":iota};console.log(selection,"selection",_ele+" #btnSubDealersList3 li",this);getInvoice(iota);
+         });
       });//end dealer DB
    }//endif
 }

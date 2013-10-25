@@ -21,16 +21,22 @@ agitoScript=function(){
          "Status":{"header":true},
          "Salesman":{"header":true},
          "Fullname":{"header":true,"search":true},
-         "Name":{"header":true, "title":"Agreement"},
+         "product_name":{"header":true, "title":"Product"},
          "Period":{"header":true},
          "CollectionMethod":{"header":true,"title":"Collection Method"},
          "TotalAmount":{"header":true,"title":"Total Amount"},
-         "DateCreated":{"header":true,"title":"Date Created"},
+         "DateModified":{"header":true,"title":"Date Modified"},
          "IDno":{"header":false,"search":"Fullname"}
       }
    }
+   var selection=$("footer").data("selection")||'';
+   if(typeof selection=="object"){var txt;
+      txt=$(".dealersList a[data-iota="+selection.dealers+"]").first().text();if(txt)$(".allDealer .theTXT").text(txt);txt='';
+      txt=$(".salesmanList a[data-iota="+selection.salesman+"]").first().text(); if(txt)$(".allSalesman .theTXT").text(txt);txt='';
+      txt=$(".monthList a[data-iota="+selection.month+"]").first().text();if(txt)$(".monthDrop .theTXT").text(txt);
+   }
    sessionStorage.setItem('active',JSON.stringify(tmp));
-   eternal=tmp;temp=$('footer').data('temp');console.log(temp,"temp");
+   eternal=tmp;temp=$('footer').data('temp');
    get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:localStorage.SITE_MONTH}},'','post','json',function(_rows){
       if(typeof temp==="undefined")temp=[0,"dealers"];
       sideDisplay(temp[0],temp[1]);
@@ -41,15 +47,3 @@ agitoScript=function(){
       else $("#body article").html("<ul class='breadcrumb'><li>There is currently no record for the selected "+temp[1]+" for the month of "+dateFormat.i18n.monthNames[d+12]+"</li></ul>");
    });
 };agitoScript();
-$("#btnSubMonthList2 li").click(function(){//@explain:when the month list is selected, the function is repeated
-      var m=this.id;var temp=$('footer').data('temp');
-      get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:m}},'','post','json',function(_rows){
-         if(typeof temp==="undefined")temp=[0,"dealers"];
-         sideDisplay(temp[0],temp[1]);
-         var y=new Date().getFullYear(); var d=new Date(y,m-1,1).getMonth();
-         $("#betaInsurance small").html("for the month of "+dateFormat.i18n.monthNames[d+12]);
-         if(_rows.rows.length){theForm = new SET_FORM();theForm._Set("#body article");theForm.gammaTable(_rows);}
-         else $("#body article").html("<ul class='breadcrumb'><li>There is currently no record for the selected "+temp[1]+" for the month of "+dateFormat.i18n.monthNames[d+12]+"</li></ul>");
-      });
-   });
-//@todo add to the menu the three most recents

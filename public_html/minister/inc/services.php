@@ -46,26 +46,19 @@ switch($_POST['militia']){
    case 'members':
       $y=$_POST['luna'][0]?$_POST['luna'][0]:date("Y");
       $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
-      $srch="WHERE (MONTH(trans.DateCreated)={$db->qstr($m)} AND YEAR(trans.DateCreated)={$db->qstr($y)})";
+      $srch="WHERE (MONTH(date_modified)={$db->qstr($m)} AND YEAR(date_modified)={$db->qstr($y)})";
       if($_POST['quaerere'] && $_POST['quaerere'][0]!=0):$srch.=" AND ";
-         if($_POST['quaerere'][1]=='dealers'):$srch.="dealer.Id={$db->qstr($_POST['quaerere'][0])}";
-         elseif($_POST['quaerere'][1]=='salesmen'):$srch.="agent.Id={$db->qstr($_POST['quaerere'][0])}";
+         if($_POST['quaerere'][1]=='dealers'):$srch.="dealer_id={$db->qstr($_POST['quaerere'][0])}";
+         elseif($_POST['quaerere'][1]=='salesmen'):$srch.="salesman_id={$db->qstr($_POST['quaerere'][0])}";
          endif;
          $y=$_POST['luna'][0]?$_POST['luna'][0]:date("Y");
          $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
       endif;
+      $sql="SELECT agree.Id,dealer.Name as Dealer, agree.Status,CONCAT(agent.FullNames,' ',agent.Surname) as Salesman, $menber_name,if(member.IdentificationNumber!='',member.IdentificationNumber,member.RegistrationNumber) as IDno,agrement.Name,quot.Period_cd as Period,quot.CollectionMethod_cd as CollectionMethod,quot.TotalAmount, quot.DateModified FROM road_Transactions trans LEFT JOIN road_Intermediary dealer ON dealer.`Id`=trans.Intermediary LEFT JOIN road_FandI agent ON agent.`Id`=trans.FandI LEFT JOIN road_Agreements agree ON agree.transaction=trans.Id INNER JOIN road_Holder member ON member.Id=trans.Holder INNER JOIN road_QuoteTransactions quot ON quot.`transaction`=trans.`Id` INNER JOIN road_Quote_Agreement agrement ON agrement.`Id`=quot.Agreement $srch group by quot.`transaction` ORDER BY agent.Surname,member.FullNames,quot.DateModified ASC LIMIT $LIMIT;";
       $sql=<<<IYONA
-SELECT agree.Id,dealer.Name as Dealer, agree.Status,
-CONCAT(agent.FullNames,' ',agent.Surname) as Salesman, $menber_name,if(member.IdentificationNumber!='',member.IdentificationNumber,member.RegistrationNumber) as IDno,
-agrement.Name,quot.Period_cd as Period,quot.CollectionMethod_cd as CollectionMethod,quot.TotalAmount, quot.DateCreated
-FROM road_Transactions trans
-LEFT JOIN road_Intermediary dealer ON dealer.`Id`=trans.Intermediary
-LEFT JOIN road_FandI agent ON agent.`Id`=trans.FandI
-LEFT JOIN road_Agreements agree ON agree.transaction=trans.Id
-INNER JOIN road_Holder member ON member.Id=trans.Holder
-INNER JOIN road_QuoteTransactions quot ON quot.`transaction`=trans.`Id`
-INNER JOIN road_Quote_Agreement agrement ON agrement.`Id`=quot.Agreement
-$srch group by quot.`transaction` ORDER BY agent.Surname,member.Surname,quot.DateModified ASC LIMIT $LIMIT;
+SELECT deal_number AS Id,dealer AS Dealer,trans_status AS "Status",salesman AS Salesman,customer AS Fullname,idno AS IDno,product_name,quot_period AS "Period",quot_collection AS CollectionMethod,rep.date_modified AS DateModified,(total_premium-commission) AS TotalAmount
+FROM report_invoice rep
+$srch ORDER BY salesman,customer,date_modified ASC LIMIT $LIMIT;
 IYONA;
       echo json_encode(array_result($sql,true));
       break;
@@ -79,19 +72,11 @@ IYONA;
    case 'cautionem-dealer':
       $rows['address']=array_result("SELECT * FROM road_Addresses a WHERE a.holder={$db->qstr($_POST['iota'])} GROUP BY Uid ORDER BY `Type`",true);
       $rows['company']=array_result("SELECT * FROM {$pre}dealers a WHERE a.code={$db->qstr($_POST['iota'])}",true);
+      #OLD VERSION$sql="SELECT CONCAT(agent.FullNames,' ',agent.Surname) AS Salesman, $menber_name,if(member.IdentificationNumber!='',member.IdentificationNumber,member.RegistrationNumber) AS IDno,agree.Id AS Deal, quot.TotalAmount, trans.DateModified,quot.Period_cd  AS Period,res.Amount as Commission FROM road_Transactions trans INNER JOIN road_Agreements agree ON agree.`transaction`=trans.Id LEFT JOIN road_FandI agent on agent.`Id`=trans.FandI INNER JOIN road_Holder member on member.Id=trans.Holder INNER JOIN road_QuoteTransactions quot on quot.`transaction`=trans.`Id` LEFT JOIN road_QuoteResultItems res ON res.QuoteResult=quot.Id AND res.PremiumType_cd='Commission' WHERE trans.Intermediary={$db->qstr($_POST['iota'])} AND MONTH(trans.DateModified)={$db->qstr($_POST['m'])} AND YEAR(trans.DateModified)={$db->qstr($_POST['y'])} GROUP BY quot.`transaction` ORDER BY agent.Surname,member.FullNames ASC;";$rows['customers']=array_result($sql,true);
       $sql=<<<IYONA
-SELECT CONCAT(agent.FullNames,' ',agent.Surname) AS Salesman, $menber_name,
-if(member.IdentificationNumber!='',member.IdentificationNumber,member.RegistrationNumber) AS IDno,
-agree.Id AS Deal, quot.TotalAmount, trans.DateCreated,quot.Period_cd  AS Period,res.Amount as Commission
-FROM road_Transactions trans
-INNER JOIN road_Agreements agree ON agree.`transaction`=trans.Id
-LEFT JOIN road_FandI agent on agent.`Id`=trans.FandI
-INNER JOIN road_Holder member on member.Id=trans.Holder
-INNER JOIN road_QuoteTransactions quot on quot.`transaction`=trans.`Id`
-LEFT JOIN road_QuoteResultItems res ON res.QuoteResult=quot.Id AND res.PremiumType_cd='Commission'
-WHERE trans.Intermediary={$db->qstr($_POST['iota'])}
-AND MONTH(trans.DateCreated)={$db->qstr($_POST['m'])} AND YEAR(trans.DateCreated)={$db->qstr($_POST['y'])}
-GROUP BY quot.`transaction` ORDER BY agent.Surname,member.Surname ASC;
+SELECT deal_number AS Deal,rep.date_modified AS DateModified,trans_status,product_name,salesman AS Salesman,customer AS Fullname,idno AS IDno,quot_period AS "Period",total_premium AS TotalAmount,commission AS Commission
+FROM report_invoice rep
+WHERE dealer_id={$db->qstr($_POST['iota'])} AND MONTH(date_modified)={$db->qstr($_POST['m'])} AND YEAR(date_modified)={$db->qstr($_POST['y'])} ORDER BY salesman,customer;
 IYONA;
       $rows['customers']=array_result($sql,true);
       $sql=<<<IYONA
@@ -114,31 +99,30 @@ IYONA;
    case 'customers':
       $y=$_POST['luna'][0]?$_POST['luna'][0]:date("Y");
       $m=$_POST['luna'][1]?$_POST['luna'][1]:date("m")-1;
-      $srch="WHERE (MONTH(trans.DateCreated)={$db->qstr($m)} AND YEAR(trans.DateCreated)={$db->qstr($y)})";
-      if($_POST['quaerere']):$srch.=" AND ";
-         if($_POST['quaerere'][1]=='dealers'):$srch.="trans.Intermediary={$db->qstr($_POST['quaerere'][0])}";
-         elseif($_POST['quaerere'][1]=='salesmen'):$srch.="trans.FandI={$db->qstr($_POST['quaerere'][0])}";
+      $srch="WHERE (MONTH(date_modified)={$db->qstr($m)} AND YEAR(date_modified)={$db->qstr($y)})";
+      if($_POST['quaerere'] && $_POST['quaerere'][0]!=0):$srch.=" AND ";
+         if($_POST['quaerere'][1]=='dealers'):$srch.="dealer_id={$db->qstr($_POST['quaerere'][0])}";
+         elseif($_POST['quaerere'][1]=='salesmen'):$srch.="salesman_id={$db->qstr($_POST['quaerere'][0])}";
          endif;
       endif;
       $sql=<<<IYONA
-SELECT member.Id as code,trans.DateCreated,$menber_name,if(member.IdentificationNumber!='',member.IdentificationNumber,member.RegistrationNumber) as IDno,Race_cd Race,Nationality_cd Nationality,
-Gender_cd Gender,Title_cd Title,EthnicGroup_cd EthnicGroup,agree.Id as "transaction"
-FROM road_Transactions trans
-INNER JOIN road_Agreements agree ON agree.`transaction`=trans.Id
-INNER JOIN road_Holder member on member.Id=trans.Holder
-$srch GROUP BY IDno ORDER BY DateCreated ASC LIMIT $LIMIT;
+SELECT customer_id as code,date_modified AS DateModified,customer AS Fullname,idno as IDno,Race_cd Race,Nationality_cd Nationality,
+Gender_cd Gender,Title_cd Title,EthnicGroup_cd EthnicGroup,deal_number as "transaction"
+FROM report_invoice rep
+INNER JOIN road_Holder member on member.Id=rep.customer_id
+$srch ORDER BY salesman,customer ASC LIMIT $LIMIT;
 IYONA;
       $rows=array_result($sql,true);echo json_encode($rows);break;
 #==============================================================================#CUSTOMER ALL
    case 'impetro omnia':
       $srch=$db->qstr($_POST['quaerere'].'%');
       $sql=<<<IYONA
-SELECT member.Id as code,trans.DateCreated,$menber_name,if(member.IdentificationNumber!='',member.IdentificationNumber,member.RegistrationNumber) as IDno,Race_cd Race,Nationality_cd Nationality,
+SELECT member.Id as code,trans.DateModified,$menber_name,if(member.IdentificationNumber!='',member.IdentificationNumber,member.RegistrationNumber) as IDno,Race_cd Race,Nationality_cd Nationality,
 Gender_cd Gender,Title_cd Title,EthnicGroup_cd EthnicGroup,trans.Id as "transaction"
 FROM road_Transactions trans
 INNER JOIN road_Holder member on member.Id=trans.Holder
 INNER JOIN road_Agreements agree ON agree.`transaction`=trans.Id
-WHERE member.Surname LIKE $srch OR member.Name LIKE $srch OR member.IdentificationNumber LIKE $srch OR agree.Id LIKE $srch;
+WHERE member.Surname LIKE $srch OR member.Fullnames LIKE $srch OR member.Name LIKE $srch OR member.IdentificationNumber LIKE $srch OR agree.Id LIKE $srch;
 IYONA;
       $rows=array_result($sql,true);echo json_encode($rows);break;
 #==============================================================================#CUSTOMER BRIEF
@@ -226,7 +210,7 @@ IYONA;
    #==============================================================================#CUSTOMER QUOTE
    case 'customers-quote':
       $sql=<<<IYONA
-SELECT quot.DateCreated,quot.`Status`,quot.IsValid,quot.Period_cd,quot.CollectionType_cd,quot.CollectionType_cd,quot.TotalAmount
+SELECT quot.DateModified,quot.`Status`,quot.IsValid,quot.Period_cd,quot.CollectionType_cd,quot.CollectionType_cd,quot.TotalAmount
 ,res.PremiumType_cd,res.CurrentAmount as "Current Amount",res.IsActive,res.isPartOfMainPremium,FORMAT(res.Amount,2),res.Description,res.SubCode as "Sub Code"
 FROM road_QuoteTransactions quot
 INNER JOIN road_Transactions trans ON trans.Id=quot.transaction
@@ -248,7 +232,7 @@ IYONA;
    case 'aliquis':
       $p=$db->qstr($_POST['p']);$u=$db->qstr($_POST['u']);
       $sql="SELECT id,username,CONCAT(firstname,' ',lastname) as name,jesua,level FROM {$pre}users WHERE password=$p AND (email=$u OR username=$u)";
-      $rows['aliquis']=array_result($sql);
+      $rows['aliquis']=array_result($sql);$u=$db->qstr($rows['aliquis'][0]['username']);
       #----------------------update count--------------------------#
       $sql="UPDATE {$pre}users SET last_seen=NOW(), log_count=log_count+1 WHERE username={$db->qstr($_POST['quemvis'])} LIMIT 1";
       $rs=$db->Execute($sql);iyona_message($rs,$sql);
@@ -279,6 +263,11 @@ IYONA;
          while (!$rs->EOF) {extract($rs->fields);$rows[strtolower($permission)]=++$cnt;$rs->MoveNext();}//end while of $rs
       }//end if of $rs
       echo json_encode($rows);break;
+#==============================================================================#FORGOT PASSWORD
+   case 'oblitus':
+      $u=$db->qstr($_POST['u']);
+      $sql="SELECT email FROM {$pre}users WHERE email=$u";
+      echo json_encode(array_result($sql));break;
 #==============================================================================#get all the db version
    case 'verto':
       if(empty($_POST['ver'])||!is_float((float)$_POST['ver'])) {return false;}
@@ -384,7 +373,7 @@ IYONA;
       $code    =($deb)?"ACC/LOC":$cust["CollectionMethod"];#JHB
       $store   ="JHB";
       $product =$cust["Period"];
-      $d       =$cust["DateCreated"]?"[{$cust["DateCreated"]}]":"";
+      $d       =$cust["DateModified"]?"[{$cust["DateModified"]}]":"";
       $desc    ="{$cust["Salesman"]}:{$cust["Fullname"]} $d";
       $details.=<<<IYONA
 "Detail",0,1,$no_tax,$tax," ",1,3,0,"$code","$product",4,"     ","$store"\r\n"Detail",0,1,0,0," ",0,3,0,"'","$desc",7,"",""\r\n"Detail",0,1,0,0," ",0,3,0,"'"," ",7," "," "\r\n
@@ -394,47 +383,4 @@ IYONA;
    return str_replace(SITE_PUBLIC,SITE_URL,$filename);
 }
 #==============================================================================#
-/* ON UPDATE dealers/salesmen table.
-TRUNCATE roadCover_salesmen;
-
-INSERT INTO roadCover_salesmen (dealer,firstname,lastname,code,idno,modified,creation,jesua)
-SELECT dealer,FullNames,Surname,Id,IdentificationNumber,date_updated,NOW(),Uid FROM road_FandI;
-
-DELETE FROM roadCover_dealers;
-
-INSERT INTO roadCover_dealers (name,code,modified,creation,jesua,account,registration_number,vat_registration,is_insured,fsb_number)
-SELECT Name,Id,NOW(),date_updated,Uid,null,null,VatRegistrationNumber,null,null FROM road_Intermediary;
-
-UPDATE roadCover_dealers a
-LEFT JOIN road_RelatedStakeholders b ON b.Id=a.code
-SET a.registration_number=b.RegistrationNumber, a.vat_registration=b.VatRegistrationNumber,
-a.is_insured=if(b.IsInsurer='false',false,true),a.fsb_number=b.FSBNumber;
-
-UPDATE roadCover_dealers SET account='IMPHD' WHERE name = 'HONDA EAST RAND';
-UPDATE roadCover_dealers SET account='IMPTY2' WHERE name = 'IMPERIAL TOYOTA KEMPTON PARK';
-UPDATE roadCover_dealers SET account='IMPTY4' WHERE name = 'IMPERIAL TOYOTA STRIJDOMPARK';
-UPDATE roadCover_dealers SET account='IMPNS4' WHERE name = 'IMPERIAL NISSAN PAROW';
-UPDATE roadCover_dealers SET account='IMPBM1' WHERE name = 'KIMBERLEY MULTIFRANCHISE';
-UPDATE roadCover_dealers SET account='IMPGM1' WHERE name = 'GM BLOEMFONTEIN';
-UPDATE roadCover_dealers SET account='IMP08' WHERE name = 'FORD AND MAZDA CULEMBORG';
-UPDATE roadCover_dealers SET account='IMP06' WHERE name = 'FORD AND MAZDA DIEP RIVER';
-UPDATE roadCover_dealers SET account='IMP01' WHERE name = 'FORD AND MAZDA KEMPTON PARK';
-UPDATE roadCover_dealers SET account='IMP02' WHERE name = 'FORD AND MAZDA KROONSTAD NEW';
-UPDATE roadCover_dealers SET account='IMP03' WHERE name = 'FORD AND MAZDA PAARDEN EILAND';
-UPDATE roadCover_dealers SET account='IMPLS1' WHERE name = 'AUDI CENTRE FOURWAYS';
-UPDATE roadCover_dealers SET account='IMPLS3' WHERE name = 'LINDSAY SAKER HYDE PARK (VW)';
-UPDATE roadCover_dealers SET account='IMPHD2' WHERE name = 'HONDA WESTRAND 1';
-UPDATE roadCover_dealers SET account='IMPHD2' WHERE name = 'HONDA WESTRAND 1';
-UPDATE roadCover_dealers SET account='IMPTY1' WHERE name = 'IMPERIAL TOYOTA BEDFORDVIEW';
-UPDATE roadCover_dealers SET account='IMPTY3' WHERE name = 'IMPERIAL TOYOTA PARKTOWN 1';
-UPDATE roadCover_dealers SET account='IMPNS1' WHERE name = 'IMPERIAL NISSAN EAST RAND';
-UPDATE roadCover_dealers SET account='IMPA01' WHERE name = 'AUDI CENTRE AIRPORT';
-UPDATE roadCover_dealers SET account='IMPBM5' WHERE name = 'VAAL RIDGE AUTO (BMW)';
-UPDATE roadCover_dealers SET account='IMPGM3' WHERE name = 'GM GERMISTON';
-UPDATE roadCover_dealers SET account='IMPGM6' WHERE name = 'GM ISANDO';
-UPDATE roadCover_dealers SET account='IMP07' WHERE name = 'AUTO NICHE BLOEMFONTEIN';
-
- UPDATE road_Transactions SET DateCreated=STR_TO_DATE(DateCreated,'%d/%m/%Y %h:%i:%s %p'),DateModified=STR_TO_DATE(DateModified,'%d/%m/%Y %h:%i:%s %p');
- UPDATE road_QuoteTransactions SET DateCreated=STR_TO_DATE(DateCreated,'%d/%m/%Y %h:%i:%s %p'),DateModified=STR_TO_DATE(DateModified,'%d/%m/%Y %h:%i:%s %p');
- */
 ?>

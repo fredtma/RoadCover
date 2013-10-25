@@ -97,7 +97,7 @@ function SET_FORM(_name,_class,_label){
       else container=this.form;
       this.setObject({"items":eternal,"father":this.singleForm});//end setObject
       this.form.appendChild(this.setButton(eternal.form.button));
-      this.placeObj(this.form);
+      this.placeObj(this.form);defaultOnShow();
       return this.form;
    }
    /*
@@ -119,8 +119,8 @@ function SET_FORM(_name,_class,_label){
       if(typeof _results.rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_results);//change la donner seaulment quand ce náit pas une cherche
       else this.setActiveRecord(_results,len);//maitre ce si quand la source et du system interne
       navSection=eternal.form.navigation!==true?false:eternal.form.navigation;
-      this.setNavigation(_results,navSection);
       if(!_actum){
+         this.setNavigation(_results,navSection);
          roadCover._Set({"next":".tab-pane.active .libHelp"});
          //@todo fix the header title
          if(!$('.btnNew').length&&isReadOnly===false&&getLicentia(this.name,'Create')){
@@ -136,7 +136,7 @@ function SET_FORM(_name,_class,_label){
          if($('footer').data('header')===false){$('#sideBot h3').html(eternal.form.legend.txt);$('.headRow').html(eternal.form.legend.txt);$('#displayMensa').empty();$('#displayMensa').removeData();}//lieu pour maitre le titre
          $(this.Obj.addTo).empty();//main content and side listing
          $(".body article").append(creo({"clss":"ya_procer"},'h2',eternal.form.legend.txt));//add the title which can only be seen on print
-         container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
+         var container=$anima(this.Obj.addTo,'div',{'clss':'accordion','id':'acc_'+this.name});
          if(sessionStorage.genesis=="NaN")sessionStorage.genesis=0;
          max=(parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT));
          max=max>len?len:max;//@fix:prevent the last index from occuring
@@ -168,9 +168,9 @@ function SET_FORM(_name,_class,_label){
               //EDIT, quand le button et le lien sont frapper
              .vita("i",{"clss":"icon icon-color icon-edit","title":"Edit "+headeName[0]});
               //FIRE on shown
-              $(collapseName).on("shown",function(){if(!$(this).data("toggle_shown")||$(this).data("toggle_shown")==0){
+              $(collapseName).on("shown",function(){if( (!$(this).data("toggle_shown")||$(this).data("toggle_shown")==0)&&!$(".popover").length){//@fix:!$(".popover").length prevent popup to fire this event
                  $(this).data("toggle_shown",1); ii=$(".accordion-body.in").data("jesua");DB.beta(3,ii);} });
-              $(collapseName).on("hidden",function(){$(this).data("toggle_shown",0); });
+              $(collapseName).on("hidden",function(){ if(!$(".popover").length)$(this).data("toggle_shown",0);});
               //DELETE
               if(getLicentia(this.name,"Delete")){
                collapse_head.genesis("a",{"href":"javascript:void(0)","clss":"forIcon"},true)
@@ -203,9 +203,9 @@ function SET_FORM(_name,_class,_label){
          frm=document.getElementById(this.frmName);resetForm(frm);
          //check and add editor. you need to chk it exist & remove it b4 you append the form
          var callEditor=$('footer').data('lateCall');
-         if(callEditor){l=callEditor.length;for(x=0;x<l;x++){if(CKEDITOR.instances[callEditor[x]]){CKEDITOR.instances[callEditor[x]].destroy(true);}}}//endif
+         if(callEditor){l=callEditor.length;for(x=0;x<l;x++){console.log(callEditor,"callEditor",CKEDITOR.instances);if(CKEDITOR.instances[callEditor[x]]){CKEDITOR.instances[callEditor[x]].destroy(true);}}}//endif
          document.querySelector(".accordion-body.in .accordion-inner").appendChild(frm);
-         if(callEditor){l=callEditor.length;for(x=0;x<l;x++){var config={};config.removePlugins='savecontent';CKEDITOR.replace(callEditor[x],config);}}//endif
+         if(callEditor){l=callEditor.length;for(x=0;x<l;x++){var config={};config.removePlugins='save,autosave,sourcedialog,savecontent';CKEDITOR.replace(callEditor[x],config);}}//endif
          //get the first field to focus om
          for (first in eternal.fields)break;$("#"+first,frm).focus();
          frm.style.display="block";
@@ -213,12 +213,12 @@ function SET_FORM(_name,_class,_label){
          $(this.frmID+" #cancel_"+this.name).click(function(){$(this).parents(".accordion-body.in").collapse("hide");});
          //REFerence child table
          if(eternal.child)this.setChild(_jesua);
-         if((_jesua=="alpha"||!_jesua)){
-            $(this.frmID).data("jesua","alpha");
+         if((_jesua=="alpha"||!_jesua)){ console.log($(".noField"),"hello world");
+            $(this.frmID).data("jesua","alpha");$(".noField").show();//fileds that only display on insert
             $(this.frmID)[0].onsubmit=function(e){e.preventDefault();$("#submit_"+SET.name).button("loading");DB.beta(1);setTimeout(function(){$(SET.frmID+" #submit_"+SET.name).button("reset");}, 500); return false;}//make the form to become inserted
             if(!getLicentia(this.name,"Create")) $("#submit_"+SET.name).addClass("disabled");
          }else{
-            $(this.frmID).data("jesua",row["jesua"]);
+            $(this.frmID).data("jesua",row["jesua"]);$(".noField").hide();//fileds that only display on insert
             fieldsDisplay("form",row);
             $(this.frmID)[0].onsubmit=function(e){e.preventDefault();$("#submit_"+SET.name).button("loading");DB.beta(2,row["jesua"]);setTimeout(function(){$(SET.frmID+" #submit_"+SET.name).button("reset");}, 500); return false;}//make the form to become update
             if(!getLicentia(this.name,"Edit")) $("#submit_"+SET.name).addClass("disabled");
@@ -227,7 +227,8 @@ function SET_FORM(_name,_class,_label){
             if(agitoScript===false&&typeof onShowForm==="function"){
                var event = new Event('onShowForm');
                document.querySelector(this.frmID).addEventListener("onShowForm",onShowForm,false);
-               document.querySelector(this.frmID).dispatchEvent(event);}}
+               document.querySelector(this.frmID).dispatchEvent(event);
+            }else{onShowForm=function(){return true;}}}
       }
 //      this.setObject({"items":eternal,"father":function(_key,_field){}});
    }
@@ -257,10 +258,10 @@ function SET_FORM(_name,_class,_label){
       $(".body article").append(creo({"clss":"ya_procer"},'h2',eternal.form.legend.txt));//add the title which can only be seen on print
       $table=$anima(addEle,'table',{'id':'table_'+this.name,'clss':'table table-striped table-hover '+cls}).vita('thead',{},true);
       $table.vita('tr',{},true).vita('th',{},false,'#');colspan=0;
-      for(k in headers){colspan++;
-         th=headers[k];if(th.header==true||allHead){title=th.title||k;$table.vita('th',{},false,title)}
+      for(k in headers){
+         th=headers[k];if(th.header==true||allHead){colspan++;title=th.title||k;$table.vita('th',{"clss":"col"+colspan},false,title)}
       }//endforeach
-      if(_functions)$table.vita('th',{},false,"Functions");
+      if(_functions)$table.vita('th',{"clss":"col"+(colspan+1)},false,"Functions");
       $table.novo('#table_'+this.name,'tbody');
       r1=0;
       max=(parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT));
@@ -340,10 +341,13 @@ function SET_FORM(_name,_class,_label){
 //      theField=_field.field||_field;//@error:this has been disabled, re-enable if cause error
       theName=theField.name?theField.name:_key;
       container=SET.form2||SET.form;//to place in the second form.
+      var hiddenField='';
+      if(theField.type=="hidden"){hiddenField='hiddenField';}
+      if(theField.required=="new"){hiddenField='noField';}
       //FIELDSET
       if(_field.legend){legend=creo({},'legend');legend.appendChild(document.createTextNode(_field.legend.txt))}
       if(_field.fieldset){fieldset=creo(_field.fieldset,'fieldset');if(legend)fieldset.appendChild(legend);SET.form.appendChild(fieldset);container=fieldset;}
-      div=creo({"clss":"control-group "+_key},'div');
+      div=creo({"clss":"control-group "+SET.frmName+"_"+_key+" "+hiddenField},'div');
       //LABEL
       theLabel=_field.title?_field.title:aNumero(theName, true);
       theLabel=aNumero(theLabel,true);
@@ -351,7 +355,7 @@ function SET_FORM(_name,_class,_label){
       label=(isset(_field.addLabel))?_field.addLabel:SET.frmLabel;
       if(theField.type=="hidden")label=false;
       if(label) {label=creo({"clss":"control-label","forr":_key},'label'); label.appendChild(document.createTextNode(theLabel)); div.appendChild(label);}
-      div1=creo({"clss":"controls"},'div');
+      div1=creo({"clss":"controls "+(_field.clss||'')},'div');
       //PLACEHODER
       placeHolder=((_field.place)===true?theLabel:(_field.place)?_field.place:false);
       if(placeHolder!==false) theField.placeholder=placeHolder;
@@ -416,6 +420,7 @@ function SET_FORM(_name,_class,_label){
             theName=theField.name?theField.name:_key;
             if(theField.type=='editor')lateCall.push(_key);
             if(theField.type=="hidden"){hiddenField='hiddenField';}
+            if(theField.required=="new"){hiddenField='noField';}
             //FIELDSET
             if(_property.fieldset){
                formFields=$anima(formContent,'fieldset',eternal.form.fieldset,'','next');
@@ -431,8 +436,8 @@ function SET_FORM(_name,_class,_label){
             label=null;
             label=(isset(_property.addLabel))?_property.addLabel:mainLabel;
             if(theField.type=="hidden")label=false;
-            if(label) {formFields.vita('label',{"clss":"control-label "+_key,"forr":_key},true,theLabel);formControl=formFields.genesis('div',{"clss":"controls"},true).father;}
-            else formControl=formFields.vita('div',{"clss":"controls"},true).father;
+            if(label) {formFields.vita('label',{"clss":"control-label "+_key,"forr":_key},true,theLabel);formControl=formFields.genesis('div',{"clss":"controls "+(_property.clss||'')},true).father;}
+            else formControl=formFields.vita('div',{"clss":"controls "+(_property.clss||'')},true).father;
             //PLACEHODER
             placeHolder=((_property.place)===true?theLabel:(_property.place)?_property.place:false);
             if(placeHolder!==false) theField.placeholder=placeHolder;
@@ -452,6 +457,7 @@ function SET_FORM(_name,_class,_label){
       formContent.parentNode.insertBefore(this.setButton(eternal.form.button), formContent.nextSibling);
       document.getElementById(this.frmName).style.display='none';
       $('footer').data('lateCall',lateCall);
+      defaultOnShow();
    }
    /*
     * add validation and key fields to the current field
@@ -767,6 +773,9 @@ function formInput(_key,_field,_items,_holder,_complex){
          for(x=0;x<l;x++) ele.vita('option',{'value':_items[x]})
          ele=span;
          break;
+      case 'link':
+      case 'a':ele=creo(_field,"a",_field.title);
+         break;
       case 'local-list':
          var len,got,getResults,revertetur;
          _field.type='text';
@@ -823,6 +832,7 @@ fieldsDisplay=function(_from,_source,_head,_reference){
             if(_from==='form'&&_source[key])$(frmID+' #'+key2).html(_source[key]);
             else _return[c]=_source[key];
             break;
+         case 'password':$(frmID+' #'+key2).prop("required",false);$(frmID+' #signum').prop("required",false);break;
          default:
 //            console.log(c,"/",key2,"/",_return[c],"/",_source[key2],"/",_return,_source);
             if(_from==='form'&&_source[key]){$(frmID+' #'+key2).val(_source[key]);if(key2=='password'&&document.getElementById('signum'))document.getElementById('signum').value=_source[key]}

@@ -27,6 +27,7 @@ progress {color: #0063a6;font-size: .6em;line-height: 1.5em;text-indent: .5em;wi
 progress::-moz-progress-bar { background:#0063a6;}
 progress::-webkit-progress-bar { background:#fff;}
 progress::-webkit-progress-value { background:#0063a6; }
+figure img{cursor: pointer;}
 .btn.space{margin-left:0.2em;margin-right:0.2em;}
 :-webkit-full-screen {width: 100% !important;height:100% !important;}
 :-moz-full-screen {width: 100% !important;height:100% !important;}
@@ -35,7 +36,10 @@ progress::-webkit-progress-value { background:#0063a6; }
 .purgare {*zoom: 1;clear:both;}.purgare:before,.purgare:after {display: table;line-height: 0;content: "";}.purgare:after {clear: both;}
 .omega{*zoom: 1;clear:both;}
 .none{display:none;}
-.popover{min-width:300px;font-style: normal;}.ya_procer,#body .ya_procer{display:none;}
+.popover{min-width:300px !important;font-style: normal !important;font-size: 14px !important; max-width: 350px;font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color:#000;z-index:1090;}
+.popover-content,.popover-title{font-style: normal !important;font-size: 14px !important;z-index:1090;}
+.ya_procer,#body .ya_procer{display:none;}
+
 /******************************************************************************/
 /*header setting*/
 .navigator {font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background:#fff;margin-top: 10px;}
@@ -124,7 +128,7 @@ border:#bce8f1;#c09853
 .form-tight .control-group{margin-bottom: 1px;}
 legend+.control-group {margin-top: 10px;-webkit-margin-top-collapse: separate;}
 legend{text-transform: capitalize;}
-.text-area, .input-text{width:234px;}
+.text-area, .input-text{width: 234px;}
 a[contenteditable=true]{cursor: text;}
 a[contenteditable=false]{cursor: pointer;}
 a[contenteditable=true]:hover,a[contenteditable=false]:hover{text-decoration: none;}
@@ -137,6 +141,7 @@ a.accordion-toggle{display:initial !important;padding: 4px 4px  !important;}
 .formReader,.formReader .controls span {line-height: 30px;text-transform: capitalize;}
 .half-form{width:48%;float:left;}
 .control-group.hiddenField{margin-bottom:0px;}
+.control-group.noField{display:none;}.controls.linkField{padding-top:5px;}
 /*.controls input:valid{color:green;}
 .controls input:invalid{color:red;}*/
 /*form {margin: -10px 0 20px;}*/

@@ -86,7 +86,7 @@ switch($transaction)
 $rs      = $db->Execute($sql);
 $err     = $db->ErrorMsg();
 $the_id  = $db->Insert_ID();
-$msg     = $err?$msg.":notice:".$err:$msg;
+$msg     = $err?$msg.":notice:<i>".$err."</i>":$msg;
 
 if (!$rs)
 {

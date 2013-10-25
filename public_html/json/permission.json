@@ -23,7 +23,7 @@
                      "global":{"complex":true,"contentEditable":true,"header":false},
                      "fields":{
                         "name":{"title":"","header":true},
-                        "desc":{"title":"Desription","header":true},
+                        "desc":{"title":"Description","header":true},
                         "page":{"type":"hidden"},
                         "sub":{"type":"hidden"}}}
    },

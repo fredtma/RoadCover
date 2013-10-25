@@ -52,6 +52,7 @@ function navig(set){
    var page=parseInt($(set).data('goto'))-1;
    if($(set).hasClass('navig'))page=parseInt($(set).data('goto'));//ca cest pour les navigation de deriere et en avant.
    sessionStorage.genesis=(page)*localStorage.DB_LIMIT;
+   for(var instance in CKEDITOR.instances){CKEDITOR.instances[instance].destroy()}//@fix: ce si et necessaire, if faut detruire toute instance avant de naviger
    if(typeof eternal.form.ortus==="undefined"){creoDB=new SET_DB();creoDB.beta();}
    else if(eternal.form.ortus=="server"){theForm=new SET_FORM()._Set("#body article");theForm.setBeta(JSON.parse(sessionStorage.activeRecord));}
 }
@@ -67,27 +68,41 @@ function navigTable(set){
    theForm.gammaTable(JSON.parse(sessionStorage.activeRecord));
 }
 //=============================================================================//
-$('#link_dealers').click(function(){activateMenu('dealer','dealers',this);});
-$('#link_salesman').click(function(){activateMenu('salesman','salesmen',this);});
-$('#link_customers').click(function(){activateMenu("customer","customers","#link_customers",true);});
-$('#link_insurance').click(function(){activateMenu("member","insurance","#link_insurance",true);});
-$('.btnUser,.profileList').click(function(){activateMenu("profile","home","#link_home");});
-$('.profileView,#userName').click(function(){activateMenu("profile","home","#link_home",false,false,"alpha");});
-$('.btnGroup').click(function(){activateMenu("group","home","#link_home");});
-$('.system4,#btnSysPermission').click(function(){activateMenu("permission","system","#link_system")});
-$('.btnDashboard').click(function(){if(!activateMenu("dashboard","home","#link_home",true)){theDashboard();}});//when the script is already loaded call the function
-$('.system1,#btnSysClient').click(function(){activateMenu("client","system","#link_system");});
-$('#btnHelper,.system3').click(function(){activateMenu("helper","system","#link_system");});
-$('#btnFeatures,.system2').click(function(){activateMenu('feature',false,false,false,true);});
-$('#footContact').click(function(){getPage('Contact us')});
-$('#footHelp').click(function(){getPage('Help?')});
-$('#footAbout').click(function(){getPage('About us')});
-$("#search_all").focus(function(){this.select();}).typeahead({minLength:0,source:searchAll,updater:searchUpdate});
-$('.btnFullScreen,#fullscreen').click(function(){if(!$(this).data('toggle')||$(this).data('toggle')==0){$('#btnFullScreen,#fullscreen').data('toggle',1);enableFullScreen();$('.icon-fullscreen').removeClass('icon-fullscreen').addClass('icon-screenshot');}else{$('#btnFullScreen,#fullscreen').data('toggle',0);exitFullScreen();$('.icon-screenshot').removeClass('icon-screenshot').addClass('icon-fullscreen');}});
-$('#userOut,#profileOff').click(loginOUT);
-$('.icon-refresh').click(refreshLook);//@todo:add HTML5 history API
-$(".btnHelp").click(helpfullLink);
-$('#btnTest').click(resetGenesis);
-$("#btnSysReport").click(function(){var win=window.open(localStorage.SITE_URL+"reports/","_blank");win.focus();});
-$(".printPage").click(function(){window.print();});
-$("#btnSrchCust").click(quaerereCustomer);$("#srchAllCust").submit(quaerereCustomer);
+(vocationCall=function(){
+   $('#link_dealers').click(function(){activateMenu('dealer','dealers',this);});
+   $('#link_salesman').click(function(){activateMenu('salesman','salesmen',this);});
+   $('#link_customers').click(function(){activateMenu("customer","customers","#link_customers",true);});
+   $('#link_insurance').click(function(){activateMenu("member","insurance","#link_insurance",true);});
+   $('.btnUser,.profileList').click(function(){activateMenu("profile","home","#link_home");});
+   $('.profileView,#userName').click(function(){activateMenu("profile","home","#link_home",false,false,"alpha");});
+   $('.btnGroup').click(function(){activateMenu("group","home","#link_home");});
+   $('.system4,#btnSysPermission').click(function(){activateMenu("permission","system","#link_system")});
+   $('.btnDashboard,.logo img').click(function(){if(!activateMenu("dashboard","home","#link_home",true)){theDashboard();}});//when the script is already loaded call the function
+   $('.system1,#btnSysClient').click(function(){activateMenu("client","system","#link_system");});
+   $('#btnHelper,.system3').click(function(){activateMenu("helper","system","#link_system");});
+   $('#btnFeatures,.system2').click(function(){activateMenu('feature',false,false,false,true);});
+   $('#footContact').click(function(){getPage('Contact us')});
+   $('#footHelp').click(function(){getPage('Help?')});
+   $('#footAbout').click(function(){getPage('About us')});
+   $("#search_all").focus(function(){this.select();}).typeahead({minLength:0,source:searchAll,updater:searchUpdate});
+   $('.btnFullScreen,#fullscreen').click(function(){if(!$(this).data('toggle')||$(this).data('toggle')==0){$('#btnFullScreen,#fullscreen').data('toggle',1);enableFullScreen();$('.icon-fullscreen').removeClass('icon-fullscreen').addClass('icon-screenshot');}else{$('#btnFullScreen,#fullscreen').data('toggle',0);exitFullScreen();$('.icon-screenshot').removeClass('icon-screenshot').addClass('icon-fullscreen');}});
+   $('#userOut,#profileOff').click(loginOUT);
+   $('.icon-refresh').click(refreshLook);//@todo:add HTML5 history API
+   $(".btnHelp").click(helpfullLink);
+   $('#btnTest').click(resetGenesis);
+   $("#btnSysReport").click(function(){if(!$(".popover").length)var win=window.open(localStorage.SITE_URL+"reports/","_blank");win.focus();});
+   $(".printPage").click(function(){if(!$(".popover").length) window.print();});
+   $("#btnSrchCust").click(quaerereCustomer);$("#srchAllCust").submit(quaerereCustomer);
+})();
+//============================================================================//
+defaultOnShow=function(){
+   if($("a.showField").length){
+      $("a.showField").click(function(){
+         if(!$(this).data("toggle")||$(this).data("toggle")==0){
+            $(this).data("toggle",1);$(".noField").show();$(this).text("Click here to hide the fields again");
+         }else{
+            $(this).data("toggle",0);$(".noField").hide();$(this).text("Click here to show the fields");
+         }//endif
+      });
+   }//endif a.showField
+}

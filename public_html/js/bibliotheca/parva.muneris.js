@@ -25,7 +25,7 @@ function $DB(_quaerere,params,_msg,callback,reading,_eternal){
             iyona(_quaerere,params,_msg);
          },function(_trans,_error){
             _msg=_msg+":-:"+_error.message;iyona(_quaerere,params,_msg);
-            if(_eternal&&_msg.indexOf('constraint failed')!=-1){aSync(SITE_MILITIA,_eternal,function(j){});}//update the version, when the error is a constrain
+            if(_eternal&&_msg.indexOf('constraint failed')!=-1){iyona("God is good.");aSync(SITE_MILITIA,_eternal,function(j){});}//update the version, when the error is a constrain
          });
       });
    } else {

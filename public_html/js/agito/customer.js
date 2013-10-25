@@ -23,7 +23,7 @@ agitoScript=function(){
          "Gender":{"complex":"span","field":{"clss":"formReader"}},
          "Nationality":{"complex":"span","field":{"clss":"formReader"}},
          "EthnicGroup":{"complex":"span","title":"EthnicGroup","field":{"clss":"formReader"}},
-         "DateCreated":{"header":true,"complex":"span","title":"Date Created","field":{"clss":"formReader"}},
+         "DateModified":{"header":true,"complex":"span","title":"Date Modified","field":{"clss":"formReader"}},
          "IDno":{"header":true,"search":true,"complex":"span","title":"ID Number","field":{"clss":"formReader"}},
          "code":{"complex":"span","title":"Customer Number","field":{"clss":"formReader"}},
          "transaction":{"complex":"span","title":"Deal Number","field":{"clss":"formReader"}},
@@ -37,6 +37,12 @@ agitoScript=function(){
          "payment":{"icon":"icon-tags ","title":"View customer's finances","global":{"complex":true,"type":"span"},"fields":{"AccountType_cd":{"title":"Account Type"},"BankAccountNo":{"title":"Bank Account No"},"FirstDebitDate":{"title":"First Debit Date"},"MonthlyDebitDay":{"title":"Monthly Debit Day"},"ApplicationType_cd":{"title":"Application Type"},"PurchasePurpose_cd":{"title":"Purchase Purpose"},"CustomerType_cd":{"title":"Customer Type"},"RequestedInterestRate":{"title":"Requested Interest Rate"},"PaymentFrequency_cd":{"title":"Payment Frequency"},"ContractPeriod":{"title":"Contract Period"},"RateType_cd":{"title":"Rate Type"},"RequestedResidual":{"title":"Requested Residual"},"RequestedResidualPercentage":{"title":"Requested Residual Percentage"},"FinanceHouse_cd":{"title":"Finance House"},"ConsentCreditBuro":{"title":"Consent Credit Buro"},"ConfirmLOAReceived":{"title":"Confirm LOA Received"},"SourceOfDeposit_cd":{"title":"Source Of Deposit"},"Deposit":{"title":""},"Discount":{"title":""},"PrincipalDebt":{"title":"Principal Debt"}}},
          "cover":{"icon":"icon-download-alt ","title":"View customer's cover","global":{"complex":true,"type":"span"},"fields":{"Is Not Completed Time Constraint":{},"Is Not Completed Client Request":{},"Is FinanceOffered":{},"Accept No Short Term Cover":{},"Accept No Scratch And Dent":{},"Accept No Add Cover":{},"Accept No Deposit Cover":{},"Accept No Warranty":{},"Accept No Service Plan":{},"Accept No Maintenance Plan":{},"Accept No Credit Life":{},"Requires Service Plan":{},"Requires Warranty":{},"Amount Willing To Spend On Vaps":{}}}
       }
+   }
+   var selection=$("footer").data("selection")||'';
+   if(typeof selection=="object"){var txt;
+      txt=$(".dealersList a[data-iota="+selection.dealers+"]").first().text();if(txt)$(".allDealer .theTXT").text(txt);txt='';
+      txt=$(".salesmanList a[data-iota="+selection.salesman+"]").first().text(); if(txt)$(".allSalesman .theTXT").text(txt);txt='';
+      txt=$(".monthList a[data-iota="+selection.month+"]").first().text();if(txt)$(".monthDrop .theTXT").text(txt);
    }
    sessionStorage.setItem("active",JSON.stringify(tmp));
    eternal=tmp;var temp=$("footer").data("temp");
@@ -93,6 +99,7 @@ reDraw=function(){
    var frmName="frm_"+Name;
    collapseName="#acc_"+Name;
    $(".memberIcon").click(function(){
+      if($(".popover").length) return false;
       tmp=$(this).data("agilis");$(this).parents(".accordion-heading").data("activated",tmp);
       tmp=$(this).parents("div").data("jesua");$("#collapse_customer"+tmp).collapse("show");tmp=null;
       if($(".accordion-body.in")[0]){
@@ -109,15 +116,3 @@ reDraw=function(){
    });//@onShown
    $(collapseName).on("hidden",function(){$(this).data("toggle_shown",0); });//@onHidden
 }
-
-$("#btnSubMonthList li").click(function(){//@explain:when the month list is selected, the function is repeated
-   var m=this.id;var temp=$('footer').data('temp');
-   get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:m}},'','post','json',function(_rows){
-      if(typeof temp==="undefined")temp=[0,"dealers"];
-      sideDisplay(temp[0],temp[1]);
-      localStorage.SITE_MONTH=m;//@explain:reset the whole site defaults month selection
-      var y=new Date().getFullYear(); var d=new Date(y,m-1,1).getMonth();$("#betaCustomer small").html(" for the month of "+dateFormat.i18n.monthNames[d+12]);
-      if(_rows.rows.length){theForm=new SET_FORM()._Set("#body article");theForm.setBeta(_rows);reDraw();}
-      else $("#body article").html("<ul class='breadcrumb'><li>There is currently no record for the selected "+temp[1]+" for the month of "+dateFormat.i18n.monthNames[d+12]+"</li></ul>");
-   });
-});

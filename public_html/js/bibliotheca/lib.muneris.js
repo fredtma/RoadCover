@@ -91,7 +91,6 @@ $anima=function(section,ele,arr,txt,point){
    Node=(typeof(section)=='string')?document.querySelector(section):section;
    this.creo=creo;
    this.father=ele?this.creo(arr,ele,txt):Node;
-   if(section==".invCust")console.log(document.querySelector(section),"/",this.father);
    this.vita=function(ele,arr,parent,txt,point){
       this.child=this.creo(arr,ele,txt);
       if(!point)this.father.appendChild(this.child);
@@ -337,6 +336,22 @@ eternalCall=function(){
    return eternal;
 }
 //============================================================================//
+/*
+ * forgot password function
+ * @returns void
+ */
+oblitusSignum=function(){
+   var u=$('#loginForm #email').val();
+   var patterns=JSON.parse(localStorage.EXEMPLAR),msg;
+   if(u.search(patterns["email"][0])==-1){msg=patterns["email"][1];
+      $('#userLogin .alert-error').find('span').html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+   }else{
+      get_ajax(localStorage.SITE_SERVICE,{"militia":"oblitus","u":u},"","post","json",function(results){
+         console.log(results,"results");
+      });
+   }//endif correct formate
+}
+//============================================================================//
 /**
  * login validation, once user click login on the form.
  * Validates the user, give session and permanent variable respectively
@@ -351,7 +366,17 @@ loginValidation=function(){
       get_ajax(localStorage.SITE_SERVICE,{"militia":"aliquis","p":p,"u":u},"","post","json",function(results){
          if(results.aliquis.rows.length&&results.licentia){
             this.checkAliquis(results,true);
-         }else{$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('Failed login attempt...');}
+         }else{
+            var attempt=$("footer").data("attempt")||1;
+            if(attempt==1)var msg='Failed login attempt...'
+            else if (attempt==2){
+               $anima(".modal-footer","button",{"form":"loginForm","clss":"btn btn-inverse","type":"button"},"Forgot Password").father.onclick=oblitusSignum;
+               msg='Failed attempt count['+attempt+'].<br/>Fill in your email address in the first field and click on forgot password';}
+            else msg='Failed attempt count['+attempt+'].<br/>Fill in your email address in the first field and click on forgot password';
+            if($('#userLogin .alert-info').length)$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+            else $('#userLogin .alert-error').find('span').html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+            $("footer").data("attempt",(++attempt));
+         }
       });
    }catch(err){console.log('ERROR::'+err.message)}
    //-------------------------------------------------------------------------//
@@ -360,11 +385,11 @@ loginValidation=function(){
       var USER_NAME={"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']};
       if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=JSON.stringify(USER_NAME);
       else sessionStorage.USER_NAME=JSON.stringify(USER_NAME);//@todo:make user_admin part of user_name
-      if(row['level']==='super'){sessionStorage.USER_ADMIN=1;viewAPI(true);} else {viewAPI(false);sessionStorage.removeItem('USER_ADMIN');}
+      if(row['level']==='super'){localStorage.USER_ADMIN=1;sessionStorage.USER_ADMIN=1;viewAPI(true);}else{viewAPI(false);sessionStorage.removeItem('USER_ADMIN');localStorage.removeItem('USER_ADMIN');}
       $('#userName a').html(impetroUser().nominis);
       $('#userLogin').modal('hide').remove();
       sessionStorage.licentia=JSON.stringify(_results.licentia);
-      theDashboard();hauriret();
+      theDashboard();hauriret();vocationCall();
       if(window.Worker){
          var notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
          (function(procus){var moli=screen.height*screen.width;
@@ -376,7 +401,7 @@ loginValidation=function(){
 }
 //============================================================================//
 impetroUser=function(){
-   var USER_NAME=localStorage.USER_NAME?JSON.parse(localStorage.USER_NAME):(sessionStorage.USER_NAME)?JSON.parse(sessionStorage.USER_NAME):{};
+   var USER_NAME=localStorage.USER_NAME?JSON.parse(localStorage.USER_NAME):(sessionStorage.USER_NAME)?JSON.parse(sessionStorage.USER_NAME):false;
    return USER_NAME;
 }
 //============================================================================//
@@ -401,9 +426,7 @@ loginOUT=function(){
  * @category refresh, clean, safety
  */
 refreshLook=function(removeall){
-//   console.log(history.length);
-//   console.log(history.state);
-//   console.log(history);
+//   console.log(history.length);console.log(history.state);console.log(history);
    var tmp=sessionStorage.USER_NAME||"{}";
    notice();
    $('.search-all').val('');$('footer').removeData();$('#displayMensa').removeData();
@@ -412,7 +435,7 @@ refreshLook=function(removeall){
    sessionStorage.USER_NAME=JSON.stringify(tmp);}
    sessionStorage.runTime=0;sessionStorage.startTime=new Date().getTime();sessionStorage.genesis=0;
    licentia();
-   console.log('history:...');history.go(0);
+   console.log('history['+history.length+']:...');if(!removeall)history.go(0);else window.location.href=localStorage.SITE_URL;
 }
 //============================================================================//
 /*
@@ -572,7 +595,6 @@ function viewAPI(_viewing){if(!_viewing) $('.homeSet0,.setDisplay').hide();else 
 function licentia(_live,_draw){
    var len,x,tmp,row,val;
    var _nominis = impetroUser();
-   console.log(_live,"/",navigator.onLine,"/",_draw);
    if(_live&&navigator.onLine){
       get_ajax(localStorage.SITE_SERVICE,{"militia":"licentia","licentia":_nominis.operarius},'',"post","json",function(_results){
 //         console.log(_results,"_results",sessionStorage.licentia);
@@ -603,7 +625,7 @@ function getLicentia(_name,_perm,_msg){
    if(name1.indexOf('s')!=-1)var name2=name1.replace(/s$/,""); else name2=name1+'s';
    name1=name1+' '+_perm;name2=name2+' '+_perm;
    var tmp=sessionStorage.licentia?JSON.parse(sessionStorage.licentia):{};
-   if(sessionStorage.USER_ADMIN) return true;
+   if(sessionStorage.USER_ADMIN||localStorage.USER_ADMIN) return true;
    name1=name1.toLowerCase();name2=name2.toLowerCase();
 //   console.log(tmp,"/",name1,"/",name2,tmp[name1]);
    if(tmp[name1]||tmp[name2])return true;
@@ -718,13 +740,20 @@ function newSection(){
    sessionStorage.genesis=0;//reset each time ur on dashboard
 }
 //============================================================================//
+function liberoAnimus(){
+   notice();
+   $('.body article').removeClass('totalView');//remove the class that is placed by the cera's
+   for(var instance in CKEDITOR.instances){CKEDITOR.instances[instance].destroy()}//@fix: ce si et necessaire, if faut detruire toute instance avant de naviger
+   $("footer").removeData('lateCall').removeData('examiner');
+   //$("#displayMensa").removeData('mensa');
+}
+//============================================================================//
 /*
  * function to activate the dashboard blocks and links of the navTab
  */
 function activateMenu(_mensa,_mensula,_set,_script,_tab,_formType){
-   notice();//empty the msg notification
+   liberoAnimus();
    _mensula=_mensula||_mensa;var value=true;//the return value if it was passed successfully or not
-   $('.body article').removeClass('totalView');//remove the class that is placed by the cera's
    var iota=$(_set).data('iota');var narro={};
    if(_formType)sessionStorage.formTypes=_formType;//used to change from beta to alpha display
 //   console.log(_mensa,_mensula,_script,'[FORM]',_tab,_formType,sessionStorage.formTypes,'[this is it]',_set,'----------------------',$(_set)[0],"/");
@@ -735,7 +764,11 @@ function activateMenu(_mensa,_mensula,_set,_script,_tab,_formType){
       value=load_async("js/agito/"+_mensa+".js",true,'end',true);
       if(value===false&&typeof agitoScript==="function"){
          $("footer").data("temp",[iota,_tab]);//@fix:this will initiate a value, when changing via dropdown @only dealer&saleman
-         agitoScript();}}//@explain:ce program et appeler une deuxiem foi avec agitoScript() qui et standard
+         agitoScript();
+      }else{//@explain:ce program et appeler une deuxiem foi avec agitoScript() qui et standard
+         agitoScript=function(){return true;}
+      }
+   }
    if(_mensa=='salesman')_mensula='salesman';//ce si cest pour les sales seulment
    if(!_tab){
       $(_set).tab('show');
@@ -788,23 +821,29 @@ function recHistory(_mensa,_mensula,_script,_tab,_formType,_page){
 helpfullLink=function(_now,_curr){
    var alpha=$("#nav-main .active").attr("id");var encore='',def;
    var openForm=document.querySelector(".accordion-body.in form");
+//   var collapse=$(".collapse").length;
+//   if(collapse)$(".collapse").css({"overflow":"inherit"});
    if(openForm)alpha="form";
    if(typeof _now==="object"){
       switch(alpha){
-         case "nav_dealers":case "nav_salesman":case "nav_customers":case "nav_insurance":_now="#"+alpha;break;
+         case "nav_dealers":if($(".invHead").length)_now=".invHead"; else _now="#"+alpha;break;
+         case "nav_salesman":case "nav_customers":case "nav_insurance":_now="#"+alpha;break;
          case "form":_now=openForm.id.search(/#/ig)!=-1?openForm.id:'#'+openForm.id;encore=' legend';break;
          case "nav_system":_now=".setSystem";break;default:_now="#notice6";break;}//end switch
    }//endif
 //   console.log(alpha,'tab',_now,"/",_curr,$(_now),'/',$(_now)[0]);
    if(_curr)$(_curr).popover('destroy');
    $DB("SELECT title,content,option,position FROM pages WHERE selector=?",[_now],"",function(r,j){
-      _now+=encore;
+      _now+=encore;//var collapse=$(".collapse").length;
       if(j.rows.length){
          var row=j[0];var content=row['content'];var title=row['title'];var next=row['option'];var pos=row['position'];
-         var link="<div class='pager small'><ul><li class='previous'><a href='javascript:void(0)' onclick='javascript:$(\""+_now+"\").popover(\"destroy\")' >Close</a></li>";
+         var link="<div class='pager small'><ul><li class='previous'><a href='javascript:void(0)' onclick='javascript:$(\""+_now+"\").popover(\"destroy\");' >Close</a></li>";
          if(next!=='none'&&!def)link+="<li class='next'><a href='javascript:void(0)' onclick='helpfullLink(\""+next+"\",\""+_now+"\")' >Next »</a></li></ul></div>";
          else if(def)link+="<li class='next'><a href='javascript:void(0)' onclick='helpfullLink(\""+def+"\",\""+_now+"\")' >Next »</a></li></ul></div>";
+         console.log(_now,"_now",$(_now)[0]);
          content=content+link;var len=$(_now).length;if(len>1)_now=$(_now)[0];
+         console.log(_now,"_now",$(_now));
+         //if(collapse&&!$(_now).length)$(".collapse").css({"overflow":"hidden"});
          $(_now).first().popover({"html":true,"trigger":"click","title":title,"content":content,"placement":pos});$(_now).popover('show');
       }
    });
@@ -936,6 +975,22 @@ quaerereCustomer=function(e){
       sessionStorage.genesis=0;if(typeof reDraw ==="function")setTimeout(reDraw,100);//use on reDraw the search result. necessary on some form e.g. customer
    });
    return false;
+}
+//============================================================================//
+/**
+ * used to place the selected text on the menu
+ * @author fredtma
+ * @version 3.6
+ */
+dropDownMenu=function(set,from){
+   set=set||this;
+   var selection=$("footer").data("selection")||{},parent=$(set).parents(".btn-group"),val=$(set).text(),iota=$(set).data("iota");$(".theTXT",parent[0]).html(val);
+   switch(from){
+      case"salesman":selection.salesman=iota;break;
+      case"dealers":selection.dealers=iota;break;
+      case"month":selection.month=iota;break;
+   }
+   $("footer").data("selection",selection);
 }
 //============================================================================//
 /**

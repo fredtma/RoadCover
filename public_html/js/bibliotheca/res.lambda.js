@@ -139,7 +139,8 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
             ul=creo({"clss":item.clss,"id":key},'ul');
             $.each(item.sub,function(index,val){
                val.href=val.href=='#'?"javascript:void(0)":val.href;
-               li=creo({'id':index},'li');val.clss=val.clss||'';iota=val.iota||'';
+               val.clss=val.clss||'';iota=val.iota||'';
+               li=creo({'id':index},'li');
                a=creo({"href":val.href,"clss":val.clss,"data-iota":iota},'a');
                i=creo({"clss":val.icon},'i');
                txt=document.createTextNode(' '+val.txt);
@@ -296,7 +297,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
          .novo('#userLogin .form-signin','div',{'clss':'input-prepend fullWidth'}).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-lock'}).genesis('input',{'id':'password','type':'password','clss':'input-block-level','required':'','placeholder':'password'})
          .novo('#userLogin .form-signin','label',{'name':'remember','for':'remeberMe','clss':'checkbox inline'},'Remember me').vita('input',{'type':'checkbox','value':1,'id':'remeberMe'})
          .genesis('label',{'name':'remember','for':'fullscreen','clss':'checkbox inline'},true,'Run in fullscreen?').vita('input',{'type':'checkbox','value':1,'id':'fullscreen'})
-      .novo('#userLogin','div',{'clss':'modal-footer'}).vita('button',{'clss':'btn btn-primary','form':'loginForm'},false,'Login');
+      .novo('#userLogin','div',{'clss':'modal-footer'}).vita('button',{'clss':'btn btn-primary','form':'loginForm','id':'loginSystem'},false,'Login');
       $('#userLogin').modal({'backdrop':'static','keyboard':true,'show':true});
       document.getElementById('loginForm').onsubmit=function(){loginValidation(); return false;};
    }
@@ -339,11 +340,11 @@ hauriret=function(){
    profectus("@hauriret:customer");
    menuDealers=roadCover._Set('#tab-customers section').btnDropDown({"btnDealer":{"clss":"btn btn-primary allDealer","href":"javascript:void(0)","iota":"0","icon":"icon-book icon-white","txt":"All Dealers"},"btnDealerCaret":{"clss":"btn btn-primary dropdown-toggle","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubDealersList":{"clss":"dropdown-menu dealersList","sub":{"dealerOne":{"href":"#","txt":"Dealer One"},"dealerTwo":{"href":"#","txt":"Dealer Two"},"dealerThree":{"href":"#","txt":"Dealer Three"},"dealerDiv":{"divider":true},"dealerAll":{"href":"#","txt":"All Dealers"}}}}).cloneNode(true);
    menuSalesmen=roadCover.btnDropDown({"btnDealer":{"clss":"btn btn-primary allSalesman","href":"javascript:void(0)","iota":"0","icon":"icon-briefcase icon-white","txt":"All Salesman"},"btnDealerCaret":{"clss":"btn btn-primary dropdown-toggle","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubSalesmanList":{"clss":"dropdown-menu salesmanList","sub":{"salesmanOne":{"href":"#","txt":"Salesman One"},"salesmanTwo":{"href":"#","txt":"Salesman Two"},"salesmanThree":{"href":"#","txt":"Salesman Three"},"salesmanDiv":{"divider":true},"salesmanAll":{"href":"#","txt":"All Salesman"}}}}).cloneNode(true);
-   menuMonths=roadCover.btnDropDown({"btnMonths":{"clss":"btn btn-primary","href":"javascript:void(0)","icon":"icon-calendar icon-white","txt":"Months"},"btnDealerCaret":{"clss":"btn btn-primary dropdown-toggle","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubMonthList":{"clss":"dropdown-menu monthList","sub":{1:{"href":"#","txt":"January"},2:{"href":"#","txt":"Febraury"},3:{"href":"#","txt":"March"},4:{"href":"#","txt":"April *"},5:{"href":"#","txt":"May *"},6:{"href":"#","txt":"June *"},7:{"href":"#","txt":"July *"},8:{"href":"#","txt":"August *"},9:{"href":"#","txt":"September *"},10:{"href":"#","txt":"October"},11:{"href":"#","txt":"November"},"12":{"href":"#","txt":"December"}}}}).cloneNode(true);
+   menuMonths=roadCover.btnDropDown({"btnMonths":{"clss":"btn btn-primary monthDrop","href":"javascript:void(0)","icon":"icon-calendar icon-white","txt":"Months"},"btnDealerCaret":{"clss":"btn btn-primary dropdown-toggle","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubMonthList":{"clss":"dropdown-menu monthList","sub":{1:{"href":"#","txt":"January","iota":1},2:{"href":"#","txt":"Febraury","iota":2},3:{"href":"#","txt":"March","iota":3},4:{"href":"#","txt":"April *","iota":4},5:{"href":"#","txt":"May *","iota":5},6:{"href":"#","txt":"June *","iota":6},7:{"href":"#","txt":"July *","iota":7},8:{"href":"#","txt":"August *","iota":8},9:{"href":"#","txt":"September *","iota":9},10:{"href":"#","txt":"October","iota":10},11:{"href":"#","txt":"November","iota":11},"12":{"href":"#","txt":"December","iota":12}}}}).cloneNode(true);
    roadCover.searchForm();
    $('#tab-customers section').append(menuDisplay.cloneNode(true));
    roadCover._Set("#tab-customers section").btnGroup({"btnCustomerExpense":{"title":"Customer's Expense","icon":"icon-tag icon-white"},"btnCustomerPayment":{"title":"Payment Details","icon":"icon-tags icon-white"},"btnCustomerVehecle":{"title":"Vehicle Details","icon":"icon-road icon-white"},"btnCustomerCover":{"title":"Customer's Cover","icon":"icon-download-alt icon-white"}});
-   menuCustSrch=roadCover.inputSearch({"div":{"clss":"btn-cust input-prepend pull-right"},"label":{"clss":"add-on","icon":"icon-search icon-white"},"input":{"clss":"input-medium search-customer","name":"s","type":"search","placeholder":"Search Customer","form":"frm_search","autocomplete":"off"}}).cloneNode(true);
+//   menuCustSrch=roadCover.inputSearch({"div":{"clss":"btn-cust input-prepend pull-right"},"label":{"clss":"add-on","icon":"icon-search icon-white"},"input":{"clss":"input-medium search-customer","name":"s","type":"search","placeholder":"Search Customer","form":"frm_search","autocomplete":"off"}}).cloneNode(true);
    homeSection=homeSection.cloneNode(true);homeSection.id="betaCustomer";
    roadCover.placeObj(pagNav.cloneNode(true));roadCover.placeObj(homeSection);
 //============================================================================//INSURANCE
@@ -354,13 +355,14 @@ hauriret=function(){
    $('#tab-insurance section').append(menuSalesmen);
    $('#tab-insurance section').append(menuMonths);
    $('#tab-insurance section').append(menuDisplay.cloneNode(true));
-   $('#tab-insurance section').append(menuCustSrch);
+   menuCustSrch=roadCover.inputSearch({"div":{"clss":"btn-cust input-prepend pull-right"},"label":{"clss":"add-on","icon":"icon-search icon-white"},"input":{"clss":"input-medium search-customer","name":"s","type":"search","placeholder":"Search Customer","form":"frm_search","autocomplete":"off"}}).cloneNode(true);
+//   $('#tab-insurance section').append(menuCustSrch);
    homeSection=homeSection.cloneNode(true);homeSection.id="betaInsurance";
    roadCover.placeObj(pagNav.cloneNode(true));roadCover.placeObj(homeSection);
 //============================================================================//SYSTEM
 //timeFrame('system');
    menuUser=menuUser.cloneNode(true);menuUser.className += ' duplex';
-   roadCover._Set("#tab-system section").btnGroup({"key":"setSystem","btn":{"btnSysLog":{"title":"View Logs","icon":"icon-list-alt icon-white","lecentia":"Logs"},"btnSysReport":{"title":"View Reports","icon":"icon-book icon-white", "lecentia":"Reports"},"btnSysImport":{"title":"Run Import","icon":"icon icon-white icon-archive","lecentia":"Import"},"btnSysQuery":{"title":"Single Query","icon":"icon-search icon-white","lecentia":"Query"},"btnSysPermission":{"title":"Setup Permission","icon":"icon-pencil icon-white","lecentia":"Permission"},"btnFeatures":{"title":"View/Add System features","icon":"icon-wrench icon-white","lecentia":"Features"},"btnHelper":{"title":"Add/Edit help content","icon":"icon-info-sign icon-white","lecentia":"page"} }});
+   roadCover._Set("#tab-system section").btnGroup({"key":"setSystem","btn":{"btnSysLog":{"title":"View Logs","icon":"icon-list-alt icon-white","lecentia":"Logs"},"btnSysReport":{"title":"View Reports","icon":"icon-book icon-white", "lecentia":"Reports"},"btnSysImport":{"title":"Run Import","icon":"icon icon-white icon-archive","lecentia":"Import"},"btnSysQuery":{"title":"Single Query","icon":"icon-search icon-white","lecentia":"Query"},"btnSysPermission":{"title":"Setup Permission","icon":"icon-pencil icon-white","lecentia":"Permission"},"btnFeatures":{"title":"View/Add System features","icon":"icon-wrench icon-white","lecentia":"Features"},"btnHelper":{"title":"Add/Edit help content","icon":"icon-info-sign icon-white","lecentia":"Helper"} }});
    $('#tab-system section').append(menuUser);
    roadCover.btnGroup({"key":"setClient","btn":{"btnSysClient":{"title":"View Clients","icon":"icon-qrcode icon-white getClient"},"btnPrint":{"title":"Print page","icon":"icon-print icon-white","clss":"printPage"},"btnHelp":{"title":"Help system","icon":"icon-question-sign icon-white","clss":"btnHelp"},}});
    $('#tab-system section').append(menuSearch);
@@ -381,8 +383,10 @@ hauriret=function(){
       });
       $anima('#tab-customers .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));
       $anima('#tab-insurance .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'href':'#tab-'+n,'clss':'allDealer','data-iota':'0'},false,'View All '+aNumero(n,true));
-      //AGITO$('#tab-customers .allDealer,#tab-customers .oneDealer').click(function(){activateMenu('customer','customers',this,true,'dealers');sessionStorage.genesis=0;});//ce qui sur le button
-      $('#tab-insurance .allDealer,#tab-insurance .oneDealer').click(function(){activateMenu('member','insurance',this,true,'dealers');sessionStorage.genesis=0;});//ce qui sur le button
+      $('#tab-customers .allDealer,#tab-customers .oneDealer').click(function(){dropDownMenu(this,"dealers");
+         activateMenu('customer','customers',this,true,'dealers');sessionStorage.genesis=0;});//ce qui sur le button
+      $('#tab-insurance .allDealer,#tab-insurance .oneDealer').click(function(){dropDownMenu(this,"dealers");
+         activateMenu('member','insurance',this,true,'dealers');sessionStorage.genesis=0;});//ce qui sur le button
    });
    $DB("SELECT firstname||' '||lastname,code FROM salesmen",[],"",function(r,j){
       var n='salesman';var cnt=0;
@@ -394,9 +398,27 @@ hauriret=function(){
       });
       $anima('#tab-customers .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));
       $anima('#tab-insurance .'+n+'List','li',{'clss':'divider'}).genesis('li',{},true).vita('a',{'clss':'all'+N,'data-iota':'0'},false,'View All '+aNumero(n,true));
-      //AGITO$('#tab-customers .allSalesman,#tab-customers .oneSalesman').click(function(){activateMenu('customer','customers',this,true,'salesmen');sessionStorage.genesis=0;});
-      $('#tab-insurance .allSalesman,#tab-insurance .oneSalesman').click(function(){activateMenu('member','insurance',this,true,'salesmen');sessionStorage.genesis=0;});
+      $('#tab-customers .allSalesman,#tab-customers .oneSalesman').click(function(){dropDownMenu(this,"salesman");
+         activateMenu('customer','customers',this,true,'salesmen');sessionStorage.genesis=0;});
+      $('#tab-insurance .allSalesman,#tab-insurance .oneSalesman').click(function(){dropDownMenu(this,"salesman");
+         activateMenu('member','insurance',this,true,'salesmen');sessionStorage.genesis=0;});
    });profectus("@hauriret:list dealer&salesman");
+//   $("#btnSubMonthList li,#btnSubMonthList2 li").click(function(){var parent=$(this).parents(".btn-group"),val=$(this).text();$(".theTXT",parent[0]).html(val);});
+//============================================================================//MONTH selection function
+   $(".monthList a").click(function(){//@explain:when the month list is selected, the function is repeated
+      var m=$(this).data("iota");var temp=$('footer').data('temp');
+      dropDownMenu(this,"month");var militia=eternal.mensa;
+      get_ajax(localStorage.SITE_SERVICE,{"militia":militia,"quaerere":temp,"luna":{1:m}},'','post','json',function(_rows){
+         if(typeof temp==="undefined")temp=[0,"dealers"];
+         sideDisplay(temp[0],temp[1]);
+         localStorage.SITE_MONTH=m;//@explain:reset the whole site defaults month selection
+         var y=new Date().getFullYear(); var d=new Date(y,m-1,1).getMonth();$("#betaCustomer small,#betaInsurance small").html(" for the month of "+dateFormat.i18n.monthNames[d+12]);
+         console.log(d,"?",dateFormat.i18n.monthNames[d+12],"?",m);
+         if(_rows.rows.length&&militia=="customers"){theForm=new SET_FORM()._Set("#body article");theForm.setBeta(_rows);reDraw();}
+         else if(_rows.rows.length&&militia=="members"){theForm=new SET_FORM()._Set("#body article");theForm.gammaTable(_rows);}
+         else $("#body article").html("<ul class='breadcrumb'><li>There is currently no record for the selected "+temp[1]+" for the month of "+dateFormat.i18n.monthNames[d+12]+"</li></ul>");
+      });
+   });
 //============================================================================//SETUP
    timeFrame('OMEGA',true);
 };

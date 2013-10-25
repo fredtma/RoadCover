@@ -22,17 +22,21 @@
          .pager li>a:first-child{border-right: 1px solid #ddd;}
          .pager li>a:last-child{border-left: 1px solid #ddd;}
          .invTop{background-color:#d9edf7;font-weight:bold;display:table;width:100%;}
-         .invTop span,.invMid span,.invBot span{width:10%;display:table-cell;padding:0.3em;border:0px solid red}
-         .invTop span:nth-child(1),.invMid span:nth-child(1),.invBot span:nth-child(1){width:2%;}
-         .invTop span:nth-child(2),.invMid span:nth-child(2),.invBot span:nth-child(2) {width:5%}
-         .invTop span:nth-child(4),.invMid span:nth-child(4),.invBot span:nth-child(4) {width:23%}
+         .invTop span,.invMid span,.invBot span{width:7%;display:table-cell;padding:0.3em;border:0px solid red}
+         .invTop span:nth-child(1),.invMid span:nth-child(1){width:2%;}
+         .invTop span:nth-child(2),.invMid span:nth-child(2) {width:5%}
+         .invTop span:nth-child(3),.invMid span:nth-child(3){width:10%}
+         .invTop span:nth-child(6),.invMid span:nth-child(6){width:10%}
+         .invTop span:nth-child(9),.invMid span:nth-child(9){width:10%}
+         .invTop span:nth-child(4),.invMid span:nth-child(4){width:21%}
          .invMid,.invBot{display:table;width:100%;}
-         .invMid span:nth-child(8){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
+         .invMid span:nth-child(10){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
          .invTop span:last-child,.invMid span:last-child,.invBot span:last-child{width:10%;background-color:#d9edf7;border-left:1px solid #d9edf7;}
          .invCust{border-bottom:1px solid #d9edf7;}
          .invBot span{border-bottom:1px solid #d9edf7;}
-         .invBot span:nth-child(8){border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;}
-         .invBot span:nth-child(9){background-color:#d9edf7;border-left:1px solid #d9edf7;}
+         #invCom,#invPre{border-left:1px solid #d9edf7;border-right:1px solid #d9edf7;background-color:#d9edf7;}
+         #invAll{background-color:#d9edf7;border-left:1px solid #d9edf7;}
+         #invBotAll{width:72%;}#inVatTot,#invCom,#invPre,#invAll{width:7%;}
          .invNote{-webkit-border-radius: 0px;-moz-border-radius: 0px;border-radius: 0px;display:table;width:100%;padding:1em 0em;}
          .form-horizontal .form-actions.invNote{padding-left:0em;}.well{background-color:#fff;}
          .blueWell{background-color:#3a87ad; color:#d9edf7;padding-left:3em !important;}.blueWell li{float:left;margin-left:2em;}
@@ -49,18 +53,8 @@
          .help-block.text-success,.help-block.text-error{font-weight:bold;color:#468847;}.help-block.text-error{font-weight:bold;color:#ff0000;}
          #dwld_invoice{display:none;font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;padding:0.4em;}
          .dropdown-menu>li>a{display:block;text-align: left;}
-/*        legend{padding-left: 15px;font-size:3em;margin-bottom:0px;border-bottom:0px;}
-         .invH{border-bottom:1px solid #c09853;display:table}
-         .invHead1,.invHead2{background-color:#fcf8e3;display:table-cell;height:7em;width:20%;border:none;vertical-align: bottom;}
-         .invHead2{background-color:#c09853;width:80%;text-align: right}
-         .invHead1 blockquote {vertical-align: bottom;}
-         dl{margin-bottom:0px;}.dl-horizontal dt {float: left;width:25%;}.dl-horizontal dd {margin-left: 35%;}
-         blockquote small {margin-top:1em;}
-         ul.inline2{list-style-type: disc; width:auto;}
-         ul.inline2>li {list-style-type: disc; width:auto;display:inline-block;}
-         ul.inline2>li {list-style-type: disc;display: list-item;white-space: nowrap;float: right;margin-right: 2em;}
-         ul.inline2>li:first-child {margin-right: 0.1em;}
-         .invHead2 h4 {color:#fcf8e3;font-size:2em;padding-right:0.1em;}         */
+         .popover{min-width:300px !important;font-style: normal !important;font-size: 14px !important; max-width: 350px;font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;}
+         blockquote .popover-content p,blockquote  .popover-title{font-style: normal !important;font-size: 14px !important;}
       </style>
       <!--<link rel="stylesheet" href="css/datepicker.css" />-->
       <section class="page-section">
@@ -90,11 +84,11 @@
                </ul>
             </section>
             <section class="invB">
-               <div class="invTop"><span>No</span><span>Deal No</span><span>Sales Person</span><span>Customer</span><span>IDno / RegNumber</span><span>Date</span><span>Period</span><span>Commission</span><span>Total Premium</span><span>Amount</span></div>
+               <div class="invTop"><span>No</span><span>Deal No</span><span>Sales Person</span><span>Customer</span><span>IDno / RegNumber</span><span>Date</span><span>Period</span><span>Status</span><span>Product</span><span>Commission</span><span>Total Premium</span><span>Amount</span></div>
                <div class="invCust"><!--ingenero--></div>
 <!--               <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span></span><span>Total</span><span id="invTot">ingenero</span></div>
                <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span></span><span>VAT(14%)</span><span id="invVat">ingenero</span></div>-->
-               <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span>Total (inc VAT%)</span><span id="invAll"><!--ingenero--></span></div>
+               <div class="invBot"><span id="invBotAll"></span><span id="invVatTot">Total (inc VAT%)</span><span id="invCom"></span><span id="invPre"></span><span id="invAll"><!--ingenero--></span></div>
             </section>
          </article>
          <div class="form-actions well well-small invNote row-fluid">
@@ -116,7 +110,7 @@
          <div class="form-actions well well-small">
             <button type="button" id="submit_invoice" class="btn btn-primary">Submit Invoice</button>
             <a target="_blank" id="dwld_invoice" class="btn btn-info" href="javascript:void(0)">Download Invoice</a>
-            <button type="button" id="send_invoice" class="btn">Send Invoice</button>
+            <!--<button type="button" id="send_invoice" class="btn">Send Invoice</button>-->
             <span class="help-block"></span>
             <div>&nbsp;</div>
          </div>
@@ -124,33 +118,19 @@
    <!--<script src="../js/libs/bootstrap-datepicker.js"></script>-->
    <script type="text/javascript">
       $('.body article').addClass('totalView');
-      $DB("SELECT code FROM dealers ORDER BY name",[],"",function(r,j){
-         var x,l,row,codes=[],defaultDealer=1771;
-         if(j.rows.length){
-            l=j.rows.length;sessionStorage.genesis=0;
-            for(x=0;x<l;x++)codes[x]=j[x]["code"];$('footer').data('pagination',codes);
-            var dealerTemp=$('footer').data('temp');//quand un dealer et selectioner apartir d'une autre intervention mais garger dans le pied
-            if(!dealerTemp||typeof dealerTemp==="undefined")getInvoice(defaultDealer);
-            else if(dealerTemp&&dealerTemp[0])getInvoice(dealerTemp[0]);
-         }//endifrows
-         $(".next").click(function(){
-            var codes=$("footer").data("pagination");
-            sessionStorage.genesis++;
-            if(codes[sessionStorage.genesis])getInvoice(codes[sessionStorage.genesis]); else {sessionStorage.genesis--;notice("<span class='text-success'>You have reached the last dealer.</span>");};
-         });
-         $(".previous").click(function(){
-            var codes=$("footer").data("pagination");
-            sessionStorage.genesis--;
-            if(codes[sessionStorage.genesis])getInvoice(codes[sessionStorage.genesis]); else {sessionStorage.genesis=0;notice("<span class='text-success'>You have reached the first dealer.</span>");};
-         });
-      });
       //======================================================================//
       function getInvoice(inv){
          var x,l,row,$addrss,$cust,val,father,amount,total=0,vat,all,d=new Date(),y=d.getFullYear(),missing=false;
-         var m=$("#monthList").val()||localStorage.SITE_MONTH;
+         var m=$("#monthList").val();
          var lastDay=new Date(y,m,0).getDate();var dateFrom=new Date(y+'/'+m+'/01').format(localStorage.SITE_DATE);var dateTo=new Date(y+'/'+m+'/'+lastDay).format(localStorage.SITE_DATE);
          $("#fromTo").html(dateFrom+' To '+dateTo);
-         $anima(".invCust","div",{"clss":"progress progress-striped active","id":"ok"}).vita("div",{"clss":"bar","style":"width:100%"},false,"Loading...");
+         //changes the dropdown of dealers
+         var selection={"month":m,"dealers":inv};var txt;
+         $("footer").data("selection",selection);
+         $(".allDealerInv .theTXT").text($("#btnSubDealersList3 a[data-iota="+inv+"]").text());
+         $(".monthDropInv .theTXT").text($("#btnSubMonthList3 a[data-iota="+m+"]").text());
+
+         $(".invCust").empty();$("#invAll").html('');$("#invCom").html('');$("#invPre").html('');$anima(".invCust","div",{"clss":"progress progress-striped active","id":"ok"}).vita("div",{"clss":"bar","style":"width:100%"},false,"Loading...");
          get_ajax(localStorage.SITE_SERVICE,{"militia":"cautionem-dealer","iota":inv,"m":m,"y":y},"","post","json",function(jData){
             var address=false,customers=false,invoices=false;
             if("company" in jData&&"rows" in jData.company&&"length" in jData.company.rows&&jData.company.rows.length>=1);else return false;
@@ -185,9 +165,9 @@
                }//end for each address
             }//if address
             //CUTOMERS DETAILS
-            $(".invCust").empty();$("#invTot").empty();$("#invVat").empty();$("#invAll").empty();
+            $(".progress-striped").hide();$("#invTot").empty();$("#invVat").empty();$("#invAll").empty();
             if(customers){
-               var premium,commission;
+               var premium,commission,totalCommision=0,totalPremium=0;
                l=customers.rows.length;
                $cust=$anima(".invCust");
                father=$cust.father;
@@ -195,14 +175,18 @@
                   row=customers[x];
                   $cust.father=father;
                   premium=parseFloat(row["TotalAmount"]);
+                  totalPremium+=premium;
                   commission=parseFloat(row["Commission"]);
+                  totalCommision+=commission;
                   amount=premium-commission;
                   total+=amount;
-                  $cust.vita("div",{"clss":"invMid"},true).vita("span",{},false,x+1).vita("span",{},false,row["Deal"]).vita("span",{},false,row["Salesman"]).vita("span",{},false,row["Fullname"]).vita("span",{},false,row["IDno"]).vita("span",{},false,row["DateCreated"]).vita("span",{},false,row["Period"]).vita("span",{},false,'R '+commission).vita("span",{},false,'R '+premium).vita("span",{},false,'R '+amount);
+                  $cust.vita("div",{"clss":"invMid"},true).vita("span",{},false,x+1).vita("span",{},false,row["Deal"]).vita("span",{},false,row["Salesman"]).vita("span",{},false,row["Fullname"]).vita("span",{},false,row["IDno"]).vita("span",{},false,row["DateModified"]).vita("span",{},false,row["Period"]).vita("span",{},false,row["trans_status"]).vita("span",{},false,row["product_name"]).vita("span",{},false,'R '+commission).vita("span",{},false,'R '+premium).vita("span",{},false,'R '+amount);
                }//for customers
 //               vat=Math.round(total/100*14);all=total+vat;
 //               $("#invTot").html('R '+total);
 //               $("#invVat").html('R '+vat);
+               $("#invCom").html('R '+totalCommision);
+               $("#invPre").html('R '+totalPremium);
                $("#invAll").html('R '+total);
             }//if customers
             //INVOICES DETAILS
@@ -227,11 +211,11 @@
          var accNo=$("#accountNo").html();if(!accNo||accNo.search(/missing/i)!=-1)missing='account number';
          var deaNo=$("#dealerNo").html();if(!deaNo||deaNo.search(/missing/i)!=-1)missing='dealer\'s number';
 //@disabled:invoice//         var invNo=$("#invNo").html();if(!invNo||invNo.search(/missing/i)!=-1)missing='invoice number';
-         if(missing){$(".help-block").html("Please check that the following field have been entered `"+missing+"`.").addClass("text-error"); notice("Missing "+missing,1,0); return false;}
+         if(missing){$(".help-block").html("Please check above that the following field have been entered `"+missing+"`.").addClass("text-error"); notice("Missing "+missing,1,0); return false;}
          var r=Math.floor((Math.random()*100)+1);notice();
          var jesua=$("#jesua").data("jesua");
          var Tau=jesua?"deLta":"Alpha";
-         res.inv_month=$("#monthList").val()||localStorage.SITE_MONTH;
+         res.inv_month=$("#monthList").val();
          res.inv_year=d.getFullYear();
          d=d.format('isoDateTime');
          res.account=$("#accountNo").html();
@@ -260,7 +244,7 @@
                $(".help-block").html("An error occured while trying to update the invoice.").removeClass("text-success").addClass("text-error");
             }
             if(notitia.trnsc=="2"||notitia.trnsc=="1"){
-               var d=new Date(),y=d.getFullYear();var m=$("#monthList").val()||localStorage.SITE_MONTH;
+               var d=new Date(),y=d.getFullYear();var m=$("#monthList").val();
                var deal=$("#dealerNo").html();
                get_ajax(localStorage.SITE_SERVICE,{"militia":"cautionem-dealer","iota":deal,"m":m,"y":y},"","post","json",function(jData){
                   console.log(jData,"jData");
@@ -271,12 +255,55 @@
       });
       //======================================================================//
       $(document).ready(function(){
-         var menuMonths=roadCover.btnDropDown({"btnMonths":{"clss":"btn btn-info seamless non_procer","href":"javascript:void(0)","icon":"icon-calendar","txt":"Months"},"btnDealerCaret":{"clss":"btn btn-info dropdown-toggle seamless non_procer","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubMonthList3":{"clss":"dropdown-menu monthList","sub":{1:{"href":"#","txt":"January","iota":1},2:{"href":"#","txt":"Febraury","iota":2},3:{"href":"#","txt":"March","iota":3},4:{"href":"#","txt":"April *","iota":4},5:{"href":"#","txt":"May *","iota":5},6:{"href":"#","txt":"June *","iota":6},7:{"href":"#","txt":"July *","iota":7},8:{"href":"#","txt":"August *","iota":8},9:{"href":"#","txt":"September *","iota":9},10:{"href":"#","txt":"October","iota":10},11:{"href":"#","txt":"November","iota":11},"12":{"href":"#","txt":"December","iota":12}}}});
-         $("#monthSet").append(menuMonths);
-         impetroDB("dealers","list","#monthSet");
-         $("#btnSubMonthList3 a").click(function(){
-            $("#monthList").val($(this).data('iota'));
-            var deal=$("#dealerNo").html();if(deal)getInvoice(deal);});
-//         $("#dateSelection").datepicker({format: "yyyy-mm-dd",autoclose: true});
+         $("input[name=s]").removeData().unbind();
+         $DB("SELECT name,code FROM dealers ORDER BY name",[],"",function(r,j){
+            var x,l,row,codes=[],examiner=[];
+            var cnt=0,menuDealers={};
+            if(j.rows.length){
+               l=j.rows.length;sessionStorage.genesis=0;
+               for(x=0;x<l;x++){
+                  row=j[x];codes[x]=row["code"];examiner[x]=row['name']+'$'+row['code'];
+                  menuDealers["dealer_"+row['code']]={"href":"javascript:void(0)","clss":"oneDealer","iota":row['code'],"txt":row['name']};
+               }
+               //================================================================//Set month dropdown
+               menuDealers=roadCover.btnDropDown({"btnDealer3":{"clss":"btn btn-info seamless non_procer allDealerInv","href":"javascript:void(0)","icon":"icon-book","txt":"All Dealers"},"btnDealerCaret":{"clss":"btn btn-info dropdown-toggle seamless non_procer","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubDealersList3":{"clss":"dropdown-menu dealersList","sub":menuDealers}});
+               $("#monthSet").append(menuDealers);
+               var dealerTemp=$('footer').data('temp'),defaultDealer=1771;
+               $("#btnSubDealersList3 a").click(function(){
+                  var parent=$(this).parents(".btn-group"),val=$(this).text(),iota=$(this).data("iota");$(".theTXT",parent[0]).html(val);
+                  getInvoice(iota);
+               });
+               var menuMonths=roadCover.btnDropDown({"btnMonths":{"clss":"btn btn-info seamless non_procer monthDrop monthDropInv","href":"javascript:void(0)","icon":"icon-calendar","txt":"Months"},"btnDealerCaret":{"clss":"btn btn-info dropdown-toggle seamless non_procer","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubMonthList3":{"clss":"dropdown-menu monthList","sub":{1:{"href":"#","txt":"January","iota":1},2:{"href":"#","txt":"February","iota":2},3:{"href":"#","txt":"March","iota":3},4:{"href":"#","txt":"April *","iota":4},5:{"href":"#","txt":"May *","iota":5},6:{"href":"#","txt":"June *","iota":6},7:{"href":"#","txt":"July *","iota":7},8:{"href":"#","txt":"August *","iota":8},9:{"href":"#","txt":"September *","iota":9},10:{"href":"#","txt":"October","iota":10},11:{"href":"#","txt":"November","iota":11},"12":{"href":"#","txt":"December","iota":12}}}});
+               $("#monthSet").append(menuMonths);
+               if(!$("#monthList").val())$("#monthList").val(localStorage.SITE_MONTH);
+               $("#btnSubMonthList3 a").click(function(){
+                  $("#monthList").val($(this).data('iota'));
+                  var deal=$("#dealerNo").html();if(deal)getInvoice(deal);
+               });
+               //================================================================//Set typeAhead
+               $('.tab-pane.active input[name=s]').focus(function(){setTimeout(function(set){$('.tab-pane.active input[name=s]').select();},10);}).val('').prop('disabled',false).typeahead({source:examiner,minLength:3,
+                  highlighter:function(item){var regex = /\$(.+)/;return item.replace(regex,"<span class='none'>$1</span>");},
+                  updater:function(item){
+                     var inv=item.replace(/(.)+\$/,""); item=item.replace(/\$(.)+/,'');
+                     getInvoice(inv)
+                     return item;
+               }});
+               //================================================================//Set pagination
+               $('footer').data('pagination',codes);
+               var dealerTemp=$('footer').data('temp');//quand un dealer et selectioner apartir d'une autre intervention mais garger dans le pied
+               if(typeof dealerTemp==="undefined")getInvoice(defaultDealer);
+               else if(dealerTemp[0])getInvoice(dealerTemp[0]);
+            }//endifrows
+            $(".next").click(function(){
+               var codes=$("footer").data("pagination");
+               sessionStorage.genesis++;
+               if(codes[sessionStorage.genesis])getInvoice(codes[sessionStorage.genesis]); else {sessionStorage.genesis--;notice("<span class='text-success'>You have reached the last dealer.</span>");};
+            });
+            $(".previous").click(function(){
+               var codes=$("footer").data("pagination");
+               sessionStorage.genesis--;
+               if(codes[sessionStorage.genesis])getInvoice(codes[sessionStorage.genesis]); else {sessionStorage.genesis=0;notice("<span class='text-success'>You have reached the first dealer.</span>");};
+            });
+         });
       });
    </script>
