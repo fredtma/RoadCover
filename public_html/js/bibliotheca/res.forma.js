@@ -116,11 +116,12 @@ function SET_FORM(_name,_class,_label){
       if(!getLicentia(this.name,'View',true)) return false;
       this.frmLabel=typeof eternal.form.label=="boolean"?eternal.form.label:true;
       var isReadOnly=(typeof eternal.form.options !=="undefined")?eternal.form.options.readonly:false;
-      if(typeof _results.rows.source!=="undefined")sessionStorage.activeRecord=JSON.stringify(_results);//change la donner seaulment quand ce náit pas une cherche
-      else this.setActiveRecord(_results,len);//maitre ce si quand la source et du system interne
+      var recordOption=$("footer").data("record")||{};$("footer").removeData("record");//@fix:stop changes to navigation or activerecord
+      if(typeof _results.rows.source!=="undefined"&&recordOption.changeActiveRecord!==false)sessionStorage.activeRecord=JSON.stringify(_results);//change la donner seaulment quand ce náit pas une cherche
+      else if(recordOption.changeActiveRecord!==false) this.setActiveRecord(_results,len);//maitre ce si quand la source et du system interne
       navSection=eternal.form.navigation!==true?false:eternal.form.navigation;
       if(!_actum){
-         this.setNavigation(_results,navSection);
+         if(recordOption.changeNavigator!==false)this.setNavigation(_results,navSection);
          roadCover._Set({"next":".tab-pane.active .libHelp"});
          //@todo fix the header title
          if(!$('.btnNew').length&&isReadOnly===false&&getLicentia(this.name,'Create')){
@@ -241,17 +242,19 @@ function SET_FORM(_name,_class,_label){
     */
    this.gammaTable=function(_rows,_child,_element,_unum,_legend,_foreign,_functions){
       var addEle,len,headers,$table,r1,max,len,k,th,title,allHead,cls,colspan,row,rec,ref,tmp,theContent;
-      if('rows' in _rows && 'source' in _rows.rows){sessionStorage.activeRecord=JSON.stringify(_rows);}
-      else if(typeof _rows.source!=="undefined"){sessionStorage.activeRecord=JSON.stringify(_rows);}
+      var recordOption=$("footer").data("record")||{};$("footer").removeData("record");//@fix:stop changes to navigation or activerecord
+      if(_rows.hasOwnProperty('rows')&&_rows.rows.hasOwnProperty('source')&&recordOption.changeActiveRecord!==false){sessionStorage.activeRecord=JSON.stringify(_rows);}
+      else if(typeof _rows.source!=="undefined"&&recordOption.changeActiveRecord!==false){sessionStorage.activeRecord=JSON.stringify(_rows);}
       len=_rows['length']||_rows.rows['length'];
+      console.log(recordOption,"/",len);
       if(getLicentia(this.name,'View')===false) {$('.db_notice').html("<strong class='text-error'>You do not have permission to view "+this.name+"</strong>");return false;}
-      if(!_foreign)this.setNavigation(_rows,true,'navTable');
+      if(!_foreign&&recordOption.changeNavigator!==false)this.setNavigation(_rows,true,'navTable');
       if(!_child){
          if($('header').data('header'))$('#sideBot h3').html(eternal.form.legend.txt);
          addEle=this.Obj.addTo;headers=eternal.fields;allHead=false;cls='table-condensed';
       }else{
          var reference=eternal.children||eternal.child;
-         allHead=('global' in reference[_child]&&'header' in reference[_child].global)?reference[_child].global.header:true;
+         allHead=(reference[_child].hasOwnProperty('global')&&reference[_child].global.hasOwnProperty('header'))?reference[_child].global.header:true;
          addEle=_element;headers=reference[_child].fields;cls='table-bordered table-child';
       }
       if(!_legend)$(addEle).empty();
@@ -270,7 +273,8 @@ function SET_FORM(_name,_class,_label){
       if(typeof _unum=="number"){sessionStorage.genesis=_unum;len=_unum+1;max=_unum+1;}
       var editable=_functions;
       if(getLicentia(this.name,'Edit')===false) editable = false;
-      for(rec=parseInt(sessionStorage.genesis);rec<len,rec<max;rec++){
+      rec=(_child)?0:parseInt(sessionStorage.genesis);//child always has a zero start
+      for(;rec<len,rec<max;rec++){
          row=_rows[rec];
          r1++;
          $table.father=document.querySelector('#table_'+this.name+' tbody');
@@ -307,7 +311,7 @@ function SET_FORM(_name,_class,_label){
          headers=eternal.fields;allHead=false;cls='table-condensed';
       }else{
          var reference=eternal.children||eternal.child;
-         allHead=('global' in reference[_child]&&'header' in reference[_child].global)?reference[_child].global.header:true;
+         allHead=(reference[_child].hasOwnProperty('global')&&reference[_child].global.hasOwnProperty('header'))?reference[_child].global.header:true;
          headers=reference[_child].fields;cls='table-bordered table-child';
       }
       $table=$anima(father,'tr',{'data-jesua':0}).vita('td',{},false,lastRow);var tr=$table.father;
@@ -325,7 +329,7 @@ function SET_FORM(_name,_class,_label){
          $table.father=father;
          if(typeof eternal.links!="undefined") this.setLinks(eternal.links,$table,_row[0],ref);
       }//endif
-      if('sub' in reference[_child].fields)_row.sub=$(this.frmID).data('jesua');//pour donner la valuer de referenc
+      if(reference[_child].fields.hasOwnProperty('sub'))_row.sub=$(this.frmID).data('jesua');//pour donner la valuer de referenc
       alphaNotitia(_row,tr);
    }
    /*
@@ -632,6 +636,7 @@ function SET_FORM(_name,_class,_label){
       $('.pagination').remove();
       if(sessionStorage.activePage!=this.name){sessionStorage.genesis=0;sessionStorage.activePage=this.name;}//@alert:ne pas maitre deux form avec le meme nom.
       len=_results.length||_results.rows.length;$('input[name=s]').val('');
+      console.log(_pos,"_pos",len);
       if(len>1){//parce que si cest un seul retour de base, cela c'est pour une recherche trouver
          srch=[];c=0;examiner=[];
          for(f in eternal.fields){if(eternal.fields[f].search){srch[c]=f;c++;}}//trouve les lieux qui on la cherche
@@ -654,6 +659,7 @@ function SET_FORM(_name,_class,_label){
                var activeSearch=JSON.parse(sessionStorage.activeSearch);
                if(eternal.form.options&&eternal.form.options.type=="betaTable")theForm.gammaTable(activeSearch,false,false,value);
                else theForm.setBeta(activeSearch,false,false,value);
+               console.log("call once---------",typeof reDraw);
                if(typeof reDraw ==="function")setTimeout(reDraw,100);//use on reDraw the search result. necessary on some form e.g. customer
                return item.replace(/\$(.+)/,'');
          }});

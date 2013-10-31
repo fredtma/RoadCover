@@ -84,7 +84,7 @@
                </ul>
             </section>
             <section class="invB">
-               <div class="invTop"><span>No</span><span>Deal No</span><span>Sales Person</span><span>Customer</span><span>IDno / RegNumber</span><span>Date</span><span>Period</span><span>Status</span><span>Product</span><span>Commission</span><span>Total Premium</span><span>Amount</span></div>
+               <div class="invTop"><span>No</span><span>Deal No</span><span>Sales Person</span><span>Customer</span><span>IDno / Reg</span><span>Date</span><span>Period</span><span>Status</span><span>Product</span><span>Commission</span><span>Total Premium</span><span>Amount</span></div>
                <div class="invCust"><!--ingenero--></div>
 <!--               <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span></span><span>Total</span><span id="invTot">ingenero</span></div>
                <div class="invBot"><span></span><span></span><span></span><span></span><span></span><span></span><span>VAT(14%)</span><span id="invVat">ingenero</span></div>-->
@@ -121,12 +121,12 @@
       //======================================================================//
       function getInvoice(inv){
          var x,l,row,$addrss,$cust,val,father,amount,total=0,vat,all,d=new Date(),y=d.getFullYear(),missing=false;
-         var m=$("#monthList").val();
-         var lastDay=new Date(y,m,0).getDate();var dateFrom=new Date(y+'/'+m+'/01').format(localStorage.SITE_DATE);var dateTo=new Date(y+'/'+m+'/'+lastDay).format(localStorage.SITE_DATE);
-         $("#fromTo").html(dateFrom+' To '+dateTo);
+         var m=$("#monthList").val(),m2=m+1; var firstDate= new Date(y+'/'+m+'/06').format('isoDateTime');
+         var lastDay=new Date(y,m,0).getDate();var dateFrom=new Date(y+'/'+m+'/06').format(localStorage.SITE_DATE);var dateTo=new Date(y+'/'+m+'/'+'05').format(localStorage.SITE_DATE);
+         $("#fromTo").html(dateFrom+' To '+dateTo).attr("datetime",firstDate);
          //changes the dropdown of dealers
-         var selection={"month":m,"dealers":inv};var txt;
-         $("footer").data("selection",selection);
+         $("footer").data("selection",{"month":m,"dealers":inv});
+         $('footer').data('temp',[inv,'dealers']);
          $(".allDealerInv .theTXT").text($("#btnSubDealersList3 a[data-iota="+inv+"]").text());
          $(".monthDropInv .theTXT").text($("#btnSubMonthList3 a[data-iota="+m+"]").text());
 
@@ -180,7 +180,7 @@
                   totalCommision+=commission;
                   amount=premium-commission;
                   total+=amount;
-                  $cust.vita("div",{"clss":"invMid"},true).vita("span",{},false,x+1).vita("span",{},false,row["Deal"]).vita("span",{},false,row["Salesman"]).vita("span",{},false,row["Fullname"]).vita("span",{},false,row["IDno"]).vita("span",{},false,row["DateModified"]).vita("span",{},false,row["Period"]).vita("span",{},false,row["trans_status"]).vita("span",{},false,row["product_name"]).vita("span",{},false,'R '+commission).vita("span",{},false,'R '+premium).vita("span",{},false,'R '+amount);
+                  $cust.vita("div",{"clss":"invMid"},true).vita("span",{},false,x+1).vita("span",{},false,row["Deal"]).vita("span",{},false,row["Salesman"]).vita("span",{},false,row["Customer"]).vita("span",{},false,row["IDno"]).vita("span",{},false,row["Start Date"]).vita("span",{},false,row["Period"]).vita("span",{},false,row["trans_status"]).vita("span",{},false,row["product_name"]).vita("span",{},false,'R '+commission).vita("span",{},false,'R '+premium).vita("span",{},false,'R '+amount);
                }//for customers
 //               vat=Math.round(total/100*14);all=total+vat;
 //               $("#invTot").html('R '+total);
@@ -256,6 +256,8 @@
       //======================================================================//
       $(document).ready(function(){
          $("input[name=s]").removeData().unbind();
+         var m=$("footer").data("selection")?$("footer").data("selection").month:localStorage.SITE_MONTH;
+         if(!$("#monthList").val())$("#monthList").val(m);
          $DB("SELECT name,code FROM dealers ORDER BY name",[],"",function(r,j){
             var x,l,row,codes=[],examiner=[];
             var cnt=0,menuDealers={};
@@ -275,7 +277,6 @@
                });
                var menuMonths=roadCover.btnDropDown({"btnMonths":{"clss":"btn btn-info seamless non_procer monthDrop monthDropInv","href":"javascript:void(0)","icon":"icon-calendar","txt":"Months"},"btnDealerCaret":{"clss":"btn btn-info dropdown-toggle seamless non_procer","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubMonthList3":{"clss":"dropdown-menu monthList","sub":{1:{"href":"#","txt":"January","iota":1},2:{"href":"#","txt":"February","iota":2},3:{"href":"#","txt":"March","iota":3},4:{"href":"#","txt":"April *","iota":4},5:{"href":"#","txt":"May *","iota":5},6:{"href":"#","txt":"June *","iota":6},7:{"href":"#","txt":"July *","iota":7},8:{"href":"#","txt":"August *","iota":8},9:{"href":"#","txt":"September *","iota":9},10:{"href":"#","txt":"October","iota":10},11:{"href":"#","txt":"November","iota":11},"12":{"href":"#","txt":"December","iota":12}}}});
                $("#monthSet").append(menuMonths);
-               if(!$("#monthList").val())$("#monthList").val(localStorage.SITE_MONTH);
                $("#btnSubMonthList3 a").click(function(){
                   $("#monthList").val($(this).data('iota'));
                   var deal=$("#dealerNo").html();if(deal)getInvoice(deal);
@@ -288,22 +289,23 @@
                      getInvoice(inv)
                      return item;
                }});
-               //================================================================//Set pagination
+               //================================================================//DEFAULT
                $('footer').data('pagination',codes);
                var dealerTemp=$('footer').data('temp');//quand un dealer et selectioner apartir d'une autre intervention mais garger dans le pied
                if(typeof dealerTemp==="undefined")getInvoice(defaultDealer);
                else if(dealerTemp[0])getInvoice(dealerTemp[0]);
-            }//endifrows
-            $(".next").click(function(){
-               var codes=$("footer").data("pagination");
-               sessionStorage.genesis++;
-               if(codes[sessionStorage.genesis])getInvoice(codes[sessionStorage.genesis]); else {sessionStorage.genesis--;notice("<span class='text-success'>You have reached the last dealer.</span>");};
-            });
-            $(".previous").click(function(){
-               var codes=$("footer").data("pagination");
-               sessionStorage.genesis--;
-               if(codes[sessionStorage.genesis])getInvoice(codes[sessionStorage.genesis]); else {sessionStorage.genesis=0;notice("<span class='text-success'>You have reached the first dealer.</span>");};
-            });
-         });
-      });
+               //================================================================//Set pagination
+               $(".next").click(function(){
+                  var codes=$("footer").data("pagination");
+                  sessionStorage.genesis++;
+                  if(codes[sessionStorage.genesis])getInvoice(codes[sessionStorage.genesis]); else {sessionStorage.genesis--;notice("<span class='text-success'>You have reached the last dealer.</span>");};
+               });
+               $(".previous").click(function(){
+                  var codes=$("footer").data("pagination");
+                  sessionStorage.genesis--;
+                  if(codes[sessionStorage.genesis])getInvoice(codes[sessionStorage.genesis]); else {sessionStorage.genesis=0;notice("<span class='text-success'>You have reached the first dealer.</span>");};
+               });
+            }//if dealers
+         });//$DB query
+      });//ready document
    </script>

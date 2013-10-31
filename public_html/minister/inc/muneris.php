@@ -11,15 +11,27 @@
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 ini_set('display_errors', '1');
 if(substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) ob_start("ob_gzhandler"); else ob_start();
-define("SITE_ROOT","/wwwroot/roadcover/");
+define("SITE_NAME","roadCover/");
+$host=($_SERVER['SERVER_NAME']==='localhost')?"localhost":"197.96.139.19";
+$local=($_SERVER['SERVER_NAME']==='localhost')?true:false;
+$dir=str_replace("public_html\minister\inc", "", __DIR__);
+$dir=str_replace("public_html/minister/inc", "", $dir);
+define("SITE_ROOT",$dir);
+define("SITE_LOCAL",$local);
 define("SITE_PUBLIC",SITE_ROOT."public_html/");
+define("SITE_CERA",SITE_PUBLIC."cera/");
 define("SITE_MINISTER",SITE_ROOT."minister/");
 define("SITE_PUB_MINISTER",SITE_PUBLIC."minister/");
-define("SITE_URL","http://197.96.139.19/");
+define("SITE_URL","http://$host/");
 define("SITE_DWLD",SITE_PUB_MINISTER."downloads/");
+define("SITE_LIBRARY",SITE_PUB_MINISTER."bibliotheca/");
+define("INCLUDE_MAIL",SITE_LIBRARY."PHPMailer_5.2.4/class.phpmailer.php");
+define("EMAIL_SUPPORT","info@xpandit.co.za");
+define("EMAIL_ADMIN","tshimanga@gmail.com");
 include(SITE_MINISTER.'adodb5/adodb.inc.php');
 $db = ADONewConnection('mysql');
-$db->PConnect("localhost","xpandit", "Success2013", "roadcover");
+if(SITE_LOCAL)$db->PConnect("localhost","root", "", "roadcover");
+else$db->PConnect("localhost","xpandit", "Success2013", "roadcover");
 sanitize($_GET);
 sanitize($_POST);
 session_start();
@@ -59,6 +71,26 @@ function sanitize(&$__theValue)
 }//end function sanitize
 #==============================================================================#
 /**
+ * use to get the sites page, using either the physical file or the one in the db
+ * @author fredtma
+ * @version 5.2
+ * @category page, content page
+ * @return bool
+ * @todo add the db pages, php includes, variable variation
+ */
+function cera()
+{
+    $cera   = $header = $_GET['cera'];
+    $module = $_GET['module'];
+    $file   = '';
+    if($module && file_exists(SITE_CERA.$cera.".php")) include(SITE_CERA.$cera.".php");
+    else if(file_exists(SITE_CERA.$cera.".html")) $content=file_get_contents(SITE_CERA.$cera.".html");
+    else $content = "<ul class='breadcrumb'><li>Page Under Construction</li></ul>";
+
+    return [$header,$content];
+}//end function
+#==============================================================================#
+/**
  * used to display message, this will echo the message on the web page
  *
  * <p>The function verify if it is an array or a normal type variable and displays accordinly</p>
@@ -73,18 +105,21 @@ function sanitize(&$__theValue)
  * @param bool <var>$__many</var> option to include more than one value
  * @return string|array in an echo statment
  */
-function iyona ($__var, $__adm=false, $__stop=false, $__many=false)
+function iyona($__var, $__adm=false, $__stop=false)
 {
    if ($__adm) $__adm = !iyona_adm($__adm);
    if (!$__adm)
    {
       echo "<pre>\n";
-      if (is_array($__var)) {foreach($__var as $var) var_dump($var);reset($__var);}
-      else var_dump ($__var);
+      var_dump ($__var);
       if ($__stop) exit;
       echo "</pre>\n";
    }
 }//end function
+function loggin(){
+   $num=func_num_args();
+   for($x=0;$x<$num;$x++){var_dump(func_get_arg($x));}
+}
 #==============================================================================#
 /**
  * write on the system log the value of variables
@@ -387,5 +422,194 @@ function getBrowser()
    }
    return $browser;
 }
+#===============================================================================#
+function encrypt_string($sData, $sKey='$20EgoSumViaEtVeritasEtLux00'){
+   $sResult = '';
+   $expireTime = time() + 600;
+
+   $vars = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
+   //an 8 digit password
+   $code = "";
+   $code = strtoupper($vars[rand(0,25)]);
+   $code .= $vars[rand(0,25)];
+   $code .= rand(0,9);
+   for ($i=0;$i<=4;$i++) {
+      $char = rand(0,1) ? strtoupper($vars[rand(0,25)]) : $vars[rand(0,25)];
+      $num = rand(0,9);
+      $code .= rand(0,1) ? $char : $num;
+   }
+
+   $sData ="{$expireTime}_{$sData}_{$code}";
+   for($i=0;$i<strlen($sData);$i++){
+      $sChar    = substr($sData, $i, 1);
+      $sKeyChar = substr($sKey, ($i % strlen($sKey)) - 1, 1);
+      $sChar    = chr(ord($sChar) + ord($sKeyChar));
+      $sResult .= $sChar;
+   }
+   return encode_base64($sResult);
+}
+#===============================================================================#
+function decrypt_string($sData, $sKey='$20EgoSumViaEtVeritasEtLux00'){
+    $sResult = '';
+    $sData   = decode_base64($sData);
+
+    for($i=0;$i<strlen($sData);$i++){
+        $sChar    = substr($sData, $i, 1);
+        $sKeyChar = substr($sKey, ($i % strlen($sKey)) - 1, 1);
+        $sChar    = chr(ord($sChar) - ord($sKeyChar));
+        $sResult .= $sChar;
+    }
+
+    $time   = substr($sResult,0,strpos($sResult, '_'));
+    $code   = substr($sResult,  strrpos($sResult, '_')+1);
+    $sResult= substr($sResult,strpos($sResult, '_')+1);
+    $sResult= substr($sResult,0,strlen($sResult)-strlen($code)-1);
+    $exppire= time()-$time;
+
+    return ($exppire>600)?false:$sResult;
+}
+#===============================================================================#
+function encode_base64($sData){
+    $sBase64 = base64_encode($sData);
+    return strtr($sBase64, '+/', '-_');
+}
+#===============================================================================#
+function decode_base64($sData){
+    $sBase64 = strtr($sData, '-_', '+/');
+    return base64_decode($sBase64);
+}
 #==============================================================================#
+/**
+ * encrypt an email from it been seen by bots
+ *
+ * every letters will be converted in ordinal character, note that the on click mailto: will not work
+ * @author fredtma
+ * @version 0.7
+ * @category mail
+ * @param string $__email the original email <var>$__email</var>
+ * @return string
+ * @uses str_split
+ */
+function email_encryptor($_email,$_full=false,$_name='')
+{
+   $arr_mail = str_split($_email);
+   foreach($arr_mail as $letter)
+   {
+      if ($letter=='@') $mail .= "<!--please remove this-->&#".ord($letter).";<!--please remove this-->";
+      else $mail .= '&#'.ord($letter).';';
+   }
+   $name = ($_name)?$_name:$mail;
+   if ($_full) echo "<a href='mailto:$mail'>$name</a>";
+   else return $mail;
+}
+#==============================================================================#
+/**
+ * used to format message that will be sent via email
+ * @author fredtma
+ * @version 0.1
+ * @category email, message
+ * @param string $message is the variable will be included in the mail <var>$message</var>
+ * @see NotificationEngine.php
+ * @return string
+ */
+function mail_message($_to,$_subject,$_message)
+{
+   $img_src    = "<img src='".SITE_PUBLIC."/img/logo128.png' alt='Road Cover System' border='0' align='left'/>";
+   $message = <<<IYONA
+<table border="0" align="center" cellpadding="0" cellspacing="0" width='920'>
+   <tr><td>$img_src</td></tr>
+      <tr>
+         <td align="left" valign="top">
+            <table  align="center" width='100%' cellpadding="0" border="0" cellspacing="10" style="font-size:10px;border:5px solid #ececec;color:#666666; font-family: calibri;">
+               <tr border="1">
+                  <td align="left" valign="top" border="1">
+                     <pre style="font-size:14px; color:#666666; font-family: calibri,Verdana, Geneva, sans-serif;" >$_message</pre>
+                  </td>
+               </tr>
+            </table>
+         </td>
+      </tr>
+</table>
+IYONA;
+   if($_to){
+      include(INCLUDE_MAIL);
+      include("../bibliotheca/PHPMailer_5.2.4/class.smtp.php");
+      $mail = new PHPMailer();
+      if(false){
+         $mail->IsSMTP();
+         $mail->Host       = "197.96.139.19";
+         $mail->SMTPDebug  = 2;
+         $mail->SMTPAuth   = true;
+         $mail->SMTPSecure = "tls";
+         $mail->Host       = "smtp.gmail.com";
+         $mail->Port       = 587;
+         $mail->Username   = EMAIL_SUPPORT;
+         $mail->Password   = "saouiplgnkknvafp";
+      }
+      $mail->SetFrom(EMAIL_SUPPORT, "roadCover Support");
+      $mail->AddReplyTo(EMAIL_SUPPORT, "roadCover Support");
+      $mail->AddAddress($_to);
+      $mail->MsgHTML($message);
+      $mail->Subject =$_subject;
+      $mail->AltBofy =$_message;
+      if(!$mail->send()){ $msg="Mailer Error: ".$mail->ErrorInfo; $status=false;}
+      else {$msg="Message sent"; $status=true;}
+   }
+   return [$msg,$status,$message];
+}
+#==============================================================================#
+function make_csv($csv_head, $csv_value, $file, $lev = 0)
+{
+   $filename = SITE_DOWNLOAD_CSV_PATH . $file;
+   $content  = '"' . implode("\",\"", $csv_head) . "\"\n";
+   file_put_contents($filename, $content);
+
+   if ($lev == 0)
+   {
+      $content .= '"' . implode("\",\"", $csv_value) . "\"\n";
+      file_put_contents($filename, $content, FILE_APPEND);
+   }
+   else if ($lev == 1)
+   {
+      foreach ($csv_value as $csv_row)
+      {
+         $content2 = '"' . implode("\",\"", $csv_row) . "\"\n";
+         $content .= $content2;
+         file_put_contents($filename, $content2, FILE_APPEND);
+      }//endfor
+   }
+   header('Content-type: application/vnd.ms-excel');
+   header("Content-Disposition: attachement; filename=$file");
+   echo $content;
+   exit;
+}
+//endfunc
+#==============================================================================#
+function array_to_XML($data, $indent_size = 2 , $header = '<?xml version="1.0" encoding="utf-8"?>') {
+   $xml = _array_to_XML($data, $indent_size, $indent_size);
+   return $header . "\n" . $xml;
+}
+#==============================================================================#
+function _array_to_XML($data, $indent_size, $orig_indent) {
+   $indent = '';
+   for($x=0; $x <= $indent_size; $x++) {
+      $indent .= ' ';
+   }
+   if (!is_array($data)) {
+      return FALSE;
+   }
+   foreach ($data as $key => $val) {
+      if (is_array($val)) {
+         $responce = '';
+         $responce .= _array_to_XML($val, $indent_size + $orig_indent, $orig_indent);
+         $xml .= ($responce ? $indent . '<' . $key . '>' . "\n" . $responce . $indent . '</' . $key . '>' . "\n" : '');
+      }
+      else {
+         $xml .= $indent . '<' . $key . '>' . $val . '</' . $key . '>' . "\n";
+      }
+   }
+   return $xml;
+}
+#==============================================================================#
+
 ?>

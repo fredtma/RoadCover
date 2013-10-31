@@ -18,15 +18,15 @@ agitoScript=function(){
       "quaerere":{"scopo":"","ubi":true,"finis":10},
       "fields": {
          "Title":{"complex":"span","field":{"clss":"formReader"}},
-         "Fullname":{"header":true,"search":true,"complex":"span","title":"Customer name","field":{"clss":"formReader"}},
+         "Customer":{"header":true,"search":true,"complex":"span","title":"Customer name","field":{"clss":"formReader"}},
          "Race":{"complex":"span","field":{"clss":"formReader"}},
          "Gender":{"complex":"span","field":{"clss":"formReader"}},
          "Nationality":{"complex":"span","field":{"clss":"formReader"}},
          "EthnicGroup":{"complex":"span","title":"EthnicGroup","field":{"clss":"formReader"}},
-         "DateModified":{"header":true,"complex":"span","title":"Date Modified","field":{"clss":"formReader"}},
+         "Start Date":{"header":true,"complex":"span","title":"Date Modified","field":{"clss":"formReader"}},
          "IDno":{"header":true,"search":true,"complex":"span","title":"ID Number","field":{"clss":"formReader"}},
          "code":{"complex":"span","title":"Customer Number","field":{"clss":"formReader"}},
-         "transaction":{"complex":"span","title":"Deal Number","field":{"clss":"formReader"}},
+         "deal_number":{"complex":"span","title":"Deal Number","field":{"clss":"formReader"}},
       },
       "children":{
          "address":{"icon":"icon-user ","title":"View customer's address","quaerere":{"scopo":"","ubi":true,"finis":10},"global":{"complex":true,"type":"span"},"fields":{"Email":{"title":""},"Tel":{"title":""},"Cell":{"title":""},"Address":{"title":""},"City":{"title":""},"Province":{"title":""},"Code":{"title":""},"PostAddress":{"title":"Postal Address"}}},
@@ -46,7 +46,8 @@ agitoScript=function(){
    }
    sessionStorage.setItem("active",JSON.stringify(tmp));
    eternal=tmp;var temp=$("footer").data("temp");
-   get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:localStorage.SITE_MONTH}},"","post","json",function(results,j){
+   var m=$("footer").data("selection")?$("footer").data("selection").month:localStorage.SITE_MONTH;
+   get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:m}},"","post","json",function(results,j){
       if(typeof temp==="undefined")temp=[0,"dealers"];
       sideDisplay(temp[0],temp[1]);
       var y=new Date().getFullYear(); var d=new Date(y,localStorage.SITE_MONTH-1,1).getMonth();
@@ -74,7 +75,7 @@ function onShow(on){
    //retirer la deuxieme form ici
    if(!document.querySelector(frmId+2))container=$anima(frmId,"fieldset",{"clss":"half-form formReader","id":frmName+2}).father;
    else container=document.querySelector(frmId+2);
-   $(container).empty();
+   $(container).empty();console.log(active,"active========",ii);
    if(typeof active!=="undefined"){
       get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa+"-"+active,iota:code},"","post","json",function(results){
          reference=eternal.children[active];
@@ -92,7 +93,7 @@ function onShow(on){
    }//ednif
    tmp=code=null;
 }
-reDraw=function(){
+reDraw=function(){ console.log("call once---------");
    var collapseName,tmp;
    var Name=eternal.form.field.name;
    var frmId="#frm_"+Name;
@@ -100,17 +101,18 @@ reDraw=function(){
    collapseName="#acc_"+Name;
    $(".memberIcon").click(function(){
       if($(".popover").length) return false;
+      $("footer").data("record",{"changeActiveRecord":false,"changeNavigator":false});
       tmp=$(this).data("agilis");$(this).parents(".accordion-heading").data("activated",tmp);
-      tmp=$(this).parents("div").data("jesua");$("#collapse_customer"+tmp).collapse("show");tmp=null;
-      if($(".accordion-body.in")[0]){
-         onShow(false);
-      }
+      console.log(tmp,"tmp1");
+      if($(".accordion-body.in")[0]){onShow(false);}//@fix:order is important. over here the .in will not appear yet becos show is not fired
+      tmp=$(this).parents("div").data("jesua");$("#collapse_customer"+tmp).collapse("show");
+      console.log(tmp,"tmp2");tmp=null;
    });
    $(".betaRow").click(function(){tmp=$(this).parents("div").data("jesua");$("#collapse_customer"+tmp).collapse("toggle");tmp=null;});//@row clicked collapse
    $(frmId+" #close_"+Name).click(function(){$(".accordion-body.in").collapse("hide");});//@button CLOSE collapse
    $(collapseName).on("shown",function(){//@onShown
       if(!$(this).data("toggle_shown")||$(this).data("toggle_shown")==0){
-         $(this).data("toggle_shown",1);
+         $(this).data("toggle_shown",1);console.log("call true");
          onShow(true);
       }//endif
    });//@onShown

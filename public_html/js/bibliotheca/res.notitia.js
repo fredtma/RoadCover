@@ -482,7 +482,7 @@ function SET_DB(_reset){
       return omega;
    }
    /*
-    * short hand insert for data insert
+    * short hand insert for data insert, formultiple insert in one command
     * @param {string} _mensa le nom de la table a utiliser
     * @param {string} _comamnd le mot qui vas etre passer comme un parametre
     * @param {array} _fields l'object qui contient les donner

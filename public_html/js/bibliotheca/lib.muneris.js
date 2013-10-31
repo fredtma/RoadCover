@@ -49,10 +49,10 @@ sessionStorage.formValidation=hasFormValidation();//regard si le browser peut fa
 creo=function (arr, ele, txt)
 {
    var key,attr,key;
-   var the_element   = document.createElement(ele);
+   var the_element=document.createElement(ele);
    if (txt)
    {
-      txt = document.createTextNode(txt);
+      txt=document.createTextNode(txt);
       the_element.appendChild(txt);
    }
    /*
@@ -61,8 +61,8 @@ creo=function (arr, ele, txt)
    for (key in arr)
    {
       var skip = false;
-      if (key=='clss') {attr='class'; the_element.className = arr[key]; skip=true;}
-      else if (key=='forr')attr='for';
+      if (key=='clss'||key=='class') {attr='class'; the_element.className = arr[key]; skip=true;}
+      else if (key=='forr'||key=='for')attr='for';
       else if (key=='id') {the_element.id=arr[key]; skip=true;}
       else if (key=='type') {the_element.type=arr[key]; skip=true;}
       else if (key=='name') {the_element.name=arr[key]; skip=true;}
@@ -116,6 +116,54 @@ $anima=function(section,ele,arr,txt,point){
    else if(ele)Node.appendChild(this.father);
    return this;
 };
+//============================================================================//
+!function ($) {
+   $.fn.anima=function(element,options){
+      var opts=$.extend({},{
+         "element":element,
+         "attr":{},
+         "text":"",
+         "pos":true
+      },options);
+      this.lePapa=creo(opts.attr,opts.element,opts.text);
+      this.vita=function(ele,arr,parent,txt,pos){
+         this.enfant=creo(arr,ele,txt);
+         if(pos=="first")$(this.lePapa).prepend(this.enfant);
+         else if(pos=="next")$(this.lePapa).after(this.enfant);
+         else if(pos=="prev")$(this.lePapa).before(this.enfant);
+         else $(this.lePapa).append(this.enfant);
+         if(parent)this.lePapa=this.enfant;
+         return this;
+      }
+      this.novo=function(section,ele,arr,txt){
+         this=(typeof(section)=='string')?document.querySelector(section):section;
+         this.lePapa=this.creo(arr,ele,txt);
+         $(this).appendChild(this.lePapa);
+         return this;
+      }
+      if(opts.pos=='first')$(this).prepend(this.lePapa);
+      else if(opts.pos=='next')$(this).after(this.lePapa);
+      else if(opts.pos=='prev')$(this).before(this.lePapa);
+      else $(this).append(this.lePapa);
+      return this;
+   }
+}(window.jQuery);
+//============================================================================//
+$iyona=function(section){
+   var node=(typeof(section)=='string')?document.querySelector(section):section;;
+   this._$=function(ele,arr,txt){
+      this.father=creo(arr,ele,txt);
+      var set=this;
+      node.appendChild(this.father);
+      this._=function(ele,arr,txt,genesis){
+         ele=creo(arr,ele,txt);
+         this.father.appendChild(ele);this.child=ele;if(genesis)this.father=ele;
+         return set;
+      }
+      return this;
+   }
+   return this;
+}
 //============================================================================//
 /**
  * load a script dynamically in the header tag
@@ -344,10 +392,15 @@ oblitusSignum=function(){
    var u=$('#loginForm #email').val();
    var patterns=JSON.parse(localStorage.EXEMPLAR),msg;
    if(u.search(patterns["email"][0])==-1){msg=patterns["email"][1];
-      $('#userLogin .alert-error').find('span').html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+      $('#userLogin .alert-error span').html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
    }else{
+      $("#mailProgress").show();
       get_ajax(localStorage.SITE_SERVICE,{"militia":"oblitus","u":u},"","post","json",function(results){
-         console.log(results,"results");
+         console.log(results,"results");$("#mailProgress").hide();
+         if(results&&results.mail&&results.mail.status){$('#userLogin .alert').removeClass("alert-error");
+         }else if(results&&results.mail&&results.mail.status===false){
+            $('#userLogin .alert span').html(results.mail.msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+         }
       });
    }//endif correct formate
 }
@@ -370,11 +423,12 @@ loginValidation=function(){
             var attempt=$("footer").data("attempt")||1;
             if(attempt==1)var msg='Failed login attempt...'
             else if (attempt==2){
+               $anima(".modal-footer","div",{"clss":"progress progress-striped active","style":"width:55%;display:none;float:left;","id":"mailProgress"},"","first").vita("div",{"clss":"bar","style":"width:100%"},false,"Please wait loading...");
                $anima(".modal-footer","button",{"form":"loginForm","clss":"btn btn-inverse","type":"button"},"Forgot Password").father.onclick=oblitusSignum;
                msg='Failed attempt count['+attempt+'].<br/>Fill in your email address in the first field and click on forgot password';}
             else msg='Failed attempt count['+attempt+'].<br/>Fill in your email address in the first field and click on forgot password';
             if($('#userLogin .alert-info').length)$('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
-            else $('#userLogin .alert-error').find('span').html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
+            else $('#userLogin .alert span').html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
             $("footer").data("attempt",(++attempt));
          }
       });
@@ -637,20 +691,16 @@ function getLicentia(_name,_perm,_msg){
 }
 //============================================================================//
 /**
- * used to measure script execution time
- *
- * It will verify all the variable sent to the function
+ * this fnction will get the content page from the db
  * @author fredtma
- * @version 0.5
- * @category iyona
- * @gloabl aboject $db
- * @param array $__theValue is the variable taken in to clean <var>$__theValue</var>
- * @see get_rich_custom_fields(), $iyona
- * @return void|bool
- * @todo finish the function on this page
- * @uses file|element|class|variable|function|
+ * @version 7.5
+ * @category content, text
+ * @param string <var>_page</var> the name title of the page
+ * @param boolean <var>_list</var> the option to display the tree list or not
+ * @return void
+ * @todo add the sub tree functionality
  */
-function getPage(_page){
+function getPage(_page,_list){
    var len,row,tmp,d;
    if(getLicentia("Pages","View")===false){notice("<strong class='text-error'>You do not have permission to view the content pages</strong>",true,0);return false;}
    recHistory(_page,false,false,false,false,true);
@@ -743,7 +793,7 @@ function newSection(){
 function liberoAnimus(){
    notice();
    $('.body article').removeClass('totalView');//remove the class that is placed by the cera's
-   for(var instance in CKEDITOR.instances){CKEDITOR.instances[instance].destroy()}//@fix: ce si et necessaire, if faut detruire toute instance avant de naviger
+   for(var instance in CKEDITOR.instances){console.log(instance,"/instance/",CKEDITOR.instances); CKEDITOR.instances[instance].destroy()}//@fix: ce si et necessaire, if faut detruire toute instance avant de naviger
    $("footer").removeData('lateCall').removeData('examiner');
    //$("#displayMensa").removeData('mensa');
 }
@@ -763,7 +813,7 @@ function activateMenu(_mensa,_mensula,_set,_script,_tab,_formType){
    else {
       value=load_async("js/agito/"+_mensa+".js",true,'end',true);
       if(value===false&&typeof agitoScript==="function"){
-         $("footer").data("temp",[iota,_tab]);//@fix:this will initiate a value, when changing via dropdown @only dealer&saleman
+         if(iota)$("footer").data("temp",[iota,_tab]);//@fix:this will initiate a value, when changing via dropdown @only dealer&saleman
          agitoScript();
       }else{//@explain:ce program et appeler une deuxiem foi avec agitoScript() qui et standard
          agitoScript=function(){return true;}

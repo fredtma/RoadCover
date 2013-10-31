@@ -1,20 +1,36 @@
-<script>
-   txt="res.PremiumType_cd,FORMAT(res.CurrentAmount,2) as "Current Amount",res.IsActive,res.isPartOfMainPremium,FORMAT(res.Amount,2)as Amount,res.Description,res.SubCode as "Sub Code"
-FROM road_QuoteResultItems res
-INNER JOIN road_Transactions trans ON trans.Id=res.transaction
-WHERE trans.Holder='2240541'
-GROUP BY res.PremiumType_cd;
+<div id="anima"></div>
 
-SELECT CONCAT(agent.FullNames,' ',agent.Surname) as Salesman,
-if(member.Surname!='',CONCAT(member.FullNames,' ',member.Surname),CONCAT('[Company]: ',member.Name)) as Fullname,
-if(member.IdentificationNumber!='',member.IdentificationNumber,member.RegistrationNumber) as IDno,
-trans.Id as Deal,quot.Period_cd as Period, quot.TotalAmount, quot.DateModified, sum(quot.TotalAmount) Total
-FROM road_Transactions trans
-LEFT JOIN road_Intermediary dealer on dealer.`Id`=trans.Intermediary
-LEFT JOIN road_FandI agent on agent.`Id`=trans.FandI
-INNER JOIN road_Holder member on member.Id=trans.Holder
-INNER JOIN road_QuoteTransactions quot on quot.`transaction`=trans.`Id`
-WHERE dealer.Id='1771'
-AND (MONTH(STR_TO_DATE(quot.DateCreated,'%Y-%m-%d %h:%i:%s %p'))='9' AND YEAR(STR_TO_DATE(quot.DateCreated,'%Y-%m-%d %h:%i:%s %p'))='2013')
-GROUP BY quot.`transaction` ORDER BY agent.Surname,member.Surname,quot.DateModified ASC;";
+<script>
+$aura=function(section){
+   var node=(typeof(section)=='string')?document.querySelector(section):section;;
+   return function(ele,arr,txt){
+      var father=creo(arr,ele,txt),child,set=this;node.appendChild(father);
+      this._=function(ele,arr,txt,genesis){ele=creo(arr,ele,txt);if(!genesis){father.appendChild(ele);child=ele;}else {child.appendChild(ele);child=ele;}return set;}
+      return this;}}
+$iyona=function(section){
+   var node=(typeof(section)=='string')?document.querySelector(section):section;;
+   this._$=function(ele,arr,txt){
+      this.father=creo(arr,ele,txt);
+      var set=this;
+      node.appendChild(this.father);
+      this._=function(ele,arr,txt,genesis){
+         ele=creo(arr,ele,txt);
+         this.father.appendChild(ele);this.child=ele;if(genesis)this.father=ele;
+         return set;
+      }
+      return this;
+   }
+   return this;
+}
+$(document).ready(function(){
+   var _=$aura("#anima");
+   _("ul")._("li",{},"first")._("a",{}," second",true)._("span",{}," text",true)._("b",{}," bold")._("li",{},"second");_("div",{},"Hello heaven");
+   $iyona("#anima")._$("div",{},"Divider")._("ul",{},"",true)._("li",{"id":"link"},"one")._$("a",{},"link")._("li",{},"two");
+   $iyona("#link")._$("li",{},"three");
+   $("#anima").anima("i",{"attr":{"id":"italicTag"},"text":"this is italis"})
+           .vita("strong",{"style":"color:blue"},false," this is bold ");
+});
 </script>
+
+<div id="anima"></div>
+

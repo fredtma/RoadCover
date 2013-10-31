@@ -1,0 +1,11 @@
+{
+   "name":"Road Cover",
+   "description":"The Road Cover dealer system",
+   "version":"0.4",
+   "app":{
+      "background":{
+         "scripts":["js/scena.js"]
+      }
+   },
+   "icons":{"16":"img/logo16.png","128":"img/logo128.png"}
+}

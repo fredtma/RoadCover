@@ -16,17 +16,17 @@ agitoScript=function(){
       "mensa": "members",
       "quaerere":{"scopo":""},
       "fields": {
-         "Id":{"header":true,"title":"Deal Number"},
+         "deal_number":{"header":true,"title":"Deal Number"},
          "Dealer":{"header":true},
          "Status":{"header":true},
          "Salesman":{"header":true},
-         "Fullname":{"header":true,"search":true},
+         "Customer":{"header":true,"search":true},
          "product_name":{"header":true, "title":"Product"},
-         "Period":{"header":true},
-         "CollectionMethod":{"header":true,"title":"Collection Method"},
+         "quot_period":{"header":true,"title":"Period"},
+         "quot_collection":{"header":true,"title":"Collection Method"},
          "TotalAmount":{"header":true,"title":"Total Amount"},
-         "DateModified":{"header":true,"title":"Date Modified"},
-         "IDno":{"header":false,"search":"Fullname"}
+         "date_start":{"header":true,"title":"Start Date"},
+         "idno":{"header":false,"search":"Fullname"}
       }
    }
    var selection=$("footer").data("selection")||'';
@@ -36,8 +36,9 @@ agitoScript=function(){
       txt=$(".monthList a[data-iota="+selection.month+"]").first().text();if(txt)$(".monthDrop .theTXT").text(txt);
    }
    sessionStorage.setItem('active',JSON.stringify(tmp));
-   eternal=tmp;temp=$('footer').data('temp');
-   get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:localStorage.SITE_MONTH}},'','post','json',function(_rows){
+   eternal=tmp;temp=$('footer').data('temp');//get deafault dealer
+   var m=$("footer").data("selection")?$("footer").data("selection").month:localStorage.SITE_MONTH;//default month
+   get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:m}},'','post','json',function(_rows){
       if(typeof temp==="undefined")temp=[0,"dealers"];
       sideDisplay(temp[0],temp[1]);
       var y=new Date().getFullYear(); var d=new Date(y,localStorage.SITE_MONTH-1,1).getMonth();

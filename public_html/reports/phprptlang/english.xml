@@ -1,0 +1,1825 @@
+﻿<?xml version="1.0" standalone="yes"?>
+<ew-language date="2013/10/31" version="5.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
+	<global>
+		<phrase id="allrecords" value="All"/>
+		<phrase id="alwaysask" value="Always ask for my user name and password"/>
+		<phrase id="autologin" value="Auto login until I logout explicitly"/>
+		<phrase id="backtologin" value="Back to Login Page"/>
+		<phrase id="booleanno" value="No"/>
+		<phrase id="booleanyes" value="Yes"/>
+		<phrase id="cancelbtn" value="Cancel" client="1"/>
+		<phrase id="currentfilters" value="Current filters:"/>
+		<phrase id="entersenderemail" value="Please enter sender email" client="1"/>
+		<phrase id="enterpropersenderemail" value="Exceed maximum sender email count or email address incorrect" client="1"/>
+		<phrase id="enterrecipientemail" value="Please enter recipient email" client="1"/>
+		<phrase id="enterproperrecipientemail" value="Exceed maximum recipient email count or email address incorrect" client="1"/>
+		<phrase id="enterproperccemail" value="Exceed maximum cc email count or email address incorrect" client="1"/>
+		<phrase id="enterproperbccemail" value="Exceed maximum bcc email count or email address incorrect" client="1"/>
+		<phrase id="entersubject" value="Please enter subject" client="1"/>
+		<phrase id="emailformsender" value="From"/>
+		<phrase id="emailformrecipient" value="To"/>
+		<phrase id="emailformcc" value="Cc"/>
+		<phrase id="emailformbcc" value="Bcc"/>
+		<phrase id="emailformsubject" value="Subject"/>
+		<phrase id="emailformmessage" value="Message"/>
+		<phrase id="emailformcontenttype" value="Send as"/>
+		<phrase id="emailformcontenttypeurl" value="URL"/>
+		<phrase id="emailformcontenttypehtml" value="HTML"/>
+		<phrase id="emptylabel" value="(Empty)"/>
+		<phrase id="enterpassword" value="Please enter password" client="1"/>
+		<phrase id="enterpwd" value="Please enter password" client="1"/>
+		<phrase id="entersearchcriteria" value="Please enter search criteria"/>
+		<phrase id="enteruid" value="Please enter user ID" client="1"/>
+		<phrase id="exceedmaxemailexport" value="Exceed maximum export email count. Please try again later."/>
+		<phrase id="exporttoemail" value="Email" client="1"/>
+		<phrase id="exporttoexcel" value="Export to Excel"/>
+		<phrase id="exporttopdf" value="Export to PDF"/>
+		<phrase id="exporttoword" value="Export to Word"/>
+		<phrase id="filters" value="Filters"/>
+		<phrase id="incorrectcreditcard" value="Incorrect credit card number" client="1"/>
+		<phrase id="incorrectdateymd" value="Incorrect date, format = yyyy%smm%sdd"/>
+		<phrase id="incorrectdatemdy" value="Incorrect date, format = mm%sdd%syyyy"/>
+		<phrase id="incorrectdatedmy" value="Incorrect date, format = dd%smm%syyyy"/>
+		<phrase id="incorrectshortdateymd" value="Incorrect date, format = yy%smm%sdd"/>
+		<phrase id="incorrectshortdatemdy" value="Incorrect date, format = mm%sdd%syy"/>
+		<phrase id="incorrectshortdatedmy" value="Incorrect date, format = dd%smm%syy"/>
+		<phrase id="incorrectemail" value="Incorrect email" client="1"/>
+		<phrase id="incorrectfield" value="Incorrect field" client="1"/>
+		<phrase id="incorrectfloat" value="Incorrect floating point number" client="1"/>
+		<phrase id="incorrectguid" value="Incorrect GUID" client="1"/>
+		<phrase id="incorrectinteger" value="Incorrect integer" client="1"/>
+		<phrase id="incorrectphone" value="Incorrect phone number" client="1"/>
+		<phrase id="incorrectrange" value="Number must be between %1 and %2" client="1"/>
+		<phrase id="incorrectregexp" value="Regular expression not matched" client="1"/>
+		<phrase id="incorrectssn" value="Incorrect Social Security Number" client="1"/>
+		<phrase id="incorrecttime" value="Incorrect time (hh:mm:ss)" client="1"/>
+		<phrase id="incorrectzip" value="Incorrect ZIP code" client="1"/>
+		<phrase id="invaliduidpwd" value="Incorrect user ID or password"/>
+		<phrase id="language" value="Language"/>
+		<phrase id="login" value="Login"/>
+		<phrase id="loginpage" value="Login Page"/>
+		<phrase id="logout" value="Logout"/>
+		<phrase id="monthjan" value="Jan"/>
+		<phrase id="monthfeb" value="Feb"/>
+		<phrase id="monthmar" value="Mar"/>
+		<phrase id="monthapr" value="Apr"/>
+		<phrase id="monthmay" value="May"/>
+		<phrase id="monthjun" value="Jun"/>
+		<phrase id="monthjul" value="Jul"/>
+		<phrase id="monthaug" value="Aug"/>
+		<phrase id="monthsep" value="Sep"/>
+		<phrase id="monthoct" value="Oct"/>
+		<phrase id="monthnov" value="Nov"/>
+		<phrase id="monthdec" value="Dec"/>
+		<phrase id="next" value="Next"/>
+		<phrase id="nopermission" value="You do not have the right permission to view the page"/>
+		<phrase id="norecord" value="No records found"/>
+		<phrase id="noreportorcharts" value="No report or charts is selected for generation. Please check your report/charts settings."/>
+		<phrase id="nodistinctcolvals" value="No distinct column values for sql: "/>
+		<phrase id="nulllabel" value="(Null)"/>
+		<phrase id="of" value="of"/>
+		<phrase id="page" value="Page"/>
+		<phrase id="pagerfirst" value="First"/>
+		<phrase id="pagerlast" value="Last"/>
+		<phrase id="pagernext" value="Next"/>
+		<phrase id="pagerprevious" value="Previous"/>
+		<phrase id="password" value="Password"/>
+		<phrase id="pleaseselect" value=""/>
+		<phrase id="popupall" value="(All)" client="1"/>
+		<phrase id="popupcancel" value="Cancel" client="1"/>
+		<phrase id="popupfrom" value="From" client="1"/>
+		<phrase id="popupnovalue" value="No value selected!" client="1"/>
+		<phrase id="popupok" value="  OK  " client="1"/>
+		<phrase id="popupselect" value="Please Select" client="1"/>
+		<phrase id="popupto" value="To" client="1"/>
+		<phrase id="prev" value="Prev"/>
+		<phrase id="printerfriendly" value="Printer Friendly"/>
+		<phrase id="group" value="Groups"/>
+		<phrase id="groupsperpage" value="Groups per page"/>
+		<phrase id="qtr1" value="1st Quarter"/>
+		<phrase id="qtr2" value="2nd Quarter"/>
+		<phrase id="qtr3" value="3rd Quarter"/>
+		<phrase id="qtr4" value="4th Quarter"/>
+		<phrase id="record" value="Records"/>
+		<phrase id="recordsperpage" value="Records per page"/>
+		<phrase id="report" value="Reports"/>
+		<phrase id="reset" value="Reset"/>
+		<phrase id="resetallfilter" value="Reset all filters"/>
+		<phrase id="resetsearch" value="Reset search criteria"/>
+		<phrase id="rptavg" value="AVG"/>
+		<phrase id="rptcnt" value="COUNT"/>
+		<phrase id="rptdtlrec" value=" detail records"/>
+		<phrase id="rptgrandsummary" value="Grand Summary"/>
+		<phrase id="rptgrandtotal" value="Grand Total"/>
+		<phrase id="rptmax" value="MAX"/>
+		<phrase id="rptmin" value="MIN"/>
+		<phrase id="rptpagesummary" value="Page Summary"/>
+		<phrase id="rptpagetotal" value="Page Total"/>
+		<phrase id="rptseparator" value=":&amp;nbsp;"/>
+		<phrase id="rptsum" value="SUM"/>
+		<phrase id="rptsumhead" value="Summary for"/>
+		<phrase id="saveusername" value="Save my user name"/>
+		<phrase id="search" value="Search"/>
+		<phrase id="selectall" value="(All)"/>
+		<phrase id="sendemailbtn" value="Send" client="1"/>
+		<phrase id="sendemailsuccess" value="Email sent successfully" client="1"/>
+		<phrase id="showall" value="Show all"/>
+		<phrase id="summary" value="Summary"/>
+		<phrase id="tasks" value="Tasks"/>
+		<phrase id="to" value="to"/>
+		<phrase id="top" value="Top"/>
+		<phrase id="total" value="Total"/>
+		<phrase id="username" value="User name"/>
+		<phrase id="week" value="Week"/>
+		<phrase id="year" value="Year"/>
+		<!-- Search Operators -->
+		<phrase id="=" value="="/>
+		<phrase id="&lt;&gt;" value="&lt;&gt;"/>
+		<phrase id="&lt;" value="&lt;"/>
+		<phrase id="&lt;=" value="&lt;="/>
+		<phrase id="&gt;" value="&gt;"/>
+		<phrase id="&gt;=" value="&gt;="/>
+		<phrase id="like" value="contains"/>
+		<phrase id="not like" value="not contains"/>
+		<phrase id="starts with" value="starts with"/>
+		<phrase id="between" value="between"/>
+		<phrase id="and" value="and"/>
+		<phrase id="or" value="or"/>
+		<!-- Menu Prefix/Suffix -->
+		<phrase id="simplereportmenuitemprefix" value=""/>
+		<phrase id="simplereportmenuitemsuffix" value=""/>
+		<phrase id="detailsummaryreportmenuitemprefix" value=""/>
+		<phrase id="detailsummaryreportmenuitemsuffix" value=""/>
+		<phrase id="crosstabreportmenuitemprefix" value=""/>
+		<phrase id="crosstabreportmenuitemsuffix" value=""/>
+		<phrase id="chartreportmenuitemprefix" value=""/>
+		<phrase id="chartreportmenuitemsuffix" value=""/>
+		<!-- Advanced Filter -->
+		<phrase id="future" value="Future"/>
+		<phrase id="past" value="Past"/>
+		<phrase id="last14days" value="Last 14 days"/>
+		<phrase id="last30days" value="Last 30 days"/>
+		<phrase id="last7days" value="Last 7 days"/>
+		<phrase id="next14days" value="Next 14 days"/>
+		<phrase id="next30days" value="Next 30 days"/>
+		<phrase id="next7days" value="Next 7 days"/>
+		<phrase id="today" value="Today"/>
+		<phrase id="tomorrow" value="Tomorrow"/>
+		<phrase id="yesterday" value="Yesterday"/>
+		<phrase id="lastmonth" value="Last month"/>
+		<phrase id="nextmonth" value="Next month"/>
+		<phrase id="thismonth" value="This month"/>
+		<phrase id="lasttwoweeks" value="Last two weeks"/>
+		<phrase id="lastweek" value="Last week"/>
+		<phrase id="nexttwoweeks" value="Next two weeks"/>
+		<phrase id="nextweek" value="Next week"/>
+		<phrase id="thisweek" value="This week"/>
+		<phrase id="lastyear" value="Last year"/>
+		<phrase id="nextyear" value="Next year"/>
+		<phrase id="thisyear" value="This year"/>
+	</global>
+	<project><phrase id="bodytitle" value="roadCover Report Management"/>
+<phrase id="footertext" value="&amp;copy;2012 e.World Technology Ltd. All rights reserved."/>
+<menu id="64"><phrase id="menutext" value="report vehicle"/>
+</menu>
+<menu id="63"><phrase id="menutext" value="report invoice"/>
+</menu>
+<menu id="54"><phrase id="menutext" value="road Agreement Results"/>
+</menu>
+<menu id="55"><phrase id="menutext" value="tmp"/>
+</menu>
+<menu id="56"><phrase id="menutext" value="report Per Dealer Per Salesman"/>
+</menu>
+<menu id="57"><phrase id="menutext" value="Dealer &amp; Salesman Report"/>
+</menu>
+<menu id="58"><phrase id="menutext" value="Chart Report"/>
+</menu>
+<menu id="1"><phrase id="menutext" value="road Cover address"/>
+</menu>
+<menu id="2"><phrase id="menutext" value="road Cover clients"/>
+</menu>
+<menu id="3"><phrase id="menutext" value="road Cover contacts"/>
+</menu>
+<menu id="4"><phrase id="menutext" value="road Cover dealers"/>
+</menu>
+<menu id="5"><phrase id="menutext" value="road Cover features"/>
+</menu>
+<menu id="6"><phrase id="menutext" value="road Cover groups"/>
+</menu>
+<menu id="7"><phrase id="menutext" value="road Cover invoices"/>
+</menu>
+<menu id="8"><phrase id="menutext" value="road Cover link permissions groups"/>
+</menu>
+<menu id="9"><phrase id="menutext" value="road Cover link permissions users"/>
+</menu>
+<menu id="10"><phrase id="menutext" value="road Cover link users groups"/>
+</menu>
+<menu id="11"><phrase id="menutext" value="road Cover pages"/>
+</menu>
+<menu id="12"><phrase id="menutext" value="road Cover permissions"/>
+</menu>
+<menu id="13"><phrase id="menutext" value="road Cover salesmen"/>
+</menu>
+<menu id="14"><phrase id="menutext" value="road Cover users"/>
+</menu>
+<menu id="15"><phrase id="menutext" value="road Cover version control"/>
+</menu>
+<menu id="16"><phrase id="menutext" value="road Cover version db"/>
+</menu>
+<menu id="17"><phrase id="menutext" value="road Cover versioning"/>
+</menu>
+<menu id="18"><phrase id="menutext" value="road Addresses"/>
+</menu>
+<menu id="19"><phrase id="menutext" value="road Agreements"/>
+</menu>
+<menu id="20"><phrase id="menutext" value="road Category Selections"/>
+</menu>
+<menu id="21"><phrase id="menutext" value="road Fand I"/>
+</menu>
+<menu id="22"><phrase id="menutext" value="road Holder"/>
+</menu>
+<menu id="23"><phrase id="menutext" value="road Income And Expenses"/>
+</menu>
+<menu id="24"><phrase id="menutext" value="road Intermediary"/>
+</menu>
+<menu id="25"><phrase id="menutext" value="road Quote Result Items"/>
+</menu>
+<menu id="26"><phrase id="menutext" value="road Quote Transactions"/>
+</menu>
+<menu id="27"><phrase id="menutext" value="road Quote Agreement"/>
+</menu>
+<menu id="28"><phrase id="menutext" value="road Related Stakeholders"/>
+</menu>
+<menu id="29"><phrase id="menutext" value="road Sale Amounts"/>
+</menu>
+<menu id="30"><phrase id="menutext" value="road Transactions"/>
+</menu>
+<menu id="31"><phrase id="menutext" value="road Tx Collection Category Detail"/>
+</menu>
+<menu id="32"><phrase id="menutext" value="road Tx Consent Category Detail"/>
+</menu>
+<menu id="33"><phrase id="menutext" value="road Tx Finance Category Detail"/>
+</menu>
+<menu id="34"><phrase id="menutext" value="road Tx Items"/>
+</menu>
+<menu id="35"><phrase id="menutext" value="road Tx Mv Prepaid Plan Detail"/>
+</menu>
+<menu id="36"><phrase id="menutext" value="road Tx Needs Analysis Category Detail"/>
+</menu>
+<menu id="37"><phrase id="menutext" value="road Tx Sh Details"/>
+</menu>
+<menu id="38"><phrase id="menutext" value="road Tx Vehicle Detail"/>
+</menu>
+<menu id="39"><phrase id="menutext" value="road Tx Vehicle Sale Category Detail"/>
+</menu>
+<menu id="42"><phrase id="menutext" value="customers Deal"/>
+</menu>
+<menu id="43"><phrase id="menutext" value="Customers Deal"/>
+</menu>
+<menu id="44"><phrase id="menutext" value="dealers Report"/>
+</menu>
+<menu id="45"><phrase id="menutext" value="Dealers Reports"/>
+</menu>
+<menu id="59"><phrase id="menutext" value="Dealer's Reort"/>
+</menu>
+<menu id="46"><phrase id="menutext" value="dealers Salesmen"/>
+</menu>
+<menu id="47"><phrase id="menutext" value="Dealers Salesmen"/>
+</menu>
+<menu id="60"><phrase id="menutext" value="Salesman Chart"/>
+</menu>
+<menu id="48"><phrase id="menutext" value="dealers Transaction"/>
+</menu>
+<menu id="61"><phrase id="menutext" value="Deals Sold"/>
+</menu>
+<menu id="49"><phrase id="menutext" value="Dealers Transaction"/>
+</menu>
+<menu id="62"><phrase id="menutext" value="Dealers deal sold"/>
+</menu>
+<menu id="52"><phrase id="menutext" value="deals Details"/>
+</menu>
+<menu id="53"><phrase id="menutext" value="Deals Details"/>
+</menu>
+<table id="roadcover_address"><phrase id="tblcaption" value="road Cover address"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="ref_name"><phrase id="fldcaption" value="ref name"/>
+</field>
+<field id="ref_group"><phrase id="fldcaption" value="ref group"/>
+</field>
+<field id="type"><phrase id="fldcaption" value="type"/>
+</field>
+<field id="street"><phrase id="fldcaption" value="street"/>
+</field>
+<field id="city"><phrase id="fldcaption" value="city"/>
+</field>
+<field id="region"><phrase id="fldcaption" value="region"/>
+</field>
+<field id="country"><phrase id="fldcaption" value="country"/>
+</field>
+<field id="modified"><phrase id="fldcaption" value="modified"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+<field id="jesua"><phrase id="fldcaption" value="jesua"/>
+</field>
+</table>
+<table id="roadcover_clients"><phrase id="tblcaption" value="road Cover clients"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="company"><phrase id="fldcaption" value="company"/>
+</field>
+<field id="code"><phrase id="fldcaption" value="code"/>
+</field>
+<field id="about"><phrase id="fldcaption" value="about"/>
+</field>
+<field id="_email"><phrase id="fldcaption" value="email"/>
+</field>
+<field id="modified"><phrase id="fldcaption" value="modified"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+<field id="jesua"><phrase id="fldcaption" value="jesua"/>
+</field>
+</table>
+<table id="roadcover_contacts"><phrase id="tblcaption" value="road Cover contacts"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="ref_name"><phrase id="fldcaption" value="ref name"/>
+</field>
+<field id="ref_group"><phrase id="fldcaption" value="ref group"/>
+</field>
+<field id="type"><phrase id="fldcaption" value="type"/>
+</field>
+<field id="contact"><phrase id="fldcaption" value="contact"/>
+</field>
+<field id="instruction"><phrase id="fldcaption" value="instruction"/>
+</field>
+<field id="ext"><phrase id="fldcaption" value="ext"/>
+</field>
+<field id="modified"><phrase id="fldcaption" value="modified"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+<field id="jesua"><phrase id="fldcaption" value="jesua"/>
+</field>
+</table>
+<table id="roadcover_dealers"><phrase id="tblcaption" value="road Cover dealers"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="name"><phrase id="fldcaption" value="name"/>
+</field>
+<field id="code"><phrase id="fldcaption" value="code"/>
+</field>
+<field id="modified"><phrase id="fldcaption" value="modified"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+<field id="jesua"><phrase id="fldcaption" value="jesua"/>
+</field>
+<field id="account"><phrase id="fldcaption" value="account"/>
+</field>
+<field id="registration_number"><phrase id="fldcaption" value="registration number"/>
+</field>
+<field id="vat_registration"><phrase id="fldcaption" value="vat registration"/>
+</field>
+<field id="is_insured"><phrase id="fldcaption" value="is insured"/>
+</field>
+<field id="fsb_number"><phrase id="fldcaption" value="fsb number"/>
+</field>
+</table>
+<table id="roadcover_features"><phrase id="tblcaption" value="road Cover features"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="feature"><phrase id="fldcaption" value="feature"/>
+</field>
+<field id="description"><phrase id="fldcaption" value="description"/>
+</field>
+<field id="category"><phrase id="fldcaption" value="category"/>
+</field>
+<field id="filename"><phrase id="fldcaption" value="filename"/>
+</field>
+<field id="manus"><phrase id="fldcaption" value="manus"/>
+</field>
+<field id="tab"><phrase id="fldcaption" value="tab"/>
+</field>
+<field id="modified"><phrase id="fldcaption" value="modified"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+<field id="jesua"><phrase id="fldcaption" value="jesua"/>
+</field>
+</table>
+<table id="roadcover_groups"><phrase id="tblcaption" value="road Cover groups"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="name"><phrase id="fldcaption" value="name"/>
+</field>
+<field id="desc"><phrase id="fldcaption" value="desc"/>
+</field>
+<field id="modified"><phrase id="fldcaption" value="modified"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+<field id="jesua"><phrase id="fldcaption" value="jesua"/>
+</field>
+</table>
+<table id="roadcover_invoices"><phrase id="tblcaption" value="road Cover invoices"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="approver"><phrase id="fldcaption" value="approver"/>
+</field>
+<field id="invoice_number"><phrase id="fldcaption" value="invoice number"/>
+</field>
+<field id="account"><phrase id="fldcaption" value="account"/>
+</field>
+<field id="dealer"><phrase id="fldcaption" value="dealer"/>
+</field>
+<field id="quantity"><phrase id="fldcaption" value="quantity"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+<field id="modified"><phrase id="fldcaption" value="modified"/>
+</field>
+<field id="due_date"><phrase id="fldcaption" value="due date"/>
+</field>
+<field id="desc"><phrase id="fldcaption" value="desc"/>
+</field>
+<field id="sub_total"><phrase id="fldcaption" value="sub total"/>
+</field>
+<field id="total"><phrase id="fldcaption" value="total"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="status"/>
+</field>
+<field id="jesua"><phrase id="fldcaption" value="jesua"/>
+</field>
+<field id="inv_month"><phrase id="fldcaption" value="inv month"/>
+</field>
+<field id="inv_year"><phrase id="fldcaption" value="inv year"/>
+</field>
+</table>
+<table id="roadcover_link_permissions_groups"><phrase id="tblcaption" value="road Cover link permissions groups"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="permission"><phrase id="fldcaption" value="permission"/>
+</field>
+<field id="group"><phrase id="fldcaption" value="group"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+</table>
+<table id="roadcover_link_permissions_users"><phrase id="tblcaption" value="road Cover link permissions users"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="permission"><phrase id="fldcaption" value="permission"/>
+</field>
+<field id="user"><phrase id="fldcaption" value="user"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+</table>
+<table id="roadcover_link_users_groups"><phrase id="tblcaption" value="road Cover link users groups"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="user"><phrase id="fldcaption" value="user"/>
+</field>
+<field id="group"><phrase id="fldcaption" value="group"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+</table>
+<table id="roadcover_pages"><phrase id="tblcaption" value="road Cover pages"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="page_ref"><phrase id="fldcaption" value="page ref"/>
+</field>
+<field id="title"><phrase id="fldcaption" value="title"/>
+</field>
+<field id="content"><phrase id="fldcaption" value="content"/>
+</field>
+<field id="date_modified"><phrase id="fldcaption" value="date modified"/>
+</field>
+<field id="modified"><phrase id="fldcaption" value="modified"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+<field id="jesua"><phrase id="fldcaption" value="jesua"/>
+</field>
+<field id="level"><phrase id="fldcaption" value="level"/>
+</field>
+<field id="type"><phrase id="fldcaption" value="type"/>
+</field>
+<field id="selector"><phrase id="fldcaption" value="selector"/>
+</field>
+<field id="option"><phrase id="fldcaption" value="option"/>
+</field>
+<field id="position"><phrase id="fldcaption" value="position"/>
+</field>
+</table>
+<table id="roadcover_permissions"><phrase id="tblcaption" value="road Cover permissions"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="name"><phrase id="fldcaption" value="name"/>
+</field>
+<field id="desc"><phrase id="fldcaption" value="desc"/>
+</field>
+<field id="_page"><phrase id="fldcaption" value="page"/>
+</field>
+<field id="enable"><phrase id="fldcaption" value="enable"/>
+</field>
+<field id="rank"><phrase id="fldcaption" value="rank"/>
+</field>
+<field id="icon"><phrase id="fldcaption" value="icon"/>
+</field>
+<field id="sub"><phrase id="fldcaption" value="sub"/>
+</field>
+<field id="modified"><phrase id="fldcaption" value="modified"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+<field id="jesua"><phrase id="fldcaption" value="jesua"/>
+</field>
+</table>
+<table id="roadcover_salesmen"><phrase id="tblcaption" value="road Cover salesmen"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="dealer"><phrase id="fldcaption" value="dealer"/>
+</field>
+<field id="firstname"><phrase id="fldcaption" value="firstname"/>
+</field>
+<field id="lastname"><phrase id="fldcaption" value="lastname"/>
+</field>
+<field id="code"><phrase id="fldcaption" value="code"/>
+</field>
+<field id="idno"><phrase id="fldcaption" value="idno"/>
+</field>
+<field id="modified"><phrase id="fldcaption" value="modified"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+<field id="jesua"><phrase id="fldcaption" value="jesua"/>
+</field>
+</table>
+<table id="roadcover_users"><phrase id="tblcaption" value="road Cover users"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="username"><phrase id="fldcaption" value="username"/>
+</field>
+<field id="password"><phrase id="fldcaption" value="password"/>
+</field>
+<field id="firstname"><phrase id="fldcaption" value="firstname"/>
+</field>
+<field id="lastname"><phrase id="fldcaption" value="lastname"/>
+</field>
+<field id="_email"><phrase id="fldcaption" value="email"/>
+</field>
+<field id="gender"><phrase id="fldcaption" value="gender"/>
+</field>
+<field id="modified"><phrase id="fldcaption" value="modified"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+<field id="jesua"><phrase id="fldcaption" value="jesua"/>
+</field>
+<field id="level"><phrase id="fldcaption" value="level"/>
+</field>
+<field id="last_seen"><phrase id="fldcaption" value="last seen"/>
+</field>
+<field id="log_count"><phrase id="fldcaption" value="log count"/>
+</field>
+</table>
+<table id="roadcover_version_control"><phrase id="tblcaption" value="road Cover version control"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="ver"/>
+</field>
+<field id="user"><phrase id="fldcaption" value="user"/>
+</field>
+<field id="device"><phrase id="fldcaption" value="DEVICE"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+</table>
+<table id="roadcover_version_db"><phrase id="tblcaption" value="road Cover version db"/>
+<field id="ver"><phrase id="fldcaption" value="ver"/>
+</field>
+<field id="revision"><phrase id="fldcaption" value="revision"/>
+</field>
+</table>
+<table id="roadcover_versioning"><phrase id="tblcaption" value="road Cover versioning"/>
+<field id="id"><phrase id="fldcaption" value="id"/>
+</field>
+<field id="user"><phrase id="fldcaption" value="user"/>
+</field>
+<field id="content"><phrase id="fldcaption" value="content"/>
+</field>
+<field id="trans"><phrase id="fldcaption" value="trans"/>
+</field>
+<field id="mensa"><phrase id="fldcaption" value="mensa"/>
+</field>
+<field id="device"><phrase id="fldcaption" value="device"/>
+</field>
+<field id="creation"><phrase id="fldcaption" value="creation"/>
+</field>
+<field id="jesua"><phrase id="fldcaption" value="jesua"/>
+</field>
+</table>
+<table id="road_addresses"><phrase id="tblcaption" value="road Addresses"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="countrycode"><phrase id="fldcaption" value="Country Code"/>
+</field>
+<field id="areacode"><phrase id="fldcaption" value="Area Code"/>
+</field>
+<field id="number"><phrase id="fldcaption" value="Number"/>
+</field>
+<field id="address"><phrase id="fldcaption" value="Address"/>
+</field>
+<field id="contracttype_cd"><phrase id="fldcaption" value="Contract Type cd"/>
+</field>
+<field id="line1"><phrase id="fldcaption" value="Line 1"/>
+</field>
+<field id="line2"><phrase id="fldcaption" value="Line 2"/>
+</field>
+<field id="unitname"><phrase id="fldcaption" value="Unit Name"/>
+</field>
+<field id="unitnumber"><phrase id="fldcaption" value="Unit Number"/>
+</field>
+<field id="streetname"><phrase id="fldcaption" value="Street Name"/>
+</field>
+<field id="streetnumber"><phrase id="fldcaption" value="Street Number"/>
+</field>
+<field id="province_cd"><phrase id="fldcaption" value="Province cd"/>
+</field>
+<field id="suburb"><phrase id="fldcaption" value="Suburb"/>
+</field>
+<field id="city"><phrase id="fldcaption" value="City"/>
+</field>
+<field id="code"><phrase id="fldcaption" value="Code"/>
+</field>
+<field id="addressstatus"><phrase id="fldcaption" value="Address Status"/>
+</field>
+<field id="type"><phrase id="fldcaption" value="Type"/>
+</field>
+<field id="holder"><phrase id="fldcaption" value="holder"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_agreements"><phrase id="tblcaption" value="road Agreements"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="Status"/>
+</field>
+<field id="offeringid"><phrase id="fldcaption" value="Offering Id"/>
+</field>
+<field id="offeringuid"><phrase id="fldcaption" value="Offering Uid"/>
+</field>
+<field id="latestofferingresultid"><phrase id="fldcaption" value="Latest Offering Result Id"/>
+</field>
+<field id="latestofferingresultuid"><phrase id="fldcaption" value="Latest Offering Result Uid"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+<field id="startdate"><phrase id="fldcaption" value="Start Date"/>
+</field>
+</table>
+<table id="road_categoryselections"><phrase id="tblcaption" value="road Category Selections"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="Status"/>
+</field>
+<field id="category"><phrase id="fldcaption" value="Category"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_fandi"><phrase id="tblcaption" value="road Fand I"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="name"><phrase id="fldcaption" value="Name"/>
+</field>
+<field id="fullnames"><phrase id="fldcaption" value="Full Names"/>
+</field>
+<field id="surname"><phrase id="fldcaption" value="Surname"/>
+</field>
+<field id="identificationnumber"><phrase id="fldcaption" value="Identification Number"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+<field id="dealer"><phrase id="fldcaption" value="dealer"/>
+</field>
+</table>
+<table id="road_holder"><phrase id="tblcaption" value="road Holder"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="countryoforigin_cd"><phrase id="fldcaption" value="Country Of Origin cd"/>
+</field>
+<field id="ethnicgroup_cd"><phrase id="fldcaption" value="Ethnic Group cd"/>
+</field>
+<field id="initials"><phrase id="fldcaption" value="Initials"/>
+</field>
+<field id="surname"><phrase id="fldcaption" value="Surname"/>
+</field>
+<field id="fullnames"><phrase id="fldcaption" value="Full Names"/>
+</field>
+<field id="preferredname"><phrase id="fldcaption" value="Preferred Name"/>
+</field>
+<field id="maidenname"><phrase id="fldcaption" value="Maiden Name"/>
+</field>
+<field id="identificationnumber"><phrase id="fldcaption" value="Identification Number"/>
+</field>
+<field id="title_cd"><phrase id="fldcaption" value="Title cd"/>
+</field>
+<field id="gender_cd"><phrase id="fldcaption" value="Gender cd"/>
+</field>
+<field id="nationality_cd"><phrase id="fldcaption" value="Nationality cd"/>
+</field>
+<field id="birthdate"><phrase id="fldcaption" value="Birth Date"/>
+</field>
+<field id="race_cd"><phrase id="fldcaption" value="Race cd"/>
+</field>
+<field id="addresses"><phrase id="fldcaption" value="Addresses"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+<field id="registrationnumber"><phrase id="fldcaption" value="Registration Number"/>
+</field>
+<field id="isvatregistered"><phrase id="fldcaption" value="Is Vat Registered"/>
+</field>
+<field id="vatregistrationnumber"><phrase id="fldcaption" value="Vat Registration Number"/>
+</field>
+<field id="tradingas"><phrase id="fldcaption" value="Trading As"/>
+</field>
+<field id="isactive"><phrase id="fldcaption" value="Is Active"/>
+</field>
+<field id="companytype_cd"><phrase id="fldcaption" value="Company Type cd"/>
+</field>
+<field id="name"><phrase id="fldcaption" value="Name"/>
+</field>
+<field id="type"><phrase id="fldcaption" value="Type"/>
+</field>
+</table>
+<table id="road_incomeandexpenses"><phrase id="tblcaption" value="road Income And Expenses"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="isincome"><phrase id="fldcaption" value="Is Income"/>
+</field>
+<field id="amount"><phrase id="fldcaption" value="Amount"/>
+</field>
+<field id="subtype_cd"><phrase id="fldcaption" value="Sub Type cd"/>
+</field>
+<field id="group"><phrase id="fldcaption" value="Group"/>
+</field>
+<field id="description"><phrase id="fldcaption" value="Description"/>
+</field>
+<field id="person"><phrase id="fldcaption" value="Person"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_intermediary"><phrase id="tblcaption" value="road Intermediary"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="name"><phrase id="fldcaption" value="Name"/>
+</field>
+<field id="tradingas"><phrase id="fldcaption" value="Trading As"/>
+</field>
+<field id="vatregistrationnumber"><phrase id="fldcaption" value="Vat Registration Number"/>
+</field>
+<field id="companyname"><phrase id="fldcaption" value="Company Name"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+<field id="account"><phrase id="fldcaption" value="account"/>
+</field>
+<field id="dealer"><phrase id="fldcaption" value="dealer"/>
+</field>
+</table>
+<table id="road_quoteresultitems"><phrase id="tblcaption" value="road Quote Result Items"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="premiumtype_cd"><phrase id="fldcaption" value="Premium Type cd"/>
+</field>
+<field id="currentamount"><phrase id="fldcaption" value="Current Amount"/>
+</field>
+<field id="isactive"><phrase id="fldcaption" value="Is Active"/>
+</field>
+<field id="ispartofmainpremium"><phrase id="fldcaption" value="is Part Of Main Premium"/>
+</field>
+<field id="amount"><phrase id="fldcaption" value="Amount"/>
+</field>
+<field id="text"><phrase id="fldcaption" value="Text"/>
+</field>
+<field id="isselected"><phrase id="fldcaption" value="is Selected"/>
+</field>
+<field id="isoptional"><phrase id="fldcaption" value="is Optional"/>
+</field>
+<field id="groupname"><phrase id="fldcaption" value="Group Name"/>
+</field>
+<field id="isvisible"><phrase id="fldcaption" value="Is Visible"/>
+</field>
+<field id="description"><phrase id="fldcaption" value="Description"/>
+</field>
+<field id="subcode"><phrase id="fldcaption" value="Sub Code"/>
+</field>
+<field id="quoteresult"><phrase id="fldcaption" value="Quote Result"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_quotetransactions"><phrase id="tblcaption" value="road Quote Transactions"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="duration"><phrase id="fldcaption" value="Duration"/>
+</field>
+<field id="agreement"><phrase id="fldcaption" value="Agreement"/>
+</field>
+<field id="datemodified"><phrase id="fldcaption" value="Date Modified"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="Status"/>
+</field>
+<field id="startdate"><phrase id="fldcaption" value="Start Date"/>
+</field>
+<field id="enddate"><phrase id="fldcaption" value="End Date"/>
+</field>
+<field id="isvalid"><phrase id="fldcaption" value="Is Valid"/>
+</field>
+<field id="collectiontype_cd"><phrase id="fldcaption" value="Collection Type cd"/>
+</field>
+<field id="period_cd"><phrase id="fldcaption" value="Period cd"/>
+</field>
+<field id="collectionmethod_cd"><phrase id="fldcaption" value="Collection Method cd"/>
+</field>
+<field id="totalamount"><phrase id="fldcaption" value="Total Amount"/>
+</field>
+<field id="quotingmoduleinfo"><phrase id="fldcaption" value="Quoting Module Info"/>
+</field>
+<field id="datecreated"><phrase id="fldcaption" value="Date Created"/>
+</field>
+<field id="quotedvalues"><phrase id="fldcaption" value="Quoted Values"/>
+</field>
+<field id="quoteresultitems"><phrase id="fldcaption" value="Quote Result Items"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_quote_agreement"><phrase id="tblcaption" value="road Quote Agreement"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="name"><phrase id="fldcaption" value="Name"/>
+</field>
+<field id="description"><phrase id="fldcaption" value="Description"/>
+</field>
+<field id="category_id"><phrase id="fldcaption" value="Category Id"/>
+</field>
+<field id="isactive"><phrase id="fldcaption" value="Is Active"/>
+</field>
+<field id="isconfigured"><phrase id="fldcaption" value="Is Configured"/>
+</field>
+<field id="certificatetype"><phrase id="fldcaption" value="Certificate Type"/>
+</field>
+<field id="params"><phrase id="fldcaption" value="Params"/>
+</field>
+<field id="extendedproperty_cd"><phrase id="fldcaption" value="Extended Property cd"/>
+</field>
+<field id="defaultquotingmodule"><phrase id="fldcaption" value="Default Quoting Module"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="Status"/>
+</field>
+<field id="datemodified"><phrase id="fldcaption" value="Date Modified"/>
+</field>
+<field id="startdate"><phrase id="fldcaption" value="Start Date"/>
+</field>
+<field id="enddate"><phrase id="fldcaption" value="End Date"/>
+</field>
+<field id="externalreferenceno"><phrase id="fldcaption" value="External Reference No"/>
+</field>
+<field id="insurer"><phrase id="fldcaption" value="Insurer"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_relatedstakeholders"><phrase id="tblcaption" value="road Related Stakeholders"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="isinsurer"><phrase id="fldcaption" value="Is Insurer"/>
+</field>
+<field id="isportalcompany"><phrase id="fldcaption" value="Is Portal Company"/>
+</field>
+<field id="fsbnumber"><phrase id="fldcaption" value="FSBNumber"/>
+</field>
+<field id="registrationnr"><phrase id="fldcaption" value="Registration Nr"/>
+</field>
+<field id="registrationnumber"><phrase id="fldcaption" value="Registration Number"/>
+</field>
+<field id="vatregistrationnumber"><phrase id="fldcaption" value="Vat Registration Number"/>
+</field>
+<field id="tradingas"><phrase id="fldcaption" value="Trading As"/>
+</field>
+<field id="name"><phrase id="fldcaption" value="Name"/>
+</field>
+<field id="isintermediary"><phrase id="fldcaption" value="Is Intermediary"/>
+</field>
+<field id="ref"><phrase id="fldcaption" value="ref"/>
+</field>
+<field id="type"><phrase id="fldcaption" value="Type"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+</table>
+<table id="road_saleamounts"><phrase id="tblcaption" value="road Sale Amounts"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="amountbreakdowntype_cd"><phrase id="fldcaption" value="Amount Breakdown Type cd"/>
+</field>
+<field id="cashamount"><phrase id="fldcaption" value="Cash Amount"/>
+</field>
+<field id="monthlyamount"><phrase id="fldcaption" value="Monthly Amount"/>
+</field>
+<field id="financedamount"><phrase id="fldcaption" value="Financed Amount"/>
+</field>
+<field id="bulkedamount"><phrase id="fldcaption" value="Bulked Amount"/>
+</field>
+<field id="tx"><phrase id="fldcaption" value="Tx"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_transactions"><phrase id="tblcaption" value="road Transactions"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="Status"/>
+</field>
+<field id="workflowinstanceid"><phrase id="fldcaption" value="Workflow Instance Id"/>
+</field>
+<field id="comments"><phrase id="fldcaption" value="Comments"/>
+</field>
+<field id="datecreated"><phrase id="fldcaption" value="Date Created"/>
+</field>
+<field id="datemodified"><phrase id="fldcaption" value="Date Modified"/>
+</field>
+<field id="dealtype_cd"><phrase id="fldcaption" value="Deal Type cd"/>
+</field>
+<field id="externalreferencenumber"><phrase id="fldcaption" value="External Reference Number"/>
+</field>
+<field id="changehistory"><phrase id="fldcaption" value="Change History"/>
+</field>
+<field id="nottakenupreason_cd"><phrase id="fldcaption" value="Not Taken Up Reason cd"/>
+</field>
+<field id="nottakenupdescription"><phrase id="fldcaption" value="Not Taken Up Description"/>
+</field>
+<field id="holder"><phrase id="fldcaption" value="Holder"/>
+</field>
+<field id="intermediary"><phrase id="fldcaption" value="Intermediary"/>
+</field>
+<field id="fandi"><phrase id="fldcaption" value="Fand I"/>
+</field>
+<field id="sysuser"><phrase id="fldcaption" value="Sys User"/>
+</field>
+<field id="relatedstakeholders"><phrase id="fldcaption" value="Related Stakeholders"/>
+</field>
+<field id="txitems"><phrase id="fldcaption" value="Tx Items"/>
+</field>
+<field id="txcategorydetails"><phrase id="fldcaption" value="Tx Category Details"/>
+</field>
+<field id="txshdetails"><phrase id="fldcaption" value="Tx Sh Details"/>
+</field>
+<field id="txitemsdetails"><phrase id="fldcaption" value="Tx Items Details"/>
+</field>
+<field id="agreements"><phrase id="fldcaption" value="Agreements"/>
+</field>
+<field id="categoryselections"><phrase id="fldcaption" value="Category Selections"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+<field id="datestart"><phrase id="fldcaption" value="Date Start"/>
+</field>
+<field id="agreement"><phrase id="fldcaption" value="Agreement"/>
+</field>
+</table>
+<table id="road_txcollectioncategorydetail"><phrase id="tblcaption" value="road Tx Collection Category Detail"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="accountholder"><phrase id="fldcaption" value="Account Holder"/>
+</field>
+<field id="accounttype_cd"><phrase id="fldcaption" value="Account Type cd"/>
+</field>
+<field id="bankaccountno"><phrase id="fldcaption" value="Bank Account No"/>
+</field>
+<field id="bankaccountholdername"><phrase id="fldcaption" value="Bank Account Holder Name"/>
+</field>
+<field id="frequency_cd"><phrase id="fldcaption" value="frequency cd"/>
+</field>
+<field id="paymentmethod_cd"><phrase id="fldcaption" value="paymentmethod cd"/>
+</field>
+<field id="firstdebitdate"><phrase id="fldcaption" value="First Debit Date"/>
+</field>
+<field id="monthlydebitday"><phrase id="fldcaption" value="Monthly Debit Day"/>
+</field>
+<field id="bankbranch"><phrase id="fldcaption" value="Bank Branch"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_txconsentcategorydetail"><phrase id="tblcaption" value="road Tx Consent Category Detail"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="consentcreditburo"><phrase id="fldcaption" value="Consent Credit Buro"/>
+</field>
+<field id="consenttelemarketing"><phrase id="fldcaption" value="Consent Telemarketing"/>
+</field>
+<field id="consentcrosssell"><phrase id="fldcaption" value="Consent Cross Sell"/>
+</field>
+<field id="consentothercompanies"><phrase id="fldcaption" value="Consent Other Companies"/>
+</field>
+<field id="confirmloareceived"><phrase id="fldcaption" value="Confirm LOAReceived"/>
+</field>
+<field id="consentinformationstoring"><phrase id="fldcaption" value="Consent Information Storing"/>
+</field>
+<field id="consentagent"><phrase id="fldcaption" value="Consent Agent"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_txfinancecategorydetail"><phrase id="tblcaption" value="road Tx Finance Category Detail"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="applicationtype_cd"><phrase id="fldcaption" value="Application Type cd"/>
+</field>
+<field id="purchasepurpose_cd"><phrase id="fldcaption" value="Purchase Purpose cd"/>
+</field>
+<field id="customertype_cd"><phrase id="fldcaption" value="Customer Type cd"/>
+</field>
+<field id="requestedinterestrate"><phrase id="fldcaption" value="Requested Interest Rate"/>
+</field>
+<field id="paymentfrequency_cd"><phrase id="fldcaption" value="Payment Frequency cd"/>
+</field>
+<field id="contractperiod"><phrase id="fldcaption" value="Contract Period"/>
+</field>
+<field id="ratetype_cd"><phrase id="fldcaption" value="Rate Type cd"/>
+</field>
+<field id="requestedresidual"><phrase id="fldcaption" value="Requested Residual"/>
+</field>
+<field id="requestedresidualpercentage"><phrase id="fldcaption" value="Requested Residual Percentage"/>
+</field>
+<field id="financehouse_cd"><phrase id="fldcaption" value="Finance House cd"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_txitems"><phrase id="tblcaption" value="road Tx Items"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="motorvehicletype"><phrase id="fldcaption" value="Motor Vehicle Type"/>
+</field>
+<field id="hasrunflat"><phrase id="fldcaption" value="Has Runflat"/>
+</field>
+<field id="enginenumber"><phrase id="fldcaption" value="Engine Number"/>
+</field>
+<field id="firstregistrationdate"><phrase id="fldcaption" value="First Registration Date"/>
+</field>
+<field id="hasimmobiliser"><phrase id="fldcaption" value="Has Immobiliser"/>
+</field>
+<field id="mm_code"><phrase id="fldcaption" value="MM Code"/>
+</field>
+<field id="registrationnumber"><phrase id="fldcaption" value="Registration Number"/>
+</field>
+<field id="vinnumber"><phrase id="fldcaption" value="VINNumber"/>
+</field>
+<field id="year"><phrase id="fldcaption" value="Year"/>
+</field>
+<field id="itemtype_cd"><phrase id="fldcaption" value="Item Type cd"/>
+</field>
+<field id="description"><phrase id="fldcaption" value="Description"/>
+</field>
+<field id="type"><phrase id="fldcaption" value="Type"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="holder"><phrase id="fldcaption" value="holder"/>
+</field>
+</table>
+<table id="road_txmvprepaidplandetail"><phrase id="tblcaption" value="road Tx Mv Prepaid Plan Detail"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="currentplan_cd"><phrase id="fldcaption" value="Current Plan cd"/>
+</field>
+<field id="coverfromkm"><phrase id="fldcaption" value="Cover From Km"/>
+</field>
+<field id="coveruptokm"><phrase id="fldcaption" value="Cover Upto Km"/>
+</field>
+<field id="contractperiod_cd"><phrase id="fldcaption" value="Contract Period cd"/>
+</field>
+<field id="type"><phrase id="fldcaption" value="Type"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_txneedsanalysiscategorydetail"><phrase id="tblcaption" value="road Tx Needs Analysis Category Detail"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="isnotcompletedtimeconstraint"><phrase id="fldcaption" value="Is Not Completed Time Constraint"/>
+</field>
+<field id="isnotcompletedclientrequest"><phrase id="fldcaption" value="Is Not Completed Client Request"/>
+</field>
+<field id="isfinanceoffered"><phrase id="fldcaption" value="Is Finance Offered"/>
+</field>
+<field id="acceptnoshorttermcover"><phrase id="fldcaption" value="Accept No Short Term Cover"/>
+</field>
+<field id="acceptnoscratchanddent"><phrase id="fldcaption" value="Accept No Scratch And Dent"/>
+</field>
+<field id="acceptnoaddcover"><phrase id="fldcaption" value="Accept No Add Cover"/>
+</field>
+<field id="acceptnodepositcover"><phrase id="fldcaption" value="Accept No Deposit Cover"/>
+</field>
+<field id="acceptnowarranty"><phrase id="fldcaption" value="Accept No Warranty"/>
+</field>
+<field id="acceptnoserviceplan"><phrase id="fldcaption" value="Accept No Service Plan"/>
+</field>
+<field id="acceptnomaintenanceplan"><phrase id="fldcaption" value="Accept No Maintenance Plan"/>
+</field>
+<field id="acceptnocreditlife"><phrase id="fldcaption" value="Accept No Credit Life"/>
+</field>
+<field id="requiresserviceplan"><phrase id="fldcaption" value="Requires Service Plan"/>
+</field>
+<field id="requireswarranty"><phrase id="fldcaption" value="Requires Warranty"/>
+</field>
+<field id="amountwillingtospendonvaps"><phrase id="fldcaption" value="Amount Willing To Spend On Vaps"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+</table>
+<table id="road_txshdetails"><phrase id="tblcaption" value="road Tx Sh Details"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="sourceoffunds_cd"><phrase id="fldcaption" value="Source Of Funds Cd"/>
+</field>
+<field id="occupationcategory_cd"><phrase id="fldcaption" value="Occupation Category Cd"/>
+</field>
+<field id="employmentsector_cd"><phrase id="fldcaption" value="Employment Sector Cd"/>
+</field>
+<field id="occupation_cd"><phrase id="fldcaption" value="Occupation Cd"/>
+</field>
+<field id="salaryday"><phrase id="fldcaption" value="Salary Day"/>
+</field>
+<field id="monthsatemployer"><phrase id="fldcaption" value="Months At Employer"/>
+</field>
+<field id="person"><phrase id="fldcaption" value="Person"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_txvehicledetail"><phrase id="tblcaption" value="road Tx Vehicle Detail"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="odometerreading"><phrase id="fldcaption" value="ODOMeter Reading"/>
+</field>
+<field id="amount"><phrase id="fldcaption" value="Amount"/>
+</field>
+<field id="isnew"><phrase id="fldcaption" value="Is New"/>
+</field>
+<field id="isdemo"><phrase id="fldcaption" value="Is Demo"/>
+</field>
+<field id="usetype_cd"><phrase id="fldcaption" value="Use Type Cd"/>
+</field>
+<field id="purchasedate"><phrase id="fldcaption" value="Purchase Date"/>
+</field>
+<field id="stocknumber"><phrase id="fldcaption" value="Stock Number"/>
+</field>
+<field id="isagedoldies"><phrase id="fldcaption" value="Is Aged Oldies"/>
+</field>
+<field id="type"><phrase id="fldcaption" value="Type"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_txvehiclesalecategorydetail"><phrase id="tblcaption" value="road Tx Vehicle Sale Category Detail"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="deposit"><phrase id="fldcaption" value="Deposit"/>
+</field>
+<field id="discount"><phrase id="fldcaption" value="Discount"/>
+</field>
+<field id="oemextras"><phrase id="fldcaption" value="OEMExtras"/>
+</field>
+<field id="sourceofdeposit_cd"><phrase id="fldcaption" value="Source Of Deposit cd"/>
+</field>
+<field id="principaldebt"><phrase id="fldcaption" value="Principal Debt"/>
+</field>
+<field id="costprice"><phrase id="fldcaption" value="Cost Price"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="tx"><phrase id="fldcaption" value="Tx"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+</table>
+<table id="road_agreementresults"><phrase id="tblcaption" value="road Agreement Results"/>
+<field id="offeringresults"><phrase id="fldcaption" value="Offering Results"/>
+</field>
+<field id="latestofferingresult"><phrase id="fldcaption" value="Latest Offering Result"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+<field id="offeringreference"><phrase id="fldcaption" value="Offering Reference"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="Status"/>
+</field>
+<field id="datemodified"><phrase id="fldcaption" value="Date Modified"/>
+</field>
+<field id="startdate"><phrase id="fldcaption" value="Start Date"/>
+</field>
+<field id="enddate"><phrase id="fldcaption" value="End Date"/>
+</field>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+</table>
+<table id="tmp"><phrase id="tblcaption" value="tmp"/>
+<field id="id"><phrase id="fldcaption" value="Id"/>
+</field>
+<field id="uid"><phrase id="fldcaption" value="Uid"/>
+</field>
+<field id="ver"><phrase id="fldcaption" value="Ver"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="Status"/>
+</field>
+<field id="workflowinstanceid"><phrase id="fldcaption" value="Workflow Instance Id"/>
+</field>
+<field id="comments"><phrase id="fldcaption" value="Comments"/>
+</field>
+<field id="datecreated"><phrase id="fldcaption" value="Date Created"/>
+</field>
+<field id="datemodified"><phrase id="fldcaption" value="Date Modified"/>
+</field>
+<field id="dealtype_cd"><phrase id="fldcaption" value="Deal Type cd"/>
+</field>
+<field id="externalreferencenumber"><phrase id="fldcaption" value="External Reference Number"/>
+</field>
+<field id="changehistory"><phrase id="fldcaption" value="Change History"/>
+</field>
+<field id="nottakenupreason_cd"><phrase id="fldcaption" value="Not Taken Up Reason cd"/>
+</field>
+<field id="nottakenupdescription"><phrase id="fldcaption" value="Not Taken Up Description"/>
+</field>
+<field id="holder"><phrase id="fldcaption" value="Holder"/>
+</field>
+<field id="intermediary"><phrase id="fldcaption" value="Intermediary"/>
+</field>
+<field id="fandi"><phrase id="fldcaption" value="Fand I"/>
+</field>
+<field id="sysuser"><phrase id="fldcaption" value="Sys User"/>
+</field>
+<field id="relatedstakeholders"><phrase id="fldcaption" value="Related Stakeholders"/>
+</field>
+<field id="txitems"><phrase id="fldcaption" value="Tx Items"/>
+</field>
+<field id="txcategorydetails"><phrase id="fldcaption" value="Tx Category Details"/>
+</field>
+<field id="txshdetails"><phrase id="fldcaption" value="Tx Sh Details"/>
+</field>
+<field id="txitemsdetails"><phrase id="fldcaption" value="Tx Items Details"/>
+</field>
+<field id="agreements"><phrase id="fldcaption" value="Agreements"/>
+</field>
+<field id="categoryselections"><phrase id="fldcaption" value="Category Selections"/>
+</field>
+<field id="date_updated"><phrase id="fldcaption" value="date updated"/>
+</field>
+<field id="duration"><phrase id="fldcaption" value="Duration"/>
+</field>
+<field id="startdate"><phrase id="fldcaption" value="Start Date"/>
+</field>
+<field id="enddate"><phrase id="fldcaption" value="End Date"/>
+</field>
+<field id="isvalid"><phrase id="fldcaption" value="Is Valid"/>
+</field>
+<field id="collectiontype_cd"><phrase id="fldcaption" value="Collection Type cd"/>
+</field>
+<field id="period_cd"><phrase id="fldcaption" value="Period cd"/>
+</field>
+<field id="collectionmethod_cd"><phrase id="fldcaption" value="Collection Method cd"/>
+</field>
+<field id="totalamount"><phrase id="fldcaption" value="Total Amount"/>
+</field>
+<field id="quotingmoduleinfo"><phrase id="fldcaption" value="Quoting Module Info"/>
+</field>
+<field id="quotedvalues"><phrase id="fldcaption" value="Quoted Values"/>
+</field>
+<field id="quoteresultitems"><phrase id="fldcaption" value="Quote Result Items"/>
+</field>
+<field id="transaction"><phrase id="fldcaption" value="transaction"/>
+</field>
+</table>
+<table id="customersdeal"><phrase id="tblcaption" value="customers Deal"/>
+<field id="nottakenupreason_cd"><phrase id="fldcaption" value="Not Taken Up Reason cd"/>
+</field>
+<field id="deal_number"><phrase id="fldcaption" value="deal number"/>
+</field>
+<field id="dealer"><phrase id="fldcaption" value="dealer"/>
+</field>
+<field id="salesman"><phrase id="fldcaption" value="salesman"/>
+</field>
+<field id="customer"><phrase id="fldcaption" value="customer"/>
+</field>
+<field id="idno"><phrase id="fldcaption" value="idno"/>
+</field>
+<field id="product_name"><phrase id="fldcaption" value="product name"/>
+</field>
+<field id="total_premium"><phrase id="fldcaption" value="total premium"/>
+</field>
+<field id="commission"><phrase id="fldcaption" value="commission"/>
+</field>
+<field id="rep2etotal_premium_2d_rep2ecommission"><phrase id="fldcaption" value="Deal"/>
+</field>
+<field id="description"><phrase id="fldcaption" value="Description"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="status"/>
+</field>
+<field id="date_start"><phrase id="fldcaption" value="date start"/>
+</field>
+<field id="format28car22eamount2c_229"><phrase id="fldcaption" value="Format (car 2. Amount, 2)"/>
+</field>
+</table>
+<table id="dealersreport"><phrase id="tblcaption" value="dealers Report"/>
+<field id="name"><phrase id="fldcaption" value="Name"/>
+</field>
+<field id="vatregistrationnumber"><phrase id="fldcaption" value="Vat Registration Number"/>
+</field>
+<field id="deal_number"><phrase id="fldcaption" value="Deal Number"/>
+</field>
+<field id="number_of_deals"><phrase id="fldcaption" value="Number of Deals"/>
+</field>
+<field id="commission"><phrase id="fldcaption" value="Commission"/>
+</field>
+<field id="premium"><phrase id="fldcaption" value="Premium"/>
+</field>
+<field id="total"><phrase id="fldcaption" value="Total"/>
+</field>
+<field id="startdate"><phrase id="fldcaption" value="Start Date"/>
+</field>
+</table>
+<table id="dealerssalesmen"><phrase id="tblcaption" value="dealers Salesmen"/>
+<field id="name"><phrase id="fldcaption" value="name"/>
+</field>
+<field id="code"><phrase id="fldcaption" value="code"/>
+</field>
+<field id="account"><phrase id="fldcaption" value="account"/>
+</field>
+<field id="fullname"><phrase id="fldcaption" value="Fullname"/>
+</field>
+<field id="identificationnumber"><phrase id="fldcaption" value="Identification Number"/>
+</field>
+<field id="count28trans2eid29"><phrase id="fldcaption" value="Count (trans. Id)"/>
+</field>
+<field id="startdate"><phrase id="fldcaption" value="Start Date"/>
+</field>
+</table>
+<table id="dealerstransaction"><phrase id="tblcaption" value="dealers Transaction"/>
+<chart id="deals_sold"><phrase id="chartcaption" value="Deals Sold"/>
+<phrase id="chartxaxisname" value="name"/>
+</chart>
+<field id="code"><phrase id="fldcaption" value="code"/>
+</field>
+<field id="name"><phrase id="fldcaption" value="name"/>
+</field>
+<field id="account"><phrase id="fldcaption" value="account"/>
+</field>
+<field id="vat_registration"><phrase id="fldcaption" value="vat registration"/>
+</field>
+<field id="fsb_number"><phrase id="fldcaption" value="fsb number"/>
+</field>
+<field id="deals_made"><phrase id="fldcaption" value="Deals made"/>
+</field>
+<field id="sold"><phrase id="fldcaption" value="Sold"/>
+</field>
+<field id="startdate"><phrase id="fldcaption" value="Start Date"/>
+</field>
+</table>
+<table id="dealsdetails"><phrase id="tblcaption" value="deals Details"/>
+<field id="description"><phrase id="fldcaption" value="Description"/>
+</field>
+<field id="deposit"><phrase id="fldcaption" value="Deposit"/>
+</field>
+<field id="fspfees"><phrase id="fldcaption" value="FSPFees"/>
+</field>
+<field id="serviceanddelivery"><phrase id="fldcaption" value="Service And Delivery"/>
+</field>
+<field id="vaps"><phrase id="fldcaption" value="Vaps"/>
+</field>
+<field id="deal_number"><phrase id="fldcaption" value="deal number"/>
+</field>
+<field id="dealer"><phrase id="fldcaption" value="dealer"/>
+</field>
+<field id="salesman"><phrase id="fldcaption" value="salesman"/>
+</field>
+<field id="customer"><phrase id="fldcaption" value="customer"/>
+</field>
+<field id="idno"><phrase id="fldcaption" value="idno"/>
+</field>
+<field id="product_name"><phrase id="fldcaption" value="product name"/>
+</field>
+<field id="registrationnumber"><phrase id="fldcaption" value="Registration Number"/>
+</field>
+<field id="principaldebt"><phrase id="fldcaption" value="Principal Debt"/>
+</field>
+<field id="handlingfees"><phrase id="fldcaption" value="Handling Fees"/>
+</field>
+<field id="date_start"><phrase id="fldcaption" value="date start"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="status"/>
+</field>
+<field id="rep2etotal_premium_2d_rep2ecommission"><phrase id="fldcaption" value="rep.total premium rep.commission"/>
+</field>
+</table>
+<table id="reportperdealerpersalesman"><phrase id="tblcaption" value="report Per Dealer Per Salesman"/>
+<field id="deal_number"><phrase id="fldcaption" value="Deal Number"/>
+</field>
+<field id="dealer"><phrase id="fldcaption" value="Dealer"/>
+</field>
+<field id="code"><phrase id="fldcaption" value="Code"/>
+</field>
+<field id="salesman"><phrase id="fldcaption" value="Salesman"/>
+</field>
+<field id="customer"><phrase id="fldcaption" value="Customer"/>
+</field>
+<field id="idno"><phrase id="fldcaption" value="ID / Registration"/>
+</field>
+<field id="quot_period"><phrase id="fldcaption" value="Period"/>
+</field>
+<field id="quot_collection"><phrase id="fldcaption" value="Collection"/>
+</field>
+<field id="total_premium"><phrase id="fldcaption" value="Premium"/>
+</field>
+<field id="commission"><phrase id="fldcaption" value="Commission"/>
+</field>
+<field id="report_invoice2etotal_premium_2d_report_invoice2ecommission"><phrase id="fldcaption" value="Amount"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="status"/>
+</field>
+<field id="date_start"><phrase id="fldcaption" value="date start"/>
+</field>
+</table>
+<table id="customers_deal"><phrase id="tblcaption" value="customers deal"/>
+<field id="deal_number"><phrase id="fldcaption" value="Deal Number"/>
+</field>
+<field id="dealer"><phrase id="fldcaption" value="Dealer"/>
+</field>
+<field id="salesman"><phrase id="fldcaption" value="Salesman"/>
+</field>
+<field id="customer"><phrase id="fldcaption" value="Customer"/>
+</field>
+<field id="idno"><phrase id="fldcaption" value="ID / Registration"/>
+</field>
+<field id="nottakenupreason_cd"><phrase id="fldcaption" value="Not Taken"/>
+</field>
+<field id="product_name"><phrase id="fldcaption" value="Product Name"/>
+</field>
+<field id="total_premium"><phrase id="fldcaption" value="Premium"/>
+</field>
+<field id="commission"><phrase id="fldcaption" value="Commission"/>
+</field>
+<field id="rep2etotal_premium_2d_rep2ecommission"><phrase id="fldcaption" value="Deal"/>
+</field>
+<field id="description"><phrase id="fldcaption" value="Vehicle"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="Status"/>
+</field>
+<field id="date_start"><phrase id="fldcaption" value="Date Start"/>
+</field>
+<field id="format28car22eamount2c_229"><phrase id="fldcaption" value="Cost"/>
+</field>
+</table>
+<table id="dealers_reports"><phrase id="tblcaption" value="dealers reports"/>
+<chart id="dealer27s_reort"><phrase id="chartcaption" value="Dealer's Reort"/>
+<phrase id="chartxaxisname" value="Dealer"/>
+<phrase id="chartyaxisname" value="Total"/>
+</chart>
+<field id="name"><phrase id="fldcaption" value="Dealer"/>
+</field>
+<field id="vatregistrationnumber"><phrase id="fldcaption" value="Vat Registration Number"/>
+</field>
+<field id="deal_number"><phrase id="fldcaption" value="Deal Number"/>
+</field>
+<field id="number_of_deals"><phrase id="fldcaption" value="Number of Deals"/>
+</field>
+<field id="commission"><phrase id="fldcaption" value="Commission"/>
+</field>
+<field id="premium"><phrase id="fldcaption" value="Premium"/>
+</field>
+<field id="total"><phrase id="fldcaption" value="Total"/>
+</field>
+<field id="startdate"><phrase id="fldcaption" value="Start Date"/>
+</field>
+</table>
+<table id="dealers_salesmen"><phrase id="tblcaption" value="dealers salesmen"/>
+<chart id="salesman_chart"><phrase id="chartcaption" value="Salesman Chart"/>
+<phrase id="chartxaxisname" value="Salesman"/>
+<phrase id="chartyaxisname" value="Deals made"/>
+</chart>
+<field id="name"><phrase id="fldcaption" value="Dealer"/>
+</field>
+<field id="code"><phrase id="fldcaption" value="Code"/>
+</field>
+<field id="account"><phrase id="fldcaption" value="Account"/>
+</field>
+<field id="fullname"><phrase id="fldcaption" value="Salesman"/>
+</field>
+<field id="identificationnumber"><phrase id="fldcaption" value="Identification Number"/>
+</field>
+<field id="count28trans2eid29"><phrase id="fldcaption" value="Deals made"/>
+</field>
+<field id="startdate"><phrase id="fldcaption" value="Start Date"/>
+</field>
+</table>
+<table id="dealers_transaction"><phrase id="tblcaption" value="dealers transaction"/>
+<chart id="dealers_deal_sold"><phrase id="chartcaption" value="Dealers deal sold"/>
+<phrase id="chartxaxisname" value="Dealer"/>
+</chart>
+<field id="code"><phrase id="fldcaption" value="Dealer Code"/>
+</field>
+<field id="name"><phrase id="fldcaption" value="Dealer"/>
+</field>
+<field id="account"><phrase id="fldcaption" value="Account"/>
+</field>
+<field id="vat_registration"><phrase id="fldcaption" value="VAT Registration"/>
+</field>
+<field id="fsb_number"><phrase id="fldcaption" value="FSB Number"/>
+</field>
+<field id="deals_made"><phrase id="fldcaption" value="Deals made"/>
+</field>
+<field id="sold"><phrase id="fldcaption" value="Vehicle Sold"/>
+</field>
+<field id="startdate"><phrase id="fldcaption" value="Start Date"/>
+</field>
+</table>
+<table id="deals_details"><phrase id="tblcaption" value="deals details"/>
+<field id="deal_number"><phrase id="fldcaption" value="Deal Number"/>
+</field>
+<field id="dealer"><phrase id="fldcaption" value="Dealer"/>
+</field>
+<field id="salesman"><phrase id="fldcaption" value="Salesman"/>
+</field>
+<field id="customer"><phrase id="fldcaption" value="Customer"/>
+</field>
+<field id="idno"><phrase id="fldcaption" value="ID / Registration"/>
+</field>
+<field id="product_name"><phrase id="fldcaption" value="Product Name"/>
+</field>
+<field id="description"><phrase id="fldcaption" value="Vehicle"/>
+</field>
+<field id="registrationnumber"><phrase id="fldcaption" value="Registration"/>
+</field>
+<field id="deposit"><phrase id="fldcaption" value="Deposit"/>
+</field>
+<field id="principaldebt"><phrase id="fldcaption" value="Principal Debt"/>
+</field>
+<field id="fspfees"><phrase id="fldcaption" value="FSPFees"/>
+</field>
+<field id="serviceanddelivery"><phrase id="fldcaption" value="Service And Delivery"/>
+</field>
+<field id="vaps"><phrase id="fldcaption" value="Vaps"/>
+</field>
+<field id="handlingfees"><phrase id="fldcaption" value="Handling Fees"/>
+</field>
+<field id="date_start"><phrase id="fldcaption" value="Date Start"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="status"/>
+</field>
+<field id="rep2etotal_premium_2d_rep2ecommission"><phrase id="fldcaption" value="Deal"/>
+</field>
+</table>
+<table id="dealer_salesman_report"><phrase id="tblcaption" value="dealer salesman report"/>
+<chart id="chart_report"><phrase id="chartcaption" value="Chart Report"/>
+<phrase id="chartxaxisname" value="Dealer"/>
+</chart>
+<field id="deal_number"><phrase id="fldcaption" value="Deal Number"/>
+</field>
+<field id="dealer"><phrase id="fldcaption" value="Dealer"/>
+</field>
+<field id="code"><phrase id="fldcaption" value="Code"/>
+</field>
+<field id="salesman"><phrase id="fldcaption" value="Salesman"/>
+</field>
+<field id="customer"><phrase id="fldcaption" value="Customer"/>
+</field>
+<field id="idno"><phrase id="fldcaption" value="ID / Registration"/>
+</field>
+<field id="quot_collection"><phrase id="fldcaption" value="Collection"/>
+</field>
+<field id="quot_period"><phrase id="fldcaption" value="Period"/>
+</field>
+<field id="total_premium"><phrase id="fldcaption" value="Premium"/>
+</field>
+<field id="commission"><phrase id="fldcaption" value="Commission"/>
+</field>
+<field id="report_invoice2etotal_premium_2d_report_invoice2ecommission"><phrase id="fldcaption" value="Amount"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="Status"/>
+</field>
+<field id="date_start"><phrase id="fldcaption" value="Date Start"/>
+</field>
+</table>
+<table id="report_invoice"><phrase id="tblcaption" value="report invoice"/>
+<field id="deal_number"><phrase id="fldcaption" value="deal number"/>
+</field>
+<field id="trans_id"><phrase id="fldcaption" value="trans id"/>
+</field>
+<field id="trans_status"><phrase id="fldcaption" value="trans status"/>
+</field>
+<field id="date_modified"><phrase id="fldcaption" value="date modified"/>
+</field>
+<field id="dealer"><phrase id="fldcaption" value="dealer"/>
+</field>
+<field id="dealer_id"><phrase id="fldcaption" value="dealer id"/>
+</field>
+<field id="dealer_reg"><phrase id="fldcaption" value="dealer reg"/>
+</field>
+<field id="salesman"><phrase id="fldcaption" value="salesman"/>
+</field>
+<field id="salesman_id"><phrase id="fldcaption" value="salesman id"/>
+</field>
+<field id="customer"><phrase id="fldcaption" value="customer"/>
+</field>
+<field id="idno"><phrase id="fldcaption" value="idno"/>
+</field>
+<field id="customer_id"><phrase id="fldcaption" value="customer id"/>
+</field>
+<field id="quot_total"><phrase id="fldcaption" value="quot total"/>
+</field>
+<field id="quot_period"><phrase id="fldcaption" value="quot period"/>
+</field>
+<field id="quot_collection"><phrase id="fldcaption" value="quot collection"/>
+</field>
+<field id="quot_id"><phrase id="fldcaption" value="quot id"/>
+</field>
+<field id="basic_premium"><phrase id="fldcaption" value="basic premium"/>
+</field>
+<field id="total_premium"><phrase id="fldcaption" value="total premium"/>
+</field>
+<field id="total_basic_premium"><phrase id="fldcaption" value="total basic premium"/>
+</field>
+<field id="commission"><phrase id="fldcaption" value="commission"/>
+</field>
+<field id="product_name"><phrase id="fldcaption" value="product name"/>
+</field>
+<field id="status"><phrase id="fldcaption" value="status"/>
+</field>
+<field id="date_start"><phrase id="fldcaption" value="date start"/>
+</field>
+</table>
+<table id="report_vehicle"><phrase id="tblcaption" value="report vehicle"/>
+<field id="trans_id"><phrase id="fldcaption" value="trans id"/>
+</field>
+<field id="vaps"><phrase id="fldcaption" value="Vaps"/>
+</field>
+<field id="accessories"><phrase id="fldcaption" value="Accessories"/>
+</field>
+<field id="fspfees"><phrase id="fldcaption" value="FSPFees"/>
+</field>
+<field id="liceneandregistration"><phrase id="fldcaption" value="Licene And Registration"/>
+</field>
+<field id="handlingfees"><phrase id="fldcaption" value="Handling Fees"/>
+</field>
+<field id="serviceanddelivery"><phrase id="fldcaption" value="Service And Delivery"/>
+</field>
+<field id="financeinitiationfees"><phrase id="fldcaption" value="Finance Initiation Fees"/>
+</field>
+<field id="deposit"><phrase id="fldcaption" value="Deposit"/>
+</field>
+<field id="discount"><phrase id="fldcaption" value="Discount"/>
+</field>
+<field id="principaldebt"><phrase id="fldcaption" value="Principal Debt"/>
+</field>
+<field id="costprice"><phrase id="fldcaption" value="Cost Price"/>
+</field>
+<field id="sourceofdeposit"><phrase id="fldcaption" value="Source Of Deposit"/>
+</field>
+<field id="vehicle"><phrase id="fldcaption" value="Vehicle"/>
+</field>
+<field id="isnew"><phrase id="fldcaption" value="Is New"/>
+</field>
+<field id="usetype"><phrase id="fldcaption" value="Use Type"/>
+</field>
+</table>
+</project>
+</ew-language>

@@ -5,8 +5,13 @@ ini_set('display_errors', '1');
 include('../../inc/muneris.php');
 include('library.php');
 include('class.reader.php');
-   $content = file_get_contents('xml/transactionAugust.xsd');
-//   $content = file_get_contents('xml/transaction.xsd');
+$month['t']=array(4=>"NewtransactionApril.xsd","transactionMay.xsd","transactionJune.xsd","transactionJuly.xsd","transactionAugust2.xsd","transactionSeptember.xsd");
+$month['q']=array(4=>"Quotes-04-30-Live.xsd","QouteMay.xsd","QouteJune.xsd","QouteJuly.xsd","QuotesAugust.xsd","QouteSeptember.xsd");
+$month['a']=array(4=>"agreementApril.xsd","agreementMay.xsd","agreementJune.xsd","agreementJuly.xsd","agreementAugust.xsd","agreementSeptember.xsd");
+
+//echo "<p>QouteSeptember</p>";
+//   $content = file_get_contents('xml/transactionMay.xsd');
+   $content = file_get_contents('xml/transaction.xsd');
    echo htmlspecialchars_decode($xml);
    $results  = new SimpleXMLElement($content);
 
@@ -33,8 +38,9 @@ if ($_POST['query'] || $_POST['dealer_code']  || $_POST['salesman_code'] || fals
 else:
    list($dealers,$salesman) = get_dealers($results);
 endif;
-//$reader = new FILL_DB('quotes','QuotesAugust.xsd',false,'road_');
-//$reader = new FILL_DB('trans','transactionAugust.xsd',false,'road_');
+//$reader = new FILL_DB('quotes',$month['q'][4],false,'road_');
+//$reader = new FILL_DB('trans',$month['t'][9],false,'road_');
+//foreach($month['a'] as $file) $reader = new FILL_DB('agree',$file,false,'road_');
 ?>
 <!DOCTYPE html>
 <html>

@@ -20,18 +20,49 @@ class FILL_DB  {
       $this->test_mode=$test_node;
       $this->append_table=$append_table;
       if($this->set_xml($_filename)):
-
+         iyona($_filename);
          switch ($_on)
          {
             case 'both'    : $this->fill_transactions(); $this->fill_quotes('quote.xsd'); $this->road_cover=true; break;
             case 'quotes'  : $this->fill_quotes(); $this->road_cover=true; break;
             case 'trans'   : $this->fill_transactions(); $this->road_cover=true; break;
+            case 'agree'   : $this->fill_agreement(); $this->road_cover=true; break;
             default: break;
          }
       else:
          iyona("Could not read $_filename");
       endif;
    }//end function
+   #===========================================================================#FILL AGREEMENT
+   function fill_agreement($_filename=''){
+      global $db;
+
+      if ($_filename && is_readable($this->path.$_filename)):
+         $this->simpleXML  = file_get_contents($this->path.$_filename);
+         $this->simpleXML  = new SimpleXMLElement($this->simpleXML);
+      endif;
+      foreach($this->simpleXML as $items):
+         if (true):
+            $OfferingResults     = $db->qstr(count($items->OfferingResults->children()));
+            $LatestOfferingResult= $db->qstr((string)$items->LatestOfferingResult->Status);
+            $transaction         = $db->qstr((string)$items->Tx['Id']);
+            $OfferingReference   = $db->qstr((string)$items->Offering['Id']);
+            $Status              = $db->qstr((string)$items->Status);
+            $DateModified        = $db->qstr(date('Y-m-d h:i:s',strtotime(str_replace("/","-",(string)$items->DateModified))));
+            $StartDate           = $db->qstr(date('Y-m-d h:i:s',strtotime(str_replace("/","-",(string)$items->StartDate))));
+            $EndDate             = $db->qstr(date('Y-m-d h:i:s',strtotime(str_replace("/","-",(string)$items->EndDate))));
+            $Id                  = $db->qstr((string)$items->Id);
+            $Uid                 = $db->qstr((string)$items->Uid);
+
+            $sql = <<<IYONA
+REPLACE INTO {$this->append_table}AgreementResults (OfferingResults,LatestOfferingResult,`transaction`,OfferingReference,`Status`,DateModified,StartDate,EndDate,Id,Uid)
+VALUES ($OfferingResults,$LatestOfferingResult,$transaction,$OfferingReference,$Status,$DateModified,$StartDate,$EndDate,$Id,$Uid)
+IYONA;
+            if(!$this->test_mode){$rs = $db->Execute($sql);iyona_message($rs,$sql,1);}
+            else if($this->test_mode===true)_iyona($sql);
+         endif;
+      endforeach;
+   }//endfunction
    #===========================================================================#FILL QUOTES
    function fill_quotes($_filename=''){
       global $db;
@@ -44,8 +75,8 @@ class FILL_DB  {
          if (true):
             $QuotedValues     = count($items->QuotedValues->children());
             $QuoteResultItems = count($items->QuoteResultItems->children());
-            $dateCreated         = date('Y-m-d h:i:s',strtotime($items->DateCreated));
-            $dateModified        = date('Y-m-d h:i:s',strtotime($items->DateModified));
+            $dateCreated         = date('Y-m-d h:i:s',strtotime(str_replace("/","-",(string)$items->DateCreated)));
+            $dateModified        = date('Y-m-d h:i:s',strtotime(str_replace("/","-",(string)$items->DateModified)));
             $Agremeent        = $items->Agreement->Offering->Id;
             $transaction      = $items->Agreement->Tx['Id'];
             $sql = <<<IYONA
@@ -75,8 +106,10 @@ IYONA;
             $Holder              = $items->Holder->Id;
             $Intermediary        = $items->Intermediary->Id;
             $Fandi               = $items->FandI->Id;
-            $dateCreated         = date('Y-m-d h:i:s',strtotime($items->DateCreated));
-            $dateModified        = date('Y-m-d h:i:s',strtotime($items->DateModified));
+            $Agreement           = (string)$items->Agreements->Agreement->Id;
+            $dateCreated         = $db->qstr(date('Y-m-d h:i:s',strtotime(str_replace("/","-",(string)$items->DateCreated))));
+            $dateModified        = $db->qstr(date('Y-m-d h:i:s',strtotime(str_replace("/","-",(string)$items->DateModified))));
+            $DateStart           = $db->qstr(date('Y-m-d h:i:s',strtotime(str_replace("/","-",(string)$items->Agreements->Agreement->StartDate))));
             $SysUser             = count($items->SysUser);
             $RelatedStakeholders = count($items->RelatedStakeholders->children());
             $TxItems             = count($items->TxItems->children());
@@ -86,14 +119,15 @@ IYONA;
             $Agreements          = count($items->Agreements->children());
             $CategorySelections  = count($items->CategorySelections->children());
             $sql = <<<IYONA
-REPLACE INTO {$this->append_table}Transactions (Id, Uid, Ver, Status, WorkflowInstanceId, Comments, DateCreated, DateModified, DealType_cd, ExternalReferenceNumber, ChangeHistory,
-NotTakenUpReason_cd, NotTakenUpDescription,Holder, Intermediary, FandI, SysUser, RelatedStakeholders, TxItems, TxCategoryDetails, TxShDetails, TxItemsDetails, Agreements, CategorySelections )
-VALUES ('$items->Id', '$items->Uid', '$items->Ver', '$items->Status', '$items->WorkflowInstanceId', '$items->Comments', $dateCreated, $dateModified, '$items->DealType_cd',
-'$items->ExternalReferenceNumber', '$items->ChangeHistory', '$items->NotTakenUpReason_cd', '$items->NotTakenUpDescription', $Holder, $Intermediary, $Fandi, $SysUser, $RelatedStakeholders, $TxItems, $TxCategoryDetails, $TxShDetails, $TxItemsDetails, $Agreements, $CategorySelections)
+REPLACE INTO {$this->append_table}Transactions (Id, Uid, Ver, Status, WorkflowInstanceId, Comments, DateCreated, DateModified, DateStart, DealType_cd, ExternalReferenceNumber, ChangeHistory,
+NotTakenUpReason_cd, NotTakenUpDescription,Holder, Intermediary, FandI, Agreement, SysUser, RelatedStakeholders, TxItems, TxCategoryDetails, TxShDetails, TxItemsDetails, Agreements, CategorySelections )
+VALUES ('$items->Id', '$items->Uid', '$items->Ver', '$items->Status', '$items->WorkflowInstanceId', '$items->Comments', $dateCreated, $dateModified, $DateStart, '$items->DealType_cd',
+'$items->ExternalReferenceNumber', '$items->ChangeHistory', '$items->NotTakenUpReason_cd', '$items->NotTakenUpDescription', $Holder, $Intermediary, $Fandi, $Agreement, $SysUser, $RelatedStakeholders, $TxItems, $TxCategoryDetails, $TxShDetails, $TxItemsDetails, $Agreements, $CategorySelections)
 IYONA;
             if(!$this->test_mode){$rs = $db->Execute($sql);iyona_message($rs,$sql,1);}
             else if($this->test_mode===true)_iyona($sql);
-
+            iyona("DateBegin: $DateStart ".++$cnt);
+//exit(count($items)." and ".count($this->simpleXML));
          endif;
          $fields['Holder']       = '["Id","Ver","Uid","CountryOfOrigin_cd","EthnicGroup_cd","Initials","Surname","FullNames","PreferredName","MaidenName","IdentificationNumber","Title_cd","Gender_cd","Nationality_cd","BirthDate","Race_cd","RegistrationNumber","IsVatRegistered","VatRegistrationNumber","TradingAs","IsActive","CompanyType_cd","Name"]';
          $fields['Addresses']    = '{"Address":["Id","Ver","Uid","CountryCode","AreaCode","Number","Address","ContractType_cd","Line1","Line2","UnitName","UnitNumber","StreetName","StreetNumber","Province_cd","Suburb","City","Code","AddressStatus"]}';
@@ -127,11 +161,12 @@ IYONA;
          $fields['IncExp']       = '["Id","Uid","Ver","IsIncome","Amount","SubType_cd","Group","Description"]';
          $fields['PlanDetail']   = '["Id","Uid","Ver","CurrentPlan_cd","CoverFromKm","CoverUptoKm","ContractPeriod_cd"]';
          $fields['VehicleDetail']= '["Id","Uid","Ver","ODOMeterReading","Amount","IsNew","IsDemo","UseType_Cd","PurchaseDate","StockNumber","IsAgedOldies"]';
-         $fields['Agreements']   = '["Id","Uid","Status","OfferingId","OfferingUid","LatestOfferingResultId","LatestOfferingResultUid"]';
+         $fields['Agreements']   = '["Id","Uid","Status","OfferingId","OfferingUid","LatestOfferingResultId","LatestOfferingResultUid","StartDate"]';
          $fields['CatSelections']= '["Id","Uid","Ver","Status"]';
 
          $children['Holder']     = '["Addresses"]';
-         $this->insert_node($items->Holder,'Holder',$fields['Holder'],$children['Holder'], array('Type'=>array("Holder","Type"), 'transaction'=>$items->Id));
+         $this->insert_node($items->Holder,'Holder',$fields['Holder'],$children['Holder'], array('Type'=>array("iyona-node","Type"), 'transaction'=>$items->Id));
+
          $this->insert_node($items->Holder->Addresses->{'Dns.Sh.ShAddress'},'Addresses',$fields['Addresses'],'{}', array('Type'=> array("Address","Type"),'holder'=>array("Sh","Id") ));
          foreach($items->RelatedStakeholders->{'Dns.Bts.TxStakeholder'} as $adr):
             $this->insert_node($adr->Sh->Addresses->{'Dns.Sh.ShAddress'},'Addresses',$fields['Addresses'],'{}', array('Type'=> array("Address","Type"),'holder'=>array("Sh","Id") ));
@@ -152,6 +187,7 @@ IYONA;
          $this->insert_node($items->TxItemDetails->{'Dns.Bts.TxVehicleDetail'},'TxVehicleDetail',$fields['VehicleDetail'],'{}',array('Type'=>array('Item','Id'),'transaction'=>$items->Id));
          $this->insert_node($items->Agreements->Agreement,'Agreements',$fields['Agreements'],'{}',array('transaction'=>$items->Id));
          $this->insert_node($items->CategorySelections->{'Dns.Bts.TxCategorySelection'},'CategorySelections',$fields['CatSelections'],'{}',array( 'Category'=>array('Category','Id'), 'transaction'=>$items->Id));
+
       endforeach;
    }//endfunction
    #===========================================================================#INSERT QUERY
@@ -180,11 +216,15 @@ IYONA;
                   if (is_array($field)) :
                      foreach ($field as $fld):#fields with array
                         $sub_key       = $key;#the name of the sub node, used else where
-                        $children[]    = $item->$key->$fld;#field value that has a sub node
+                        $val           = $item->$key->$fld;#field value that has a sub node
+                        if(stripos((string)$fld,"Date")!==false)$val=date('Y-m-d h:i:s',strtotime(str_replace("/","-",(string)$val)));
+                        $children[]=$val;
                         $tmp_fields[]  = (string)$fld;#tmp array for fields that will be re-used
                      endforeach;
                   else :
-                     $children[]    = $item->$field;
+                     $val    = $item->$field;
+                     if(stripos((string)$field,"Date")!==false)$val=date('Y-m-d h:i:s',strtotime(str_replace("/","-",(string)$val)));
+                     $children[]=$val;
                      $tmp_fields[]  = (string)$field;
                   endif;
                endforeach;
@@ -197,17 +237,25 @@ IYONA;
                         foreach ($child as $chld) $children[] = count($item->$key->{$chld});#nodes with sub nodes
                      else:
                         $fields[] = $child;#fields list from child name
-                        $children[] = count($item->{$child}->children());#single nodes count
+                        $val = count($item->{$child}->children());#single nodes count
+                        if(stripos($child,"Date")!==false)$val=date('Y-m-d h:i:s',strtotime(str_replace("/","-",(string)$val)));
+                        $children[]=$val;
                      endif;
                   endforeach;
                endif;
                #==================================================================#
                if(is_array($_attribute)) :
                   foreach($_attribute as $key => $value):
+                     $iyona_node=false;
+                     if(is_array($value)&&$value[0]=="iyona-node")$iyona_node=true;
                      $fields[]   = $key;#adds the field
                      $data       = (isset($sub_key))?(string)$item->$sub_key->{$value[0]}[$value[1]]:(string)$item->{$value[0]}[$value[1]];#if there is sub key get data from sub node
-                     $children[] = (gettype($value)=='array' && isset($sub_key) && !empty($data))? $data:#if there is sub key and is empty get data from parent
-                                   ((gettype($value)=='array')? (string)$item->{$value[0]}[$value[1]]:(string)$value);#the value either a direct simpleXML value or an array which will find the attribute
+                     if(gettype($value)=='array' && isset($sub_key) && !empty($data))  $val=$data;#if there is sub key and is empty get data from parent
+                     else if (gettype($value)=='array'&&!$iyona_node)                  $val=(string)$item->{$value[0]}[$value[1]];#the value either a direct simpleXML value or an array which will find the attribute
+                     else if ($iyona_node)                                             $val=(string)$item[$value[1]];#get the parent node attribute
+                     else (string)                                                     $val=$value;
+                     if(stripos($key,"Date")!==false)$val=date('Y-m-d h:i:s',strtotime(str_replace("/","-",(string)$val)));
+                     $children[]=$val;
                   endforeach;
                endif;
                #==================================================================#
