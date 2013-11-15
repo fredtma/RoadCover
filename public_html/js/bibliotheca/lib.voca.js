@@ -48,6 +48,7 @@ delRecord=function(set){var ii;var DB=new SET_DB();ii=$(set).parents('div').data
  * used to the records through the store record stored in the sessionStorage.activeRecord
  */
 function navig(set){
+   console.log($(set)[0],"/navi/",$(set).parents('li')[0],"/",eternal.form.ortus);
    if($(set).parents('li').hasClass('disabled')) return false;
    var page=parseInt($(set).data('goto'))-1;
    if($(set).hasClass('navig'))page=parseInt($(set).data('goto'));//ca cest pour les navigation de deriere et en avant.
@@ -55,6 +56,7 @@ function navig(set){
    for(var instance in CKEDITOR.instances){CKEDITOR.instances[instance].destroy()}//@fix: ce si et necessaire, if faut detruire toute instance avant de naviger
    if(typeof eternal.form.ortus==="undefined"){creoDB=new SET_DB();creoDB.beta();}
    else if(eternal.form.ortus=="server"){theForm=new SET_FORM()._Set("#body article");theForm.setBeta(JSON.parse(sessionStorage.activeRecord));}
+   if(typeof reDraw ==="function")setTimeout(reDraw,100);//use on reDraw the search result. necessary on some form e.g. customer
 }
 /*
  * used to the records through the store record stored in the sessionStorage.activeRecord
@@ -84,12 +86,14 @@ function navigTable(set){
    $('#footContact').click(function(){getPage('Contact us')});
    $('#footHelp').click(function(){getPage('Help?')});
    $('#footAbout').click(function(){getPage('About us')});
+   $('#btnSysContent').click(function(){getPage('Content Page',true)});
+   $('#btnSysContent').click(function(){activateMenu('content','system','#link_system');});
    $("#search_all").focus(function(){this.select();}).typeahead({minLength:0,source:searchAll,updater:searchUpdate});
    $('.btnFullScreen,#fullscreen').click(function(){if(!$(this).data('toggle')||$(this).data('toggle')==0){$('#btnFullScreen,#fullscreen').data('toggle',1);enableFullScreen();$('.icon-fullscreen').removeClass('icon-fullscreen').addClass('icon-screenshot');}else{$('#btnFullScreen,#fullscreen').data('toggle',0);exitFullScreen();$('.icon-screenshot').removeClass('icon-screenshot').addClass('icon-fullscreen');}});
    $('#userOut,#profileOff').click(loginOUT);
    $('.icon-refresh').click(refreshLook);//@todo:add HTML5 history API
    $(".btnHelp").click(helpfullLink);
-   $('#btnTest').click(resetGenesis);
+   $('#btnReset').click(resetGenesis);
    $("#btnSysReport").click(function(){if(!$(".popover").length)var win=window.open(localStorage.SITE_URL+"reports/","_blank");win.focus();});
    $(".printPage").click(function(){if(!$(".popover").length) window.print();});
    $("#btnSrchCust").click(quaerereCustomer);$("#srchAllCust").submit(quaerereCustomer);

@@ -1,0 +1,24 @@
+{
+   "form": {
+      "file":"content",
+      "options":{"type":"page","select":"20b4211ece3ecf761368f0d2d4a018e3"},
+      "field":{"clss":"form-horizontal","name":"content","data-iota":"0"},
+      "fieldset":{"name":"admin-contents"},
+      "legend":{"txt":"contents Setting"},
+      "button":{
+         "submit_content":{"value":"Save Change","type":"submit","clss":"btn btn-primary","save":true,"data-loading-text":"Saving..."},
+         "cancel_content":{"value":"Cancel","type":"reset","clss":"btn btn-inverse"}}
+   },
+   "mensa": "pages",
+   "quaerere":{"precipio":"title ASC","ubi":"AND type='content'"},
+   "fields": {
+      "page_ref":{"field":{"type":"hidden"}},
+      "title":{"header":true,"field":{"required":""}},
+      "content":{"field":{"required":"","type":"editor"}},
+      "modified":{"field":{"required":"","type":"hidden"}},
+      "creation":{"field":{"required":"","type":"hidden"}},
+      "jesua":{"field":{"required":"","type":"hidden"}},
+      "level":{"field":{"value":"admin","type":"hidden"}},
+      "type":{"field":{"value":"content","type":"hidden"}}
+   }
+}

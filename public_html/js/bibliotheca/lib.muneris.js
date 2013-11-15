@@ -3,23 +3,54 @@
  * @todo: user $.remove() to remove from DOM all generated code. $.removeData() removes $.data() use with $.detach() removes element not the handler. Check $.cache
  */
 //DEFINITION
+//============================================================================//
+dynamisSet=function(_key,_value,_local){
+   var set={};set[_key]=_value;
+   if(chrome.hasOwnProperty("storage")&&_local==true){chrome.storage.local.set(set);sessionStorage.setItem(_key,_value);}
+   else if(chrome.hasOwnProperty("storage")&&!_local){chrome.storage.sync.set(set);sessionStorage.setItem(_key,_value);}
+   else if(_local==true){localStorage.setItem(_key,_value);}
+   else{sessionStorage.setItem(_key,_value);}//endif
+}
+dynamisGet=function(_key,_local){
+   if(chrome.hasOwnProperty("storage")&&_local==true){chrome.storage.local.get(_key,function(obj){return obj[_key]});return sessionStorage.getItem(_key);}
+   else if(chrome.hasOwnProperty("storage")&&!_local){chrome.storage.sync.get(_key,function(obj){return obj[_key]});return sessionStorage.getItem(_key);}
+   else if(_local==true){return localStorage.getItem(_key);}
+   else{return sessionStorage.getItem(_key);}//endif
+}
+dynamisDel=function(_key,_local){
+   if(chrome.hasOwnProperty("storage")&&_local==true){chrome.storage.local.remove(_key);sessionStorage.removeItem(_key);}
+   else if(chrome.hasOwnProperty("storage")&&!_local){chrome.storage.sync.remove(_key);sessionStorage.removeItem(_key);}
+   else if(_local==true){localStorage.removeItem(_key);}
+   else{sessionStorage.removeItem(_key);}//endif
+}
+dynamisClear=function(_local){
+   if(chrome.hasOwnProperty("storage")&&_local==true){chrome.storage.local.clear();}
+   else if(chrome.hasOwnProperty("storage")&&!_local){chrome.storage.sync.clear();}
+   else if(_local==true){localStorage.clear();}
+   else{sessionStorage.clear();}//endif
+}
+if(!chrome.hasOwnProperty("storage"))load_async("js/libs/CKEditorCus/ckeditor.js",true,'end');
+else sessionStorage.USER_NAME='{"operarius":"fredtma","singularis":"1","nominis":"Frederick Monde Entier Tshimanga","jesua":"6bf17284602cc8298613e9b548d3b045","procurator":1}';
+//============================================================================//
 sessionStorage.startTime=new Date().getTime();
 sessionStorage.runTime=new Date().getTime();
-localStorage.SITE_NAME="Road Cover";
-localStorage.SITE_DATE='fullDate';
-localStorage.SITE_TIME='mediumTime';
-localStorage.SITE_MONTH=09;
-localStorage.SITE_URL='http://197.96.139.19/';
-localStorage.SITE_SERVICE=localStorage.SITE_URL+'minister/inc/services.php';
-localStorage.SITE_MILITIA=localStorage.SITE_URL+'minister/inc/notitia.php';
-localStorage.MAIL_SUPPORT='support@roadcover.co.za';
-localStorage.DB;
-localStorage.DB_NAME='road_cover';
-localStorage.DB_VERSION='2.98';
-localStorage.DB_DESC='The internal DB version';
-localStorage.DB_SIZE=15;
-localStorage.DB_LIMIT=15;
-localStorage.EXEMPLAR=JSON.stringify({"username":["^[A-Za-z0-9_]{6,15}$","requires at least six alpha-numerique character"],
+//localStorage.clear();
+//sessionStorage.clear();
+dynamisSet("SITE_NAME","Road Cover",true);
+dynamisSet("SITE_DATE",'fullDate',true);
+dynamisSet("SITE_TIME",'mediumTime',true);
+dynamisSet("SITE_MONTH",10,true);
+dynamisSet("SITE_URL",'http://197.96.139.19/',true);
+dynamisSet("SITE_SERVICE",dynamisGet("SITE_URL",true)+'minister/inc/services.php',true);
+dynamisSet("SITE_MILITIA",dynamisGet("SITE_URL",true)+'minister/inc/notitia.php',true);
+dynamisSet("MAIL_SUPPORT",'support@roadcover.co.za',true);
+//dynamisSet("DB",true);
+dynamisSet("DB_NAME",'road_cover',true);
+dynamisSet("DB_VERSION",'2.98',true);//@also:DB_VERSION in parva.muneris.js
+dynamisSet("DB_DESC",'The internal DB version',true);
+dynamisSet("DB_SIZE",15,true);
+dynamisSet("DB_LIMIT",15,true);
+dynamisSet("EXEMPLAR",JSON.stringify({"username":["^[A-Za-z0-9_]{6,15}$","requires at least six alpha-numerique character"],
 "pass1":["((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,20})","requires complex phrase with upperCase, lowerCase, number and a minimum of 6 chars"],
 "pass2":["^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$","requires complex phrase with upperCase, lowerCase, number and a minimum of 6 chars"],
 "password":["(?=^.{6,}$)((?=.*[0-9])|(?=.*[^A-Za-z0-9]+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$","requires upperCase, lowerCase, number and a minimum of 6 chars"],
@@ -32,10 +63,26 @@ localStorage.EXEMPLAR=JSON.stringify({"username":["^[A-Za-z0-9_]{6,15}$","requir
 "colour":["^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$","requires a valid colour in the form of (#ccc or #cccccc)"],
 "bool":["^1|0","requires a boolean value of 0 or 1"],
 "email":["^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$","the email address is not the right formated"],
-"single":["^[a-zA-Z0-9]","requires a single value"]})
+"single":["^[a-zA-Z0-9]","requires a single value"]}),true);
 var db,hasNarro=false,roadCover,eternal,theForm,creoDB,iyona,iota;
 sessionStorage.removeItem('quaerere');//clean up
 sessionStorage.formValidation=hasFormValidation();//regard si le browser peut fair les validation HTML5
+//============================================================================//INLINE SCRIPT
+var appCache=window.applicationCache;
+var sideNotice=document.getElementById('sideNotice');
+appCache.onchecking=function(e) {sideNotice.innerHTML="<div id='note0'>Checking for a new version of the application.</div>";};
+appCache.ondownloading=function(e) {sideNotice.innerHTML+="<div id='note1'>Downloading a new offline version of the application</div>";};
+appCache.onprogress=function(e) {if(e.lengthComputable){document.getElementById('progressBar').value=Math.round(e.loaded/e.total*100);}};
+appCache.oncached=function(e) {sideNotice.innerHTML+="<div id='note3'>Application is available offline/cached</div>";};
+appCache.onnoupdate=function(e) {sideNotice.innerHTML+="<div id='note4'>The application is also available offline.</div>";};
+appCache.onobsolete=function(e) {sideNotice.innerHTML+="<div id='note5'>The application can not be updated, no manifest file was found.</div>";};
+appCache.onerror=function(e) {sideNotice.innerHTML+="<div id='note6'>Offline version of the application not available.</div>";};
+appCache.onupdateready=function(e) {//@todo:promt user to reload
+   if(window.applicationCache.status==window.applicationCache.UPDATEREADY && true){
+      window.applicationCache.swapCache();window.location.reload();
+   }
+   sideNotice.innerHTML+="<div id='note7'>Application update ready</div>";
+};
 //============================================================================//
 /**
  * similar to jquery creates an DOM element
@@ -126,13 +173,14 @@ $anima=function(section,ele,arr,txt,point){
          "pos":true
       },options);
       this.lePapa=creo(opts.attr,opts.element,opts.text);
-      this.vita=function(ele,arr,parent,txt,pos){
-         this.enfant=creo(arr,ele,txt);
-         if(pos=="first")$(this.lePapa).prepend(this.enfant);
-         else if(pos=="next")$(this.lePapa).after(this.enfant);
-         else if(pos=="prev")$(this.lePapa).before(this.enfant);
+      this.vita=function(ele,opt){
+         opt=$.extend({},{"parrent":false,"txt":"","pos":"append","attr":{}},opt);
+         this.enfant=creo(opt.attr,ele,opt.txt);
+         if(opt.pos=="first")$(this.lePapa).prepend(this.enfant);
+         else if(opt.pos=="next")$(this.lePapa).after(this.enfant);
+         else if(opt.pos=="prev")$(this.lePapa).before(this.enfant);
          else $(this.lePapa).append(this.enfant);
-         if(parent)this.lePapa=this.enfant;
+         if(opt.parent)this.lePapa=this.enfant;
          return this;
       }
       this.novo=function(section,ele,arr,txt){
@@ -202,9 +250,9 @@ function load_async(url,sync,position,fons){
  * @return void
  * @todo add the manifest field
  */
-profectus=function(_msg,_reset){
+profectus=function(_msg,_reset,_process){
    if(_reset){$("#progressBar").val(0).data("tasks",0);$("#progressBar span").html(0)}
-   var process=8;var tasks=$("#progressBar").data("tasks")||1;var progress=Math.round(((tasks/process)*100),2);
+   var process=_process||8;var tasks=$("#progressBar").data("tasks")||1;var progress=Math.round(((tasks/process)*100),2);
 //   console.log(_msg,"/",progress,"/",tasks,"/",process);
    $("#progressBar").data("tasks",tasks+1);$("#progressBar").val(progress);$("#progressBar span").html(progress);
 }
@@ -315,7 +363,7 @@ aNumero = function(the_str,transform)
  * @returns void
  */
 function notice(msg,animation,text){
-   if(!msg){$(".db_notice").empty();$(".sys_msg").empty();}
+   if(!msg){$(".db_notice").empty();$(".sys_msg").empty(); return true;}
    msg=text==2?"<strong class='text-success'>"+msg+"</strong>":text==1?"<span class='text-success'>"+msg+"</span>":(text==0)?"<span class='text-error'>"+msg+"</span>":msg;
    if(animation)$(".db_notice").html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
    else $(".db_notice").html(msg);
@@ -350,7 +398,7 @@ function isOnline(_display){
     };
    $('#statusbar').html(msg);
    if(_display===true){
-      note=window.localStorage?"<ouput id='notice1'>Local <strong class='text-success'>Storage</strong> enabled.</ouput>":"<ouput id='notice1'>No Local <strong class='text-error'>Storage</strong></ouput>";
+      note=window.hasOwnProperty('localStorage')?"<ouput id='notice1'>Local <strong class='text-success'>Storage</strong> enabled.</ouput>":"<ouput id='notice1'>No Local <strong class='text-error'>Storage</strong></ouput>";
       note+=window.sessionStorage?"<ouput id='notice2'>Session <strong class='text-success'>Storage</strong> enabled.</ouput>":"<ouput id='notice2'>No Session <strong class='text-error'>Storage</strong></ouput>";
       note+=window.Worker?"<ouput id='notice3'>Multy threading <strong class='text-success'>Worker</strong> enabled.</ouput>":"<ouput id='notice2'>No support for <strong class='text-error'>Multy threading </strong></ouput>";
       note+=window.openDatabase?"<ouput id='notice4'> <strong class='text-success'>WebSql</strong> enabled.</ouput>":"<ouput id='notice2'>No <strong class='text-error'>WebSql</strong></ouput>";
@@ -390,12 +438,12 @@ eternalCall=function(){
  */
 oblitusSignum=function(){
    var u=$('#loginForm #email').val();
-   var patterns=JSON.parse(localStorage.EXEMPLAR),msg;
+   var patterns=JSON.parse(dynamisGet("EXEMPLAR",true)),msg;
    if(u.search(patterns["email"][0])==-1){msg=patterns["email"][1];
       $('#userLogin .alert-error span').html(msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
    }else{
       $("#mailProgress").show();
-      get_ajax(localStorage.SITE_SERVICE,{"militia":"oblitus","u":u},"","post","json",function(results){
+      get_ajax(dynamisGet("SITE_SERVICE",true),{"militia":"oblitus","u":u},"","post","json",function(results){
          console.log(results,"results");$("#mailProgress").hide();
          if(results&&results.mail&&results.mail.status){$('#userLogin .alert').removeClass("alert-error");
          }else if(results&&results.mail&&results.mail.status===false){
@@ -416,7 +464,7 @@ loginValidation=function(){
    var u,p,row;
    try{
       u=$('#loginForm #email').val();p=md5($('#loginForm #password').val());
-      get_ajax(localStorage.SITE_SERVICE,{"militia":"aliquis","p":p,"u":u},"","post","json",function(results){
+      get_ajax(dynamisGet("SITE_SERVICE",true),{"militia":"aliquis","p":p,"u":u},"","post","json",function(results){
          if(results.aliquis.rows.length&&results.licentia){
             this.checkAliquis(results,true);
          }else{
@@ -436,10 +484,11 @@ loginValidation=function(){
    //-------------------------------------------------------------------------//
    this.checkAliquis=function(_results,_from){
       row=_from?_results.aliquis[0]:_results.rows.item(0);
-      var USER_NAME={"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua']};
-      if($('#loginForm #remeberMe').prop('checked'))localStorage.USER_NAME=JSON.stringify(USER_NAME);
-      else sessionStorage.USER_NAME=JSON.stringify(USER_NAME);//@todo:make user_admin part of user_name
-      if(row['level']==='super'){localStorage.USER_ADMIN=1;sessionStorage.USER_ADMIN=1;viewAPI(true);}else{viewAPI(false);sessionStorage.removeItem('USER_ADMIN');localStorage.removeItem('USER_ADMIN');}
+      var procurator=(row['level']==='super')?1:0;
+      var USER_NAME={"operarius":row['username'],"singularis":row['id'],"nominis":row['name'],"jesua":row['jesua'],"procurator":procurator};
+      if($('#loginForm #remeberMe').prop('checked'))dynamisSet("USER_NAME",JSON.stringify(USER_NAME),true);
+      else sessionStorage.USER_NAME=JSON.stringify(USER_NAME);
+      if(row['level']==='super'){viewAPI(true);}else{viewAPI(false);}
       $('#userName a').html(impetroUser().nominis);
       $('#userLogin').modal('hide').remove();
       sessionStorage.licentia=JSON.stringify(_results.licentia);
@@ -447,7 +496,7 @@ loginValidation=function(){
       if(window.Worker){
          var notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
          (function(procus){var moli=screen.height*screen.width;
-            if(procus){notitiaWorker.postMessage({"procus":procus.singularis,"moli":moli});readWorker(notitiaWorker)}
+            if(procus){notitiaWorker.postMessage({"procus":procus.singularis,"moli":moli,"reprehendo":true});readWorker(notitiaWorker)}
          })(USER_NAME);
       }
    }
@@ -455,7 +504,7 @@ loginValidation=function(){
 }
 //============================================================================//
 impetroUser=function(){
-   var USER_NAME=localStorage.USER_NAME?JSON.parse(localStorage.USER_NAME):(sessionStorage.USER_NAME)?JSON.parse(sessionStorage.USER_NAME):false;
+   var USER_NAME=dynamisGet("USER_NAME",true)?JSON.parse(dynamisGet("USER_NAME",true)):(dynamisGet("USER_NAME"))?JSON.parse(dynamisGet("USER_NAME")):false;
    return USER_NAME;
 }
 //============================================================================//
@@ -466,10 +515,12 @@ impetroUser=function(){
  * @version 3.2
  * @category login, dynamic
  */
-loginOUT=function(){
-   roadCover.loginForm();
-   $('#userLogin .alert-info').find('span').append('You have successfully logout.<br/>Enter your username and password below if you wish to login again');
-   localStorage.removeItem('USER_ADMIN');localStorage.removeItem('USER_NAME');refreshLook(true);
+loginOUT=function(refresh){
+   refresh=typeof refresh=="boolean"?refresh:true;
+   if(refresh){$("#nav-main").empty();$("#tab-home section").empty();$("#tab-dealers section").empty();$("#tab-saleman section").empty();$("#tab-customers section").empty();
+   $("#tab-insurance section").empty();$("#tab-system section").empty();$("#navior ul").remove(); $("#verbum").empty(); roadCover.loginForm();
+   $('#userLogin .alert-info').find('span').append('You have successfully logout.<br/>Enter your username and password below if you wish to login again');}
+   dynamisDel("USER_NAME");refreshLook(refresh);
 }
 //============================================================================//
 /**
@@ -484,12 +535,12 @@ refreshLook=function(removeall){
    var tmp=sessionStorage.USER_NAME||"{}";
    notice();
    $('.search-all').val('');$('footer').removeData();$('#displayMensa').removeData();
-   sessionStorage.clear();if(!removeall){
+   sessionStorage.clear();if(removeall!==true){
    tmp=JSON.parse(tmp);
    sessionStorage.USER_NAME=JSON.stringify(tmp);}
    sessionStorage.runTime=0;sessionStorage.startTime=new Date().getTime();sessionStorage.genesis=0;
    licentia();
-   console.log('history['+history.length+']:...');if(!removeall)history.go(0);else window.location.href=localStorage.SITE_URL;
+   console.log('history['+history.length+']:...');if(removeall!==true)history.go(0);else window.location.href=dynamisGet("SITE_URL",true);
 }
 //============================================================================//
 /*
@@ -498,9 +549,10 @@ refreshLook=function(removeall){
  */
 resetGenesis=function(){
    if(confirm("Please note this will re-sync the entire system")){
-   localStorage.removeItem("DB");
-   SET_DB();
-   loginOUT();}
+      dynamisDel("DB");
+      SET_DB();//@todo:add licentia in worker
+//      loginOUT(false);
+   }
 }
 //============================================================================//
 /**
@@ -550,7 +602,7 @@ sideDisplay=function(_iota,_mensa){
    $('footer').data('display',[_iota,_mensa]);console.log(_iota,_mensa,display,'cherche a partir des donner',$('footer').data('display'));
    switch(_mensa){
       case 'dealers':
-         get_ajax(localStorage.SITE_SERVICE,{"militia":_mensa+"-display",iota:_iota},null,'post','json',function(_results){
+         get_ajax(dynamisGet("SITE_SERVICE",true),{"militia":_mensa+"-display",iota:_iota},null,'post','json',function(_results){
             //change la list du menu et du button avec les dernier donner
             //@removed: feature
 //            $("#drop_"+_mensa+" .oneDealer").last().parent().remove();$("#tab-customers .dealersList .oneDealer").last().parent().remove();$("#tab-insurance .dealersList .oneDealer").last().parent().remove();
@@ -587,7 +639,7 @@ sideDisplay=function(_iota,_mensa){
          });
          break;
       case 'salesmen':
-         get_ajax(localStorage.SITE_SERVICE,{"militia":"salesman-display",iota:_iota},null,'post','json',function(_results){
+         get_ajax(dynamisGet("SITE_SERVICE",true),{"militia":"salesman-display",iota:_iota},null,'post','json',function(_results){
             //change la list du menu et du button avec les dernier donner
 //            $("#drop_salesman"+" .oneSalesman").last().parent().remove();$("#tab-customers .salesmanList .oneSalesman").last().parent().remove();$("#tab-insurance .salesmanList .oneSalesman").last().parent().remove();
 //            $anima("#drop_salesman","li",{},false,'first').vita("a",{"data-toggle":"tab","href":"#tab-salesman","clss":"oneSalesman","data-iota":_iota},false,aNumero(_results.agent[0].FullNames+' '+_results.agent[0].Surname,true)).child.onclick=function(){activateMenu('salesman','salesmen',this)};
@@ -650,7 +702,7 @@ function licentia(_live,_draw){
    var len,x,tmp,row,val;
    var _nominis = impetroUser();
    if(_live&&navigator.onLine){
-      get_ajax(localStorage.SITE_SERVICE,{"militia":"licentia","licentia":_nominis.operarius},'',"post","json",function(_results){
+      get_ajax(dynamisGet("SITE_SERVICE",true),{"militia":"licentia","licentia":_nominis.operarius},'',"post","json",function(_results){
 //         console.log(_results,"_results",sessionStorage.licentia);
          if(_results){
             sessionStorage.licentia=JSON.stringify(_results);if(_draw){theDashboard();hauriret();}
@@ -679,7 +731,7 @@ function getLicentia(_name,_perm,_msg){
    if(name1.indexOf('s')!=-1)var name2=name1.replace(/s$/,""); else name2=name1+'s';
    name1=name1+' '+_perm;name2=name2+' '+_perm;
    var tmp=sessionStorage.licentia?JSON.parse(sessionStorage.licentia):{};
-   if(sessionStorage.USER_ADMIN||localStorage.USER_ADMIN) return true;
+   if(impetroUser().procurator) return true;
    name1=name1.toLowerCase();name2=name2.toLowerCase();
 //   console.log(tmp,"/",name1,"/",name2,tmp[name1]);
    if(tmp[name1]||tmp[name2])return true;
@@ -703,15 +755,19 @@ function getLicentia(_name,_perm,_msg){
 function getPage(_page,_list){
    var len,row,tmp,d;
    if(getLicentia("Pages","View")===false){notice("<strong class='text-error'>You do not have permission to view the content pages</strong>",true,0);return false;}
-   recHistory(_page,false,false,false,false,true);
-   $DB("SELECT id,title,content,modified FROM pages WHERE title=?",[_page],"Found page "+_page,function(results){
+   var mensula=_list?"system":false;
+   recHistory(_page,mensula,false,false,false,true);
+   if(_list){
+      $('.system1').tab('show');
+   }
+   $DB("SELECT id,title,content,modified,jesua FROM pages WHERE title=?",[_page],"Found page "+_page,function(results){
       len=results.rows.length;row=[];
-      if(len){row=results.rows.item(0);$('footer').data('Tau','deLta');$('footer').data('iota',row['id']);}
+      if(len){row=results.rows.item(0);$('footer').data('Tau','deLta');$('footer').data('iota',row['jesua']);}
       else {row['title']=_page;row['content']="Click here to add new content";row['modified']=getToday();$('footer').data('Tau','Alpha');$('footer').data('iota',null);}
       $("#body article").empty();tmp=row['modified'];d=(tmp.search('0000-00-00')!=-1)?getToday():tmp;
       var d1 = new Date(d);d=null;tmp=null;
       var contentEditable=getLicentia("Pages","Edit");
-      $anima("#body article","section").vita("header",{},true).vita("h1",{"id":"page_title","contenteditable":contentEditable},false,row['title']).vita('h3',{},true).vita("time",{"datetime":d1.format("isoDateTime")},false,'Last modified'+d1.format(localStorage.SITE_DATE));
+      $anima("#body article","section").vita("header",{},true).vita("h1",{"id":"page_title","contenteditable":contentEditable},false,row['title']).vita('h3',{},true).vita("time",{"datetime":d1.format("isoDateTime")},false,'Last modified'+d1.format(dynamisGet("SITE_DATE",true)));
       $anima("#body article","section",{"id":"page_content","contenteditable":contentEditable}).father.innerHTML=row['content'];
       load_async("js/libs/CKEditorCus/ckeditor.js",true,'end',false);
       //@solve:prevents bug of CKEDITOR not existing.
@@ -785,13 +841,13 @@ function searchUpdate(item){
  */
 function newSection(){
    $('#newItem').remove();$('.pagination').remove();$('#verbum').empty();$('.headRow').empty();
-   $('.search-all').val('').prop('disabled',true);$('#displayMensa').empty();
+   $('.search-all').val('').prop('disabled',true);$('#displayMensa').empty();$('#displayList').empty();
    $('#link_home').tab('show');
    sessionStorage.genesis=0;//reset each time ur on dashboard
 }
 //============================================================================//
 function liberoAnimus(){
-   notice();
+   notice();sessionStorage.genesis=0;//reset each time ur on dashboard
    $('.body article').removeClass('totalView');//remove the class that is placed by the cera's
    for(var instance in CKEDITOR.instances){console.log(instance,"/instance/",CKEDITOR.instances); CKEDITOR.instances[instance].destroy()}//@fix: ce si et necessaire, if faut detruire toute instance avant de naviger
    $("footer").removeData('lateCall').removeData('examiner');
@@ -981,7 +1037,7 @@ function hasFormValidation() {
  * @param {object} <var>rev</var> the object containing the version and revision of the new version
  */
 function version_db(cur,rev,trans){
-   get_ajax(localStorage.SITE_SERVICE,{"militia":"verto","cur":cur,"ver":rev.ver,"revision":rev.revision},"","post","json",function(content){
+   get_ajax(dynamisGet("SITE_SERVICE",true),{"militia":"verto","cur":cur,"ver":rev.ver,"revision":rev.revision},"","post","json",function(content){
       console.log(content,"/\\",typeof content,"||\/",trans);
       db.transaction(function(trans){trans.executeSql("INSERT INTO version_db (ver)VALUES(?)",[rev.ver]);});
       if(typeof content==="object")SET_DB(content);
@@ -989,25 +1045,37 @@ function version_db(cur,rev,trans){
 }
 //============================================================================//
 /**
- * used to measure script execution time
- *
- * It will verify all the variable sent to the function
+ * the return value of the worker.
  * @author fredtma
- * @version 0.5
- * @category iyona
- * @gloabl aboject $db
- * @param array $__theValue is the variable taken in to clean <var>$__theValue</var>
- * @see get_rich_custom_fields(), $iyona
- * @return void|bool
- * @todo finish the function on this page
- * @uses file|element|class|variable|function|
+ * @version 3.1
+ * @category worker
+ * @param object <var>notitiaWorker</var> the worket object
  */
 function readWorker(notitiaWorker){
    notitiaWorker.addEventListener('message',function(e){
       console.log('Worker on Notitia:', e.data);
       if(e.data=="licentia")licentia();
+      if(e.data=="reset progress"){profectus("starting db reset",true,10);}
+      if(e.data.progress==true){profectus(e.data.resetTable);}
    },false);
    notitiaWorker.addEventListener('error',onError,false)
+}
+//============================================================================//
+/**
+ * showrcut to make a call to the worker
+ * @author fredtma
+ * @version 3.2
+ * @category worker, background
+ * @param object <var>option</var> the option to be passed to the worker
+ * @return void
+ */
+function callWorker(option){
+   var opt=$.extend({},{"procus":impetroUser().singularis,"moli":moli},option);
+   if(window.Worker&&impetroUser()){
+      var notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
+      var moli=screen.height*screen.width;notitiaWorker.postMessage(opt);
+      readWorker(notitiaWorker);
+   }
 }
 //============================================================================//
 /**
@@ -1017,9 +1085,9 @@ function readWorker(notitiaWorker){
  * @return void
  */
 quaerereCustomer=function(e){
-   e.preventDefault();
+   e.preventDefault();sessionStorage.genesis=0;//reset each time ur on dashboard
    var val=$("#txtSrchCust").val();
-   get_ajax(localStorage.SITE_SERVICE,{"militia":"impetro omnia","quaerere":val},"","post","json",function(result){
+   get_ajax(dynamisGet("SITE_SERVICE",true),{"militia":"impetro omnia","quaerere":val},"","post","json",function(result){
       if(!result.rows.length){$("#txtSrchCust").val("No result for:"+val).select();return false;}
       theForm = new SET_FORM()._Set("#body article");theForm.setBeta(result,false,false);
       sessionStorage.genesis=0;if(typeof reDraw ==="function")setTimeout(reDraw,100);//use on reDraw the search result. necessary on some form e.g. customer

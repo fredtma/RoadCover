@@ -1,35 +1,87 @@
 <div id="anima"></div>
 
 <script>
-$aura=function(section){
-   var node=(typeof(section)=='string')?document.querySelector(section):section;;
-   return function(ele,arr,txt){
-      var father=creo(arr,ele,txt),child,set=this;node.appendChild(father);
-      this._=function(ele,arr,txt,genesis){ele=creo(arr,ele,txt);if(!genesis){father.appendChild(ele);child=ele;}else {child.appendChild(ele);child=ele;}return set;}
-      return this;}}
-$iyona=function(section){
-   var node=(typeof(section)=='string')?document.querySelector(section):section;;
-   this._$=function(ele,arr,txt){
-      this.father=creo(arr,ele,txt);
-      var set=this;
-      node.appendChild(this.father);
-      this._=function(ele,arr,txt,genesis){
-         ele=creo(arr,ele,txt);
-         this.father.appendChild(ele);this.child=ele;if(genesis)this.father=ele;
-         return set;
+function SET_INDEXDB(){
+   var ppl=[{firstname:"Frederick",lastname:"Tshimanga",username:"fredtma"},{firstname:"Brett",lastname:"scott",username:"bscott"}];
+   var IDBTransaction=window.IDBTransaction||window.webkitIDBTrasaction;;
+   var indexedDB=window.indexedDB||window.webkitIndexedDB||window.mozIndexedDB||window.msIndexedDB;
+   var IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+   var SET=this;
+   this.request=indexedDB.open("road_cover",5);
+   this.db;
+
+   this.request.onerror=function(e){console.log("Database error code: "+e.target.errorCode, e);}
+   this.request.onsuccess=function(e){this.db=this.result||e.target.result||this.request.result;console.log("Created DB")}
+
+   this.request.onupgradeneeded=function(e){console.log("Upgrading DB")
+      this.db=e.target.result;var users;
+      if(this.db.objectStoreNames.contains("users")!==true){
+         users=e.currentTarget.result.createObjectStore("users",{keyPath:"id",autoIncrement:true});
+         users.createIndex("firstname","firstname",{unique:false});
+         users.createIndex("username","username",{unique:true});
+         for(var i in ppl){users.add(ppl[i]);}
+      }else{//to update
+         users=e.currentTarget.transaction.objectStore("users");
       }
-      return this;
+      e.target.transaction.onerror=function(e){console.log("A database error code: "+e.target.errorCode,e);}
+   }
+   this.write=function(_store,_add,_update){
+      if(this.request.readyState!="done"){this.request.addEventListener("success",function(){SET.write(_store,_add,_update)},false); return false;}
+      else {this.db=this.request.result;}
+
+      var store=_store||"users",transaction=this.db.transaction(store,"readwrite"),request;
+      var objectStore=transaction.objectStore(store);
+      if(typeof _add!=="object") return false;
+      if(!_update){request=objectStore.add(_add);}
+      else {request=objectStore.put(_add);}
+      request.onsuccess=function(e){console.log("Successfully added to "+store);}
+      request.oncomplete=function(e){console.log("Successfully completed addeding to "+store+"::"+e.target.error.message);}
+      request.onerror=function(e){console.log("Error while writing to "+store+"::"+e.target.error.message);}
+   }
+   this.read=function(_store,_callback,_index){//console.log(this.request,this.db,this.request.readyState,SET.db);
+      if(this.request.readyState!="done"){this.request.addEventListener("success",function(){SET.read(_store,_callback,_index)},false); return false;}
+      else {this.db=this.request.result;}
+
+      var store=_store||"users",transaction=this.db.transaction(store),request;
+      var objectStore=transaction.objectStore(store);
+      if(typeof _index=="integer"){request=objectStore.get(_index);
+      }else if(typeof _index=="object"&&_index.hasOwnProperty("limit")){var keyRange=IDBKeyRange.lowerBound(_index.limit); request=objectStore.openCursor(keyRange);
+      }else{request=objectStore.openCursor();}
+
+      request.onsuccess=_callback;
+      request.oncomplete=function(e){console.log("Successfully completed addeding to "+store,e);}
+      request.onerror=function(e){console.log("Error while writing to "+store,e);}
+   }
+   this.erase=function(_store,_index,_callback){
+      if(this.request.readyState!="done"){this.request.addEventListener("success",function(){SET.erase(_store,_index,_callback)},false); return false;}
+      else {this.db=this.request.result;}
+
+      var store=_store||"users",transaction=this.db.transaction(store,"readwrite");
+      var objectStore=transaction.objectStore(store);
+      var request=objectStore.delete(_index);
+      request.onsuccess=function(e){console.log("Successfully deleted record.");if(_callback)_callback();}
+      request.onerror=function(e){console.log("failed to deleted record.",e);}
    }
    return this;
-}
-$(document).ready(function(){
-   var _=$aura("#anima");
-   _("ul")._("li",{},"first")._("a",{}," second",true)._("span",{}," text",true)._("b",{}," bold")._("li",{},"second");_("div",{},"Hello heaven");
-   $iyona("#anima")._$("div",{},"Divider")._("ul",{},"",true)._("li",{"id":"link"},"one")._$("a",{},"link")._("li",{},"two");
-   $iyona("#link")._$("li",{},"three");
-   $("#anima").anima("i",{"attr":{"id":"italicTag"},"text":"this is italis"})
-           .vita("strong",{"style":"color:blue"},false," this is bold ");
-});
+};
+(function(){
+   var db=new SET_INDEXDB();
+//   db.request.onsuccess=function(e){console.log(e,db.request);db.db=e.target.result;}
+//   db.write("users",{"id":4,"firstname":"Serge Kabeya","lastname":"Tshimanga","username":"sergetma"},true)
+//   db.erase("users","4")
+   db.read('users',function(e){
+      var cursor=e.target.result,row={};
+      var ele=document.querySelector("#anima");
+
+      if(cursor&&cursor.hasOwnProperty("value")){
+         row.id=cursor.key;row.firstname=cursor.value.firstname;row.lastname=cursor.value.lastname;row.username=cursor.value.username;
+         cursor.continue();
+      }else if(cursor){
+         row=cursor;
+      }
+      if(cursor)ele.innerHTML +="<strong>ID</strong>:"+row.id+" <strong>Firstname</strong>: "+row.firstname+" <strong>Lastname</strong>: "+row.lastname+" <strong>Username</strong>: "+row.username+"<br/>";
+   },{"limit":0});
+})()
 </script>
 
 <div id="anima"></div>

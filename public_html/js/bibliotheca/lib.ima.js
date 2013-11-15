@@ -99,6 +99,7 @@ function findJSON(data){
    var creoDB=new SET_DB();sessionStorage.removeItem('formTypes');
    switch(formTypes){
       case 'alpha':var spicio=localStorage.USER_NAME?JSON.parse(localStorage.USER_NAME):JSON.parse(sessionStorage.USER_NAME); creoDB.alpha(null,null,spicio.jesua);break;
+      case 'page':var spicio=eternal.form.options.select; creoDB.delta(null,null,spicio.jesua);break;
       case 'betaTable':get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa},'','post','json',function(results){theForm.setBeta(results,3);});break;
       default:creoDB.beta();break;
    }
@@ -127,11 +128,12 @@ onVituim=function(event, jqxhr,textStatus){
 function saveData(){
    var title=$('#page_title').text();var content=$('#page_content').html();var Tau=$('footer').data('Tau');
    var day=getToday();var iota=$("footer").data("iota");var tmp;var jesua=md5(title+day);
-   var q={"eternal":{'blossom':{"alpha":iota,"delta":"!@=!#"},"title":title,"content":content,"modified":day,"creation":day,"jesua":jesua,"level":"admin","type":"content"},"Tau":Tau,"iyona":"pages"};
+   var genesis=(iota)?true:false;iota=iota||jesua;var moli=screen.height*screen.width;
+   var q={"eternal":{'blossom':{"alpha":iota,"delta":"!@=!#"},"title":title,"content":content,"modified":day,"creation":day,"level":"admin","type":"content"},"Tau":Tau,"iyona":"pages","procus":impetroUser().singularis,"moli":moli};
    sessionStorage.quaerere=JSON.stringify(q);
    var arr=[title,content,day,day,jesua,"admin","content"];
    var quaerere="INSERT INTO pages (title,content,modified,creation,jesua,`level`,`type`) VALUES (?,?,?,?,?,?,?)";
-   if(iota){quaerere="UPDATE pages SET title=?,content=?,modified=?,`level`=?,`type`=? WHERE id=?";arr=[title,content,day,"admin","content",iota]}
+   if(genesis){quaerere="UPDATE pages SET title=?,content=?,modified=?,`level`=?,`type`=? WHERE jesua=?";arr=[title,content,day,"admin","content",iota]}
    $DB(quaerere,arr,"Setup page "+title,function(results){
       iota=iota||results.insertId;
       if(!$(".db_notice").data('toggle')||$(".db_notice").data('toggle')==0){$(".db_notice").data('toggle',1);tmp='text-success';}else {$(".db_notice").data('toggle',0);tmp='text-warning';}

@@ -6,8 +6,10 @@ var db,creoDB;
 var WORK = self;
 self.addEventListener('message',function(e){
    var data=e.data,isLecentia=false;
-   if("novum" in data) {self.postMessage(data.novum);}
-   else if("procus" in data) {
+   iyona(data);
+   if(data.hasOwnProperty("novum")) {self.postMessage(data.novum);}
+   //=========================================================================//
+   else if(data.hasOwnProperty("reprehendo")) {
       aSync(SITE_SERVICE,"militia=ipse&ipse="+data.procus+"&moli="+data.moli,function(result){
          if(typeof result!=="object"){iyona("Not result found.");return false;}
          iyona(result);
@@ -30,6 +32,11 @@ self.addEventListener('message',function(e){
          }//endfor mensa in result
       });//aSync
    }//if procus in data
+   //=========================================================================//
+   else if(data.hasOwnProperty("novaNotitia")){
+      resetNotitia({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1,ver:1,pages:1,features:1,db:1});
+      WORK.postMessage('Database reseted.');
+   }
 });//evenlistener for message
 
 

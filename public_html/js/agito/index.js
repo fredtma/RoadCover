@@ -5,7 +5,7 @@
 //@todo: set the title on other tabs
 timeFrame('Login');
 //licentia();
-roadCover = new SET_DISPLAY(localStorage.SITE_NAME,"",1);
+roadCover = new SET_DISPLAY(dynamisGet("SITE_NAME",true),"",1);
 roadCover.userLogin();
 //============================================================================//SETUP
 $('#sideNotice').append(creo({'clss':'db_notice'},'div'));
@@ -17,7 +17,7 @@ console.log('Cash::'+objectSize($.cache));
 if(history.state)hasNarro=true;
 //============================================================================//HISTORY EVENT
 $(window).on('popstate',function(e){
-   var narro = {},page;
+   var narro = {},page,link=false;
    if(sessionStorage.narro)narro=JSON.parse(sessionStorage.narro);
    else return false;
    page = (history.state)?history.state.path:null;
@@ -29,7 +29,7 @@ $(window).on('popstate',function(e){
    set = set.indexOf('salesmen')!=-1?'#link_salesman':set.indexOf('system')!=-1?'.system0':set;
 //  console.log(narro,'narro2',narro.table,set,page);//@useful
    if(narro.store)page=narro.store;//when the key has changed use the stored key, which is also the filename
-   if(narro.page) getPage(page);
+   if(narro.page) {if(narro.table){$(set).tab('show');$("#nav_"+narro.table).addClass('active'); link=true;} getPage(page,link);}
    else if (page) activateMenu(page,narro.table,set,narro.manus,narro.tab,narro.type);
 });
 //============================================================================//WORKERS.
@@ -37,7 +37,7 @@ $(window).on('popstate',function(e){
    if(window.Worker&&impetroUser()){
       var notitiaWorker=new Worker("js/bibliotheca/worker.notitia.js");
       (function(procus){var moli=screen.height*screen.width;
-         if(procus){notitiaWorker.postMessage({"procus":procus.singularis,"moli":moli});}
+         if(procus){notitiaWorker.postMessage({"procus":procus.singularis,"moli":moli,"reprehendo":true});}
       })(impetroUser());
    }
    if(window.Worker&&impetroUser())readWorker(notitiaWorker);

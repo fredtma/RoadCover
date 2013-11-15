@@ -58,7 +58,7 @@
       </style>
       <!--<link rel="stylesheet" href="css/datepicker.css" />-->
       <section class="page-section">
-         <h1>Invoice Details</h1><span id="jesua"></span>
+         <h1>Invoice Details.</h1><span id="jesua"></span>
          <div class="page-header invHead"><h2>RoadCover <small class="dealerName">Name of the dealer</small></h2></div>
          <article class="subBody">
             <section class="invH clearfix">
@@ -121,8 +121,8 @@
       //======================================================================//
       function getInvoice(inv){
          var x,l,row,$addrss,$cust,val,father,amount,total=0,vat,all,d=new Date(),y=d.getFullYear(),missing=false;
-         var m=$("#monthList").val(),m2=m+1; var firstDate= new Date(y+'/'+m+'/06').format('isoDateTime');
-         var lastDay=new Date(y,m,0).getDate();var dateFrom=new Date(y+'/'+m+'/06').format(localStorage.SITE_DATE);var dateTo=new Date(y+'/'+m+'/'+'05').format(localStorage.SITE_DATE);
+         var m=$("#monthList").val(),firstDate= new Date(y+'/'+m+'/06').format('isoDateTime');
+         var lastDay=new Date(y,m,0).getDate();var dateFrom=new Date(y+'/'+m+'/06').format(localStorage.SITE_DATE);var dateTo=new Date(y+'/'+(parseInt(m)+1)+'/'+'05').format(localStorage.SITE_DATE);
          $("#fromTo").html(dateFrom+' To '+dateTo).attr("datetime",firstDate);
          //changes the dropdown of dealers
          $("footer").data("selection",{"month":m,"dealers":inv});
@@ -180,7 +180,7 @@
                   totalCommision+=commission;
                   amount=premium-commission;
                   total+=amount;
-                  $cust.vita("div",{"clss":"invMid"},true).vita("span",{},false,x+1).vita("span",{},false,row["Deal"]).vita("span",{},false,row["Salesman"]).vita("span",{},false,row["Customer"]).vita("span",{},false,row["IDno"]).vita("span",{},false,row["Start Date"]).vita("span",{},false,row["Period"]).vita("span",{},false,row["trans_status"]).vita("span",{},false,row["product_name"]).vita("span",{},false,'R '+commission).vita("span",{},false,'R '+premium).vita("span",{},false,'R '+amount);
+                  $cust.vita("div",{"clss":"invMid"},true).vita("span",{},false,x+1).vita("span",{},false,row["Deal"]).vita("span",{},false,row["Salesman"]).vita("span",{},false,row["Customer"]).vita("span",{},false,row["IDno"]).vita("span",{},false,row["Start Date"]).vita("span",{},false,row["Period"]).vita("span",{},false,row["status"]).vita("span",{},false,row["product_name"]).vita("span",{},false,'R '+commission).vita("span",{},false,'R '+premium).vita("span",{},false,'R '+amount);
                }//for customers
 //               vat=Math.round(total/100*14);all=total+vat;
 //               $("#invTot").html('R '+total);
@@ -255,10 +255,11 @@
       });
       //======================================================================//
       $(document).ready(function(){
+
          $("input[name=s]").removeData().unbind();
          var m=$("footer").data("selection")?$("footer").data("selection").month:localStorage.SITE_MONTH;
          if(!$("#monthList").val())$("#monthList").val(m);
-         $DB("SELECT name,code FROM dealers ORDER BY name",[],"",function(r,j){
+         $DB("SELECT name,code FROM dealers ORDER BY name",[],"",function(r,j){console.log('testing....');
             var x,l,row,codes=[],examiner=[];
             var cnt=0,menuDealers={};
             if(j.rows.length){

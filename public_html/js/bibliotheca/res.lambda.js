@@ -21,7 +21,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
    $('#mainHead h1').text(_title);
    $('title').text(_title);
    $('#mainHead h2').text(_subTitle);
-   $('#sideTop time').attr("datetime",d.format("isoDateTime")).html(d.format(localStorage.SITE_DATE)+' '+d.format(localStorage.SITE_TIME));
+   $('#sideTop time').attr("datetime",d.format("isoDateTime")).html(d.format(dynamisGet("SITE_DATE",true))+' '+d.format(dynamisGet("SITE_TIME",true)));
    this.pageNumber=_pageNumber;
    /*
     * the number of menu name will also be the number of container
@@ -237,7 +237,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
     */
    this.pagiNation=function(_obj){
       var div,dsbl,a,x,tmp,actv,ul,li;
-      var curr=Math.floor(parseInt(sessionStorage.genesis)/localStorage.DB_LIMIT);
+      var curr=Math.floor(parseInt(sessionStorage.genesis)/dynamisGet("DB_LIMIT",true));
       var prev=parseInt(sessionStorage.genesis)==0?0:curr-1;
       var next=curr>=_obj.pages-1?_obj.pages-1:curr+1;
       curr=curr==0?1:(((_obj.pages)-curr)>=4)?curr:(_obj.pages)-4;
@@ -248,7 +248,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
       a=creo({"href":_obj.link,"data-goto":prev,"clss":_obj.clss2},"a","Prev");li=creo({"clss":dsbl},"li");li.appendChild(a);ul.appendChild(li);
       for(x=curr;x<=max;x++){
          dsbl=_obj.pages<max&&x>_obj.pages?"disabled":"";
-         tmp=(parseInt(x)-1)*localStorage.DB_LIMIT;
+         tmp=(parseInt(x)-1)*dynamisGet("DB_LIMIT",true);
          actv="";if(tmp==sessionStorage.genesis)actv=" active";
          a=creo({"href":_obj.link,"data-goto":x},"a",x);li=creo({"clss":dsbl+actv},"li");li.appendChild(a);ul.appendChild(li);
       }
@@ -284,13 +284,13 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
          this.loginForm();
       } else {
          licentia();hauriret();
-         if(!sessionStorage.USER_ADMIN) viewAPI(false);
+         if(!impetroUser().procurator) viewAPI(false);
       }//end if
       profectus('@login');
    }//end function
    this.loginForm=function(){
       $anima('#hiddenElements','div',{'clss':'modal','id':'userLogin','role':'dialog'})
-      .vita('div',{'clss':'modal-header'},true).vita('button',{'clss':'close','aria-hidden':true},true).vita('i',{'clss':'icon icon-color icon-close'}).genesis('h2',{},false,'Welcome to '+localStorage.SITE_NAME)
+      .vita('div',{'clss':'modal-header'},true).vita('button',{'clss':'close','aria-hidden':true},true).vita('i',{'clss':'icon icon-color icon-close'}).genesis('h2',{},false,'Welcome to '+dynamisGet("SITE_NAME",true))
       .novo('#userLogin','div',{'clss':'modal-body'}).vita('div',{'clss':'alert alert-info'},true)
          .vita('h4',{},false,'Login Details').vita('span')
          .novo('#userLogin .modal-body','form',{'clss':'form-signin','id':'loginForm','method':'post'}).vita('div',{'clss':'input-prepend fullWidth'},true).vita('span',{'clss':'add-on'},true).vita('i',{'clss':'icon-user'}).genesis('input',{'id':'email','type':'text','placeholder':'username or email','clss':'input-block-level','required':'','autofocus':""})
@@ -310,7 +310,7 @@ hauriret=function(){
 //timeFrame('index');
    profectus('@hauriret');
    var menuHome,menuUser,menuSearch,homeSection,menuDisplay,menuDealers,menuCustSrch,menuSalesmen,menuMonths,pagNav;
-   roadCover._Set("#nav-main").navTab({"home":{"txt":"Home","icon":"icon-home","clss":"active"},"dealers":{"txt":"Dealers","icon":"icon-book","licentia":"dealer"},"salesman":{"txt":"Salesman","icon":"icon-briefcase","licentia":"salesman"},"customers":{txt:"Customers","icon":"icon-user","licentia":"customer"},"insurance":{"txt":"Insurance","icon":"icon-folder-open","licentia":"member"},"system":{"txt":"System","icon":"icon-cog","sub":["System Configuration","View Clients","System features","Help system","Setup Permission"],"licentia":[true,"Clients","Features","Helper","permission"]}});
+   roadCover._Set("#nav-main").navTab({"home":{"txt":"Home","icon":"icon-home","clss":"active"},"dealers":{"txt":"Dealers","icon":"icon-book","licentia":"dealer"},"salesman":{"txt":"Salesman","icon":"icon-briefcase","licentia":"salesman"},"customers":{txt:"Members","icon":"icon-user","licentia":"customer"},"insurance":{"txt":"Transaction","icon":"icon-folder-open","licentia":"member"},"system":{"txt":"System","icon":"icon-cog","sub":["System Configuration","View Clients","System features","Help system","Setup Permission"],"licentia":[true,"Clients","Features","Helper","permission"]}});
    roadCover._Set({"addTo":"#tab-home section","clss":"btn btn-primary"}).btnGroup({"key":"homeSet0","btn":{"btnNotify":{"title":"My Notification","icon":"icon-inbox icon-white"},"btnEmail":{"title":"Email page","icon":"icon-envelope icon-white"},"btnWord":{"title":"Convert to MS Word","icon":"icon-th-large icon-white"},"btnExcel":{"title":"Convert to MS Excel","icon":"icon-th icon-white"}}});
    menuHome=roadCover.btnGroup({"key":"homeSet1","btn":{"btnReload":{"title":"Reload page","icon":"icon-refresh icon-white","clss":"btnReload"},"btnDashboard":{"title":"Enter Dashboard","icon":"icon-home icon-white","clss":"btnDashboard"},"btnFullScreen":{"title":"Enter or exit fullscreen","icon":"icon-fullscreen icon-white","clss":"btnFullScreen"}}}).cloneNode(true);
    menuUser=roadCover.btnDropDown({"btnUser":{"clss":"btn btn-primary btnUser","href":"javascript:void(0)","icon":"icon-user icon-white","txt":"User"},"btnUserCaret":{"clss":"btn btn-primary dropdown-toggle","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubUserList":{"clss":"dropdown-menu","sub":{"profileView":{"href":"#","icon":"icon-pencil","clss":"profileView","txt":"My profile"},"profileNew":{"href":"#","icon":"icon-plus","clss":"profileNew","txt":"Create profile"},"profileList":{"href":"#","clss":"profileList","icon":"icon-map-marker","txt":"Admin List"},"profileDiv":{"divider":true},"profileOff":{"href":"#","icon":"icon-ban-circle","clss":"logOff","txt":"Logoff"}}}});
@@ -362,7 +362,7 @@ hauriret=function(){
 //============================================================================//SYSTEM
 //timeFrame('system');
    menuUser=menuUser.cloneNode(true);menuUser.className += ' duplex';
-   roadCover._Set("#tab-system section").btnGroup({"key":"setSystem","btn":{"btnSysLog":{"title":"View Logs","icon":"icon-list-alt icon-white","lecentia":"Logs"},"btnSysReport":{"title":"View Reports","icon":"icon-book icon-white", "lecentia":"Reports"},"btnSysImport":{"title":"Run Import","icon":"icon icon-white icon-archive","lecentia":"Import"},"btnSysQuery":{"title":"Single Query","icon":"icon-search icon-white","lecentia":"Query"},"btnSysPermission":{"title":"Setup Permission","icon":"icon-pencil icon-white","lecentia":"Permission"},"btnFeatures":{"title":"View/Add System features","icon":"icon-wrench icon-white","lecentia":"Features"},"btnHelper":{"title":"Add/Edit help content","icon":"icon-info-sign icon-white","lecentia":"Helper"} }});
+   roadCover._Set("#tab-system section").btnGroup({"key":"setSystem","btn":{"btnSysContent":{"title":"Content Management","icon":"icon-list-alt icon-white","lecentia":"Content"},"btnSysReport":{"title":"View Reports","icon":"icon-book icon-white", "lecentia":"Reports"},"btnSysImport":{"title":"Run Import","icon":"icon icon-white icon-archive","lecentia":"Import"},"btnSysQuery":{"title":"Single Query","icon":"icon-search icon-white","lecentia":"Query"},"btnSysPermission":{"title":"Setup Permission","icon":"icon-pencil icon-white","lecentia":"Permission"},"btnFeatures":{"title":"View/Add System features","icon":"icon-wrench icon-white","lecentia":"Features"},"btnHelper":{"title":"Add/Edit help content","icon":"icon-info-sign icon-white","lecentia":"Helper"} }});
    $('#tab-system section').append(menuUser);
    roadCover.btnGroup({"key":"setClient","btn":{"btnSysClient":{"title":"View Clients","icon":"icon-qrcode icon-white getClient"},"btnPrint":{"title":"Print page","icon":"icon-print icon-white","clss":"printPage"},"btnHelp":{"title":"Help system","icon":"icon-question-sign icon-white","clss":"btnHelp"},}});
    $('#tab-system section').append(menuSearch);
@@ -408,10 +408,10 @@ hauriret=function(){
    $(".monthList a").click(function(){//@explain:when the month list is selected, the function is repeated
       var m=$(this).data("iota");var temp=$('footer').data('temp');
       dropDownMenu(this,"month");var militia=eternal.mensa;
-      get_ajax(localStorage.SITE_SERVICE,{"militia":militia,"quaerere":temp,"luna":{1:m}},'','post','json',function(_rows){
+      get_ajax(dynamisGet("SITE_SERVICE",true),{"militia":militia,"quaerere":temp,"luna":{1:m}},'','post','json',function(_rows){
          if(typeof temp==="undefined")temp=[0,"dealers"];
          sideDisplay(temp[0],temp[1]);
-         localStorage.SITE_MONTH=m;//@explain:reset the whole site defaults month selection
+         dynamisGet("SITE_MONTH",m,true)//@explain:reset the whole site defaults month selection
          var y=new Date().getFullYear(); var d=new Date(y,m-1,1).getMonth();$("#betaCustomer small,#betaInsurance small").html(" for the month of "+dateFormat.i18n.monthNames[d+12]);
          console.log(d,"?",dateFormat.i18n.monthNames[d+12],"?",m);
          if(_rows.rows.length&&militia=="customers"){theForm=new SET_FORM()._Set("#body article");theForm.setBeta(_rows);reDraw();}

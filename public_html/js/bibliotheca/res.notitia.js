@@ -21,11 +21,12 @@ function SET_DB(_reset){
    this.basilia={};
    this.reset=_reset||false;
    var Tau=false,res;
-   this.patterns=JSON.parse(localStorage.EXEMPLAR);
+   this.patterns=JSON.parse(dynamisGet("EXEMPLAR",true));
    this.creoAgito=function(_quaerere,_params,_msg,callback){
       var quaerere=_quaerere;
       var msg=_msg;
       var params=_params||[];
+      if(typeof window.openDatabase !== "function" ) return false;
 //      if(!db) db=window.openDatabase(localStorage.DB_NAME,localStorage.DB_VERSION,localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
       db.transaction(function(trans){
          trans.executeSql(quaerere,params,function(trans,results){
@@ -34,11 +35,11 @@ function SET_DB(_reset){
             var j=$DB2JSON(results);
             if(msg)$('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
             if(Tau){
-               var procus=localStorage.USER_NAME?JSON.parse(localStorage.USER_NAME):JSON.parse(sessionStorage.USER_NAME);
+               var procus=impetroUser();
                var moli=screen.height*screen.width;
                console.log(moli,"/",screen.height,"/",screen.width);
                this.basilia={"eternal":res,"Tau":Tau,"iyona":iyona,"procus":procus.singularis,"moli":moli};
-               get_ajax(localStorage.SITE_MILITIA,this.basilia,'','post','json',function(j){console.log(j,'Online');$('#sys_msg').html(j.msg) });Tau=false;
+               get_ajax(dynamisGet("SITE_MILITIA",true),this.basilia,'','post','json',function(j){console.log(j,'Online');$('#sys_msg').html(j.msg) });Tau=false;
             }
             if(callback)callback(results);
          },function(_trans,_error){
@@ -246,6 +247,37 @@ function SET_DB(_reset){
          }//end switch
       });//end anonymous
    }
+   this.delta=function(_actum,_jesua,_spicio){
+      var display,row,ii,len,x,first;
+      eternal=eternalCall();
+      if(!eternal){console.log("not found json");return false;}
+      this.forma(_actum,_jesua,function(results){
+         var mensa=eternal.mensa||SET.frmID.substr(4);
+         display=$('#displayMensa');
+         var $display;
+         len=results.rows.length;
+         //ASIDE
+         if(display.data('mensa')!=mensa){
+            display.data('mensa',mensa);//prevent this to fill with the same data table list
+            newSection();
+            for(x=0;x<len;x++){
+               var name='';var parentName=mensa+'_'+x;
+               row=results.rows.item(x);
+               name=SET.fieldDisplay('row',row,true).join(' ');
+               $("#displayMensa").anima("li",{"attr":{"id":parentName}}).vita("a",{"txt":name,"attr":{"href":"javascript:void(0)","data-jesua":row['jesua']}})
+                  .enfant.onclick=function(e){e.preventDefault();getPage($(this).text(),true);}
+               $("#"+parentName).anima("a",{"attr":{"href":"javascript:void(0)"}}).vita("i",{"attr":{"clss":"icon icon-color icon-trash","data-jesua":row['jesua']}})
+                  .enfant.onclick=function(e){e.preventDefault(); var jesua=$(this).data("jesua");SET.forma(0,jesua); $(this).parents("li").hide();}
+            }//endfor
+            $('#sideBot h3').html('<a href="javascript:void(0)">Add new '+this.name+'<i class="icon icon-color icon-plus addThis"></i></a>');
+            $('#sideBot h3').click(function(e){
+               e.preventDefault();
+               getPage("New Content Page",true);
+            });//endEvent
+            getPage("Content Page",true);
+         }//enf if
+      });//endFunc
+   }
    /*
     * @param {obeject} <var>_source</var> the source of the object
     * @param {string} <var>_form</var> the name of the form
@@ -370,64 +402,64 @@ function SET_DB(_reset){
       db="CREATE TABLE IF NOT EXISTS version_db (id INTEGER PRIMARY KEY AUTOINCREMENT, ver FLOAT UNIQUE)";
       if(_option.db)this.creoAgito(db,[],'Table version_db created');
       if(_option.db)this.creoAgito("CREATE INDEX db_ver ON version_db(ver)",[],"index version_db");
-      if(_option.db)this.creoAgito("INSERT INTO version_db (ver)VALUES(?)",[localStorage.DB_VERSION]);
-      sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL,`level` TEXT, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT)";
+      if(_option.db)this.creoAgito("INSERT INTO version_db (ver)VALUES(?)",[dynamisGet("DB_VERSION",true)]);
+      sql="CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(90) NOT NULL UNIQUE, password TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL, email TEXT NOT NULL, gender TEXT NOT NULL,`level` TEXT, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE)";
       if(_option.users)this.creoAgito(sql,[],'Table users created');
       if(_option.users)this.creoAgito("CREATE INDEX user_username ON users(username)",[],"index user_username");
       if(_option.users)this.creoAgito("CREATE INDEX user_email ON users(email)",[],"index user_email");
       if(_option.users)this.creoAgito("CREATE INDEX user_jesua ON users(jesua)",[],"index user_jesua");
-      group="CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, desc TEXT, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT)";
+      group="CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, desc TEXT, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE)";
       if(_option.groups)this.creoAgito(group,[],'Table groups created');
       if(_option.groups)this.creoAgito("CREATE INDEX groups_name ON groups(name)",[],'index groups_name');
       if(_option.groups)this.creoAgito("CREATE INDEX group_jesua ON groups(jesua)",[],"index group_jesua");
-      link="CREATE TABLE IF NOT EXISTS link_users_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, `user` TEXT NOT NULL, `group` TEXT NOT NULL, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT,CONSTRAINT `fk_user_group` FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_group_user` FOREIGN KEY (`group`) REFERENCES `groups` (`name`) ON UPDATE CASCADE ON DELETE CASCADE)";
+      link="CREATE TABLE IF NOT EXISTS link_users_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, `user` TEXT NOT NULL, `group` TEXT NOT NULL, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE,CONSTRAINT `fk_user_group` FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_group_user` FOREIGN KEY (`group`) REFERENCES `groups` (`name`) ON UPDATE CASCADE ON DELETE CASCADE)";
       if(_option.ug)this.creoAgito(link,[],'Table link to users and groups created');
       if(_option.ug)this.creoAgito("CREATE INDEX link_usergroup_user ON link_users_groups(`user`)",[],'index link_usergroup_user');
       if(_option.ug)this.creoAgito("CREATE INDEX link_usergroup_group ON link_users_groups(`group`)",[],'index link_usergroup_group');
-      perm="CREATE TABLE IF NOT EXISTS permissions (id INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `desc` TEXT NOT NULL, `page` TEXT, `enable` INTEGER DEFAULT 1, `rank` INTEGER DEFAULT 0, `icon` TEXT, `sub` TEXT DEFAULT '-1', modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT)";
+      perm="CREATE TABLE IF NOT EXISTS permissions (id INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `desc` TEXT NOT NULL, `page` TEXT, `enable` INTEGER DEFAULT 1, `rank` INTEGER DEFAULT 0, `icon` TEXT, `sub` TEXT DEFAULT '-1', modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE)";
       if(_option.perm)this.creoAgito(perm,[],'Table permissions created');
       if(_option.perm)this.creoAgito("CREATE INDEX perm_name ON permissions(name)",[],"index perm_name");
       if(_option.perm)this.creoAgito("CREATE INDEX perm_jesua ON permissions(jesua)",[],"index perm_jesua");
-      link="CREATE TABLE IF NOT EXISTS link_permissions_groups(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `group` TEXT NOT NULL, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT,CONSTRAINT `fk_perm_group` FOREIGN KEY (`permission`) REFERENCES `permissions` (`name`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_group_perm` FOREIGN KEY (`group`) REFERENCES `groups` (`name`) ON UPDATE CASCADE ON DELETE CASCADE)";
+      link="CREATE TABLE IF NOT EXISTS link_permissions_groups(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `group` TEXT NOT NULL, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE,CONSTRAINT `fk_perm_group` FOREIGN KEY (`permission`) REFERENCES `permissions` (`name`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_group_perm` FOREIGN KEY (`group`) REFERENCES `groups` (`name`) ON UPDATE CASCADE ON DELETE CASCADE)";
       if(_option.pg)this.creoAgito(link,[],'Table link to permissions to groups created');
       if(_option.pg)this.creoAgito("CREATE INDEX link_permgroup_perm ON link_permissions_groups(`permission`)",[],'index link_permgroup_perm');
       if(_option.pg)this.creoAgito("CREATE INDEX link_permgroup_group ON link_permissions_groups(`group`)",[],'index link_permgroup_group');
-      link="CREATE TABLE IF NOT EXISTS link_permissions_users(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `user` TEXT NOT NULL, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT,CONSTRAINT `fk_perm_user` FOREIGN KEY (`permission`) REFERENCES `permissions` (`name`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_user_perm` FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON UPDATE CASCADE ON DELETE CASCADE)";
+      link="CREATE TABLE IF NOT EXISTS link_permissions_users(id INTEGER PRIMARY KEY AUTOINCREMENT, `permission` TEXT NOT NULL, `user` TEXT NOT NULL, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE,CONSTRAINT `fk_perm_user` FOREIGN KEY (`permission`) REFERENCES `permissions` (`name`) ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT `fk_user_perm` FOREIGN KEY (`user`) REFERENCES `users` (`username`) ON UPDATE CASCADE ON DELETE CASCADE)";
       if(_option.pu)this.creoAgito(link,[],'Table link to permissions to users created');
       if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_perm ON link_permissions_users(`permission`)",[],'index link_permuser_perm');
       if(_option.pu)this.creoAgito("CREATE INDEX link_permuser_user ON link_permissions_users(`user`)",[],'index link_permuser_user');
-      client="CREATE TABLE IF NOT EXISTS clients(id INTEGER PRIMARY KEY AUTOINCREMENT, company TEXT NOT NULL UNIQUE, code TEXT NOT NULL UNIQUE, about TEXT, email TEXT NOT NULL, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT)";
+      client="CREATE TABLE IF NOT EXISTS clients(id INTEGER PRIMARY KEY AUTOINCREMENT, company TEXT NOT NULL UNIQUE, code TEXT NOT NULL UNIQUE, about TEXT, email TEXT NOT NULL, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE)";
       if(_option.client)this.creoAgito(client,[],'Table clients created');
       if(_option.client)this.creoAgito("CREATE INDEX client_company ON clients(company)",[],"index client_company");
       if(_option.client)this.creoAgito("CREATE INDEX client_code ON clients(code)",[],"index client_code");
       if(_option.client)this.creoAgito("CREATE INDEX client_jesua ON clients(jesua)",[],"index client_jesua");
-      contact="CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'tel', contact TEXT NOT NULL, instruction TEXT, ext TEXT, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT,CONSTRAINT `fk_user_contact` FOREIGN KEY (`ref_name`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,CONSTRAINT `fk_client_contact` FOREIGN KEY (`ref_name`) REFERENCES `clients` (`id`) ON UPDATE CASCADE ON DELETE CASCADE)";
+      contact="CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'tel', contact TEXT NOT NULL, instruction TEXT, ext TEXT, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE,CONSTRAINT `fk_user_contact` FOREIGN KEY (`ref_name`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,CONSTRAINT `fk_client_contact` FOREIGN KEY (`ref_name`) REFERENCES `clients` (`id`) ON UPDATE CASCADE ON DELETE CASCADE)";
       if(_option.contact)this.creoAgito(contact,[],'Table contacts created');
       if(_option.contact)this.creoAgito("CREATE INDEX contact_ref_name ON contacts(ref_name)",[],"index ref_name");
       if(_option.contact)this.creoAgito("CREATE INDEX contact_contact ON contacts(contact)",[],"index contact");
       if(_option.contact)this.creoAgito("CREATE INDEX contact_jesua ON contacts(jesua)",[],"index contact_jesua");
-      address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'residential', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT,CONSTRAINT `fk_user_adr` FOREIGN KEY (`ref_name`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,CONSTRAINT `fk_client_adr` FOREIGN KEY (`ref_name`) REFERENCES `clients` (`id`) ON UPDATE CASCADE ON DELETE CASCADE)";
+      address="CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT,ref_name INTEGER,ref_group INTEGER, `type` TEXT NOT NULL DEFAULT 'residential', street TEXT NOT NULL, city TEXT NOT NULL, region TEXT DEFAULT 'Gauteng', country TEXT DEFAULT 'South Africa', modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE,CONSTRAINT `fk_user_adr` FOREIGN KEY (`ref_name`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,CONSTRAINT `fk_client_adr` FOREIGN KEY (`ref_name`) REFERENCES `clients` (`id`) ON UPDATE CASCADE ON DELETE CASCADE)";
       if(_option.address)this.creoAgito(address,[],'Table address created');
       if(_option.address)this.creoAgito("CREATE INDEX address_ref_name ON address(ref_name)",[],"index ref_name");
       if(_option.address)this.creoAgito("CREATE INDEX address_jesua ON address(jesua)",[],"index address_jesua");
-      dealer="CREATE TABLE IF NOT EXISTS dealers(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, code TEXT NOT NULL, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT)";
+      dealer="CREATE TABLE IF NOT EXISTS dealers(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, code TEXT NOT NULL, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE)";
       if(_option.dealer)this.creoAgito(dealer,[],'Table dealer created');
       if(_option.dealer)this.creoAgito("CREATE INDEX dealer_name ON dealers(name)",[],"index dealer_name");
       if(_option.dealer)this.creoAgito("CREATE INDEX dealer_jesua ON dealers(jesua)",[],"index dealer_jesua");
-      salesman="CREATE TABLE IF NOT EXISTS salesmen(id INTEGER PRIMARY KEY AUTOINCREMENT, dealer INTEGER, firstname TEXT NOT NULL, lastname TEXT NOT NULL, code TEXT NOT NULL, idno TEXT, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT,CONSTRAINT fk_sales_dealer FOREIGN KEY (`dealer`) REFERENCES dealers(`id`) ON DELETE CASCADE ON UPDATE CASCADE)";
+      salesman="CREATE TABLE IF NOT EXISTS salesmen(id INTEGER PRIMARY KEY AUTOINCREMENT, dealer INTEGER, firstname TEXT NOT NULL, lastname TEXT NOT NULL, code TEXT NOT NULL, idno TEXT, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE,CONSTRAINT fk_sales_dealer FOREIGN KEY (`dealer`) REFERENCES dealers(`id`) ON DELETE CASCADE ON UPDATE CASCADE)";
       if(_option.salesman)this.creoAgito(salesman,[],'Table salesman created');
       if(_option.salesman)this.creoAgito("CREATE INDEX salesman_firstname ON salesmen(firstname)",[],"index salesman_firstname");
       if(_option.salesman)this.creoAgito("CREATE INDEX salesman_lastname ON salesmen(lastname)",[],"index salesman_lastname");
       if(_option.salesman)this.creoAgito("CREATE INDEX salesman_idno ON salesmen(idno)",[],"index salesman_idno");
       if(_option.salesman)this.creoAgito("CREATE INDEX salesman_dealer ON salesmen(dealer)",[],"index salesman_dealer");
       if(_option.salesman)this.creoAgito("CREATE INDEX salesman_jesua ON salesmen(jesua)",[],"index salesman_jesua");
-      ver="CREATE TABLE versioning(id INTEGER PRIMARY KEY AUTOINCREMENT,user INTEGER NOT NULL,content text NOT NULL,iota INTEGER NOT NULL,trans INTEGER NOT NULL,mensa TEXT,modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT)";
+      ver="CREATE TABLE versioning(id INTEGER PRIMARY KEY AUTOINCREMENT,user INTEGER NOT NULL,content text NOT NULL,iota INTEGER NOT NULL,trans INTEGER NOT NULL,mensa TEXT,modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE)";
       if(_option.ver)this.creoAgito(ver,[],'Version table created');
       if(_option.ver)this.creoAgito("CREATE INDEX ver_jesua ON versioning(jesua)",[],"index ver_jesua");
-      features="CREATE TABLE features(id INTEGER PRIMARY KEY AUTOINCREMENT,feature TEXT NOT NULL UNIQUE,description TEXT,category TEXT,filename TEXT,manus TEXT,tab TEXT, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT)";
+      features="CREATE TABLE features(id INTEGER PRIMARY KEY AUTOINCREMENT,feature TEXT NOT NULL UNIQUE,description TEXT,category TEXT,filename TEXT,manus TEXT,tab TEXT, modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE)";
       if(_option.features)this.creoAgito(features,[],'Version table created');
       if(_option.features)this.creoAgito("CREATE INDEX features_jesua ON features(jesua)",[],"index features_jesua");
-      pages="CREATE TABLE pages(`id` INTEGER PRIMARY KEY AUTOINCREMENT,`page_ref` TEXT ,`title` TEXT NOT NULL UNIQUE, `content` TEXT NOT NULL,`level` TEXT, `type` TEXT,modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT, `selector` TEXT, `option` TEXT, `position` TEXT)";
+      pages="CREATE TABLE pages(`id` INTEGER PRIMARY KEY AUTOINCREMENT,`page_ref` TEXT ,`title` TEXT NOT NULL UNIQUE, `content` TEXT NOT NULL,`level` TEXT, `type` TEXT,modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP, creation TEXT, jesua TEXT UNIQUE, `selector` TEXT, `option` TEXT, `position` TEXT)";
       if(_option.pages)this.creoAgito(pages,[],'Pages table created');
       if(_option.pages)this.creoAgito("CREATE INDEX pages_type ON pages(`type`)",[],"index pages_type");
       if(_option.pages)this.creoAgito("CREATE INDEX pages_selector ON pages(`selector`)",[],"index pages_selector");
@@ -490,7 +522,7 @@ function SET_DB(_reset){
     */
    this.novaNotitia=function(_mensa,_comand,_fields){
       var fields='',values=[],sql;var x,l,f=[],n=[];
-      $.ajax({url:localStorage.SITE_SERVICE,data:{militia:_comand},type:"POST",dataType:'json',success:function(json){
+      $.ajax({url:dynamisGet("SITE_SERVICE",true),data:{militia:_comand},type:"POST",dataType:'json',success:function(json){
          l=_fields.length;
          for(x=0;x<l;x++){f.push('?');n.push('`'+_fields[x]+'`');}
          $.each(json,function(i,v){
@@ -504,18 +536,17 @@ function SET_DB(_reset){
          $DB(sql,values,"added "+_mensa);
       }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
    }
-//$DB("update permissions set sub=17 where id in (1,2,3)");
-
-   if(!db||!localStorage.DB){
-      db=window.openDatabase(localStorage.DB_NAME,'',localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024);
-      if(!localStorage.DB){
-         localStorage.DB=JSON.stringify(db);
-         this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1,ver:1,pages:1,features:1,db:1});
+   if(!db||!dynamisGet("DB",true)){
+      if(typeof window.openDatabase !== "function" ) return false;
+      db=window.openDatabase(dynamisGet("DB_NAME",true),'',dynamisGet("DB_DESC",true),dynamisGet("DB_SIZE",true)*1024*1024);
+      if(!dynamisGet("DB",true)){
+         dynamisSet("DB",JSON.stringify(db),true);
+         callWorker({"novaNotitia":true});
+//         this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1,ver:1,pages:1,features:1,db:1});
       }
    }
-   if(false&&db&&localStorage.DB)this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0,ver:0,pages:0,features:0,db:0});
-   if(this.reset&&db&&localStorage.DB)this.resetDB(this.reset);
-//   if(this instanceof SET_DB)return this; else return new SET_DB();
+   if(false&&db&&dynamisGet("DB",true))this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0,ver:0,pages:0,features:0,db:0});
+   if(this.reset&&db&&dynamisGet("DB",true))this.resetDB(this.reset);
 }
 /******************************************************************************/
 /**
@@ -535,12 +566,13 @@ function SET_DB(_reset){
 $DB=function(quaerere,params,msg,callback,reading){
    var tmp,res,Tau;var ver={};
    if(quaerere=="SELECT code FROM dealers ORDER BY name")var kk=true;
-   if(!db)db=window.openDatabase(localStorage.DB_NAME,'',localStorage.DB_DESC,localStorage.DB_SIZE*1024*1024,function(){console.log('create a new DB')});
-   if(db.version!=localStorage.DB_VERSION&&!$("footer").data("db version")){
-      ver.ver=localStorage.DB_VERSION;
+   if(typeof window.openDatabase !== "function" ) return false;
+   if(!db)db=window.openDatabase(dynamisGet("DB_NAME",true),'',dynamisGet("DB_DESC",true),dynamisGet("DB_SIZE",true)*1024*1024,function(){console.log('create a new DB')});
+   if(db.version!=dynamisGet("DB_VERSION",true)&&!$("footer").data("db version")){
+      ver.ver=dynamisGet("DB_VERSION",true);
       ver.revision={};
-      db.changeVersion(db.version,localStorage.DB_VERSION,function(trans){version_db(db.version,ver,trans)},function(e){console.log(e.message)},function(e){console.log('PASSED');});
-      localStorage.DB=JSON.stringify(db);$("footer").data("db version",1);
+      db.changeVersion(db.version,dynamisGet("DB_VERSION",true),function(trans){version_db(db.version,ver,trans)},function(e){console.log(e.message)},function(e){console.log('PASSED');});
+      dynamisSet("DB",JSON.stringify(db),true);$("footer").data("db version",1);
    }
    if(!reading){
       db.transaction(function(trans){
@@ -550,9 +582,9 @@ $DB=function(quaerere,params,msg,callback,reading){
             var j=$DB2JSON(results);
             if(sessionStorage.quaerere){
                tmp=JSON.parse(sessionStorage.quaerere);
-               var procus=localStorage.USER_NAME?JSON.parse(localStorage.USER_NAME):JSON.parse(sessionStorage.USER_NAME);var moli=screen.height*screen.width;
+               var procus=impetroUser();var moli=screen.height*screen.width;
                res=tmp.eternal;Tau=tmp.Tau;iyona=tmp.iyona;
-               get_ajax(localStorage.SITE_MILITIA,{"eternal":res,"Tau":Tau,"iyona":iyona,"procus":procus.singularis,"moli":moli},'','post','json',function(j){console.log(j,'Online');$('#sys_msg').html(j.msg) });
+               get_ajax(dynamisGet("SITE_MILITIA",true),{"eternal":res,"Tau":Tau,"iyona":iyona,"procus":procus.singularis,"moli":moli},'','post','json',function(j){console.log(j,'Online');$('#sys_msg').html(j.msg) });
                sessionStorage.removeItem('quaerere');Tau=false;
             }
             if(msg)$('#sideNotice .db_notice').html("Successful: "+msg).animate({opacity:0},200,"linear",function(){$(this).animate({opacity:1},200);});
@@ -560,7 +592,7 @@ $DB=function(quaerere,params,msg,callback,reading){
          },function(_trans,_error){
             msg=_error.message;
             if(msg.search('no such table')!=-1){
-               localStorage.removeItem('DB');//@todo:fix this,ensure u give proper notification and create only missing
+               dynamisDel('DB',true);//@todo:fix this,ensure u give proper notification and create only missing
                $('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('The application yet to be installed on this machine.<br/> We will run the installation on the next refresh')
             }
             console.log('Failed DB: '+msg+':'+msg);console.log('::QUAERERE='+quaerere);
@@ -579,7 +611,7 @@ $DB=function(quaerere,params,msg,callback,reading){
          },function(_trans,_error){
             msg=_error.message;
             if(msg.search('no such table')!=-1){
-               localStorage.removeItem('DB');//@todo:fix this,ensure u give proper notification and create only missing
+               dynamisDel('DB',true);//@todo:fix this,ensure u give proper notification and create only missing
                $('#userLogin .alert-info').removeClass('alert-info').addClass('alert-error').find('span').html('The application yet to be installed on this machine.<br/> We will run the installation on the next refresh')
             }
             console.log('Failed DB: '+msg+':'+msg);console.log('::QUAERERE='+quaerere);

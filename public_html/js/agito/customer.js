@@ -48,6 +48,7 @@ agitoScript=function(){
    eternal=tmp;var temp=$("footer").data("temp");
    var m=$("footer").data("selection")?$("footer").data("selection").month:localStorage.SITE_MONTH;
    get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:m}},"","post","json",function(results,j){
+      console.log("Just calling");
       if(typeof temp==="undefined")temp=[0,"dealers"];
       sideDisplay(temp[0],temp[1]);
       var y=new Date().getFullYear(); var d=new Date(y,localStorage.SITE_MONTH-1,1).getMonth();
@@ -75,7 +76,7 @@ function onShow(on){
    //retirer la deuxieme form ici
    if(!document.querySelector(frmId+2))container=$anima(frmId,"fieldset",{"clss":"half-form formReader","id":frmName+2}).father;
    else container=document.querySelector(frmId+2);
-   $(container).empty();console.log(active,"active========",ii);
+   $(container).empty();
    if(typeof active!=="undefined"){
       get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa+"-"+active,iota:code},"","post","json",function(results){
          reference=eternal.children[active];
@@ -93,26 +94,25 @@ function onShow(on){
    }//ednif
    tmp=code=null;
 }
-reDraw=function(){ console.log("call once---------");
+reDraw=function(){
    var collapseName,tmp;
    var Name=eternal.form.field.name;
    var frmId="#frm_"+Name;
    var frmName="frm_"+Name;
    collapseName="#acc_"+Name;
+   $("#txtSrchCust").focus(function(){var set=this;setTimeout(function(set){set.select();},100) });
    $(".memberIcon").click(function(){
       if($(".popover").length) return false;
       $("footer").data("record",{"changeActiveRecord":false,"changeNavigator":false});
       tmp=$(this).data("agilis");$(this).parents(".accordion-heading").data("activated",tmp);
-      console.log(tmp,"tmp1");
       if($(".accordion-body.in")[0]){onShow(false);}//@fix:order is important. over here the .in will not appear yet becos show is not fired
-      tmp=$(this).parents("div").data("jesua");$("#collapse_customer"+tmp).collapse("show");
-      console.log(tmp,"tmp2");tmp=null;
+      tmp=$(this).parents("div").data("jesua");$("#collapse_customer"+tmp).collapse("show");tmp=null;
    });
    $(".betaRow").click(function(){tmp=$(this).parents("div").data("jesua");$("#collapse_customer"+tmp).collapse("toggle");tmp=null;});//@row clicked collapse
    $(frmId+" #close_"+Name).click(function(){$(".accordion-body.in").collapse("hide");});//@button CLOSE collapse
    $(collapseName).on("shown",function(){//@onShown
       if(!$(this).data("toggle_shown")||$(this).data("toggle_shown")==0){
-         $(this).data("toggle_shown",1);console.log("call true");
+         $(this).data("toggle_shown",1);
          onShow(true);
       }//endif
    });//@onShown

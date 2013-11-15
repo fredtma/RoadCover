@@ -1,5 +1,5 @@
 {
-   "name":"Road Cover",
+   "name":"Road Cover System",
    "description":"The Road Cover dealer system",
    "version":"0.4",
    "app":{
@@ -7,5 +7,6 @@
          "scripts":["js/scena.js"]
       }
    },
+   "permissions":["storage","http://197.96.139.19/*"],
    "icons":{"16":"img/logo16.png","128":"img/logo128.png"}
 }

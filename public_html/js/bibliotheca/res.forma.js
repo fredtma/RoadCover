@@ -659,7 +659,6 @@ function SET_FORM(_name,_class,_label){
                var activeSearch=JSON.parse(sessionStorage.activeSearch);
                if(eternal.form.options&&eternal.form.options.type=="betaTable")theForm.gammaTable(activeSearch,false,false,value);
                else theForm.setBeta(activeSearch,false,false,value);
-               console.log("call once---------",typeof reDraw);
                if(typeof reDraw ==="function")setTimeout(reDraw,100);//use on reDraw the search result. necessary on some form e.g. customer
                return item.replace(/\$(.+)/,'');
          }});
@@ -671,10 +670,10 @@ function SET_FORM(_name,_class,_label){
          var pageMax=parseInt(sessionStorage.genesis)+parseInt(localStorage.DB_LIMIT);
          var recTotal=creo({"clss":"pull-right recCount"},"a","Record:"+(sessionStorage.genesis)+"-"+pageMax+" of "+len);
          if(!_pos){
-            pagination=roadCover._Set({"next":"#tab-home section .homeSet2"}).pagiNation({"clss1":"pagination","clss2":_class,"pages":pages,"total":len,"link":"#"+this.name}).cloneNode(true);
+            pagination=roadCover._Set({"next":"#tab-home section .homeSet2"}).pagiNation({"clss1":"pagination","clss2":_class,"pages":pages,"total":len,"link":"javascript:void(0)"}).cloneNode(true);
             $('#tab-system .pagNav').append(pagination);$('#tab-system .secondRow').append(recTotal);
          }else{
-            roadCover._Set(".tab-pane.active .pagNav").pagiNation({"clss1":"pagination","clss2":_class,"pages":pages,"total":len,"link":"#"+this.name});
+            roadCover._Set(".tab-pane.active .pagNav").pagiNation({"clss1":"pagination","clss2":_class,"pages":pages,"total":len,"link":"javascript:void(0)"});
             $('.tab-pane.active .secondRow').append(recTotal);
          }
       }

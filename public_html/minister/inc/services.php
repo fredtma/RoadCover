@@ -82,9 +82,10 @@ IYONA;
       $m2=($m2<10)?'0'.$m2:$m2;
       $date_search="date_start BETWEEN '$y-$m-06 00:00:00' AND '$y-$m2-05 23:59:59' ";
       $sql=<<<IYONA
-SELECT deal_number AS Deal,DATE_FORMAT(rep.date_start,'%Y-%m-%d') AS "Start Date",trans_status,product_name,salesman AS Salesman,customer AS Customer,idno AS IDno,
-quot_period AS "Period",total_premium AS TotalAmount,commission AS Commission
+SELECT deal_number AS Deal,status,DATE_FORMAT(rep.date_start,'%Y-%m-%d') AS "Start Date",product_name,salesman AS Salesman,customer AS Customer,idno AS IDno,
+quot_period AS "Period",total_premium AS TotalAmount,commission AS Commission, FORMAT(veh.Principaldebt,0) AS Principaldebt,veh.registration,veh.vehicle_make
 FROM report_invoice rep
+INNER JOIN report_vehicle veh ON veh.trans_id=rep.trans_id
 WHERE dealer_id={$db->qstr($_POST['iota'])} AND $date_search AND status='Active' ORDER BY salesman,customer;
 IYONA;
       $rows['customers']=array_result($sql,true);
@@ -387,8 +388,8 @@ function export2pastel($_rows,$_iota,$_m,$_y){
    $accNo=($deb)?"ABB029":$company['account'];
    $date =($deb)?"27/05/2013":date("d/m/Y",strtotime($invoices['due_date']));
    $m2   = $_m+1;
-   $date = "05/$m2/$_y";
-   $creation= "06/$_m/$_y";
+   $date = "06/$_m/$_y";
+   $creation= "05/$m2/$_y";
    $head=<<<IYONA
 "Header","$invNo"," ","Y","$accNo",7,"$date"," ","N",0," "," "," ","$street","$suburb","$city","$province","$code"," ",0,"$creation","$cell","$tel","$email",1," "," ",""," "\r\n
 IYONA;
@@ -398,12 +399,13 @@ IYONA;
       $tax     =$premium-$com;
       $no_tax  =round((float)$tax/1.14,2);
       $code    =($deb)?"ACC/LOC":$cust["Period"];#JHB
-      $store   ="JHB";
+      $store   ="RCF001";
       $product =$cust["product_name"];
-      $d       =$cust["DateModified"]?"[{$cust["DateModified"]}]":"";
-      $desc    ="{$cust["Salesman"]}:{$cust["Fullname"]} $d";
+      $d       =$cust["Start Date"]?"[{$cust["Start Date"]}]":"";
+      $desc1   ="[{$cust["Deal"]}] {$cust["Salesman"]}";
+      $desc2   ="{$cust["Customer"]}({$cust["IDno"]}) $d";
       $details.=<<<IYONA
-"Detail",0,1,$no_tax,$tax," ",1,3,0,"$code","$product",4,"     ","$store"\r\n"Detail",0,1,0,0," ",0,3,0,"'","$desc",7,"",""\r\n"Detail",0,1,0,0," ",0,3,0,"'"," ",7," "," "\r\n
+"Detail",0,1,$no_tax,$tax," ",1,3,0,"$code","$product",4,"     ","$store"\r\n"Detail",0,1,0,0," ",0,3,0,"'","$desc1",7,"",""\r\n"Detail",0,1,0,0," ",0,3,0,"'","$desc2",7," "," "\r\n
 IYONA;
    }//foreach cust
    file_put_contents($filename, $head.$details);
