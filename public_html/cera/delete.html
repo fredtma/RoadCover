@@ -15,10 +15,12 @@ function SET_INDEXDB(){
 
    this.request.onupgradeneeded=function(e){console.log("Upgrading DB")
       this.db=e.target.result;var users;
+      if(e.oldVersion < 5){/*do changes for lower version*/}
+      if(this.db.version < 5){/*do changes for lower version*/}
       if(this.db.objectStoreNames.contains("users")!==true){
          users=e.currentTarget.result.createObjectStore("users",{keyPath:"id",autoIncrement:true});
          users.createIndex("firstname","firstname",{unique:false});
-         users.createIndex("username","username",{unique:true});
+         users.createIndex("username","username");
          for(var i in ppl){users.add(ppl[i]);}
       }else{//to update
          users=e.currentTarget.transaction.objectStore("users");
@@ -44,13 +46,18 @@ function SET_INDEXDB(){
 
       var store=_store||"users",transaction=this.db.transaction(store),request;
       var objectStore=transaction.objectStore(store);
-      if(typeof _index=="integer"){request=objectStore.get(_index);
-      }else if(typeof _index=="object"&&_index.hasOwnProperty("limit")){var keyRange=IDBKeyRange.lowerBound(_index.limit); request=objectStore.openCursor(keyRange);
+
+      if(typeof _index=="object"&&_index.hasOwnProperty("where"))var ndx=objectStore.index(_index.where);
+      if(typeof _index=="number"){request=objectStore.get(_index);
+      }else if(typeof _index=="object"&&_index.hasOwnProperty("top")){var keyRange=IDBKeyRange.lowerBound(_index.top); request=objectStore.openCursor(keyRange);
+      }else if(typeof _index=="object"&&_index.hasOwnProperty("bot")){var keyRange=IDBKeyRange.upperBound(_index.bot); request=objectStore.openCursor(keyRange);
+      }else if(typeof _index=="object"&&_index.hasOwnProperty("is")){request=ndx.get(_index.is);
+      }else if(typeof _index=="object"&&_index.hasOwnProperty("like")){var keyRange=IDBKeyRange.bound(_index.like,_index.like+'\uffff'); request=ndx.openCursor(keyRange,'prev');
       }else{request=objectStore.openCursor();}
 
       request.onsuccess=_callback;
       request.oncomplete=function(e){console.log("Successfully completed addeding to "+store,e);}
-      request.onerror=function(e){console.log("Error while writing to "+store,e);}
+      request.onerror=function(e){console.log("Error while writing to "+store+"::"+request.error,e);}
    }
    this.erase=function(_store,_index,_callback){
       if(this.request.readyState!="done"){this.request.addEventListener("success",function(){SET.erase(_store,_index,_callback)},false); return false;}
@@ -67,8 +74,8 @@ function SET_INDEXDB(){
 (function(){
    var db=new SET_INDEXDB();
 //   db.request.onsuccess=function(e){console.log(e,db.request);db.db=e.target.result;}
-//   db.write("users",{"id":4,"firstname":"Serge Kabeya","lastname":"Tshimanga","username":"sergetma"},true)
-//   db.erase("users","4")
+//   db.write("users",{"id":5,"firstname":"The Word","lastname":"Bible","username":"Emanuel",books:["Genesis","Apocalipse","Mathew"]},true)
+//   db.erase("users",5)
    db.read('users',function(e){
       var cursor=e.target.result,row={};
       var ele=document.querySelector("#anima");
@@ -80,7 +87,7 @@ function SET_INDEXDB(){
          row=cursor;
       }
       if(cursor)ele.innerHTML +="<strong>ID</strong>:"+row.id+" <strong>Firstname</strong>: "+row.firstname+" <strong>Lastname</strong>: "+row.lastname+" <strong>Username</strong>: "+row.username+"<br/>";
-   },{"limit":0});
+   },{where:'firstname',like:'Se'});
 })()
 </script>
 

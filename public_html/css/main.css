@@ -15,7 +15,7 @@
 @font-face {font-family: 'Vollkorn';font-style: italic;font-weight: 700;src: local('Vollkorn Bold Italic'), local('Vollkorn-BoldItalic'), url(../css/KNiAlx6phRqXCwnZZG51JAFhaRv2pGgT5Kf0An0s4MM.woff) format('woff');}
 /******************************************************************************/
 /*tag & class segment*/
-body {margin: 1px auto; background: #fbfbfb url('../img/bg04.png');; font-family: 'Yanone Kaffeesatz'; color: #474f51;}
+body {margin: 1px auto; background: #fbfbfb url('../img/bg04.png'); font-family: 'Yanone Kaffeesatz'; color: #474f51;}
 .white{color:white;}.black{color:black;}
 h1 {font-size:1.8em; font-family:'Vollkorn', sans-serif; font-weight: 700; font-style:italic; text-align: right; display:block; padding: 0px; line-height: 10px;}
 h2 {font-size: 1.1em; line-height: 20px;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);display: inline;/* padding: 5px; */}
