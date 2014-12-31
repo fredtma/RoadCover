@@ -536,7 +536,7 @@ function SET_DB(_reset){
          $DB(sql,values,"added "+_mensa);
       }}).fail(function(jqxhr,textStatus,error){err=textStatus+','+error;console.log('failed to get json:'+err)});
    }
-   if(!db||!dynamisGet("DB",true)){
+   if(!db||!dynamisGet("DB",true)){ console.log("Running reset...");
       if(typeof window.openDatabase !== "function" ) return false;
       db=window.openDatabase(dynamisGet("DB_NAME",true),'',dynamisGet("DB_DESC",true),dynamisGet("DB_SIZE",true)*1024*1024);
       if(!dynamisGet("DB",true)){
@@ -545,9 +545,11 @@ function SET_DB(_reset){
 //         this.resetDB({users:1,groups:1,ug:1,perm:1,pg:1,pu:1,client:1,contact:1,address:1,dealer:1,salesman:1,ver:1,pages:1,features:1,db:1});
       }
    }
+   console.log(this.reset,'reseting',db,'/',dynamisGet("DB",true));
    if(false&&db&&dynamisGet("DB",true))this.resetDB({users:0,groups:0,ug:0,perm:0,pg:0,pu:0,client:0,contact:0,address:0,dealer:0,salesman:0,ver:0,pages:0,features:0,db:0});
    if(this.reset&&db&&dynamisGet("DB",true))this.resetDB(this.reset);
 }
+//============================================================================//
 /******************************************************************************/
 /**
  * used to measure script execution time
@@ -570,7 +572,7 @@ $DB=function(quaerere,params,msg,callback,reading){
    if(!db)db=window.openDatabase(dynamisGet("DB_NAME",true),'',dynamisGet("DB_DESC",true),dynamisGet("DB_SIZE",true)*1024*1024,function(){console.log('create a new DB')});
    if(db.version!=dynamisGet("DB_VERSION",true)&&!$("footer").data("db version")){
       ver.ver=dynamisGet("DB_VERSION",true);
-      ver.revision={};
+      ver.revision={"dealer":1};
       db.changeVersion(db.version,dynamisGet("DB_VERSION",true),function(trans){version_db(db.version,ver,trans)},function(e){console.log(e.message)},function(e){console.log('PASSED');});
       dynamisSet("DB",JSON.stringify(db),true);$("footer").data("db version",1);
    }

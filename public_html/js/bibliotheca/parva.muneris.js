@@ -3,8 +3,8 @@
  * @todo:version_db
  */
 var set_version,db;
-var SITE_MILITIA='http://197.96.139.19/minister/inc/notitia.php';
-var SITE_SERVICE='http://197.96.139.19/minister/inc/services.php';
+var SITE_MILITIA='http://app.roadcover.co.za/minister/inc/notitia.php';
+var SITE_SERVICE='http://app.roadcover.co.za/minister/inc/services.php';
 var DB_VERSION='2.98';//@also:DB_VERSION in lib.muneris.js
 function $DB(_quaerere,params,_msg,callback,reading,_eternal){
    var res,Tau,ver={};

@@ -53,7 +53,7 @@ class crrptdefault {
 
 	function setMessage($v) {
 		if (@$_SESSION[EWRPT_SESSION_MESSAGE] <> "") { // Append
-			$_SESSION[EWRPT_SESSION_MESSAGE] .= "<br>" . $v;
+			$_SESSION[EWRPT_SESSION_MESSAGE] .= "<br />" . $v;
 		} else {
 			$_SESSION[EWRPT_SESSION_MESSAGE] = $v;
 		}

@@ -1,23 +1,23 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!doctype html>
 <html>
 <head>
 	<title>roadCover Report Management</title>
 <?php if (@$gsExport == "" || @$gsExport == "print") { ?>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta charset="utf-8">
 <?php } else { // Export to Word/Excel/Pdf/Email ?>
 <?php if (EWRPT_ENCODING == "UTF-8") { ?>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta charset="utf-8">
 <?php } ?>
 <?php } ?>
 <?php if (@$gsExport == "") { ?>
 <?php } ?>
 <?php if (@$gsExport == "") { ?>
-<link rel="stylesheet" type="text/css" href="<?php echo ewrpt_YuiHost() ?>build/button/assets/skins/sam/button.css">
-<link rel="stylesheet" type="text/css" href="<?php echo ewrpt_YuiHost() ?>build/container/assets/skins/sam/container.css">
-<link rel="stylesheet" type="text/css" href="<?php echo ewrpt_YuiHost() ?>build/resize/assets/skins/sam/resize.css">
+<link rel="stylesheet" type="text/css" href="<?php echo ewrpt_YuiHost() ?>build/button/assets/skins/sam/button.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo ewrpt_YuiHost() ?>build/container/assets/skins/sam/container.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo ewrpt_YuiHost() ?>build/resize/assets/skins/sam/resize.css" />
 <?php } ?>
 <?php if (@$gsExport == "" || @$gsExport == "print") { ?>
-<link rel="stylesheet" type="text/css" href="<?php echo EWRPT_PROJECT_STYLESHEET_FILENAME ?>">
+<link rel="stylesheet" type="text/css" href="<?php echo EWRPT_PROJECT_STYLESHEET_FILENAME ?>" />
 <?php } else { ?>
 <style type="text/css">
 <?php $cssfile = (@$gsExport == "pdf") ? (EWRPT_PDF_STYLESHEET_FILENAME == "" ? EWRPT_PROJECT_STYLESHEET_FILENAME : EWRPT_PDF_STYLESHEET_FILENAME) : EWRPT_PROJECT_STYLESHEET_FILENAME ?>
@@ -62,13 +62,13 @@ if (EWRPT_DATE_SEPARATOR == "") EWRPT_DATE_SEPARATOR = "/"; // Default date sepa
 var EWRPT_IMAGES_FOLDER = "phprptimages";
 </script>
 <?php } ?>
-<meta name="generator" content="PHP Report Maker v5.1.0">
+<meta name="generator" content="PHP Report Maker v5.1.0" />
 </head>
 <body class="yui-skin-sam">
 <?php if (@$gsExport == "") { ?>
 <div class="ewLayout">
 	<!-- header (begin) --><!-- *** Note: Only licensed users are allowed to change the logo *** -->
-	<div class="ewHeaderRow"><img src="phprptimages/logo.gif" alt="" border="0"></div>
+	<div class="ewHeaderRow"><img src="phprptimages/logo.gif" alt="" border="0" /></div>
 	<!-- header (end) -->
 	<!-- content (begin) -->
 	<!-- navigation -->

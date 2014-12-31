@@ -48,10 +48,10 @@ rptlogin.ValidateForm = function(fobj)
 }
 
 // extend page with Form_CustomValidate function
-rptlogin.Form_CustomValidate =  
+rptlogin.Form_CustomValidate =
  function(fobj) { // DO NOT CHANGE THIS LINE!
 
- 	// Your custom validation code here, return false if invalid. 
+ 	// Your custom validation code here, return false if invalid.
  	return true;
  }
 
@@ -173,7 +173,7 @@ class crrptlogin {
 		$conn = ewrpt_Connect();
 	}
 
-	// 
+	//
 	//  Page_Init
 	//
 	function Page_Init() {
@@ -236,9 +236,9 @@ class crrptlogin {
 
 			// Setup variables
 			$this->Username = ewrpt_StripSlashes(@$_POST["username"]);
-			$sPassword = ewrpt_StripSlashes(@$_POST["password"]);
+			$sPassword = ewrpt_StripSlashes(@md5($_POST["password"]));
 			$this->LoginType = strtolower(@$_POST["rememberme"]);
-			$bValidate = $this->ValidateForm($this->Username, $sPassword);
+			$bValidate = $this->ValidateForm($this->Username, $sPassword);print_r($bValidate);
 			if (!$bValidate)
 				$this->setMessage($gsFormError);
 			if ($bValidate) {

@@ -129,7 +129,7 @@ border:#bce8f1;#c09853
 .body article .subBody{padding: 0em;}
 /******************************************************************************/
 /*form setting*/
-.form-horizontal .control-group {margin-bottom: 10px;}
+.form-horizontal .control-group {margin-bottom: 1px;}
 .form-tight .control-group{margin-bottom: 1px;}
 legend+.control-group {margin-top: 10px;-webkit-margin-top-collapse: separate;}
 legend{text-transform: capitalize;}

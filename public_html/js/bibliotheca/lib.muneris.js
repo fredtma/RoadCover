@@ -39,14 +39,15 @@ sessionStorage.runTime=new Date().getTime();
 dynamisSet("SITE_NAME","Road Cover",true);
 dynamisSet("SITE_DATE",'fullDate',true);
 dynamisSet("SITE_TIME",'mediumTime',true);
-dynamisSet("SITE_MONTH",10,true);
-dynamisSet("SITE_URL",'http://197.96.139.19/',true);
+dynamisSet("SITE_MONTH",11,true);
+dynamisSet("SITE_YEAR",2013,true);
+dynamisSet("SITE_URL",'http://app.roadcover.co.za/',true);
 dynamisSet("SITE_SERVICE",dynamisGet("SITE_URL",true)+'minister/inc/services.php',true);
 dynamisSet("SITE_MILITIA",dynamisGet("SITE_URL",true)+'minister/inc/notitia.php',true);
 dynamisSet("MAIL_SUPPORT",'support@roadcover.co.za',true);
 //dynamisSet("DB",true);
 dynamisSet("DB_NAME",'road_cover',true);
-dynamisSet("DB_VERSION",'2.98',true);//@also:DB_VERSION in parva.muneris.js
+dynamisSet("DB_VERSION",'3.04',true);//@also:DB_VERSION in parva.muneris.js
 dynamisSet("DB_DESC",'The internal DB version',true);
 dynamisSet("DB_SIZE",15,true);
 dynamisSet("DB_LIMIT",15,true);
@@ -169,10 +170,11 @@ $anima=function(section,ele,arr,txt,point){
       var opts=$.extend({},{
          "element":element,
          "attr":{},
-         "text":"",
+         "txt":"",
          "pos":true
       },options);
-      this.lePapa=creo(opts.attr,opts.element,opts.text);
+      var that = this;
+      this.lePapa=creo(opts.attr,opts.element,opts.txt);
       this.vita=function(ele,opt){
          opt=$.extend({},{"parrent":false,"txt":"","pos":"append","attr":{}},opt);
          this.enfant=creo(opt.attr,ele,opt.txt);
@@ -181,10 +183,10 @@ $anima=function(section,ele,arr,txt,point){
          else if(opt.pos=="prev")$(this.lePapa).before(this.enfant);
          else $(this.lePapa).append(this.enfant);
          if(opt.parent)this.lePapa=this.enfant;
-         return this;
+         return $(this.enfant);
       }
       this.novo=function(section,ele,arr,txt){
-         this=(typeof(section)=='string')?document.querySelector(section):section;
+         that=(typeof(section)==='string')?document.querySelector(section):section;
          this.lePapa=this.creo(arr,ele,txt);
          $(this).appendChild(this.lePapa);
          return this;
@@ -196,6 +198,8 @@ $anima=function(section,ele,arr,txt,point){
       return this;
    }
 }(window.jQuery);
+//============================================================================//
+function isNumber(n) {return !isNaN(parseFloat(n)) && isFinite(n);}
 //============================================================================//
 $iyona=function(section){
    var node=(typeof(section)=='string')?document.querySelector(section):section;;
@@ -520,7 +524,7 @@ loginOUT=function(refresh){
    if(refresh){$("#nav-main").empty();$("#tab-home section").empty();$("#tab-dealers section").empty();$("#tab-saleman section").empty();$("#tab-customers section").empty();
    $("#tab-insurance section").empty();$("#tab-system section").empty();$("#navior ul").remove(); $("#verbum").empty(); roadCover.loginForm();
    $('#userLogin .alert-info').find('span').append('You have successfully logout.<br/>Enter your username and password below if you wish to login again');}
-   dynamisDel("USER_NAME");refreshLook(refresh);
+   dynamisDel("USER_NAME");refreshLook(refresh);//dynamisDel("DB",true);
 }
 //============================================================================//
 /**
@@ -549,7 +553,7 @@ refreshLook=function(removeall){
  */
 resetGenesis=function(){
    if(confirm("Please note this will re-sync the entire system")){
-      dynamisDel("DB");
+      dynamisDel("DB",true);
       SET_DB();//@todo:add licentia in worker
 //      loginOUT(false);
    }
@@ -850,7 +854,7 @@ function liberoAnimus(){
    notice();sessionStorage.genesis=0;//reset each time ur on dashboard
    $('.body article').removeClass('totalView');//remove the class that is placed by the cera's
    for(var instance in CKEDITOR.instances){console.log(instance,"/instance/",CKEDITOR.instances); CKEDITOR.instances[instance].destroy()}//@fix: ce si et necessaire, if faut detruire toute instance avant de naviger
-   $("footer").removeData('lateCall').removeData('examiner');
+   $("footer").removeData('lateCall').removeData('examiner').removeData("customer");
    //$("#displayMensa").removeData('mensa');
 }
 //============================================================================//
@@ -865,7 +869,7 @@ function activateMenu(_mensa,_mensula,_set,_script,_tab,_formType){
 //   console.log(_mensa,_mensula,_script,'[FORM]',_tab,_formType,sessionStorage.formTypes,'[this is it]',_set,'----------------------',$(_set)[0],"/");
    recHistory(_mensa,_mensula,_script,_tab,_formType);
    if(!_script)$.getJSON("json/"+_mensa+".json",findJSON).fail(onVituim);
-   else if(_script==="cera")get_ajax("/cera/"+_mensa+".html","",".body article");
+   else if(_script==="cera")get_ajax("cera/"+_mensa+".html","",".body article");
    else {
       value=load_async("js/agito/"+_mensa+".js",true,'end',true);
       if(value===false&&typeof agitoScript==="function"){
@@ -1040,7 +1044,7 @@ function version_db(cur,rev,trans){
    get_ajax(dynamisGet("SITE_SERVICE",true),{"militia":"verto","cur":cur,"ver":rev.ver,"revision":rev.revision},"","post","json",function(content){
       console.log(content,"/\\",typeof content,"||\/",trans);
       db.transaction(function(trans){trans.executeSql("INSERT INTO version_db (ver)VALUES(?)",[rev.ver]);});
-      if(typeof content==="object")SET_DB(content);
+      if(typeof content==="object"){console.log("started reseting.");SET_DB(content);}
    });
 }
 //============================================================================//

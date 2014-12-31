@@ -145,7 +145,7 @@ class crdealers_salesmen {
 		ewrpt_RegisterFilter($this->StartDate, "@@NextMonth", $ReportLanguage->Phrase("NextMonth"), "ewrpt_IsNextMonth");
 
 		// Salesman Chart
-		$this->Salesman_Chart = new crChart('dealers_salesmen', 'dealers_salesmen', 'Salesman_Chart', 'Salesman Chart', 'Fullname', 'Count(trans.Id)', '', 4, 'SUM', 1200, 800);
+		$this->Salesman_Chart = new crChart('dealers_salesmen', 'dealers_salesmen', 'Salesman_Chart', 'Salesman Chart', 'Fullname', 'Count(trans.Id)', '', 1, 'SUM', 1200, 800);
 		$this->Salesman_Chart->SqlSelect = "SELECT `Fullname`, '', SUM(`Count(trans.Id)`) FROM ";
 		$this->Salesman_Chart->SqlGroupBy = "`Fullname`";
 		$this->Salesman_Chart->SqlOrderBy = "";
@@ -433,7 +433,7 @@ dealers_salesmen_summary.ValidateRequired = false; // no JavaScript validation
 &nbsp;&nbsp;<?php $dealers_salesmen_summary->ExportOptions->Render("body"); ?></p>
 <?php $dealers_salesmen_summary->ShowPageHeader(); ?>
 <?php $dealers_salesmen_summary->ShowMessage(); ?>
-<br><br>
+<br /><br />
 <?php if ($dealers_salesmen->Export == "" || $dealers_salesmen->Export == "print" || $dealers_salesmen->Export == "email") { ?>
 </div></td></tr>
 <!-- Top Container (End) -->
@@ -448,6 +448,7 @@ dealers_salesmen_summary.ValidateRequired = false; // no JavaScript validation
 	<!-- center slot -->
 <?php } ?>
 <!-- summary report starts -->
+<?php if ($dealers_salesmen->Export <> "pdf") { ?>
 <div id="report_summary">
 <?php if ($dealers_salesmen->Export == "") { ?>
 <?php
@@ -459,7 +460,7 @@ if ($dealers_salesmen->FilterPanelOption == 2 || ($dealers_salesmen->FilterPanel
 	$sDivDisplay = " style=\"display: none;\"";
 }
 ?>
-<a href="javascript:ewrpt_ToggleFilterPanel();" style="text-decoration: none;"><img id="ewrptToggleFilterImg" src="<?php echo $sButtonImage ?>" alt="" width="9" height="9" border="0"></a><span class="phpreportmaker">&nbsp;<?php echo $ReportLanguage->Phrase("Filters") ?></span><br><br>
+<a href="javascript:ewrpt_ToggleFilterPanel();" style="text-decoration: none;"><img id="ewrptToggleFilterImg" src="<?php echo $sButtonImage ?>" alt="" width="9" height="9" border="0"></a><span class="phpreportmaker">&nbsp;<?php echo $ReportLanguage->Phrase("Filters") ?></span><br /><br />
 <div id="ewrptExtFilterPanel"<?php echo $sDivDisplay ?>>
 <!-- Search form (begin) -->
 <form name="fdealers_salesmensummaryfilter" id="fdealers_salesmensummaryfilter" action="<?php echo ewrpt_CurrentPage() ?>" class="ewForm" onsubmit="return dealers_salesmen_summary.ValidateForm(this);">
@@ -542,18 +543,21 @@ $wrkcnt = 0;
 </form>
 <!-- Search form (end) -->
 </div>
-<br>
+<br />
 <?php } ?>
 <?php if ($dealers_salesmen->ShowCurrentFilter) { ?>
 <div id="ewrptFilterList">
 <?php $dealers_salesmen_summary->ShowFilterList() ?>
 </div>
-<br>
+<br />
 <?php } ?>
 <table class="ewGrid" cellspacing="0"><tr>
 	<td class="ewGridContent">
+<?php } ?>
 <!-- Report Grid (Begin) -->
+<?php if ($dealers_salesmen->Export <> "pdf") { ?>
 <div class="ewGridMiddlePanel">
+<?php } ?>
 <table class="<?php echo $dealers_salesmen_summary->ReportTableClass ?>" cellspacing="0">
 <?php
 
@@ -713,12 +717,14 @@ if ($dealers_salesmen_summary->TotalGrps > 0) {
 	$dealers_salesmen->RowAttrs["class"] = "ewRptGrandSummary";
 	$dealers_salesmen_summary->RenderRow();
 ?>
-	<!-- tr><td colspan="6"><span class="phpreportmaker">&nbsp;<br></span></td></tr -->
+	<!-- tr><td colspan="6"><span class="phpreportmaker">&nbsp;<br /></span></td></tr -->
 	<tr<?php echo $dealers_salesmen->RowAttributes(); ?>><td colspan="6"><?php echo $ReportLanguage->Phrase("RptGrandTotal") ?> (<?php echo ewrpt_FormatNumber($dealers_salesmen_summary->TotCount,0,-2,-2,-2); ?><?php echo $ReportLanguage->Phrase("RptDtlRec") ?>)</td></tr>
 <?php } ?>
 	</tfoot>
 </table>
+<?php if ($dealers_salesmen->Export <> "pdf") { ?>
 </div>
+<?php } ?>
 <?php if ($dealers_salesmen->Export == "") { ?>
 <div class="ewGridLowerPanel">
 <form action="<?php echo ewrpt_CurrentPage() ?>" name="ewpagerform" id="ewpagerform" class="ewForm">
@@ -789,11 +795,13 @@ if ($dealers_salesmen_summary->TotalGrps > 0) {
 </form>
 </div>
 <?php } ?>
+<?php if ($dealers_salesmen->Export <> "pdf") { ?>
 </td></tr></table>
 </div>
+<?php } ?>
 <!-- Summary Report Ends -->
 <?php if ($dealers_salesmen->Export == "" || $dealers_salesmen->Export == "print" || $dealers_salesmen->Export == "email") { ?>
-	</div><br></td>
+	</div><br /></td>
 	<!-- Center Container - Report (End) -->
 	<!-- Right Container (Begin) -->
 	<td style="vertical-align: top;"><div id="ewRight" class="phpreportmaker">
@@ -810,7 +818,7 @@ if ($dealers_salesmen_summary->TotalGrps > 0) {
 
 // Initialize chart data
 $dealers_salesmen->Salesman_Chart->ID = "dealers_salesmen_Salesman_Chart"; // Chart ID
-$dealers_salesmen->Salesman_Chart->SetChartParam("type", "4", FALSE); // Chart type
+$dealers_salesmen->Salesman_Chart->SetChartParam("type", "1", FALSE); // Chart type
 $dealers_salesmen->Salesman_Chart->SetChartParam("seriestype", "0", FALSE); // Chart series type
 $dealers_salesmen->Salesman_Chart->SetChartParam("bgcolor", "FCFCFC", TRUE); // Background color
 $dealers_salesmen->Salesman_Chart->SetChartParam("caption", $dealers_salesmen->Salesman_Chart->ChartCaption(), TRUE); // Chart caption
@@ -834,7 +842,7 @@ $dealers_salesmen->Salesman_Chart->SetChartParam("PYAxisMinValue", "0", TRUE); /
 $dealers_salesmen->Salesman_Chart->SetChartParam("PYAxisMaxValue", "0", TRUE); // PYAxisMaxValue
 $dealers_salesmen->Salesman_Chart->SetChartParam("SYAxisMinValue", "0", TRUE); // SYAxisMinValue
 $dealers_salesmen->Salesman_Chart->SetChartParam("SYAxisMaxValue", "0", TRUE); // SYAxisMaxValue
-$dealers_salesmen->Salesman_Chart->SetChartParam("showColumnShadow", "0", TRUE); // showColumnShadow
+$dealers_salesmen->Salesman_Chart->SetChartParam("showColumnShadow", "1", TRUE); // showColumnShadow
 $dealers_salesmen->Salesman_Chart->SetChartParam("showPercentageValues", "1", TRUE); // showPercentageValues
 $dealers_salesmen->Salesman_Chart->SetChartParam("showPercentageInLabel", "1", TRUE); // showPercentageInLabel
 $dealers_salesmen->Salesman_Chart->SetChartParam("showBarShadow", "0", TRUE); // showBarShadow
@@ -882,8 +890,8 @@ $dealers_salesmen->Chart_Rendered($dealers_salesmen->Salesman_Chart, $chartxml);
 echo $dealers_salesmen->Salesman_Chart->ShowChartFCF($chartxml);
 ?>
 <a href="#top"><?php echo $ReportLanguage->Phrase("Top") ?></a>
-<br><br>
-	</div><br></td></tr>
+<br /><br />
+	</div><br /></td></tr>
 <!-- Bottom Container (End) -->
 </table>
 <!-- Table Container (End) -->
@@ -953,7 +961,7 @@ class crdealers_salesmen_summary {
 
 	function setMessage($v) {
 		if (@$_SESSION[EWRPT_SESSION_MESSAGE] <> "") { // Append
-			$_SESSION[EWRPT_SESSION_MESSAGE] .= "<br>" . $v;
+			$_SESSION[EWRPT_SESSION_MESSAGE] .= "<br />" . $v;
 		} else {
 			$_SESSION[EWRPT_SESSION_MESSAGE] = $v;
 		}
@@ -1106,7 +1114,7 @@ class crdealers_salesmen_summary {
 		$item->Visible = FALSE;
 
 		// Uncomment codes below to show export to Pdf link
-//		$item->Visible = FALSE;
+//		$item->Visible = TRUE;
 		// Export to Email
 
 		$item =& $this->ExportOptions->Add("email");
@@ -1685,6 +1693,8 @@ class crdealers_salesmen_summary {
 
 	function SetupExportOptionsExt() {
 		global $ReportLanguage, $dealers_salesmen;
+		$item =& $this->ExportOptions->GetItem("pdf");
+		$item->Visible = TRUE;
 	}
 
 	// Get extended filter values
@@ -1948,7 +1958,7 @@ class crdealers_salesmen_summary {
 		$sFormCustomError = "";
 		$ValidateForm = $ValidateForm && $this->Form_CustomValidate($sFormCustomError);
 		if ($sFormCustomError <> "") {
-			$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+			$gsFormError .= ($gsFormError <> "") ? "<br />" : "";
 			$gsFormError .= $sFormCustomError;
 		}
 		return $ValidateForm;
@@ -2030,26 +2040,26 @@ class crdealers_salesmen_summary {
 		$sWrk = "";
 		ewrpt_BuildDropDownFilter($dealers_salesmen->name, $sExtWrk, "");
 		if ($sExtWrk <> "" || $sWrk <> "")
-			$sFilterList .= $dealers_salesmen->name->FldCaption() . "<br>";
+			$sFilterList .= $dealers_salesmen->name->FldCaption() . "<br />";
 		if ($sExtWrk <> "")
-			$sFilterList .= "&nbsp;&nbsp;$sExtWrk<br>";
+			$sFilterList .= "&nbsp;&nbsp;$sExtWrk<br />";
 		if ($sWrk <> "")
-			$sFilterList .= "&nbsp;&nbsp;$sWrk<br>";
+			$sFilterList .= "&nbsp;&nbsp;$sWrk<br />";
 
 		// Field StartDate
 		$sExtWrk = "";
 		$sWrk = "";
 		ewrpt_BuildDropDownFilter($dealers_salesmen->StartDate, $sExtWrk, $dealers_salesmen->StartDate->DateFilter);
 		if ($sExtWrk <> "" || $sWrk <> "")
-			$sFilterList .= $dealers_salesmen->StartDate->FldCaption() . "<br>";
+			$sFilterList .= $dealers_salesmen->StartDate->FldCaption() . "<br />";
 		if ($sExtWrk <> "")
-			$sFilterList .= "&nbsp;&nbsp;$sExtWrk<br>";
+			$sFilterList .= "&nbsp;&nbsp;$sExtWrk<br />";
 		if ($sWrk <> "")
-			$sFilterList .= "&nbsp;&nbsp;$sWrk<br>";
+			$sFilterList .= "&nbsp;&nbsp;$sWrk<br />";
 
 		// Show Filters
 		if ($sFilterList <> "")
-			echo $ReportLanguage->Phrase("CurrentFilters") . "<br>$sFilterList";
+			echo $ReportLanguage->Phrase("CurrentFilters") . "<br />$sFilterList";
 	}
 
 	// Return poup filter
@@ -2091,11 +2101,21 @@ class crdealers_salesmen_summary {
 		return $dealers_salesmen->getOrderBy();
 	}
 
-	// PDF Export
+	// Export PDF
 	function ExportPDF($html) {
-		echo($html);
+		global $gsExportFile;
+		include_once "dompdf060b2/dompdf_config.inc.php";
+		@ini_set("memory_limit", EWRPT_PDF_MEMORY_LIMIT);
+		set_time_limit(EWRPT_PDF_TIME_LIMIT);
+		$dompdf = new DOMPDF();
+		$dompdf->load_html($html);
+		$dompdf->set_paper("a4", "portrait");
+		$dompdf->render();
+		ob_end_clean();
 		ewrpt_DeleteTmpImages();
-		exit();
+		$dompdf->stream($gsExportFile . ".pdf", array("Attachment" => 1)); // 0 to open in browser, 1 to download
+
+//		exit();
 	}
 
 	// Page Load event

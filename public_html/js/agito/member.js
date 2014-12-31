@@ -38,7 +38,8 @@ agitoScript=function(){
    sessionStorage.setItem('active',JSON.stringify(tmp));
    eternal=tmp;temp=$('footer').data('temp');//get deafault dealer
    var m=$("footer").data("selection")?$("footer").data("selection").month:localStorage.SITE_MONTH;//default month
-   get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{1:m}},'','post','json',function(_rows){
+   var y=localStorage.SITE_YEAR;
+   get_ajax(localStorage.SITE_SERVICE,{"militia":eternal.mensa,"quaerere":temp,"luna":{0:y,1:m}},'','post','json',function(_rows){
       if(typeof temp==="undefined")temp=[0,"dealers"];
       sideDisplay(temp[0],temp[1]);
       var y=new Date().getFullYear(); var d=new Date(y,localStorage.SITE_MONTH-1,1).getMonth();

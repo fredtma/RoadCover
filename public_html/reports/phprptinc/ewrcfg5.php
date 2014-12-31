@@ -18,11 +18,11 @@ define("EWRPT_SESSION_LANGUAGE_ID", EWRPT_PROJECT_VAR . "_LanguageId", TRUE); //
 define('EWRPT_USE_DOM_XML', ((!function_exists('xml_parser_create') && class_exists("DOMDocument")) || FALSE), TRUE);
 
 // Database connection
-define("EWRPT_CONN_HOST", '127.0.0.1', TRUE);
+define("EWRPT_CONN_HOST", 'localhost', TRUE);
 define("EWRPT_CONN_PORT", 3306, TRUE);
 define("EWRPT_CONN_USER", 'xpandit', TRUE);
-define("EWRPT_CONN_PASS", 'Success2013', TRUE);
-define("EWRPT_CONN_DB", 'roadcover', TRUE);
+define("EWRPT_CONN_PASS", 'Success2014', TRUE);
+define("EWRPT_CONN_DB", 'app_roadcover', TRUE);
 
 // ADODB (Access/SQL Server)
 define("EWRPT_CODEPAGE", 65001, TRUE); // Code page

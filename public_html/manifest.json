@@ -7,6 +7,6 @@
          "scripts":["js/scena.js"]
       }
    },
-   "permissions":["storage","http://197.96.139.19/*"],
+   "permissions":["storage","http://app.roadcover.co.za/*"],
    "icons":{"16":"img/logo16.png","128":"img/logo128.png"}
 }

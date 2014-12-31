@@ -57,15 +57,15 @@ class crdealers_transaction {
 	}
 
 //	var $SelectLimit = TRUE;
-	var $Dealers_deal_sold;
+	var $Dealers_Transaction;
 	var $code;
 	var $name;
 	var $account;
 	var $vat_registration;
 	var $fsb_number;
 	var $Deals_made;
-	var $Sold;
 	var $StartDate;
+	var $status;
 	var $fields = array();
 	var $Export; // Export
 	var $ExportAll = TRUE;
@@ -134,14 +134,6 @@ class crdealers_transaction {
 		$this->Deals_made->SqlSelect = "";
 		$this->Deals_made->SqlOrderBy = "";
 
-		// Sold
-		$this->Sold = new crField('dealers_transaction', 'dealers_transaction', 'x_Sold', 'Sold', 'Count(quot.Id)', 20, EWRPT_DATATYPE_NUMBER, -1);
-		$this->Sold->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectInteger");
-		$this->fields['Sold'] =& $this->Sold;
-		$this->Sold->DateFilter = "";
-		$this->Sold->SqlSelect = "";
-		$this->Sold->SqlOrderBy = "";
-
 		// StartDate
 		$this->StartDate = new crField('dealers_transaction', 'dealers_transaction', 'x_StartDate', 'StartDate', 'agree.StartDate', 135, EWRPT_DATATYPE_DATE, 7);
 		$this->StartDate->FldDefaultErrMsg = str_replace("%s", "-", $ReportLanguage->Phrase("IncorrectDateYMD"));
@@ -153,12 +145,19 @@ class crdealers_transaction {
 		ewrpt_RegisterFilter($this->StartDate, "@@ThisMonth", $ReportLanguage->Phrase("ThisMonth"), "ewrpt_IsThisMonth");
 		ewrpt_RegisterFilter($this->StartDate, "@@NextMonth", $ReportLanguage->Phrase("NextMonth"), "ewrpt_IsNextMonth");
 
-		// Dealers deal sold
-		$this->Dealers_deal_sold = new crChart('dealers_transaction', 'dealers_transaction', 'Dealers_deal_sold', 'Dealers deal sold', 'name', 'Deals made', '', 9, 'SUM', 1200, 800);
-		$this->Dealers_deal_sold->SqlSelect = "SELECT `name`, '', SUM(`Deals made`), SUM(`Sold`) FROM ";
-		$this->Dealers_deal_sold->SqlGroupBy = "`name`";
-		$this->Dealers_deal_sold->SqlOrderBy = "";
-		$this->Dealers_deal_sold->SeriesDateType = "";
+		// status
+		$this->status = new crField('dealers_transaction', 'dealers_transaction', 'x_status', 'status', 'trans.status', 200, EWRPT_DATATYPE_STRING, -1);
+		$this->fields['status'] =& $this->status;
+		$this->status->DateFilter = "";
+		$this->status->SqlSelect = "";
+		$this->status->SqlOrderBy = "";
+
+		// Dealers Transaction
+		$this->Dealers_Transaction = new crChart('dealers_transaction', 'dealers_transaction', 'Dealers_Transaction', 'Dealers Transaction', 'name', 'Deals made', '', 1, 'SUM', 1200, 800);
+		$this->Dealers_Transaction->SqlSelect = "SELECT `name`, '', SUM(`Deals made`) FROM ";
+		$this->Dealers_Transaction->SqlGroupBy = "`name`";
+		$this->Dealers_Transaction->SqlOrderBy = "";
+		$this->Dealers_Transaction->SeriesDateType = "";
 	}
 
 	// Single column sort
@@ -207,11 +206,11 @@ class crdealers_transaction {
 
 	// Table level SQL
 	function SqlFrom() { // From
-		return "roadCover_dealers dealer Left Join road_Transactions trans On trans.Intermediary = dealer.code Left Join road_Agreements agree On agree.`transaction` = trans.Id Left Join road_QuoteTransactions quot On quot.transaction = trans.Id";
+		return "roadCover_dealers dealer Left Join road_Transactions trans On trans.Intermediary = dealer.code Left Join road_Agreements agree On agree.transaction = trans.Id";
 	}
 
 	function SqlSelect() { // Select
-		return "SELECT dealer.code, dealer.name, dealer.account, dealer.vat_registration, dealer.fsb_number, agree.StartDate, Count(Distinct trans.Id) As `Deals made`, Count(quot.Id) As Sold FROM " . $this->SqlFrom();
+		return "SELECT dealer.code, dealer.name, dealer.account, dealer.vat_registration, dealer.fsb_number, agree.StartDate, trans.status, Count(Distinct trans.Id) As `Deals made` FROM " . $this->SqlFrom();
 	}
 
 	function SqlWhere() { // Where
@@ -442,7 +441,7 @@ dealers_transaction_summary.ValidateRequired = false; // no JavaScript validatio
 &nbsp;&nbsp;<?php $dealers_transaction_summary->ExportOptions->Render("body"); ?></p>
 <?php $dealers_transaction_summary->ShowPageHeader(); ?>
 <?php $dealers_transaction_summary->ShowMessage(); ?>
-<br><br>
+<br /><br />
 <?php if ($dealers_transaction->Export == "" || $dealers_transaction->Export == "print" || $dealers_transaction->Export == "email") { ?>
 </div></td></tr>
 <!-- Top Container (End) -->
@@ -468,7 +467,7 @@ if ($dealers_transaction->FilterPanelOption == 2 || ($dealers_transaction->Filte
 	$sDivDisplay = " style=\"display: none;\"";
 }
 ?>
-<a href="javascript:ewrpt_ToggleFilterPanel();" style="text-decoration: none;"><img id="ewrptToggleFilterImg" src="<?php echo $sButtonImage ?>" alt="" width="9" height="9" border="0"></a><span class="phpreportmaker">&nbsp;<?php echo $ReportLanguage->Phrase("Filters") ?></span><br><br>
+<a href="javascript:ewrpt_ToggleFilterPanel();" style="text-decoration: none;"><img id="ewrptToggleFilterImg" src="<?php echo $sButtonImage ?>" alt="" width="9" height="9" border="0"></a><span class="phpreportmaker">&nbsp;<?php echo $ReportLanguage->Phrase("Filters") ?></span><br /><br />
 <div id="ewrptExtFilterPanel"<?php echo $sDivDisplay ?>>
 <!-- Search form (begin) -->
 <form name="fdealers_transactionsummaryfilter" id="fdealers_transactionsummaryfilter" action="<?php echo ewrpt_CurrentPage() ?>" class="ewForm" onsubmit="return dealers_transaction_summary.ValidateForm(this);">
@@ -477,7 +476,7 @@ if ($dealers_transaction->FilterPanelOption == 2 || ($dealers_transaction->Filte
 		<td><span class="phpreportmaker"><?php echo $dealers_transaction->StartDate->FldCaption() ?></span></td>
 		<td></td>
 		<td colspan="4"><span class="ewRptSearchOpr">
-		<select name="sv_StartDate" id="sv_StartDate"<?php echo ($dealers_transaction_summary->ClearExtFilter == 'dealers_transaction_StartDate') ? " class=\"ewInputCleared\"" : "" ?> onchange="this.form.submit();">
+		<select name="sv_StartDate" id="sv_StartDate"<?php echo ($dealers_transaction_summary->ClearExtFilter == 'dealers_transaction_StartDate') ? " class=\"ewInputCleared\"" : "" ?>>
 		<option value="<?php echo EWRPT_ALL_VALUE; ?>"<?php if (ewrpt_MatchedFilterValue($dealers_transaction->StartDate->DropDownValue, EWRPT_ALL_VALUE)) echo " selected=\"selected\""; ?>><?php echo $ReportLanguage->Phrase("PleaseSelect"); ?></option>
 <?php
 
@@ -506,17 +505,58 @@ $wrkcnt = 0;
 		</select>
 		</span></td>
 	</tr>
+	<tr id="r_status">
+		<td><span class="phpreportmaker"><?php echo $dealers_transaction->status->FldCaption() ?></span></td>
+		<td></td>
+		<td colspan="4"><span class="ewRptSearchOpr">
+		<select name="sv_status" id="sv_status"<?php echo ($dealers_transaction_summary->ClearExtFilter == 'dealers_transaction_status') ? " class=\"ewInputCleared\"" : "" ?>>
+		<option value="<?php echo EWRPT_ALL_VALUE; ?>"<?php if (ewrpt_MatchedFilterValue($dealers_transaction->status->DropDownValue, EWRPT_ALL_VALUE)) echo " selected=\"selected\""; ?>><?php echo $ReportLanguage->Phrase("PleaseSelect"); ?></option>
+<?php
+
+// Popup filter
+$cntf = is_array($dealers_transaction->status->AdvancedFilters) ? count($dealers_transaction->status->AdvancedFilters) : 0;
+$cntd = is_array($dealers_transaction->status->DropDownList) ? count($dealers_transaction->status->DropDownList) : 0;
+$totcnt = $cntf + $cntd;
+$wrkcnt = 0;
+	if ($cntf > 0) {
+		foreach ($dealers_transaction->status->AdvancedFilters as $filter) {
+			if ($filter->Enabled) {
+?>
+		<option value="<?php echo $filter->ID ?>"<?php if (ewrpt_MatchedFilterValue($dealers_transaction->status->DropDownValue, $filter->ID)) echo " selected=\"selected\"" ?>><?php echo $filter->Name ?></option>
+<?php
+				$wrkcnt += 1;
+			}
+		}
+	}
+	for ($i = 0; $i < $cntd; $i++) {
+?>
+		<option value="<?php echo $dealers_transaction->status->DropDownList[$i] ?>"<?php if (ewrpt_MatchedFilterValue($dealers_transaction->status->DropDownValue, $dealers_transaction->status->DropDownList[$i])) echo " selected=\"selected\"" ?>><?php echo ewrpt_DropDownDisplayValue($dealers_transaction->status->DropDownList[$i], "", 0) ?></option>
+<?php
+		$wrkcnt += 1;
+	}
+?>
+		</select>
+		</span></td>
+	</tr>
+</table>
+<table class="ewRptExtFilter">
+	<tr>
+		<td><span class="phpreportmaker">
+			<input type="Submit" name="Submit" id="Submit" value="<?php echo $ReportLanguage->Phrase("Search") ?>">&nbsp;
+			<input type="Reset" name="Reset" id="Reset" value="<?php echo $ReportLanguage->Phrase("Reset") ?>">&nbsp;
+		</span></td>
+	</tr>
 </table>
 </form>
 <!-- Search form (end) -->
 </div>
-<br>
+<br />
 <?php } ?>
 <?php if ($dealers_transaction->ShowCurrentFilter) { ?>
 <div id="ewrptFilterList">
 <?php $dealers_transaction_summary->ShowFilterList() ?>
 </div>
-<br>
+<br />
 <?php } ?>
 <table class="ewGrid" cellspacing="0"><tr>
 	<td class="ewGridContent">
@@ -633,20 +673,6 @@ while (($rs && !$rs->EOF && $dealers_transaction_summary->GrpCount <= $dealers_t
 	</tr></table>
 <?php } ?>
 </td>
-<td class="ewTableHeader">
-<?php if ($dealers_transaction->Export <> "") { ?>
-<?php echo $dealers_transaction->Sold->FldCaption() ?>
-<?php } else { ?>
-	<table cellspacing="0" class="ewTableHeaderBtn"><tr>
-<?php if ($dealers_transaction->SortUrl($dealers_transaction->Sold) == "") { ?>
-		<td style="vertical-align: bottom;"><?php echo $dealers_transaction->Sold->FldCaption() ?></td>
-<?php } else { ?>
-		<td class="ewPointer" onmousedown="ewrpt_Sort(event,'<?php echo $dealers_transaction->SortUrl($dealers_transaction->Sold) ?>',0);"><?php echo $dealers_transaction->Sold->FldCaption() ?></td><td style="width: 10px;">
-		<?php if ($dealers_transaction->Sold->getSort() == "ASC") { ?><img src="phprptimages/sortup.gif" width="10" height="9" border="0"><?php } elseif ($dealers_transaction->Sold->getSort() == "DESC") { ?><img src="phprptimages/sortdown.gif" width="10" height="9" border="0"><?php } ?></td>
-<?php } ?>
-	</tr></table>
-<?php } ?>
-</td>
 	</tr>
 	</thead>
 	<tbody>
@@ -673,8 +699,6 @@ while (($rs && !$rs->EOF && $dealers_transaction_summary->GrpCount <= $dealers_t
 <span<?php echo $dealers_transaction->fsb_number->ViewAttributes(); ?>><?php echo $dealers_transaction->fsb_number->ListViewValue(); ?></span></td>
 		<td<?php echo $dealers_transaction->Deals_made->CellAttributes() ?>>
 <span<?php echo $dealers_transaction->Deals_made->ViewAttributes(); ?>><?php echo $dealers_transaction->Deals_made->ListViewValue(); ?></span></td>
-		<td<?php echo $dealers_transaction->Sold->CellAttributes() ?>>
-<span<?php echo $dealers_transaction->Sold->ViewAttributes(); ?>><?php echo $dealers_transaction->Sold->ListViewValue(); ?></span></td>
 	</tr>
 <?php
 
@@ -697,8 +721,8 @@ if ($dealers_transaction_summary->TotalGrps > 0) {
 	$dealers_transaction->RowAttrs["class"] = "ewRptGrandSummary";
 	$dealers_transaction_summary->RenderRow();
 ?>
-	<!-- tr><td colspan="7"><span class="phpreportmaker">&nbsp;<br></span></td></tr -->
-	<tr<?php echo $dealers_transaction->RowAttributes(); ?>><td colspan="7"><?php echo $ReportLanguage->Phrase("RptGrandTotal") ?> (<?php echo ewrpt_FormatNumber($dealers_transaction_summary->TotCount,0,-2,-2,-2); ?><?php echo $ReportLanguage->Phrase("RptDtlRec") ?>)</td></tr>
+	<!-- tr><td colspan="6"><span class="phpreportmaker">&nbsp;<br /></span></td></tr -->
+	<tr<?php echo $dealers_transaction->RowAttributes(); ?>><td colspan="6"><?php echo $ReportLanguage->Phrase("RptGrandTotal") ?> (<?php echo ewrpt_FormatNumber($dealers_transaction_summary->TotCount,0,-2,-2,-2); ?><?php echo $ReportLanguage->Phrase("RptDtlRec") ?>)</td></tr>
 <?php } ?>
 	</tfoot>
 </table>
@@ -777,7 +801,7 @@ if ($dealers_transaction_summary->TotalGrps > 0) {
 </div>
 <!-- Summary Report Ends -->
 <?php if ($dealers_transaction->Export == "" || $dealers_transaction->Export == "print" || $dealers_transaction->Export == "email") { ?>
-	</div><br></td>
+	</div><br /></td>
 	<!-- Center Container - Report (End) -->
 	<!-- Right Container (Begin) -->
 	<td style="vertical-align: top;"><div id="ewRight" class="phpreportmaker">
@@ -788,88 +812,86 @@ if ($dealers_transaction_summary->TotalGrps > 0) {
 <!-- Bottom Container (Begin) -->
 <tr><td colspan="3" class="ewPadding"><div id="ewBottom" class="phpreportmaker">
 	<!-- Bottom slot -->
-<a name="cht_Dealers_deal_sold"></a>
-<div id="div_dealers_transaction_Dealers_deal_sold"></div>
+<a name="cht_Dealers_Transaction"></a>
+<div id="div_dealers_transaction_Dealers_Transaction"></div>
 <?php
 
 // Initialize chart data
-$dealers_transaction->Dealers_deal_sold->ID = "dealers_transaction_Dealers_deal_sold"; // Chart ID
-$dealers_transaction->Dealers_deal_sold->SetChartParam("type", "9", FALSE); // Chart type
-$dealers_transaction->Dealers_deal_sold->SetChartParam("seriestype", "1", FALSE); // Chart series type
-$dealers_transaction->Dealers_deal_sold->SetChartParam("bgcolor", "FCFCFC", TRUE); // Background color
-$dealers_transaction->Dealers_deal_sold->SetChartParam("caption", $dealers_transaction->Dealers_deal_sold->ChartCaption(), TRUE); // Chart caption
-$dealers_transaction->Dealers_deal_sold->SetChartParam("xaxisname", $dealers_transaction->Dealers_deal_sold->ChartXAxisName(), TRUE); // X axis name
-$dealers_transaction->Dealers_deal_sold->SetChartParam("yaxisname", $dealers_transaction->Dealers_deal_sold->ChartYAxisName(), TRUE); // Y axis name
-$dealers_transaction->Dealers_deal_sold->SetChartParam("shownames", "1", TRUE); // Show names
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showvalues", "1", TRUE); // Show values
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showhovercap", "0", TRUE); // Show hover
-$dealers_transaction->Dealers_deal_sold->SetChartParam("alpha", "50", FALSE); // Chart alpha
-$dealers_transaction->Dealers_deal_sold->SetChartParam("colorpalette", "#FF0000|#FFFF00|#FF0080|#FF00FF|#8000FF|#FF8000|#FF3D3D|#7AFFFF|#0000FF|#FF7A7A|#3DFFFF|#0080FF|#80FF00|#00FF00|#00FF80|#00FFFF", FALSE); // Chart color palette
+$dealers_transaction->Dealers_Transaction->ID = "dealers_transaction_Dealers_Transaction"; // Chart ID
+$dealers_transaction->Dealers_Transaction->SetChartParam("type", "1", FALSE); // Chart type
+$dealers_transaction->Dealers_Transaction->SetChartParam("seriestype", "0", FALSE); // Chart series type
+$dealers_transaction->Dealers_Transaction->SetChartParam("bgcolor", "FCFCFC", TRUE); // Background color
+$dealers_transaction->Dealers_Transaction->SetChartParam("caption", $dealers_transaction->Dealers_Transaction->ChartCaption(), TRUE); // Chart caption
+$dealers_transaction->Dealers_Transaction->SetChartParam("xaxisname", $dealers_transaction->Dealers_Transaction->ChartXAxisName(), TRUE); // X axis name
+$dealers_transaction->Dealers_Transaction->SetChartParam("yaxisname", $dealers_transaction->Dealers_Transaction->ChartYAxisName(), TRUE); // Y axis name
+$dealers_transaction->Dealers_Transaction->SetChartParam("shownames", "1", TRUE); // Show names
+$dealers_transaction->Dealers_Transaction->SetChartParam("showvalues", "1", TRUE); // Show values
+$dealers_transaction->Dealers_Transaction->SetChartParam("showhovercap", "0", TRUE); // Show hover
+$dealers_transaction->Dealers_Transaction->SetChartParam("alpha", "50", FALSE); // Chart alpha
+$dealers_transaction->Dealers_Transaction->SetChartParam("colorpalette", "#FF0000|#FFFF00|#FF0080|#FF00FF|#8000FF|#FF8000|#FF3D3D|#7AFFFF|#0000FF|#FF7A7A|#3DFFFF|#0080FF|#80FF00|#00FF00|#00FF80|#00FFFF", FALSE); // Chart color palette
 ?>
 <?php
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showCanvasBg", "1", TRUE); // showCanvasBg
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showCanvasBase", "1", TRUE); // showCanvasBase
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showLimits", "1", TRUE); // showLimits
-$dealers_transaction->Dealers_deal_sold->SetChartParam("animation", "1", TRUE); // animation
-$dealers_transaction->Dealers_deal_sold->SetChartParam("rotateNames", "1", TRUE); // rotateNames
-$dealers_transaction->Dealers_deal_sold->SetChartParam("yAxisMinValue", "0", TRUE); // yAxisMinValue
-$dealers_transaction->Dealers_deal_sold->SetChartParam("yAxisMaxValue", "0", TRUE); // yAxisMaxValue
-$dealers_transaction->Dealers_deal_sold->SetChartParam("PYAxisMinValue", "0", TRUE); // PYAxisMinValue
-$dealers_transaction->Dealers_deal_sold->SetChartParam("PYAxisMaxValue", "0", TRUE); // PYAxisMaxValue
-$dealers_transaction->Dealers_deal_sold->SetChartParam("SYAxisMinValue", "0", TRUE); // SYAxisMinValue
-$dealers_transaction->Dealers_deal_sold->SetChartParam("SYAxisMaxValue", "0", TRUE); // SYAxisMaxValue
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showColumnShadow", "0", TRUE); // showColumnShadow
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showPercentageValues", "1", TRUE); // showPercentageValues
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showPercentageInLabel", "1", TRUE); // showPercentageInLabel
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showBarShadow", "0", TRUE); // showBarShadow
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showAnchors", "1", TRUE); // showAnchors
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showAreaBorder", "1", TRUE); // showAreaBorder
-$dealers_transaction->Dealers_deal_sold->SetChartParam("isSliced", "1", TRUE); // isSliced
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showAsBars", "0", TRUE); // showAsBars
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showShadow", "0", TRUE); // showShadow
-$dealers_transaction->Dealers_deal_sold->SetChartParam("formatNumber", "0", TRUE); // formatNumber
-$dealers_transaction->Dealers_deal_sold->SetChartParam("formatNumberScale", "0", TRUE); // formatNumberScale
-$dealers_transaction->Dealers_deal_sold->SetChartParam("decimalSeparator", ".", TRUE); // decimalSeparator
-$dealers_transaction->Dealers_deal_sold->SetChartParam("thousandSeparator", ",", TRUE); // thousandSeparator
-$dealers_transaction->Dealers_deal_sold->SetChartParam("decimalPrecision", "2", TRUE); // decimalPrecision
-$dealers_transaction->Dealers_deal_sold->SetChartParam("divLineDecimalPrecision", "2", TRUE); // divLineDecimalPrecision
-$dealers_transaction->Dealers_deal_sold->SetChartParam("limitsDecimalPrecision", "2", TRUE); // limitsDecimalPrecision
-$dealers_transaction->Dealers_deal_sold->SetChartParam("zeroPlaneShowBorder", "1", TRUE); // zeroPlaneShowBorder
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showDivLineValue", "1", TRUE); // showDivLineValue
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showAlternateHGridColor", "0", TRUE); // showAlternateHGridColor
-$dealers_transaction->Dealers_deal_sold->SetChartParam("showAlternateVGridColor", "0", TRUE); // showAlternateVGridColor
-$dealers_transaction->Dealers_deal_sold->SetChartParam("hoverCapSepChar", ":", TRUE); // hoverCapSepChar
+$dealers_transaction->Dealers_Transaction->SetChartParam("showCanvasBg", "1", TRUE); // showCanvasBg
+$dealers_transaction->Dealers_Transaction->SetChartParam("showCanvasBase", "1", TRUE); // showCanvasBase
+$dealers_transaction->Dealers_Transaction->SetChartParam("showLimits", "1", TRUE); // showLimits
+$dealers_transaction->Dealers_Transaction->SetChartParam("animation", "1", TRUE); // animation
+$dealers_transaction->Dealers_Transaction->SetChartParam("rotateNames", "1", TRUE); // rotateNames
+$dealers_transaction->Dealers_Transaction->SetChartParam("yAxisMinValue", "0", TRUE); // yAxisMinValue
+$dealers_transaction->Dealers_Transaction->SetChartParam("yAxisMaxValue", "0", TRUE); // yAxisMaxValue
+$dealers_transaction->Dealers_Transaction->SetChartParam("PYAxisMinValue", "0", TRUE); // PYAxisMinValue
+$dealers_transaction->Dealers_Transaction->SetChartParam("PYAxisMaxValue", "0", TRUE); // PYAxisMaxValue
+$dealers_transaction->Dealers_Transaction->SetChartParam("SYAxisMinValue", "0", TRUE); // SYAxisMinValue
+$dealers_transaction->Dealers_Transaction->SetChartParam("SYAxisMaxValue", "0", TRUE); // SYAxisMaxValue
+$dealers_transaction->Dealers_Transaction->SetChartParam("showColumnShadow", "1", TRUE); // showColumnShadow
+$dealers_transaction->Dealers_Transaction->SetChartParam("showPercentageValues", "1", TRUE); // showPercentageValues
+$dealers_transaction->Dealers_Transaction->SetChartParam("showPercentageInLabel", "1", TRUE); // showPercentageInLabel
+$dealers_transaction->Dealers_Transaction->SetChartParam("showBarShadow", "0", TRUE); // showBarShadow
+$dealers_transaction->Dealers_Transaction->SetChartParam("showAnchors", "1", TRUE); // showAnchors
+$dealers_transaction->Dealers_Transaction->SetChartParam("showAreaBorder", "1", TRUE); // showAreaBorder
+$dealers_transaction->Dealers_Transaction->SetChartParam("isSliced", "1", TRUE); // isSliced
+$dealers_transaction->Dealers_Transaction->SetChartParam("showAsBars", "0", TRUE); // showAsBars
+$dealers_transaction->Dealers_Transaction->SetChartParam("showShadow", "0", TRUE); // showShadow
+$dealers_transaction->Dealers_Transaction->SetChartParam("formatNumber", "0", TRUE); // formatNumber
+$dealers_transaction->Dealers_Transaction->SetChartParam("formatNumberScale", "0", TRUE); // formatNumberScale
+$dealers_transaction->Dealers_Transaction->SetChartParam("decimalSeparator", ".", TRUE); // decimalSeparator
+$dealers_transaction->Dealers_Transaction->SetChartParam("thousandSeparator", ",", TRUE); // thousandSeparator
+$dealers_transaction->Dealers_Transaction->SetChartParam("decimalPrecision", "2", TRUE); // decimalPrecision
+$dealers_transaction->Dealers_Transaction->SetChartParam("divLineDecimalPrecision", "2", TRUE); // divLineDecimalPrecision
+$dealers_transaction->Dealers_Transaction->SetChartParam("limitsDecimalPrecision", "2", TRUE); // limitsDecimalPrecision
+$dealers_transaction->Dealers_Transaction->SetChartParam("zeroPlaneShowBorder", "1", TRUE); // zeroPlaneShowBorder
+$dealers_transaction->Dealers_Transaction->SetChartParam("showDivLineValue", "1", TRUE); // showDivLineValue
+$dealers_transaction->Dealers_Transaction->SetChartParam("showAlternateHGridColor", "0", TRUE); // showAlternateHGridColor
+$dealers_transaction->Dealers_Transaction->SetChartParam("showAlternateVGridColor", "0", TRUE); // showAlternateVGridColor
+$dealers_transaction->Dealers_Transaction->SetChartParam("hoverCapSepChar", ":", TRUE); // hoverCapSepChar
 
 // Define trend lines
 ?>
 <?php
 $SqlSelect = $dealers_transaction->SqlSelect();
-$SqlChartSelect = $dealers_transaction->Dealers_deal_sold->SqlSelect;
+$SqlChartSelect = $dealers_transaction->Dealers_Transaction->SqlSelect;
 if (EWRPT_IS_MSSQL) // skip SqlOrderBy for MSSQL
 	$sSqlChartBase = "(" . ewrpt_BuildReportSql($SqlSelect, $dealers_transaction->SqlWhere(), $dealers_transaction->SqlGroupBy(), $dealers_transaction->SqlHaving(), "", $dealers_transaction_summary->Filter, "") . ") EW_TMP_TABLE";
 else
 	$sSqlChartBase = "(" . ewrpt_BuildReportSql($SqlSelect, $dealers_transaction->SqlWhere(), $dealers_transaction->SqlGroupBy(), $dealers_transaction->SqlHaving(), $dealers_transaction->SqlOrderBy(), $dealers_transaction_summary->Filter, "") . ") EW_TMP_TABLE";
-$dealers_transaction->Dealers_deal_sold->Series[] = $dealers_transaction->Deals_made->FldCaption();
-$dealers_transaction->Dealers_deal_sold->Series[] = $dealers_transaction->Sold->FldCaption();
 
 // Load chart data from sql directly
 $sSql = $SqlChartSelect . $sSqlChartBase;
-$sSql = ewrpt_BuildReportSql($sSql, "", $dealers_transaction->Dealers_deal_sold->SqlGroupBy, "", $dealers_transaction->Dealers_deal_sold->SqlOrderBy, "", "");
+$sSql = ewrpt_BuildReportSql($sSql, "", $dealers_transaction->Dealers_Transaction->SqlGroupBy, "", $dealers_transaction->Dealers_Transaction->SqlOrderBy, "", "");
 if (EWRPT_DEBUG_ENABLED) echo "(Chart SQL): " . $sSql . "<br>";
-ewrpt_LoadChartData($sSql, $dealers_transaction->Dealers_deal_sold);
-ewrpt_SortChartData($dealers_transaction->Dealers_deal_sold->Data, 0, "");
+ewrpt_LoadChartData($sSql, $dealers_transaction->Dealers_Transaction);
+ewrpt_SortChartData($dealers_transaction->Dealers_Transaction->Data, 0, "");
 
 // Call Chart_Rendering event
-$dealers_transaction->Chart_Rendering($dealers_transaction->Dealers_deal_sold);
-$chartxml = $dealers_transaction->Dealers_deal_sold->ChartXml();
+$dealers_transaction->Chart_Rendering($dealers_transaction->Dealers_Transaction);
+$chartxml = $dealers_transaction->Dealers_Transaction->ChartXml();
 
 // Call Chart_Rendered event
-$dealers_transaction->Chart_Rendered($dealers_transaction->Dealers_deal_sold, $chartxml);
-echo $dealers_transaction->Dealers_deal_sold->ShowChartFCF($chartxml);
+$dealers_transaction->Chart_Rendered($dealers_transaction->Dealers_Transaction, $chartxml);
+echo $dealers_transaction->Dealers_Transaction->ShowChartFCF($chartxml);
 ?>
 <a href="#top"><?php echo $ReportLanguage->Phrase("Top") ?></a>
-<br><br>
-	</div><br></td></tr>
+<br /><br />
+	</div><br /></td></tr>
 <!-- Bottom Container (End) -->
 </table>
 <!-- Table Container (End) -->
@@ -939,7 +961,7 @@ class crdealers_transaction_summary {
 
 	function setMessage($v) {
 		if (@$_SESSION[EWRPT_SESSION_MESSAGE] <> "") { // Append
-			$_SESSION[EWRPT_SESSION_MESSAGE] .= "<br>" . $v;
+			$_SESSION[EWRPT_SESSION_MESSAGE] .= "<br />" . $v;
 		} else {
 			$_SESSION[EWRPT_SESSION_MESSAGE] = $v;
 		}
@@ -1199,7 +1221,7 @@ class crdealers_transaction_summary {
 		// 1st dimension = no of groups (level 0 used for grand total)
 		// 2nd dimension = no of fields
 
-		$nDtls = 8;
+		$nDtls = 7;
 		$nGrps = 1;
 		$this->Val =& ewrpt_InitArray($nDtls, 0);
 		$this->Cnt =& ewrpt_Init2DArray($nGrps, $nDtls, 0);
@@ -1211,7 +1233,7 @@ class crdealers_transaction_summary {
 		$this->GrandMx =& ewrpt_InitArray($nDtls, NULL);
 
 		// Set up if accumulation required
-		$this->Col = array(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE);
+		$this->Col = array(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE);
 
 		// Set up groups per page dynamically
 		$this->SetUpDisplayGrps();
@@ -1407,15 +1429,14 @@ class crdealers_transaction_summary {
 			$dealers_transaction->vat_registration->setDbValue($rs->fields('vat_registration'));
 			$dealers_transaction->fsb_number->setDbValue($rs->fields('fsb_number'));
 			$dealers_transaction->Deals_made->setDbValue($rs->fields('Deals made'));
-			$dealers_transaction->Sold->setDbValue($rs->fields('Sold'));
 			$dealers_transaction->StartDate->setDbValue($rs->fields('StartDate'));
+			$dealers_transaction->status->setDbValue($rs->fields('status'));
 			$this->Val[1] = $dealers_transaction->code->CurrentValue;
 			$this->Val[2] = $dealers_transaction->name->CurrentValue;
 			$this->Val[3] = $dealers_transaction->account->CurrentValue;
 			$this->Val[4] = $dealers_transaction->vat_registration->CurrentValue;
 			$this->Val[5] = $dealers_transaction->fsb_number->CurrentValue;
 			$this->Val[6] = $dealers_transaction->Deals_made->CurrentValue;
-			$this->Val[7] = $dealers_transaction->Sold->CurrentValue;
 		} else {
 			$dealers_transaction->code->setDbValue("");
 			$dealers_transaction->name->setDbValue("");
@@ -1423,8 +1444,8 @@ class crdealers_transaction_summary {
 			$dealers_transaction->vat_registration->setDbValue("");
 			$dealers_transaction->fsb_number->setDbValue("");
 			$dealers_transaction->Deals_made->setDbValue("");
-			$dealers_transaction->Sold->setDbValue("");
 			$dealers_transaction->StartDate->setDbValue("");
+			$dealers_transaction->status->setDbValue("");
 		}
 	}
 
@@ -1597,10 +1618,6 @@ class crdealers_transaction_summary {
 			$dealers_transaction->Deals_made->ViewValue = $dealers_transaction->Deals_made->CurrentValue;
 			$dealers_transaction->Deals_made->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
 
-			// Sold
-			$dealers_transaction->Sold->ViewValue = $dealers_transaction->Sold->CurrentValue;
-			$dealers_transaction->Sold->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
-
 			// code
 			$dealers_transaction->code->HrefValue = "";
 
@@ -1618,9 +1635,6 @@ class crdealers_transaction_summary {
 
 			// Deals made
 			$dealers_transaction->Deals_made->HrefValue = "";
-
-			// Sold
-			$dealers_transaction->Sold->HrefValue = "";
 		}
 
 		// Call Cell_Rendered event
@@ -1674,14 +1688,6 @@ class crdealers_transaction_summary {
 			$CellAttrs =& $dealers_transaction->Deals_made->CellAttrs;
 			$HrefValue =& $dealers_transaction->Deals_made->HrefValue;
 			$dealers_transaction->Cell_Rendered($dealers_transaction->Deals_made, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue);
-
-			// Sold
-			$CurrentValue = $dealers_transaction->Sold->CurrentValue;
-			$ViewValue =& $dealers_transaction->Sold->ViewValue;
-			$ViewAttrs =& $dealers_transaction->Sold->ViewAttrs;
-			$CellAttrs =& $dealers_transaction->Sold->CellAttrs;
-			$HrefValue =& $dealers_transaction->Sold->HrefValue;
-			$dealers_transaction->Cell_Rendered($dealers_transaction->Sold, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue);
 		}
 
 		// Call Row_Rendered event
@@ -1690,6 +1696,8 @@ class crdealers_transaction_summary {
 
 	function SetupExportOptionsExt() {
 		global $ReportLanguage, $dealers_transaction;
+		$item =& $this->ExportOptions->GetItem("pdf");
+		$item->Visible = FALSE;
 	}
 
 	// Get extended filter values
@@ -1701,6 +1709,12 @@ class crdealers_transaction_summary {
 		$sOrderBy = "agree.StartDate ASC";
 		$wrkSql = ewrpt_BuildReportSql($sSelect, $dealers_transaction->SqlWhere(), "", "", $sOrderBy, $this->UserIDFilter, "");
 		$dealers_transaction->StartDate->DropDownList = ewrpt_GetDistinctValues($dealers_transaction->StartDate->DateFilter, $wrkSql);
+
+		// Field status
+		$sSelect = "SELECT DISTINCT trans.status FROM " . $dealers_transaction->SqlFrom();
+		$sOrderBy = "trans.status ASC";
+		$wrkSql = ewrpt_BuildReportSql($sSelect, $dealers_transaction->SqlWhere(), "", "", $sOrderBy, $this->UserIDFilter, "");
+		$dealers_transaction->status->DropDownList = ewrpt_GetDistinctValues("", $wrkSql);
 	}
 
 	// Return extended filter
@@ -1722,6 +1736,9 @@ class crdealers_transaction_summary {
 			// Field StartDate
 
 			$this->SetSessionDropDownValue($dealers_transaction->StartDate->DropDownValue, 'StartDate');
+
+			// Field status
+			$this->SetSessionDropDownValue($dealers_transaction->status->DropDownValue, 'status');
 			$bSetupFilter = TRUE;
 		} else {
 
@@ -1730,6 +1747,14 @@ class crdealers_transaction_summary {
 				$bSetupFilter = TRUE;
 				$bRestoreSession = FALSE;
 			} elseif ($dealers_transaction->StartDate->DropDownValue <> EWRPT_INIT_VALUE && !isset($_SESSION['sv_dealers_transaction->StartDate'])) {
+				$bSetupFilter = TRUE;
+			}
+
+			// Field status
+			if ($this->GetDropDownValue($dealers_transaction->status->DropDownValue, 'status')) {
+				$bSetupFilter = TRUE;
+				$bRestoreSession = FALSE;
+			} elseif ($dealers_transaction->status->DropDownValue <> EWRPT_INIT_VALUE && !isset($_SESSION['sv_dealers_transaction->status'])) {
 				$bSetupFilter = TRUE;
 			}
 			if (!$this->ValidateForm()) {
@@ -1743,6 +1768,9 @@ class crdealers_transaction_summary {
 
 			// Field StartDate
 			$this->GetSessionDropDownValue($dealers_transaction->StartDate);
+
+			// Field status
+			$this->GetSessionDropDownValue($dealers_transaction->status);
 		}
 
 		// Call page filter validated event
@@ -1753,10 +1781,16 @@ class crdealers_transaction_summary {
 
 		ewrpt_BuildDropDownFilter($dealers_transaction->StartDate, $sFilter, $dealers_transaction->StartDate->DateFilter);
 
+		// Field status
+		ewrpt_BuildDropDownFilter($dealers_transaction->status, $sFilter, "");
+
 		// Save parms to session
 		// Field StartDate
 
 		$this->SetSessionDropDownValue($dealers_transaction->StartDate->DropDownValue, 'StartDate');
+
+		// Field status
+		$this->SetSessionDropDownValue($dealers_transaction->status->DropDownValue, 'status');
 
 		// Setup filter
 		if ($bSetupFilter) {
@@ -1927,7 +1961,7 @@ class crdealers_transaction_summary {
 		$sFormCustomError = "";
 		$ValidateForm = $ValidateForm && $this->Form_CustomValidate($sFormCustomError);
 		if ($sFormCustomError <> "") {
-			$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+			$gsFormError .= ($gsFormError <> "") ? "<br />" : "";
 			$gsFormError .= $sFormCustomError;
 		}
 		return $ValidateForm;
@@ -1961,6 +1995,10 @@ class crdealers_transaction_summary {
 		$dealers_transaction->StartDate->DefaultDropDownValue = EWRPT_INIT_VALUE;
 		$dealers_transaction->StartDate->DropDownValue = $dealers_transaction->StartDate->DefaultDropDownValue;
 
+		// Field status
+		$dealers_transaction->status->DefaultDropDownValue = 'Active';
+		$dealers_transaction->status->DropDownValue = $dealers_transaction->status->DefaultDropDownValue;
+
 		/**
 		* Set up default values for extended filters
 		* function SetDefaultExtFilter(&$fld, $so1, $sv1, $sc, $so2, $sv2)
@@ -1985,6 +2023,10 @@ class crdealers_transaction_summary {
 		// Check StartDate extended filter
 		if ($this->NonTextFilterApplied($dealers_transaction->StartDate))
 			return TRUE;
+
+		// Check status extended filter
+		if ($this->NonTextFilterApplied($dealers_transaction->status))
+			return TRUE;
 		return FALSE;
 	}
 
@@ -2001,15 +2043,26 @@ class crdealers_transaction_summary {
 		$sWrk = "";
 		ewrpt_BuildDropDownFilter($dealers_transaction->StartDate, $sExtWrk, $dealers_transaction->StartDate->DateFilter);
 		if ($sExtWrk <> "" || $sWrk <> "")
-			$sFilterList .= $dealers_transaction->StartDate->FldCaption() . "<br>";
+			$sFilterList .= $dealers_transaction->StartDate->FldCaption() . "<br />";
 		if ($sExtWrk <> "")
-			$sFilterList .= "&nbsp;&nbsp;$sExtWrk<br>";
+			$sFilterList .= "&nbsp;&nbsp;$sExtWrk<br />";
 		if ($sWrk <> "")
-			$sFilterList .= "&nbsp;&nbsp;$sWrk<br>";
+			$sFilterList .= "&nbsp;&nbsp;$sWrk<br />";
+
+		// Field status
+		$sExtWrk = "";
+		$sWrk = "";
+		ewrpt_BuildDropDownFilter($dealers_transaction->status, $sExtWrk, "");
+		if ($sExtWrk <> "" || $sWrk <> "")
+			$sFilterList .= $dealers_transaction->status->FldCaption() . "<br />";
+		if ($sExtWrk <> "")
+			$sFilterList .= "&nbsp;&nbsp;$sExtWrk<br />";
+		if ($sWrk <> "")
+			$sFilterList .= "&nbsp;&nbsp;$sWrk<br />";
 
 		// Show Filters
 		if ($sFilterList <> "")
-			echo $ReportLanguage->Phrase("CurrentFilters") . "<br>$sFilterList";
+			echo $ReportLanguage->Phrase("CurrentFilters") . "<br />$sFilterList";
 	}
 
 	// Return poup filter
@@ -2038,7 +2091,6 @@ class crdealers_transaction_summary {
 				$dealers_transaction->vat_registration->setSort("");
 				$dealers_transaction->fsb_number->setSort("");
 				$dealers_transaction->Deals_made->setSort("");
-				$dealers_transaction->Sold->setSort("");
 			}
 
 		// Check for an Order parameter
@@ -2052,11 +2104,21 @@ class crdealers_transaction_summary {
 		return $dealers_transaction->getOrderBy();
 	}
 
-	// PDF Export
+	// Export PDF
 	function ExportPDF($html) {
-		echo($html);
+		global $gsExportFile;
+		include_once "dompdf060b2/dompdf_config.inc.php";
+		@ini_set("memory_limit", EWRPT_PDF_MEMORY_LIMIT);
+		set_time_limit(EWRPT_PDF_TIME_LIMIT);
+		$dompdf = new DOMPDF();
+		$dompdf->load_html($html);
+		$dompdf->set_paper("a4", "portrait");
+		$dompdf->render();
+		ob_end_clean();
 		ewrpt_DeleteTmpImages();
-		exit();
+		$dompdf->stream($gsExportFile . ".pdf", array("Attachment" => 1)); // 0 to open in browser, 1 to download
+
+//		exit();
 	}
 
 	// Page Load event

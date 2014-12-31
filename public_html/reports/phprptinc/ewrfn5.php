@@ -323,7 +323,7 @@ function ewrpt_Xml2Array($contents) {
 				} 
 				$current = &$current[$tag][$last_item_index];
 			}
-		} elseif ($type == "complete") { // Tags that ends in one line '<tag>'
+		} elseif ($type == "complete") { // Tags that ends in one line '<tag />'
 			if (!isset($current[$tag])) { // New key
 				$current[$tag] = array(); // Always use array for "complete" type
 				if (@$result['attr']['id'] <> '') {
@@ -1735,7 +1735,7 @@ class crAdvancedSecurity {
 			$sSql = EWRPT_LOGIN_SELECT_SQL . " WHERE " . $sFilter;
 			if ($rs = $conn->Execute($sSql)) {
 				if (!$rs->EOF) {
-					$ValidateUser = ewrpt_ComparePassword($rs->fields('username'), $pwd);
+					$ValidateUser = ewrpt_ComparePassword($rs->fields('password'), $pwd);
 					if ($ValidateUser) {
 						$_SESSION[EWRPT_SESSION_STATUS] = "login";
 						$_SESSION[EWRPT_SESSION_SYSTEM_ADMIN] = 0; // Non System Administrator
@@ -4359,15 +4359,13 @@ function &ewrpt_Connect() {
 
 // Database Connecting event
 function Database_Connecting(&$info) {
-
 	// Example:
 	//var_dump($info);
 	//if (ew_ServerVar("REMOTE_ADDR") == "127.0.0.1") { // testing on local PC
-	//	$info["host"] = "locahost";
-	//	$info["user"] = "root";
-	//	$info["pass"] = "";
+	//    $info["host"] = "locahost";
+	//    $info["user"] = "root";
+	//    $info["pass"] = "";
 	//}
-
 }
 
 // Database Connected event
@@ -5038,7 +5036,7 @@ function ewrpt_DebugMsg() {
 function ewrpt_SetDebugMsg($v, $newline = TRUE) {
 	global $gsDebugMsg;
 	if ($newline && $gsDebugMsg <> "")
-		$gsDebugMsg .= "<br>";
+		$gsDebugMsg .= "<br />";
 	$gsDebugMsg .=  $v;
 }
 

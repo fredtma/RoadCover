@@ -67,15 +67,15 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
     * @returns {undefined}
     */
    this.navTab = function(_obj) {
-      var li,a,b,ul2,li2,a2,cl,txt,i;
+      var li,a,b,ul2,li2,a2,cl,txt,i,active;
       var ul=creo({"clss":"nav nav-tabs"},"ul");/*the first element created ul, for the list*/
       this.setObject({"items":_obj,/*the menu is passed as the first obj*/
          "father":function(key,item){/*the parent will be the second obj and a function*/
             if(item.licentia&&getLicentia(item.licentia,"View")===false)return true;
-            mainMenu.push(key);
+            mainMenu.push(key);active=item['data-active']||'';
             cl=item.clss?item.clss:'';
             txt=document.createTextNode(' '+item.txt);
-            li=creo({"clss":cl+" navLinks","id":"nav_"+key},"li");
+            li=creo({"clss":cl+" navLinks","id":"nav_"+key,"data-active":active},"li");
             a=creo({"data-toggle":"tab","href":"#tab-"+key,'id':'link_'+key},"a");
             if(item.icon) {i=creo({"clss":item.icon},"i");a.appendChild(i)}/*add icon if it exist*/
             a.appendChild(txt);li.appendChild(a);ul.appendChild(li);
@@ -105,7 +105,7 @@ function SET_DISPLAY(_title,_subTitle,_pageNumber)
    this.btnGroup=function(_obj){
       var btn,i;
       var div=creo({"clss":"btn-group "+_obj.key},"div");
-      var innerClass=this.Obj.clss;
+      var innerClass=this.Obj.clss||'';
       this.setObject({"items":_obj.btn,"father":function(key,item){
          if(item.lecentia&&!getLicentia(item.lecentia,"View")) return true;
          var tmp_clss=item.clss||'';
@@ -408,7 +408,8 @@ hauriret=function(){
    $(".monthList a").click(function(){//@explain:when the month list is selected, the function is repeated
       var m=$(this).data("iota");var temp=$('footer').data('temp');
       dropDownMenu(this,"month");var militia=eternal.mensa;
-      get_ajax(dynamisGet("SITE_SERVICE",true),{"militia":militia,"quaerere":temp,"luna":{1:m}},'','post','json',function(_rows){
+      var y=localStorage.SITE_YEAR;
+      get_ajax(dynamisGet("SITE_SERVICE",true),{"militia":militia,"quaerere":temp,"luna":{0:y,1:m}},'','post','json',function(_rows){
          if(typeof temp==="undefined")temp=[0,"dealers"];
          sideDisplay(temp[0],temp[1]);
          dynamisGet("SITE_MONTH",m,true)//@explain:reset the whole site defaults month selection

@@ -55,6 +55,17 @@
          .dropdown-menu>li>a{display:block;text-align: left;}
          .popover{min-width:300px !important;font-style: normal !important;font-size: 14px !important; max-width: 350px;font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;}
          blockquote .popover-content p,blockquote  .popover-title{font-style: normal !important;font-size: 14px !important;}
+         #activeMember{background:transparent;box-sizing: auto;border: 2px outset transparent;box-shadow: 1px 1px 1px rgba(0,0,0,0.5);line-height: 0;}
+         #activeMember:hover{box-shadow: -1px -1px 1px rgba(0,0,0,0.5);}
+         .error{background-color: #f2dede;}
+         .getCust {text-decoration: underline;color:#08c;cursor:pointer;}
+         #customerDetails{width:750px;margin-left:-325px;}
+         .modal-header{padding:0;}.modal-header .close{margin-right:10px;}.nav-tabs{border-bottom:0px solid #ddd;}
+         .modal-body{padding:5px;min-height: 200px; max-height:auto;}
+         .form-horizontal .controls {padding-top:5px;}
+         .form-horizontal .control-label {font-weight: bold;}
+         .form-horizontal {text-transform: capitalize;}
+         .form-horizontal .control-group {margin-bottom: 1px;}
       </style>
       <!--<link rel="stylesheet" href="css/datepicker.css" />-->
       <section class="page-section">
@@ -115,15 +126,34 @@
             <div>&nbsp;</div>
          </div>
       </section>
+<div class="modal hide fade" id="customerDetails" role="dialog" aria-labelledby="customerDeltails" aria-hidden="true" tabindex="-1">
+  <div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><nav id="navCust"><!--ingenero--></nav></div>
+  <div class="modal-body">
+	<div class="tab-content">
+      <div class="tab-pane active" id="tab-custHome"><section class=""><!--ingenero--></section></div>
+      <div class="tab-pane " id="tab-custDetails"><section class=""><!--ingenero--></section></div>
+	   <div class="tab-pane " id="tab-custAddress"><section class=""><!--ingenero--></section></div>
+	   <div class="tab-pane " id="tab-custExpense"><section class=""><!--ingenero--></section></div>
+	   <div class="tab-pane " id="tab-custQuote"><section class=""><!--ingenero--></section></div>
+	   <div class="tab-pane " id="tab-custVehicle"><section class=""><!--ingenero--></section></div>
+	   <div class="tab-pane " id="tab-custFinances"><section class=""><!--ingenero--></section></div>
+	   <div class="tab-pane " id="tab-custInsurance"><section class=""><!--ingenero--></section></div>
+	   <div class="tab-pane " id="tab-custHistory"><section class=""><!--ingenero--></section></div>
+	</div>
+  </div>
+  <div class="modal-footer"><a href="#" class="btn" data-dismiss="modal">Close</a></div>
+</div>
    <!--<script src="../js/libs/bootstrap-datepicker.js"></script>-->
    <script type="text/javascript">
+      $("footer").data("customer",0);//innitiate the customer search not to fetch data
       $('.body article').addClass('totalView');
       //======================================================================//
       function getInvoice(inv){
-         var x,l,row,$addrss,$cust,val,father,amount,total=0,vat,all,d=new Date(),y=d.getFullYear(),missing=false;
+         var x,l,row,$addrss,$cust,val,father,amount,total=0,vat,all,d=new Date(),y=d.getFullYear(),missing=false;y=localStorage.SITE_YEAR;
          var m=$("#monthList").val(),firstDate= new Date(y+'/'+m+'/06').format('isoDateTime');
-         var lastDay=new Date(y,m,0).getDate();var dateFrom=new Date(y+'/'+m+'/06').format(localStorage.SITE_DATE);var dateTo=new Date(y+'/'+(parseInt(m)+1)+'/'+'05').format(localStorage.SITE_DATE);
-         $("#fromTo").html(dateFrom+' To '+dateTo).attr("datetime",firstDate);
+         var allActive=$("#activeMember").prop("checked");
+         var lastDay=new Date(y,m,0).getDate();var dateFrom=new Date(y+'/'+m+'/06').format(localStorage.SITE_DATE);var dateTo=new Date((m==12?y+1:y)+'/'+(m==12?1:parseInt(m)+1)+'/'+'05').format(localStorage.SITE_DATE);
+         $("#fromTo").html(dateFrom+' To '+dateTo).attr("datetime",firstDate);console.log(dateTo,'dateTo',lastDay);
          //changes the dropdown of dealers
          $("footer").data("selection",{"month":m,"dealers":inv});
          $('footer').data('temp',[inv,'dealers']);
@@ -131,7 +161,7 @@
          $(".monthDropInv .theTXT").text($("#btnSubMonthList3 a[data-iota="+m+"]").text());
 
          $(".invCust").empty();$("#invAll").html('');$("#invCom").html('');$("#invPre").html('');$anima(".invCust","div",{"clss":"progress progress-striped active","id":"ok"}).vita("div",{"clss":"bar","style":"width:100%"},false,"Loading...");
-         get_ajax(localStorage.SITE_SERVICE,{"militia":"cautionem-dealer","iota":inv,"m":m,"y":y},"","post","json",function(jData){
+         get_ajax(localStorage.SITE_SERVICE,{"militia":"cautionem-dealer","iota":inv,"m":m,"y":y,"vecto":allActive},"","post","json",function(jData){
             var address=false,customers=false,invoices=false;
             if("company" in jData&&"rows" in jData.company&&"length" in jData.company.rows&&jData.company.rows.length>=1);else return false;
             if("address" in jData&&"rows" in jData.address&&"length" in jData.address.rows&&jData.address.rows.length>=1) address=jData.address;
@@ -167,20 +197,21 @@
             //CUTOMERS DETAILS
             $(".progress-striped").hide();$("#invTot").empty();$("#invVat").empty();$("#invAll").empty();
             if(customers){
-               var premium,commission,totalCommision=0,totalPremium=0;
+               var premium,commission,totalCommision=0,totalPremium=0,stat;
                l=customers.rows.length;
                $cust=$anima(".invCust");
                father=$cust.father;
                for(x=0;x<l;x++){
                   row=customers[x];
+                  stat=row["status"].search(/active/i)!=-1?false:true;
                   $cust.father=father;
-                  premium=parseFloat(row["TotalAmount"]);
-                  totalPremium+=premium;
-                  commission=parseFloat(row["Commission"]);
-                  totalCommision+=commission;
-                  amount=premium-commission;
-                  total+=amount;
-                  $cust.vita("div",{"clss":"invMid"},true).vita("span",{},false,x+1).vita("span",{},false,row["Deal"]).vita("span",{},false,row["Salesman"]).vita("span",{},false,row["Customer"]).vita("span",{},false,row["IDno"]).vita("span",{},false,row["Start Date"]).vita("span",{},false,row["Period"]).vita("span",{},false,row["status"]).vita("span",{},false,row["product_name"]).vita("span",{},false,'R '+commission).vita("span",{},false,'R '+premium).vita("span",{},false,'R '+amount);
+                  premium=stat?0:parseFloat(row["TotalAmount"]);
+                  totalPremium+=stat?0:premium;
+                  commission=stat?0:parseFloat(row["Commission"]);
+                  totalCommision+=stat?0:commission;
+                  amount=stat?0:(premium-commission);
+                  total+=stat?0:amount;
+                  $cust.vita("div",{"clss":"invMid "+(stat?"error":"")},true).vita("span",{},false,x+1).vita("span",{},false,row["Deal"]).vita("span",{},false,row["Salesman"]).vita("span",{"data-iota":row["customer_id"],"clss":"getCust"},false,row["Customer"]).vita("span",{},false,row["IDno"]).vita("span",{},false,row["Start Date"]).vita("span",{},false,row["Period"]).vita("span",{},false,row["status"]).vita("span",{},false,row["product_name"]).vita("span",{},false,'R '+commission).vita("span",{},false,'R '+premium).vita("span",{},false,'R '+amount);
                }//for customers
 //               vat=Math.round(total/100*14);all=total+vat;
 //               $("#invTot").html('R '+total);
@@ -202,6 +233,11 @@
             //FILENAME
             $("#dwld_invoice").hide();
             if("filename" in jData&&missing===false)$("#dwld_invoice").show().attr("href",jData.filename);
+            //LISTENER
+            $(".getCust").click(function(){
+               $("#customerDetails").modal({"show":true,"keyboard":true});
+               actionCustomer($(this).data('iota'));
+            });
          });//call dealers details
       }//end function getInvoice
       //======================================================================//
@@ -259,9 +295,9 @@
          $("input[name=s]").removeData().unbind();
          var m=$("footer").data("selection")?$("footer").data("selection").month:localStorage.SITE_MONTH;
          if(!$("#monthList").val())$("#monthList").val(m);
-         $DB("SELECT name,code FROM dealers ORDER BY name",[],"",function(r,j){console.log('testing....');
+         $DB("SELECT name,code FROM dealers ORDER BY name",[],"",function(r,j){
             var x,l,row,codes=[],examiner=[];
-            var cnt=0,menuDealers={};
+            var cnt=0,menuDealers={},non_active;
             if(j.rows.length){
                l=j.rows.length;sessionStorage.genesis=0;
                for(x=0;x<l;x++){
@@ -276,12 +312,14 @@
                   var parent=$(this).parents(".btn-group"),val=$(this).text(),iota=$(this).data("iota");$(".theTXT",parent[0]).html(val);
                   getInvoice(iota);
                });
-               var menuMonths=roadCover.btnDropDown({"btnMonths":{"clss":"btn btn-info seamless non_procer monthDrop monthDropInv","href":"javascript:void(0)","icon":"icon-calendar","txt":"Months"},"btnDealerCaret":{"clss":"btn btn-info dropdown-toggle seamless non_procer","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubMonthList3":{"clss":"dropdown-menu monthList","sub":{1:{"href":"#","txt":"January","iota":1},2:{"href":"#","txt":"February","iota":2},3:{"href":"#","txt":"March","iota":3},4:{"href":"#","txt":"April *","iota":4},5:{"href":"#","txt":"May *","iota":5},6:{"href":"#","txt":"June *","iota":6},7:{"href":"#","txt":"July *","iota":7},8:{"href":"#","txt":"August *","iota":8},9:{"href":"#","txt":"September *","iota":9},10:{"href":"#","txt":"October","iota":10},11:{"href":"#","txt":"November","iota":11},"12":{"href":"#","txt":"December","iota":12}}}});
+               var menuMonths=roadCover.btnDropDown({"btnMonths":{"clss":"btn btn-info seamless non_procer monthDrop monthDropInv","href":"javascript:void(0)","icon":"icon-calendar","txt":"Months"},"btnDealerCaret":{"clss":"btn btn-info dropdown-toggle seamless non_procer","href":"#","data-toggle":"dropdown","caret":"span"},"btnSubMonthList3":{"clss":"dropdown-menu monthList","sub":{1:{"href":"#","txt":"January","iota":1},2:{"href":"#","txt":"February","iota":2},3:{"href":"#","txt":"March","iota":3},4:{"href":"#","txt":"April *","iota":4},5:{"href":"#","txt":"May *","iota":5},6:{"href":"#","txt":"June *","iota":6},7:{"href":"#","txt":"July *","iota":7},8:{"href":"#","txt":"August *","iota":8},9:{"href":"#","txt":"September *","iota":9},10:{"href":"#","txt":"October *","iota":10},11:{"href":"#","txt":"November *","iota":11},"12":{"href":"#","txt":"December","iota":12}}}});
                $("#monthSet").append(menuMonths);
                $("#btnSubMonthList3 a").click(function(){
                   $("#monthList").val($(this).data('iota'));
                   var deal=$("#dealerNo").html();if(deal)getInvoice(deal);
                });
+               $("#monthSet").anima("label",{"attr":{"clss":"checkbox inline"},"txt":"Include canceled deals"}).vita("input",{"attr":{"type":"checkbox","id":"activeMember","value":"1"}})
+               .click(function(){getInvoice($("#dealerNo").text());});
                //================================================================//Set typeAhead
                $('.tab-pane.active input[name=s]').focus(function(){setTimeout(function(set){$('.tab-pane.active input[name=s]').select();},10);}).val('').prop('disabled',false).typeahead({source:examiner,minLength:3,
                   highlighter:function(item){var regex = /\$(.+)/;return item.replace(regex,"<span class='none'>$1</span>");},
@@ -309,4 +347,46 @@
             }//if dealers
          });//$DB query
       });//ready document
+      function actionCustomer(cust){
+         var displayCustomer = new SET_DISPLAY();
+         var m=$("#monthList").val();
+         $("footer").data("customer",cust);$("#navCust").empty();
+         $("footer").data("selection",{"month":m});
+         displayCustomer._Set("#navCust").navTab({
+            "custHome":{"txt":"Home","clss":"active","icon":"icon-home","data-active":"view"},
+            "custAddress":{"txt":"Address","icon":"icon-user","data-active":"address"},
+            "custDetails":{"txt":"Details","icon":"icon-briefcase","data-active":"brief"},
+            "custExpense":{txt:"Expenses","icon":"icon-book","data-active":"expenses"},
+            "custQuote":{"txt":"Quote","icon":"icon-bullhorn","data-active":"quote"},
+            "custVehicle":{"txt":"Vehicle","icon":"icon-road","data-active":"vehicle"},
+            "custFinances":{"txt":"Finances","icon":"icon-tags","data-active":"payment"},
+            "custInsurance":{"txt":"Insurance","icon":"icon-download-alt","data-active":"cover"},
+            "custHistory":{"txt":"History","icon":"icon-time","data-active":"history"}});
+            menuSelection("#nav_custHome");
+         $("#navCust li").click(menuSelection);
+      }
+      function menuSelection(set){
+         var active;
+         if(typeof set=="string"){active=$(set).data('active');set=$(set)[0]}
+         else {active=$(this).data('active'); set=this;}
+
+         var code=$("footer").data("customer");var id = "#tab-"+set.id.substr(4);var theForm = new SET_FORM();
+         get_ajax(localStorage.SITE_SERVICE,{"militia":"customers-"+active,iota:code},"","post","json",function(results,j){
+            console.log(results,'results',eternal.children, active);
+            var reference=eternal.children[active];console.log(reference,'reference');
+            var frmId="frm_"+eternal.form.field.name+2;
+            var setEle=document.querySelector(id);$(setEle).empty();$('#'+frmId).remove();
+            var title=eternal.children[active].title;
+            $anima(setEle,"form",{"id":frmId,"clss":"form-horizontal"}).vita('h2',{},false,title);
+            if(reference.global.complex=="table"){
+               theForm.gammaTable(results,active,'#'+frmId);
+            }else{//endif
+               theForm.form2=document.querySelector("#"+frmId);//to place in the second form
+               theForm.setObject({"items":reference,"father":theForm.singleForm});//end setObject
+               fieldsDisplay("form",results[0],false,active);
+            }//endif
+		  });
+	  }
+     load_async("js/agito/customer.js",true,"end",true);
    </script>
+<!--   <script src="../js/agito/customer.js"></script>-->
